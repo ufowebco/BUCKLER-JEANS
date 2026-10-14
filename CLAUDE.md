@@ -70,6 +70,18 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
   snippet / meta keys. Regla: buckler-core debe usar **las mismas meta keys y el mismo contador** para
   no reiniciar la numeración ni perder el estado de pedidos existentes (HPOS: `$order->get_meta()`).
 
+## Revisión del sitio público (2026-10-14, antes de instalar) → `docs/despliegue.md`
+- `tools/review.js [salida]`: páginas clave a 1440/390, enlaces internos, flujo ficha → talla → carrito → vaciar
+  (bloquea píxeles/GA para no ensuciar la pauta; no abre el checkout con productos). Línea base:
+  `snapshots/review-2026-10-14/report.json`. `FLOW_ONLY=1 PRODUCT=<url>` solo el flujo.
+- **Todas las categorías de producto redirigen 301 a `/tienda/`** (`X-Redirect-By: WordPress` → snippet/plugin,
+  origen desconocido): bloqueante antes de activar header/footer/shop (enlazan categorías). Además, toda URL
+  inexistente → 301 a la portada (soft 404).
+- Caché: LiteSpeed + capa propia `X-Ufocache` (TTL 10 h). `/gestion-tienda/` envía DONOTCACHEPAGE + no-cache.
+- Tallas en la ficha: botones `li.variable-item` de BodyCommerce (no accesibles por teclado), select oculto.
+- "Ocultar agotados" activo (Store API: 99 de 133). `pantalones-sale` eliminada. `/politica-de-envio/` ya 301 OK.
+- Header 1114 es el global de las 12 plantillas aunque se titule "Todos Los Políticas Empresa".
+
 ## Auditoría (audit_site)
 - Inicio 44: 3× `divi/code` (no permitido por el plugin) y CSS propio en una fila.
 - Footer 119: CSS propio; enlace a `/politica-de-envio/` sin página.
@@ -107,7 +119,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.8.0 → `dist/buckler-core-0.8.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.8.1 → `dist/buckler-core-0.8.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.

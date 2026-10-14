@@ -81,7 +81,12 @@ function bk_g_render() {
 	if ( ! get_query_var( 'bk_gestion' ) ) {
 		return;
 	}
+	// Nunca en caché: el sitio usa LiteSpeed Cache y otra capa propia (X-Ufocache, revisión 2026-10-14).
+	if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+		define( 'DONOTCACHEPAGE', true ); // Convención que respetan LiteSpeed, WP Rocket, W3TC y la mayoría.
+	}
 	nocache_headers();
+	header( 'X-LiteSpeed-Cache-Control: no-cache', true );
 	header( 'X-Robots-Tag: noindex, nofollow', true );
 
 	if ( ! is_user_logged_in() ) {

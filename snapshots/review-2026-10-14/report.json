@@ -1,0 +1,894 @@
+{
+  "date": "2026-10-14T20:16:26.245Z",
+  "pages": [
+    {
+      "name": "inicio",
+      "path": "/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 6296,
+      "requests": 191,
+      "title": "BUCKLER | Moda femenina slim y curvy con envíos gratis en Colombia",
+      "h1": [
+        "¡Lo nuevo! - Línea Slim",
+        "¡Lo nuevo! - Línea Curvy",
+        "Tienda"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/",
+      "brokenImgs": [],
+      "noAlt": 68,
+      "overflowX": false,
+      "products": 16,
+      "htmlKB": 433,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://www.google.com/g/collect?v=2&tid=G-BR4MXPY7HS&gtm=45je6ac1v9244416231za20czd9244416231xf4&_p=1792008989057&gcd=13l3l3l3l1l1&npa=0&dm"
+      ]
+    },
+    {
+      "name": "tienda",
+      "path": "/tienda/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 5342,
+      "requests": 193,
+      "title": "Tienda -",
+      "h1": [
+        "Tienda"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/tienda/",
+      "brokenImgs": [],
+      "noAlt": 49,
+      "overflowX": false,
+      "products": 21,
+      "htmlKB": 448,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6"
+      ]
+    },
+    {
+      "name": "linea-slim",
+      "path": "/linea-slim/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 5158,
+      "requests": 181,
+      "title": "BUCKLER Línea Slim | Moda slim para mujer con envíos gratis",
+      "h1": [
+        "Línea Slim"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/linea-slim/",
+      "brokenImgs": [],
+      "noAlt": 51,
+      "overflowX": false,
+      "products": 16,
+      "htmlKB": 409,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "linea-curvy",
+      "path": "/linea-curvy/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 4897,
+      "requests": 180,
+      "title": "BUCKLER Línea Curvy | Moda plus size con envíos gratis en Colombia",
+      "h1": [
+        "Línea Curvy"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/linea-curvy/",
+      "brokenImgs": [],
+      "noAlt": 50,
+      "overflowX": false,
+      "products": 19,
+      "htmlKB": 412,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "sales",
+      "path": "/sales/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 7724,
+      "requests": 169,
+      "title": "BUCKLER | Ofertas en moda slim y curvy",
+      "h1": [
+        "¡Sales!"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/sales/",
+      "brokenImgs": [],
+      "noAlt": 41,
+      "overflowX": false,
+      "products": 16,
+      "htmlKB": 425,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "cat-curvy",
+      "path": "/categoria-producto/linea-curvy/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 8254,
+      "requests": 193,
+      "title": "Tienda -",
+      "h1": [
+        "Tienda"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/tienda/",
+      "brokenImgs": [],
+      "noAlt": 49,
+      "overflowX": false,
+      "products": 21,
+      "htmlKB": 447,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "cat-nueva",
+      "path": "/categoria-producto/linea-nueva/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 7138,
+      "requests": 193,
+      "title": "Tienda -",
+      "h1": [
+        "Tienda"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/tienda/",
+      "brokenImgs": [],
+      "noAlt": 49,
+      "overflowX": false,
+      "products": 21,
+      "htmlKB": 448,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6"
+      ]
+    },
+    {
+      "name": "cat-jeans-curvy",
+      "path": "/categoria-producto/linea-curvy/jeans/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 6957,
+      "requests": 193,
+      "title": "Tienda -",
+      "h1": [
+        "Tienda"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/tienda/",
+      "brokenImgs": [],
+      "noAlt": 49,
+      "overflowX": false,
+      "products": 21,
+      "htmlKB": 448,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "busqueda",
+      "path": "/?s=jean&post_type=product",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 8322,
+      "requests": 188,
+      "title": "\"jean\" - Buckler Jenas by Denimblue",
+      "h1": [
+        "Tienda"
+      ],
+      "robots": "noindex,nofollow",
+      "canonical": "",
+      "brokenImgs": [],
+      "noAlt": 47,
+      "overflowX": false,
+      "products": 17,
+      "htmlKB": 451,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://www.google.com/g/collect?v=2&tid=G-BR4MXPY7HS&gtm=45je6ac1v9244416231za204zd9244416231xf4&_p=1792009065964&gcd=13l3l3l3l1l1&npa=0&dm"
+      ]
+    },
+    {
+      "name": "faq",
+      "path": "/preguntas-frecuentes/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 5716,
+      "requests": 105,
+      "title": "Preguntas frecuentes - Buckler Jenas by Denimblue",
+      "h1": [
+        "Preguntas frecuentes"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/preguntas-frecuentes/",
+      "brokenImgs": [],
+      "noAlt": 0,
+      "overflowX": false,
+      "products": 0,
+      "htmlKB": 400,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "politica-envio",
+      "path": "/politica-empresa/politica-de-envio/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 5216,
+      "requests": 105,
+      "title": "Política de envío  – Buckler Jenas by Denimblue",
+      "h1": [
+        "Política de envío"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/politica-empresa/politica-de-envio/",
+      "brokenImgs": [],
+      "noAlt": 0,
+      "overflowX": false,
+      "products": 0,
+      "htmlKB": 390,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1"
+      ]
+    },
+    {
+      "name": "carrito",
+      "path": "/carrito/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 6797,
+      "requests": 173,
+      "title": "Carrito - Buckler Jenas by Denimblue",
+      "h1": [
+        "Carrito"
+      ],
+      "robots": "follow, noindex",
+      "canonical": "",
+      "brokenImgs": [],
+      "noAlt": 36,
+      "overflowX": false,
+      "products": 8,
+      "htmlKB": 417,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "mi-cuenta",
+      "path": "/mi-cuenta/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 5112,
+      "requests": 122,
+      "title": "Mi cuenta - Buckler Jenas by Denimblue",
+      "h1": [
+        "Mi cuenta"
+      ],
+      "robots": "follow, noindex",
+      "canonical": "",
+      "brokenImgs": [],
+      "noAlt": 0,
+      "overflowX": false,
+      "products": 0,
+      "htmlKB": 357,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "inicio",
+      "path": "/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 3261,
+      "requests": 163,
+      "title": "BUCKLER | Moda femenina slim y curvy con envíos gratis en Colombia",
+      "h1": [
+        "¡Lo nuevo! - Línea Slim",
+        "¡Lo nuevo! - Línea Curvy",
+        "Tienda"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/",
+      "brokenImgs": [],
+      "noAlt": 68,
+      "overflowX": false,
+      "products": 16,
+      "htmlKB": 434,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://www.google.com/g/collect?v=2&tid=G-BR4MXPY7HS&gtm=45je6ac1v9244416231za20czd9244416231xf4&_p=1792009107507&gcd=13l3l3l3l1l1&npa=0&dm"
+      ]
+    },
+    {
+      "name": "tienda",
+      "path": "/tienda/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 4458,
+      "requests": 167,
+      "title": "Tienda -",
+      "h1": [
+        "Tienda"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/tienda/",
+      "brokenImgs": [],
+      "noAlt": 49,
+      "overflowX": false,
+      "products": 21,
+      "htmlKB": 449,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "linea-slim",
+      "path": "/linea-slim/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 4229,
+      "requests": 157,
+      "title": "BUCKLER Línea Slim | Moda slim para mujer con envíos gratis",
+      "h1": [
+        "Línea Slim"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/linea-slim/",
+      "brokenImgs": [],
+      "noAlt": 51,
+      "overflowX": false,
+      "products": 16,
+      "htmlKB": 410,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "linea-curvy",
+      "path": "/linea-curvy/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 4076,
+      "requests": 156,
+      "title": "BUCKLER Línea Curvy | Moda plus size con envíos gratis en Colombia",
+      "h1": [
+        "Línea Curvy"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/linea-curvy/",
+      "brokenImgs": [],
+      "noAlt": 50,
+      "overflowX": false,
+      "products": 19,
+      "htmlKB": 412,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "sales",
+      "path": "/sales/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 4127,
+      "requests": 157,
+      "title": "BUCKLER | Ofertas en moda slim y curvy",
+      "h1": [
+        "¡Sales!"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/sales/",
+      "brokenImgs": [],
+      "noAlt": 41,
+      "overflowX": false,
+      "products": 16,
+      "htmlKB": 426,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "cat-curvy",
+      "path": "/categoria-producto/linea-curvy/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 4696,
+      "requests": 168,
+      "title": "Tienda -",
+      "h1": [
+        "Tienda"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/tienda/",
+      "brokenImgs": [],
+      "noAlt": 49,
+      "overflowX": false,
+      "products": 21,
+      "htmlKB": 447,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "cat-nueva",
+      "path": "/categoria-producto/linea-nueva/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 4419,
+      "requests": 168,
+      "title": "Tienda -",
+      "h1": [
+        "Tienda"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/tienda/",
+      "brokenImgs": [],
+      "noAlt": 49,
+      "overflowX": false,
+      "products": 21,
+      "htmlKB": 449,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "cat-jeans-curvy",
+      "path": "/categoria-producto/linea-curvy/jeans/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 4605,
+      "requests": 168,
+      "title": "Tienda -",
+      "h1": [
+        "Tienda"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/tienda/",
+      "brokenImgs": [],
+      "noAlt": 49,
+      "overflowX": false,
+      "products": 21,
+      "htmlKB": 449,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "busqueda",
+      "path": "/?s=jean&post_type=product",
+      "w": 390,
+      "status": 200,
+      "tLoad": 7335,
+      "requests": 170,
+      "title": "\"jean\" - Buckler Jenas by Denimblue",
+      "h1": [
+        "Tienda"
+      ],
+      "robots": "noindex,nofollow",
+      "canonical": "",
+      "brokenImgs": [],
+      "noAlt": 47,
+      "overflowX": false,
+      "products": 17,
+      "htmlKB": 452,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://www.google.com/g/collect?v=2&tid=G-BR4MXPY7HS&gtm=45je6ac1v9244416231za204zd9244416231xf4&_p=1792009165139&gcd=13l3l3l3l1l1&npa=0&dm"
+      ]
+    },
+    {
+      "name": "faq",
+      "path": "/preguntas-frecuentes/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 3176,
+      "requests": 107,
+      "title": "Preguntas frecuentes - Buckler Jenas by Denimblue",
+      "h1": [
+        "Preguntas frecuentes"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/preguntas-frecuentes/",
+      "brokenImgs": [],
+      "noAlt": 0,
+      "overflowX": false,
+      "products": 0,
+      "htmlKB": 401,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "politica-envio",
+      "path": "/politica-empresa/politica-de-envio/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 2836,
+      "requests": 105,
+      "title": "Política de envío  – Buckler Jenas by Denimblue",
+      "h1": [
+        "Política de envío"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/politica-empresa/politica-de-envio/",
+      "brokenImgs": [],
+      "noAlt": 0,
+      "overflowX": false,
+      "products": 0,
+      "htmlKB": 390,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "carrito",
+      "path": "/carrito/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 6360,
+      "requests": 157,
+      "title": "Carrito - Buckler Jenas by Denimblue",
+      "h1": [
+        "Carrito"
+      ],
+      "robots": "follow, noindex",
+      "canonical": "",
+      "brokenImgs": [],
+      "noAlt": 36,
+      "overflowX": false,
+      "products": 8,
+      "htmlKB": 418,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "mi-cuenta",
+      "path": "/mi-cuenta/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 5267,
+      "requests": 122,
+      "title": "Mi cuenta - Buckler Jenas by Denimblue",
+      "h1": [
+        "Mi cuenta"
+      ],
+      "robots": "follow, noindex",
+      "canonical": "",
+      "brokenImgs": [],
+      "noAlt": 0,
+      "overflowX": false,
+      "products": 0,
+      "htmlKB": 358,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js"
+      ]
+    },
+    {
+      "name": "producto",
+      "path": "/producto/chaqueta-dama-2/",
+      "w": 1440,
+      "status": 200,
+      "tLoad": 4990,
+      "requests": 186,
+      "title": "REF: 9912 - CHAQUETA DAMA - Buckler Jenas by Denimblue",
+      "h1": [
+        "CHAQUETA DAMA",
+        "+ Productos"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/producto/chaqueta-dama-2/",
+      "brokenImgs": [],
+      "noAlt": 30,
+      "overflowX": false,
+      "products": 9,
+      "htmlKB": 529,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://www.google.com/g/collect?v=2&tid=G-BR4MXPY7HS&gtm=45je6ac1v9244416231za20czd9244416231xf4&_p=1792009200546&gcd=13l3l3l3l1l1&npa=0&dm"
+      ]
+    },
+    {
+      "name": "producto",
+      "path": "/producto/chaqueta-dama-2/",
+      "w": 390,
+      "status": 200,
+      "tLoad": 4215,
+      "requests": 170,
+      "title": "REF: 9912 - CHAQUETA DAMA - Buckler Jenas by Denimblue",
+      "h1": [
+        "CHAQUETA DAMA",
+        "+ Productos"
+      ],
+      "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+      "canonical": "https://buckler.com.co/producto/chaqueta-dama-2/",
+      "brokenImgs": [],
+      "noAlt": 30,
+      "overflowX": false,
+      "products": 9,
+      "htmlKB": 509,
+      "jsErrors": [
+        "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+      ],
+      "failed": [
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkouttoolkit.rapyd.net/?ver=1.2.3",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net/frontendInjection.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://unpkg.com/meta-capi-param-builder-clientjs/dist/clientParamBuilder.bundle.js?ver=3.7.6",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://checkout.bold.co/library/boldPaymentButton.js?ver=3.4.0",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/s-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://stats.wp.com/e-202642.js",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://fd.cleantalk.org/ct-bot-detector-wrapper.js?ver=6.89.1",
+        "ERR net::ERR_TUNNEL_CONNECTION_FAILED https://www.google.com/g/collect?v=2&tid=G-BR4MXPY7HS&gtm=45je6ac1v9244416231za20czd9244416231xf4&_p=1792009208113&gcd=13l3l3l3l1l1&npa=0&dm"
+      ]
+    }
+  ],
+  "links": [],
+  "flow": [
+    {
+      "step": "error en el flujo",
+      "ok": false,
+      "extra": "locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('form.variations_form select').first()\u001b[22m\n\u001b[2m    - locator resolved to "
+    }
+  ],
+  "linksChecked": 110
+}

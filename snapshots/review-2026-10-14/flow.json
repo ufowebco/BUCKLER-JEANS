@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-14T20:25:00.838Z",
+  "pages": [],
+  "links": [],
+  "flow": [
+    {
+      "step": "elegir talla (botones BodyCommerce)",
+      "ok": true,
+      "extra": "8"
+    },
+    {
+      "step": "añadir al carrito",
+      "ok": true,
+      "extra": "cookie de carrito creada"
+    },
+    {
+      "step": "carrito con el producto",
+      "ok": true,
+      "extra": "1 línea(s)"
+    },
+    {
+      "step": "carrito vaciado",
+      "ok": true,
+      "extra": "0 línea(s)"
+    },
+    {
+      "step": "checkout responde",
+      "ok": true,
+      "extra": "200 → /carrito/"
+    }
+  ],
+  "linksChecked": 0
+}
