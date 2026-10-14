@@ -102,7 +102,7 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
 - El plugin no sube medios: Mediateca o importador en `buckler-core`.
 
 ## buckler-core (plugin propio)
-Versión actual 0.2.0 → `dist/buckler-core-0.2.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.3.0 → `dist/buckler-core-0.3.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -128,13 +128,28 @@ Versión actual 0.2.0 → `dist/buckler-core-0.2.0.zip` (`tools/build-plugin.sh`
 - `core.js`: anti rage click (450 ms por control, controles ocupados bloqueados, sin doble submit),
   anti dead click (tarjeta completa clicable, mensaje en línea en vez del `alert()` de variaciones),
   quick back (barra de navegación inmediata, limpieza en `pageshow`/bfcache).
-- Pruebas locales: WP 7.1 + SQLite con stubs de Woo/ACF (wordpress.org está bloqueado en el entorno,
-  no se puede instalar WooCommerce aquí). Falta probar en el sitio real con Woo + flexslider.
+- SKU → REF (`includes/woo-tweaks.php`): `gettext_woocommerce` + `ngettext_woocommerce`, regex `\bSKU(s?)\b`.
+- Carritos abandonados (`includes/abandoned-cart/`, reemplaza woo-save-abandoned-carts):
+  tabla `{prefix}bk_abandoned_carts`; captura en checkout vía `?wc-ajax=bk_ac_capture` (casilla de
+  autorización Ley 1581 por defecto, o modo aviso); 3 correos con Action Scheduler (grupo `buckler-ac`,
+  hook `bk_ac_send` args [id, paso]) a 2/24/48 h; enlace firmado HMAC restaura el carrito en cualquier
+  dispositivo y lleva al checkout con UTM; compra → `converted`/`recovered` (+ nota y meta `_bk_ac_recovered`
+  en el pedido); pago fallido/cancelado → reactiva los correos pendientes; cupón opcional por paso
+  (único, 1 uso, restringido al correo, excluye rebajas); baja con List-Unsubscribe; limpieza diaria
+  (retención 60 días); exportar/borrar datos personales. Admin: WooCommerce → Carritos abandonados.
+  Plantilla: `templates/emails/abandoned-cart.php` (logo PNG porque Outlook no muestra WebP).
+  Ajustes en la opción `bk_ac_settings`. Suite e2e: 21 comprobaciones OK.
+- Pruebas locales: `tools/local/setup.sh` → MariaDB + WordPress + **WooCommerce 11.2.1 real** (git del repo
+  oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
+  en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
 - Banners: se mantienen las imágenes ACF con texto dentro (rellenar el alt en la Mediateca).
 - Header y footer: los diseña Claude (shortcodes en buckler-core).
+- 2026-10-14: snippet SKU→REF entregado; se pidió reemplazar WCDN, SEO propio (quitar SEOPress),
+  carritos abandonados (2 h / 24 h / 48 h, cupón por confirmar) y dashboard de pedidos/productos.
+- ACF "Archivos Pedidos" (`archivos_adjuntos`, repeater en pedidos) debe mantenerse en el dashboard.
 
 ## Pendiente del cliente
 - Código de los snippets actuales (favorito→NUEVO, vaciar carrito a la hora, descontar stock en

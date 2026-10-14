@@ -312,6 +312,28 @@ html.bk-navigating::before {
 	display: inline-block;
 }
 
+/* --- Aviso flotante (toast) ---------------------------------------------- */
+.bk-toast {
+	position: fixed;
+	z-index: 100002;
+	left: 50%;
+	bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+	transform: translateX(-50%);
+	max-width: min(92vw, 480px);
+	padding: 14px 20px;
+	border-radius: 10px;
+	background: var(--bk-navy);
+	color: #fff;
+	font-weight: 600;
+	box-shadow: 0 12px 30px -10px rgba(0, 0, 0, .45);
+	animation: bk-toast 6s ease forwards;
+}
+
+@keyframes bk-toast {
+	0%, 85% { opacity: 1; }
+	100% { opacity: 0; visibility: hidden; }
+}
+
 /* --- Animaciones ---------------------------------------------------------- */
 @keyframes bk-spin {
 	to { transform: rotate(360deg); }

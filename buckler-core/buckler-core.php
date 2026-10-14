@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Buckler Core
  * Description:       Funciones propias de buckler.com.co: banners ACF, video de producto, iconos, protección de clics y utilidades de WooCommerce. Reemplaza plugins pesados.
- * Version:           0.2.0
+ * Version:           0.3.0
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            UFO Web
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'BK_VERSION', '0.2.0' );
+define( 'BK_VERSION', '0.3.0' );
 define( 'BK_FILE', __FILE__ );
 define( 'BK_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BK_URL', plugin_dir_url( __FILE__ ) );
@@ -39,6 +39,24 @@ require_once BK_DIR . 'includes/banners.php';
 require_once BK_DIR . 'includes/product-video.php';
 require_once BK_DIR . 'includes/header.php';
 require_once BK_DIR . 'includes/footer.php';
+require_once BK_DIR . 'includes/woo-tweaks.php';
+require_once BK_DIR . 'includes/abandoned-cart/store.php';
+
+// Módulos que dependen de WooCommerce.
+add_action(
+	'plugins_loaded',
+	static function () {
+		if ( ! class_exists( 'WooCommerce' ) ) {
+			return;
+		}
+		require_once BK_DIR . 'includes/abandoned-cart/capture.php';
+		require_once BK_DIR . 'includes/abandoned-cart/mailer.php';
+		if ( is_admin() ) {
+			require_once BK_DIR . 'includes/abandoned-cart/admin.php';
+		}
+	},
+	20
+);
 
 if ( is_admin() ) {
 	require_once BK_DIR . 'includes/admin/video-migration.php';
@@ -53,4 +71,5 @@ register_activation_hook( BK_FILE, 'bk_activate' );
 function bk_activate() {
 	require_once BK_DIR . 'includes/admin/video-migration.php';
 	bk_video_autodetect_legacy_key();
+	bk_ac_install();
 }
