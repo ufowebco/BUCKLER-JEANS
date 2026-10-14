@@ -203,7 +203,7 @@
 			</div>
 			<button type="button" class="bk-g-btn" id="bk-g-osave" data-id="${o.id}">Guardar estado</button>
 			${shipHtml(o)}
-			<section><h3>Clienta</h3><p><b>${esc(o.customer)}</b>${o.cedula ? `<br>Cédula: ${esc(o.cedula)}` : ''}<br>
+			<section><h3>Clienta</h3><p><b>${esc(o.customer)}</b>${o.fields?.cedula || o.cedula ? `<br>Cédula: ${esc(o.cedula || '—')}` : ''}${o.fields?.consecutivo ? `<br>Consecutivo: ${esc(o.consecutivo || '—')}` : ''}${o.origin ? `<br><small>Origen de la venta: ${esc(o.origin)}</small>` : ''}<br>
 				${o.phone ? `<a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> · <a href="https://wa.me/57${esc(String(o.phone).replace(/\D/g, '').replace(/^57/, ''))}" target="_blank" rel="noopener">WhatsApp</a><br>` : ''}
 				<a href="mailto:${esc(o.email)}">${esc(o.email)}</a><br>${esc(o.address)}</p>
 				${o.note ? `<p class="bk-g-note"><b>Nota de la clienta:</b> ${esc(o.note)}</p>` : ''}</section>
@@ -212,6 +212,7 @@
 				<dl class="bk-g-totals"><div><dt>Subtotal</dt><dd>${esc(o.subtotal)}</dd></div>${o.discount ? `<div><dt>Descuento</dt><dd>${esc(o.discount)}</dd></div>` : ''}<div><dt>Envío</dt><dd>${esc(o.shipping)}</dd></div><div class="is-total"><dt>Total</dt><dd>${esc(o.total)}</dd></div></dl>
 				<p><small>Pago: ${esc(o.payment)}</small></p></section>
 			${o.attachments.length ? `<section><h3>Archivos del pedido</h3><ul class="bk-g-files">${o.attachments.map((a) => `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${a.thumb ? `<img src="${esc(a.thumb)}" alt="${esc(a.name)}" width="96" height="96">` : esc(a.name)}</a></li>`).join('')}</ul></section>` : ''}
+			${o.extra?.length ? `<details class="bk-g-extra"><summary>Otros datos del pedido (${o.extra.length})</summary><dl>${o.extra.map((x) => `<div><dt title="${esc(x.key)}">${esc(x.label)}</dt><dd>${esc(x.value)}</dd></div>`).join('')}</dl></details>` : ''}
 			<section><h3>Notas</h3>
 				<form id="bk-g-onote" data-id="${o.id}"><label for="bk-g-notetext" class="bk-g-sr">Nueva nota</label>
 					<textarea id="bk-g-notetext" rows="2" placeholder="Escribe una nota del pedido"></textarea>

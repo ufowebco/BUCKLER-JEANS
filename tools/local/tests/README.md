@@ -7,7 +7,7 @@ Rutas asumidas: `BK_LOCAL=/tmp/claude-0/bk-local` (ajustar en los scripts si cam
 php tools/local/tests/seed-cards.php     # galerías, destacado, oferta, talla agotada
 php tools/local/tests/seed-shop.php      # ~60 productos con nombres/precios/categorías reales
 php tools/local/tests/seed-orders.php    # pedidos de ejemplo, usuaria "gestora" (rol Gestor de tienda)
-cd tools/local/tests && for t in shop cards sc ac gestion envio productos; do NODE_PATH=$(npm root -g) node $t.js; done
+cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas; do NODE_PATH=$(npm root -g) node $t.js; done
 ```
 
 | Suite | Qué prueba | Comprobaciones |
@@ -19,3 +19,4 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos; do NO
 | `gestion.js` | Dashboard /gestion-tienda/: acceso, roles, pedidos (cédula, estado, impreso, consecutivo, adjuntos, notas), productos (tallas, oferta, Nuevo), ajustes | 26 |
 | `envio.js` | Guía de envío: validación, vista previa sin envío, confirmar, correo único (sin el de Woo), nota, Completado, lista, Ajustes (vista previa y prueba), permisos, móvil | 28 |
 | `productos.js` | Editor de productos: crear (validaciones, línea, tallas, prendas, precio/rebaja), subir/ordenar/quitar fotos (foto de 11 MB reducida en el navegador), video, descripción, categorías Nuevo/Sale, ficha pública sin MP4 en las fotos, editar, estrella, REF duplicada, cambios sin guardar, versión en la otra línea, producto real intacto, móvil. Usa `seed-editor.php` + `inspect-product.php` | 53 |
+| `tienda-paginas.js` | Tienda pintada por buckler-core en tienda, líneas, ¡Sale!, Lo nuevo y búsqueda (un H1); enlaces de prendas por filtro en header/footer | 13 |

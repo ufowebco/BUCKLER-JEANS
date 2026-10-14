@@ -67,6 +67,10 @@ function bk_config( $key = null ) {
 					'linea-curvy' => array( 'label' => 'Línea Curvy', 'sizes' => 'Tallas 14 a 24', 'page' => '/linea-curvy/', 'attribute' => 'pa_tallas-plus-size', 'new_child' => 'curvy', 'sku_suffix' => ' PLUS' ),
 				),
 				'new_cat'       => 'linea-nueva',
+				// Enlaces a categorías en header/footer: 'filters' = página de la línea con ?prenda=… (funciona aunque
+				// algo redirija las categorías a /tienda/, como pasa en producción el 2026-10-14); 'archive' = URL
+				// de la categoría (mejor para SEO cuando las categorías vuelvan a abrir).
+				'category_links' => 'filters',
 				'sale_cat'      => 'sale',
 				'sale_page'     => '/sales/',
 				'faq_page'      => '/preguntas-frecuentes/',
@@ -159,10 +163,52 @@ function bk_whatsapp_display() {
  * @return array<int,array{name:string,url:string}>
  */
 function bk_child_cats( $parent_slug ) {
-	$cache = get_transient( 'bk_cats_' . $parent_slug );
-	if ( is_array( $cache ) ) {
-		return $cache;
+	$cache = get_transient( 'bk_cats2_' . $parent_slug );
+	if ( ! is_array( $cache ) ) {
+		$cache = bk_child_cats_raw( $parent_slug );
+		set_transient( 'bk_cats2_' . $parent_slug, $cache, DAY_IN_SECONDS );
 	}
+	$page = (string) ( bk_config( 'lines' )[ $parent_slug ]['page'] ?? '' );
+	$mode = 'filters' === bk_config( 'category_links' ) && $page ? 'filters' : 'archive';
+	return array_map(
+		static fn( $c ) => array(
+			'name' => $c['name'],
+			'url'  => 'filters' === $mode ? add_query_arg( 'prenda', $c['key'], bk_url( $page ) ) : $c['url'],
+		),
+		$cache
+	);
+}
+
+/**
+ * Clave de prenda que entiende el filtro de la tienda ("SETS Y OVEROL" y "SET Y OVEROL" → set-y-overol).
+ *
+ * @param string $name Nombre de la categoría.
+ * @return string
+ */
+function bk_prenda_key( $name ) {
+	return preg_replace( '/^sets-/', 'set-', sanitize_title( remove_accents( $name ) ) );
+}
+
+/**
+ * Enlace de "Lo nuevo": categoría Línea nueva o la tienda filtrada (?nuevo=1), según category_links.
+ *
+ * @return string
+ */
+function bk_new_url() {
+	$new = get_term_by( 'slug', (string) bk_config( 'new_cat' ), 'product_cat' );
+	if ( $new && 'archive' === bk_config( 'category_links' ) ) {
+		return (string) get_term_link( $new );
+	}
+	return add_query_arg( 'nuevo', '1', function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : bk_url( '/tienda/' ) );
+}
+
+/**
+ * Subcategorías (sin caché).
+ *
+ * @param string $parent_slug Slug del padre.
+ * @return array<int,array{name:string,url:string,key:string}>
+ */
+function bk_child_cats_raw( $parent_slug ) {
 	$out    = array();
 	$parent = get_term_by( 'slug', $parent_slug, 'product_cat' );
 	if ( $parent ) {
@@ -178,10 +224,10 @@ function bk_child_cats( $parent_slug ) {
 			$out[] = array(
 				'name' => bk_nice_label( $t->name ),
 				'url'  => (string) get_term_link( $t ),
+				'key'  => bk_prenda_key( $t->name ),
 			);
 		}
 	}
-	set_transient( 'bk_cats_' . $parent_slug, $out, DAY_IN_SECONDS );
 	return $out;
 }
 
@@ -195,7 +241,7 @@ add_action( 'woocommerce_update_product', 'bk_flush_menu_cache' );
  */
 function bk_flush_menu_cache() {
 	foreach ( array_keys( (array) bk_config( 'lines' ) ) as $slug ) {
-		delete_transient( 'bk_cats_' . $slug );
+		delete_transient( 'bk_cats2_' . $slug );
 	}
 }
 

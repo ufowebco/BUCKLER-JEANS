@@ -26,6 +26,51 @@ defined( 'ABSPATH' ) || exit;
 add_shortcode( 'bk_tienda', 'bk_shop_shortcode' );
 add_action( 'wp_enqueue_scripts', 'bk_shop_assets', 25 );
 add_filter( 'wp_robots', 'bk_shop_robots' );
+add_filter( 'template_include', 'bk_shop_template', 99999 );
+
+/**
+ * La tienda la pinta buckler-core en tienda, categorías, búsqueda, páginas de línea y ¡Sale!, con el header y
+ * footer del tema (Divi Theme Builder incluido). Va después del Theme Builder (prioridad alta), así que no hay
+ * que editar sus plantillas (Divi las marca como no editables); al apagar el módulo vuelve todo como estaba.
+ *
+ * @param string $template Plantilla.
+ * @return string
+ */
+function bk_shop_template( $template ) {
+	$sc = bk_shop_takeover_shortcode();
+	if ( ! $sc || ! apply_filters( 'bk_shop_takeover', true, $sc ) ) {
+		return $template;
+	}
+	$GLOBALS['bk_shop_shortcode'] = $sc;
+	return BK_DIR . 'templates/shop-page.php';
+}
+
+/**
+ * Shortcode de tienda para la petición actual ('' si no aplica).
+ *
+ * @return string
+ */
+function bk_shop_takeover_shortcode() {
+	if ( is_admin() || is_feed() || is_embed() || isset( $_GET['et_fb'] ) || ( function_exists( 'et_core_is_fb_enabled' ) && et_core_is_fb_enabled() ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		return ''; // Nunca dentro del editor visual de Divi.
+	}
+	if ( is_search() || is_shop() || is_product_taxonomy() ) {
+		return '[bk_tienda]';
+	}
+	if ( ! is_page() ) {
+		return '';
+	}
+	$path = trailingslashit( (string) wp_parse_url( get_permalink(), PHP_URL_PATH ) );
+	foreach ( (array) bk_config( 'lines' ) as $slug => $l ) {
+		if ( ! empty( $l['page'] ) && trailingslashit( $l['page'] ) === $path ) {
+			return '[bk_tienda categoria="' . esc_attr( $slug ) . '"]';
+		}
+	}
+	if ( trailingslashit( (string) bk_config( 'sale_page' ) ) === $path ) {
+		return '[bk_tienda oferta="1" titulo="' . esc_attr__( '¡Sale!', 'buckler-core' ) . '"]';
+	}
+	return '';
+}
 
 const BK_SHOP_PARAMS = array( 'linea', 'prenda', 'talla', 'precio', 'oferta', 'orden', 'pg' );
 const BK_SHOP_PER    = 24;
@@ -138,6 +183,12 @@ function bk_shop_context( $atts ) {
 		/* translators: %s: búsqueda */
 		$ctx['title']    = sprintf( __( 'Resultados para "%s"', 'buckler-core' ), $ctx['search'] );
 		$ctx['base_url'] = add_query_arg( array( 's' => rawurlencode( $ctx['search'] ), 'post_type' => 'product' ), home_url( '/' ) );
+	} elseif ( ! empty( $_GET['nuevo'] ) && get_term_by( 'slug', (string) bk_config( 'new_cat' ), 'product_cat' ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		// "Lo nuevo" (/tienda/?nuevo=1): productos de la categoría Línea nueva.
+		$t               = get_term_by( 'slug', (string) bk_config( 'new_cat' ), 'product_cat' );
+		$ctx['cats']     = array( (int) $t->term_id );
+		$ctx['title']    = $ctx['title'] ? $ctx['title'] : __( 'Lo nuevo', 'buckler-core' );
+		$ctx['base_url'] = add_query_arg( 'nuevo', '1', wc_get_page_permalink( 'shop' ) );
 	} else {
 		$ctx['title']    = $ctx['title'] ? $ctx['title'] : __( 'Tienda', 'buckler-core' );
 		$ctx['base_url'] = is_page() ? get_permalink() : wc_get_page_permalink( 'shop' );
@@ -153,7 +204,7 @@ function bk_shop_context( $atts ) {
  * @return string
  */
 function bk_shop_prenda_key( $name ) {
-	return preg_replace( '/^sets-/', 'set-', sanitize_title( remove_accents( $name ) ) );
+	return bk_prenda_key( $name );
 }
 
 /**

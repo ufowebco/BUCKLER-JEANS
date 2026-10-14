@@ -59,6 +59,8 @@ const login = async (p, u, pw) => { await p.goto(B + '/wp-login.php?redirect_to=
   // Detalle
   await p.fill('input[name="q"]', '464'); await p.waitForTimeout(1200); await p.locator('[data-order="464"]').click(); await p.waitForSelector('#bk-g-osave');
   ok((await p.textContent('.bk-g-dbody')).includes('Cédula'), 'detalle muestra cédula');
+  ok(/Consecutivo: PEDIDO-/.test(await p.textContent('.bk-g-dbody')), 'detalle muestra el consecutivo');
+  ok(await p.locator('#bk-g-odispatched').count() === 1, 'detalle muestra el check Despachado');
   ok(await p.locator('.bk-g-files img').count() === 1, 'detalle muestra el archivo ACF del pedido');
   ok(await p.evaluate(() => document.activeElement.closest('.bk-g-drawer__panel') !== null), 'foco dentro del panel');
   await p.selectOption('#bk-g-ostatus', 'completed'); await p.click('#bk-g-osave'); await p.waitForTimeout(1200);

@@ -694,6 +694,13 @@ code { font-size: 13px; background: #f1f4f6; padding: 2px 6px; border-radius: 4p
 	.bk-gp-imgs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+.bk-g-extra { margin: 16px 0; border: 1px solid var(--g-line); border-radius: 12px; background: #fafbfc; }
+.bk-g-extra summary { padding: 12px 14px; font-weight: 800; cursor: pointer; }
+.bk-g-extra dl { margin: 0; padding: 0 14px 12px; }
+.bk-g-extra dl div { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 10px; padding: 6px 0; border-top: 1px solid var(--g-line); font-size: 13.5px; }
+.bk-g-extra dt { color: var(--g-mute); font-weight: 700; overflow-wrap: anywhere; }
+.bk-g-extra dd { margin: 0; overflow-wrap: anywhere; }
+
 @media (prefers-reduced-motion: reduce) {
 	* { transition: none !important; }
 }

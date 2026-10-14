@@ -30,40 +30,46 @@ después de cada paso.
   **No pulsar "Usar como respaldo".**
 - Pedidos: claves reales identificadas (ver CLAUDE.md). En 0.8.2 son los valores por defecto del dashboard.
 
-## Bloqueantes antes del despliegue
+## Fase 2: activar la tienda (decisión del cliente 2026-10-14: "activemos toda la tienda y vamos corrigiendo")
 
-1. **Todas las categorías redirigen (301) a `/tienda/`.**
-   - Afecta a `/categoria-producto/linea-curvy/`, `/linea-curvy/jeans/`, `/linea-nueva/`, `/sale/`…
-   - La cabecera es `X-Redirect-By: WordPress`, es decir, código propio: un snippet en el tema hijo o en un plugin.
-   - Consecuencias:
-     - Google no puede indexar las categorías: el canonical y el contenido son los de la tienda.
-     - El menú y el footer nuevos enlazan a categorías; con el redirect, todos acabarían en la tienda sin filtrar.
-   - Qué hacer:
-     - [ ] El cliente indica dónde está el redirect y por qué se puso.
-     - [ ] Ampliar la plantilla TB "Archivos - Busqueda" (2417) a **todas** las categorías de producto, no solo a las 18/29/65, con `[bk_tienda]` en el cuerpo.
-     - [ ] Quitar el redirect en el mismo paso y purgar la caché.
-2. **Cualquier URL inexistente redirige (301) a la portada.**
-   - Esto hace que los errores 404 parezcan páginas válidas para Google (soft 404).
-   - Corregirlo con una página 404 real; queda para el módulo SEO.
-   - No bloquea `/gestion-tienda/`: al activar el módulo, la regla propia resuelve la URL antes de llegar al 404.
-3. **Copia de seguridad completa** (archivos y base de datos) justo antes de empezar, y anotar desde dónde se restaura.
-4. **Herramientas → Salud del sitio**: anotar la versión de PHP y `upload_max_filesize`. El editor reduce las fotos en el navegador, pero un video MP4 pesado podría superar el límite.
+El bloqueante de las categorías ya no frena la activación (0.9.0):
+- Menú y footer enlazan las prendas por filtro (`/linea-curvy/?prenda=jeans`); "Lo nuevo" va a `/tienda/?nuevo=1`.
+  Esto funciona aunque las categorías sigan redirigiendo a /tienda/ (`category_links = filters` en `config.php`).
+- La tienda la dibuja buckler-core (`template_include`, prioridad 99999) en tienda, categorías, búsqueda, `/linea-slim/`,
+  `/linea-curvy/` y `/sales/`, con el header y el footer del tema.
+  - No hace falta editar las plantillas TB de esos cuerpos, que Divi marca como no editables.
+  - Al apagar el módulo `shop` vuelve el cuerpo actual del Theme Builder.
 
-## Orden de instalación
+### Pasos
+1. **Cliente**: copia de seguridad.
+2. **Cliente**: actualizar el plugin a 0.9.0 (Plugins → Añadir nuevo → Subir → Reemplazar).
+3. **Cliente**: en Ajustes → Buckler Core, activar `layout`, `clicks`, `cards`, `shop`, `sidecart` y `abandoned`, y guardar.
+4. **Cliente**: desactivar en el mismo momento WooCommerce Side Cart Premium (Xootix) y Save Abandoned Carts. Si no, habría carritos y correos dobles.
+5. **Cliente**: purgar las dos cachés (LiteSpeed y Ufocache) y avisar.
+6. **Claude (MCP)**: `python3 divi-layouts/theme_hf.py --apply` para poner los shortcodes en el header 1114 y el footer 119. El script guarda un snapshot antes y se deshace con `undo_batch`.
+7. **Cliente**: purgar caché otra vez.
+8. **Claude**: `node tools/review.js snapshots/review-<fecha>-fase2`, comparar con la línea base y corregir.
 
-1. Subir `dist/buckler-core-<versión>.zip` y activarlo. Todos los módulos quedan apagados, así que no cambia nada en el front.
-2. Abrir Herramientas → Buckler: videos.
-   - Comprobar el contador "Productos con MP4 en la galería". En la muestra de la revisión, 16 de 17 productos tenían video.
-   - Comprobar si aparece alguna clave de respaldo.
-3. Activar los módulos de uno en uno. Después de cada uno: purgar LiteSpeed y la capa Ufocache, y luego ejecutar `node tools/review.js snapshots/review-<fecha>` y compararlo con la línea base.
-   1. `sku_ref`, `clicks`.
-   2. `gestion`: probar `/gestion-tienda/` con un usuario gestor (rol "Gestor de tienda").
-   3. `abandoned`: desactivar `woo-save-abandoned-carts` después.
-   4. `cards`, `shop`: aplicar los shortcodes en las plantillas TB y resolver antes el bloqueante 1.
-   5. `layout`: ejecutar `divi-layouts/theme_hf.py --apply` (header 1114 y footer 119).
-   6. `sidecart`: desactivar después el carrito lateral de Xootix.
-   7. `video`: desactivar BodyCommerce en el mismo paso.
-4. Desactivar los plugins reemplazados según la lista que confirme el cliente.
+### Qué queda para después
+| Módulo o tarea | Por qué espera |
+|---|---|
+| `video` | Exige apagar BodyCommerce, y la ficha de producto actual (TB 330) depende de BodyCommerce (botones de talla). Va con la ficha nueva |
+| `banners` | El inicio usa módulos de código; hay que rehacer la página 44 |
+| `sku_ref` | El snippet actual ya lo hace; se activa al borrar el snippet |
+| Plugins de filtros (Divi Machine, Ajax Filter, Themify, filtrado-ufo), Divi Essential | Desactivarlos solo después de confirmar que ninguna página los usa |
+| Categorías indexables | Quitar el redirect, pasar `category_links` a `archive` y revisar SEO |
+
+### Deshacer
+- Apagar los módulos en Ajustes → Buckler Core.
+- Reactivar Xootix y Save Abandoned Carts.
+- Header y footer: `undo_batch` con el batch que deja `theme_hf.py`.
+- Purgar caché.
+
+## Bloqueantes conocidos (no frenan la fase 2)
+
+1. **Todas las categorías redirigen (301) a `/tienda/`** (`X-Redirect-By: WordPress`, origen desconocido). Mientras siga así,
+   las categorías no se indexan; los enlaces propios no dependen de ellas.
+2. **Cualquier URL inexistente redirige (301) a la portada** (soft 404). Se resuelve en el módulo SEO.
 
 ## Después de cada paso
 

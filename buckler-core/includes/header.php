@@ -34,7 +34,6 @@ function bk_skip_link() {
  * @return array<int,array{label:string,url?:string,mega?:bool,class?:string}>
  */
 function bk_header_nav() {
-	$new = get_term_by( 'slug', (string) bk_config( 'new_cat' ), 'product_cat' );
 	$nav = array(
 		array(
 			'label' => __( 'Tienda', 'buckler-core' ),
@@ -42,7 +41,7 @@ function bk_header_nav() {
 		),
 		array(
 			'label' => __( 'Lo nuevo', 'buckler-core' ),
-			'url'   => $new ? (string) get_term_link( $new ) : bk_url( '/tienda/' ),
+			'url'   => bk_new_url(),
 		),
 	);
 	foreach ( (array) bk_config( 'lines' ) as $line ) {

@@ -93,6 +93,9 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
   adjuntos `archivos_adjuntos`. Otros: `_ufo_purchase_tracked`, `_meta_event_id`, `_meta_purchase_tracked_*`.
   Desde 0.8.2 son los **valores por defecto** de `bk_g_fields()`; "Despachado" tiene columna, filtro y check, y
   enviar la guía lo marca. La búsqueda acepta "3841", "#3841" y "PEDIDO-3841".
+- Detalle del pedido (0.9.0): cédula y consecutivo siempre visibles ("—" si vacío), origen de la venta (atribución
+  de Woo) y "Otros datos del pedido" (`bk_g_extra_meta`: metas no técnicas de snippets/checkout).
+- Fase 2 (activar tienda): pasos en `docs/despliegue.md`. `theme_hf.py` dry run revalidado el 2026-10-14 (válido).
 
 ## Auditoría (audit_site)
 - Inicio 44: 3× `divi/code` (no permitido por el plugin) y CSS propio en una fila.
@@ -131,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.8.2 → `dist/buckler-core-0.8.2.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.9.0 → `dist/buckler-core-0.9.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -178,8 +181,13 @@ Versión actual 0.8.2 → `dist/buckler-core-0.8.2.zip` (`tools/build-plugin.sh`
   categoría del archivo, página de línea, ¡Sale! (`wc_get_product_ids_on_sale`), búsqueda. Universo cacheado
   (`bk_shop_*`, 30 min + versión). Filtros GET: linea (slim|curvy), prenda (agrupa categorías repetidas por
   línea), talla, precio (rangos, filtro `bk_shop_price_buckets`), oferta, orden, pg (24 por página, "Ver más").
-  Agotados fuera. noindex,follow con filtros. Plantillas TB a usar: Tienda 423, Línea Slim 782, Línea Curvy 785,
-  ¡Sales! 1199, categorías 2415, búsqueda 1364 → módulo Texto con el shortcode (sin título de Divi: un H1).
+  Agotados fuera. noindex,follow con filtros. **Desde 0.9.0 la tienda se pinta sola** (`bk_shop_template`,
+  `template_include` 99999 → `templates/shop-page.php` con get_header/get_footer del tema): tienda, categorías,
+  búsqueda, páginas de línea (`lines[*].page`) y `sale_page`. No hace falta tocar las plantillas TB (no editables);
+  apagar el módulo devuelve el cuerpo TB. Nunca en el editor de Divi (`et_fb`). Filtro `bk_shop_takeover`.
+  "Lo nuevo" = `/tienda/?nuevo=1` (categoría `new_cat`). Enlaces de prendas en header/footer según
+  `category_links`: `filters` (por defecto, `/linea-x/?prenda=clave`, inmune al redirect de categorías) o `archive`.
+  Caché de menús `bk_cats2_*` (formato con `key` de prenda, `bk_prenda_key()`).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -224,7 +232,7 @@ Versión actual 0.8.2 → `dist/buckler-core-0.8.2.zip` (`tools/build-plugin.sh`
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 33, envío 28, productos 53 = 199 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13 = 214 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

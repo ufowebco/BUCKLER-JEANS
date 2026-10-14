@@ -325,6 +325,50 @@ function bk_g_orders( WP_REST_Request $r ) {
 }
 
 /**
+ * Origen de la venta (atribución nativa de WooCommerce): "Google · orgánico · Mobile".
+ *
+ * @param WC_Order $o Pedido.
+ * @return string
+ */
+function bk_g_origin( $o ) {
+	$labels = array( 'organic' => 'orgánico', 'referral' => 'referido', 'utm' => 'campaña', 'typein' => 'directo', 'admin' => 'creado en el admin', 'mobile_app' => 'app' );
+	$src    = (string) $o->get_meta( '_wc_order_attribution_utm_source' );
+	$type   = (string) $o->get_meta( '_wc_order_attribution_source_type' );
+	$dev    = (string) $o->get_meta( '_wc_order_attribution_device_type' );
+	$parts  = array_filter( array( $src && '(direct)' !== $src ? ucfirst( $src ) : '', $labels[ $type ] ?? $type, $dev ) );
+	return implode( ' · ', $parts );
+}
+
+/**
+ * Otros datos del pedido (campos de snippets, checkout, plugins) para que nada quede oculto en el dashboard.
+ * Excluye lo técnico (tokens, seguimiento, índices, atribución) y lo que ya se muestra.
+ *
+ * @param WC_Order $o Pedido.
+ * @param array    $f Campos configurados.
+ * @return array<int,array{key:string,label:string,value:string}>
+ */
+function bk_g_extra_meta( $o, $f ) {
+	$shown = array_merge( array( $f['consecutivo'], $f['impreso'], $f['despachado'] ), (array) $f['cedula'] );
+	$skip  = '/^(_edit_|_guest_access_token|_billing_address_index|_shipping_address_index|_meta_|_wc_|_wcdn_receipt_pdf_token|_ufo_|_bk_|_new_order_email|_recorded_|_order_stock|_download_|_cart_hash|_created_via|_customer_|_payment_|payment_token|is_vat_exempt|_transaction|_order_key|_prices_include|_date_|_paid|_completed)/';
+	$adj   = $f['adjuntos'] ? '/^_?' . preg_quote( $f['adjuntos'], '/' ) . '(_|$)/' : '';
+	$out   = array();
+	foreach ( $o->get_meta_data() as $m ) {
+		$d   = $m->get_data();
+		$key = (string) $d['key'];
+		$val = $d['value'];
+		if ( in_array( $key, $shown, true ) || preg_match( $skip, $key ) || ( $adj && preg_match( $adj, $key ) ) || is_array( $val ) || is_object( $val ) || '' === (string) $val ) {
+			continue;
+		}
+		$out[] = array(
+			'key'   => $key,
+			'label' => ucfirst( trim( str_replace( array( '_', '-' ), ' ', preg_replace( '/^_+/', '', $key ) ) ) ),
+			'value' => mb_substr( wp_strip_all_tags( (string) $val ), 0, 160 ),
+		);
+	}
+	return $out;
+}
+
+/**
  * Archivos adjuntos (repeater ACF) de un pedido, leídos de la meta del pedido.
  *
  * @param WC_Order $o Pedido.
@@ -411,6 +455,12 @@ function bk_g_order( WP_REST_Request $r ) {
 				'discount'    => (float) $o->get_discount_total() > 0 ? '−' . bk_g_money( $o->get_discount_total() ) : '',
 				'notes'       => $notes,
 				'attachments' => bk_g_attachments( $o ),
+				'origin'      => bk_g_origin( $o ),
+				'extra'       => bk_g_extra_meta( $o, $f ),
+				'fields'      => array(
+					'consecutivo' => (bool) $f['consecutivo'],
+					'cedula'      => (bool) $f['cedula'],
+				),
 				'edit_url'    => $o->get_edit_order_url(),
 			)
 		)
