@@ -54,6 +54,12 @@ function bk_modules() {
 			'replaces' => 'WooCommerce Side Cart Premium (Xootix)',
 			'woo'      => true,
 		),
+		'gestion'   => array(
+			'label'    => 'Gestión de tienda (/gestion-tienda/)',
+			'desc'     => 'Dashboard propio para pedidos (estado, impreso, consecutivo, cédula, adjuntos, notas) y productos (precio, oferta, stock por talla, Nuevo). Crea el rol "Gestor de tienda".',
+			'replaces' => 'Pantallas lentas de wp-admin para el día a día',
+			'woo'      => true,
+		),
 		'video'     => array(
 			'label'    => 'Video de producto',
 			'desc'     => 'Video en la galería de la ficha y caja para asignarlo. Usa como respaldo el video que ya cargaste con BodyCommerce.',
@@ -165,6 +171,11 @@ function bk_modules_save() {
 	$valid = array_keys( bk_modules() );
 	$on    = array_values( array_intersect( $valid, array_map( 'sanitize_key', (array) wp_unslash( $_POST['modules'] ?? array() ) ) ) );
 	update_option( 'bk_modules', $on );
+	if ( in_array( 'gestion', $on, true ) && class_exists( 'WooCommerce' ) ) {
+		// Recién encendido: sus archivos aún no se cargaron en esta petición (rol y URL /gestion-tienda/).
+		require_once BK_DIR . 'includes/gestion/api.php';
+		require_once BK_DIR . 'includes/gestion/page.php';
+	}
 	do_action( 'bk_modules_saved', $on );
 	wp_safe_redirect( admin_url( 'options-general.php?page=bk-modules&bk_msg=' . rawurlencode( 'Módulos guardados. Recuerda limpiar la caché.' ) ) );
 	exit;

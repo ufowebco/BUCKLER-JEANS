@@ -104,10 +104,10 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
 ## buckler-core (plugin propio)
 **Módulos (Ajustes → Buckler Core, `includes/modules.php`)**: todo APAGADO al instalar; `bk_on('clave')`;
 cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa clase). Claves: layout,
-clicks, banners, cards, shop, sidecart, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
+clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.5.0 → `dist/buckler-core-0.5.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.6.0 → `dist/buckler-core-0.6.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -152,6 +152,15 @@ Versión actual 0.5.0 → `dist/buckler-core-0.5.0.zip` (`tools/build-plugin.sh`
   línea), talla, precio (rangos, filtro `bk_shop_price_buckets`), oferta, orden, pg (24 por página, "Ver más").
   Agotados fuera. noindex,follow con filtros. Plantillas TB a usar: Tienda 423, Línea Slim 782, Línea Curvy 785,
   ¡Sales! 1199, categorías 2415, búsqueda 1364 → módulo Texto con el shortcode (sin título de Divi: un H1).
+- Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
+  página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
+  "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
+  REST `bk/v1/gestion/*` (summary, orders, orders/{id}, products, products/{id}, variations/{id}, settings).
+  Campos de pedido configurables en la opción `bk_gestion_fields` (consecutivo, impreso `_bk_impreso` por
+  defecto, cédula [lista de claves], adjuntos `archivos_adjuntos`) + detector de claves de los últimos 40
+  pedidos (pestaña Ajustes, solo admin). **Nunca meta_query OR con varias claves en HPOS** (JOIN por
+  cláusula → explosión combinatoria, colgó la BD con 26 pedidos): usar `bk_g_meta_ids()` (SQL directo
+  indexado) + `post__in`/`post__not_in`. Respuestas viejas descartadas por número de secuencia en JS.
 - IDs del footer con prefijo `bk-ft-` (antes chocaban con los filtros `bk-f-`).
 - SKU → REF (`includes/woo-tweaks.php`): `gettext_woocommerce` + `ngettext_woocommerce`, regex `\bSKU(s?)\b`.
 - Carritos abandonados (`includes/abandoned-cart/`, reemplaza woo-save-abandoned-carts):
@@ -168,7 +177,7 @@ Versión actual 0.5.0 → `dist/buckler-core-0.5.0.zip` (`tools/build-plugin.sh`
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21 = 85 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 26 = 111 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
@@ -177,6 +186,7 @@ Versión actual 0.5.0 → `dist/buckler-core-0.5.0.zip` (`tools/build-plugin.sh`
 - 2026-10-14: snippet SKU→REF entregado; se pidió reemplazar WCDN, SEO propio (quitar SEOPress),
   carritos abandonados (2 h / 24 h / 48 h, cupón por confirmar) y dashboard de pedidos/productos.
 - ACF "Archivos Pedidos" (`archivos_adjuntos`, repeater en pedidos) debe mantenerse en el dashboard.
+- Dashboard en `/gestion-tienda/`.
 
 ## Pendiente del cliente
 - Código de los snippets actuales (favorito→NUEVO, vaciar carrito a la hora, descontar stock en
