@@ -6,6 +6,10 @@ denim, dos líneas: **Slim** (tallas regulares 6–12) y **Curvy** (plus size 14
 
 Rama de trabajo: `claude/awesome-cori-fea1y8`. **No crear PR** salvo petición expresa.
 
+**Modo de trabajo (decisión del cliente 2026-10-14):** el sitio está en producción. NO se instala nada
+ni se modifica el sitio en vivo hasta el despliegue final. Solo lectura vía MCP (y `dry_run`). Todo se
+construye y prueba en local; el despliegue se hace al final, en un solo paso planificado.
+
 ## Objetivos
 1. Tienda más profesional, sencilla e intuitiva.
 2. Velocidad: reemplazar plugins pesados por código propio (`buckler-core`).
@@ -52,11 +56,19 @@ Rama de trabajo: `claude/awesome-cori-fea1y8`. **No crear PR** salvo petición e
   tienda 192; producto 192. HTML de 370–540 KB.
 - SEO: home con 3 H1; producto con 2 H1 (“+ Productos”); `<title>` de tienda vacío (“Tienda -”);
   nombre del sitio con errata “Buckler **Jenas** by Denimblue”; texto del hero incrustado en la imagen;
-  60–70 imágenes sin `alt` en home. No se detecta plugin SEO (Yoast/Rank Math).
+  60–70 imágenes sin `alt` en home. Plugin SEO: **SEOPress** (namespaces `seopress/v1` y `seopress/mcp`), no visible en el HTML.
 - Video de producto: BodyCommerce inyecta en la galería
   `<div class="main-gallery-video"><video class="woocommerce-product-gallery-video">` con MP4 en
   uploads y miniatura `VIDEO-PRODUCTO-1.webp`. La meta key donde guarda la URL no es visible por MCP
   (empieza por `_`): el plugin propio incluye un detector en wp-admin antes de migrar.
+
+- Otros plugins vistos en `/wp-json/` (namespaces): WooCommerce Print Invoice & Delivery Notes (`wcdn/v1`,
+  posible origen del consecutivo de factura), Divi Machine / Divi Ajax Filter / Divi Loop Extender
+  (Divi Engine), Jetpack Boost, Google for WooCommerce (`wc/gla`), WP Social Reviews, SEOPress,
+  `ufoweb-udf`, `uad` (datos dinámicos ACF), `novamira`, `adsagent`, `pac-dcfh`, `ddch`, WP Rollback, WC POS.
+- Pedidos: no accesibles por MCP ni REST pública. Consecutivo y check "impreso" pendientes de ver el
+  snippet / meta keys. Regla: buckler-core debe usar **las mismas meta keys y el mismo contador** para
+  no reiniciar la numeración ni perder el estado de pedidos existentes (HPOS: `$order->get_meta()`).
 
 ## Auditoría (audit_site)
 - Inicio 44: 3× `divi/code` (no permitido por el plugin) y CSS propio en una fila.
