@@ -104,10 +104,10 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
 ## buckler-core (plugin propio)
 **Módulos (Ajustes → Buckler Core, `includes/modules.php`)**: todo APAGADO al instalar; `bk_on('clave')`;
 cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa clase). Claves: layout,
-clicks, banners, cards, sidecart, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
+clicks, banners, cards, shop, sidecart, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.4.0 → `dist/buckler-core-0.4.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.5.0 → `dist/buckler-core-0.5.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -143,6 +143,16 @@ Versión actual 0.4.0 → `dist/buckler-core-0.4.0.zip` (`tools/build-plugin.sh`
   (cart, add-item, update-item, remove-item; nonce de la cabecera `Nonce`). Añadir en ficha sin recargar con
   respaldo al envío normal. Sugerencias `GET bk/v1/suggest` (talla + línea del último item; candidatos
   cacheados `bk_sc_*`). Icono del header (`data-bk-cart`) abre el panel. No se carga en carrito/checkout.
+- Catálogo compartido (`includes/catalog.php`): `bk_product_sizes()` (tallas en stock cacheadas `bk_sizes_{id}`),
+  `bk_catalog_flush()` en cambios de producto/stock (sube la opción `bk_catalog_v`).
+  **No usar `wc_product_meta_lookup` para precio/oferta de variables** (min_price 0 y onsale 0 en variables).
+- Tienda (`includes/shop.php`, módulo shop): `[bk_tienda categoria oferta titulo h1 columnas]`. Contexto:
+  categoría del archivo, página de línea, ¡Sale! (`wc_get_product_ids_on_sale`), búsqueda. Universo cacheado
+  (`bk_shop_*`, 30 min + versión). Filtros GET: linea (slim|curvy), prenda (agrupa categorías repetidas por
+  línea), talla, precio (rangos, filtro `bk_shop_price_buckets`), oferta, orden, pg (24 por página, "Ver más").
+  Agotados fuera. noindex,follow con filtros. Plantillas TB a usar: Tienda 423, Línea Slim 782, Línea Curvy 785,
+  ¡Sales! 1199, categorías 2415, búsqueda 1364 → módulo Texto con el shortcode (sin título de Divi: un H1).
+- IDs del footer con prefijo `bk-ft-` (antes chocaban con los filtros `bk-f-`).
 - SKU → REF (`includes/woo-tweaks.php`): `gettext_woocommerce` + `ngettext_woocommerce`, regex `\bSKU(s?)\b`.
 - Carritos abandonados (`includes/abandoned-cart/`, reemplaza woo-save-abandoned-carts):
   tabla `{prefix}bk_abandoned_carts`; captura en checkout vía `?wc-ajax=bk_ac_capture` (casilla de
@@ -158,7 +168,7 @@ Versión actual 0.4.0 → `dist/buckler-core-0.4.0.zip` (`tools/build-plugin.sh`
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en /tmp (cards 23 OK, sidecart 16 OK, carritos abandonados 21 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21 = 85 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

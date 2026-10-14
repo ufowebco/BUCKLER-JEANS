@@ -44,6 +44,12 @@
 		run();
 	}
 
+	/* --- Altura del header para elementos pegajosos (barra de filtros, etc.) --- */
+	const sticky = header.closest('.et-l--header') || header;
+	const setH = () => root.style.setProperty('--bk-header-h', `${Math.round(sticky.getBoundingClientRect().height)}px`);
+	if ('ResizeObserver' in window) new ResizeObserver(setH).observe(sticky);
+	setH();
+
 	/* --- Sombra al hacer scroll ---------------------------------------------- */
 	const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
 	window.addEventListener('scroll', onScroll, { passive: true });

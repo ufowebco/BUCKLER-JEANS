@@ -125,8 +125,8 @@ function bk_shortcode_footer( $atts ) {
 			</div>
 
 			<?php foreach ( (array) bk_config( 'lines' ) as $slug => $line ) : ?>
-				<nav class="bk-footer__col" aria-labelledby="bk-f-<?php echo esc_attr( $slug ); ?>">
-					<h2 class="bk-footer__title" id="bk-f-<?php echo esc_attr( $slug ); ?>"><?php echo esc_html( $line['label'] ); ?></h2>
+				<nav class="bk-footer__col" aria-labelledby="bk-ft-<?php echo esc_attr( $slug ); ?>">
+					<h2 class="bk-footer__title" id="bk-ft-<?php echo esc_attr( $slug ); ?>"><?php echo esc_html( $line['label'] ); ?></h2>
 					<ul>
 						<?php foreach ( bk_child_cats( $slug ) as $c ) : ?>
 							<li><a href="<?php echo esc_url( $c['url'] ); ?>"><?php echo esc_html( $c['name'] ); ?></a></li>
@@ -137,8 +137,8 @@ function bk_shortcode_footer( $atts ) {
 				</nav>
 			<?php endforeach; ?>
 
-			<nav class="bk-footer__col" aria-labelledby="bk-f-help">
-				<h2 class="bk-footer__title" id="bk-f-help"><?php esc_html_e( 'Ayuda', 'buckler-core' ); ?></h2>
+			<nav class="bk-footer__col" aria-labelledby="bk-ft-help">
+				<h2 class="bk-footer__title" id="bk-ft-help"><?php esc_html_e( 'Ayuda', 'buckler-core' ); ?></h2>
 				<ul>
 					<li><a href="<?php echo esc_url( bk_url( (string) bk_config( 'faq_page' ) ) ); ?>"><?php esc_html_e( 'Preguntas frecuentes', 'buckler-core' ); ?></a></li>
 					<li><a href="<?php echo esc_url( $acct ); ?>"><?php esc_html_e( 'Mi cuenta y pedidos', 'buckler-core' ); ?></a></li>

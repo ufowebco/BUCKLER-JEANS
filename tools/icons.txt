@@ -30,3 +30,4 @@ simple-icons:instagram
 simple-icons:whatsapp
 simple-icons:tiktok
 simple-icons:facebook
+lucide:sliders-horizontal

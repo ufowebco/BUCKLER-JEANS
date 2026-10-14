@@ -42,6 +42,12 @@ function bk_modules() {
 			'replaces' => 'Divi Essential (slider de la grilla), snippet favorito → Nuevo',
 			'woo'      => true,
 		),
+		'shop'      => array(
+			'label'    => 'Tienda con filtros',
+			'desc'     => 'Shortcode [bk_tienda] para tienda, categorías, líneas, ¡Sale! y búsqueda: filtros por línea, prenda, talla, precio y oferta, orden y "Ver más". Rápido y sin recargar.',
+			'replaces' => 'Divi Machine, Divi Ajax Filter, Themify Product Filter, filtrado-productos-ufo',
+			'woo'      => true,
+		),
 		'sidecart'  => array(
 			'label'    => 'Carrito flotante',
 			'desc'     => 'Carrito lateral con cambio de cantidades, sugerencias por talla y línea, y añadir al carrito sin recargar la ficha.',

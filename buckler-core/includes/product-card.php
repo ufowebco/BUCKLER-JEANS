@@ -47,43 +47,13 @@ function bk_card_data( $product ) {
 	$line = bk_product_line( $product->get_id() );
 	$line = $line ? $line['label'] : '';
 
-	$sizes    = array();
+	$sizes    = array_map(
+		static fn( $z ) => array( 'label' => $z['label'], 'in' => $z['in'] ),
+		bk_product_sizes( $product )
+	);
 	$discount = 0;
 	if ( $product->is_type( 'variable' ) ) {
 		/** @var WC_Product_Variable $product */
-		$attrs   = $product->get_variation_attributes();
-		$size_tx = '';
-		foreach ( array_keys( $attrs ) as $tx ) {
-			if ( false !== stripos( $tx, 'talla' ) || false !== stripos( $tx, 'size' ) ) {
-				$size_tx = $tx;
-				break;
-			}
-		}
-		$size_tx = $size_tx ? $size_tx : (string) array_key_first( $attrs );
-		if ( $size_tx ) {
-			$stock = array();
-			$any   = false; // Variación "cualquier talla".
-			$key   = sanitize_title( $size_tx );
-			foreach ( $product->get_children() as $vid ) {
-				$v = wc_get_product( $vid );
-				if ( ! $v || 'publish' !== $v->get_status() || ! $v->is_in_stock() ) {
-					continue;
-				}
-				$slug = (string) ( $v->get_attributes()[ $key ] ?? '' );
-				if ( '' === $slug ) {
-					$any = true;
-				} else {
-					$stock[ $slug ] = true;
-				}
-			}
-			foreach ( (array) $attrs[ $size_tx ] as $slug ) {
-				$term    = taxonomy_exists( $size_tx ) ? get_term_by( 'slug', $slug, $size_tx ) : null;
-				$sizes[] = array(
-					'label' => $term ? $term->name : $slug,
-					'in'    => $any || ! empty( $stock[ $slug ] ),
-				);
-			}
-		}
 		$prices = $product->get_variation_prices( true );
 		foreach ( $prices['regular_price'] as $vid => $regular ) {
 			$sale = (float) ( $prices['sale_price'][ $vid ] ?? $regular );
@@ -105,21 +75,7 @@ function bk_card_data( $product ) {
 	return $data;
 }
 
-/**
- * Limpia la caché de la tarjeta de un producto (o del padre si es una variación).
- *
- * @param int|WC_Product $product Producto o ID.
- */
-function bk_card_flush( $product ) {
-	$product = $product instanceof WC_Product ? $product : wc_get_product( $product );
-	if ( $product ) {
-		delete_transient( 'bk_card_' . ( $product->get_parent_id() ? $product->get_parent_id() : $product->get_id() ) );
-	}
-}
-foreach ( array( 'woocommerce_update_product', 'woocommerce_update_product_variation', 'woocommerce_product_set_stock', 'woocommerce_variation_set_stock', 'woocommerce_product_set_stock_status', 'woocommerce_variation_set_stock_status' ) as $bk_hook ) {
-	add_action( $bk_hook, 'bk_card_flush' );
-}
-unset( $bk_hook );
+// La caché `bk_card_{id}` se limpia en includes/catalog.php (bk_catalog_flush).
 
 /* ---------------------------------------------------------------------------
  * HTML de la tarjeta
