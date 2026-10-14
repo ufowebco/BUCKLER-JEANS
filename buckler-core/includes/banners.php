@@ -132,6 +132,9 @@ function bk_picture( $pc_id, $mo_id, $priority, $alt ) {
  * @return string
  */
 function bk_shortcode_hero( $atts ) {
+	if ( ! bk_on( 'banners' ) ) {
+		return '';
+	}
 	$atts = shortcode_atts(
 		array(
 			'autoplay' => 6, // Segundos por banner; 0 = sin rotación automática.
@@ -215,6 +218,9 @@ function bk_shortcode_hero( $atts ) {
  * @return string
  */
 function bk_shortcode_lineas( $atts ) {
+	if ( ! bk_on( 'banners' ) ) {
+		return '';
+	}
 	$atts = shortcode_atts(
 		array(
 			'slim_url'  => home_url( '/linea-slim/' ),

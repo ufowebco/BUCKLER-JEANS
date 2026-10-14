@@ -51,7 +51,10 @@ ln -sfn "$WC/plugins/woocommerce" "$SITE/wp-content/plugins/woocommerce"
 ln -sfn "$REPO/buckler-core" "$SITE/wp-content/plugins/buckler-core"
 mkdir -p "$SITE/wp-content/mu-plugins"
 cp "$REPO/tools/local/bk-local-fixtures.php" "$SITE/wp-content/mu-plugins/"
+ln -sfn "$REPO/tools/local/theme-bk-classic" "$SITE/wp-content/themes/bk-classic"
 
 # --- Instalación + datos de ejemplo -----------------------------------------
-php "$REPO/tools/local/install.php" "$SITE"
+FRESH=$($M -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='bk' AND table_name='wp_options'")
+php "$REPO/tools/local/install.php" "$SITE" "$([ "$FRESH" = "0" ] && echo fresh)"
+[ "$FRESH" = "0" ] && php "$REPO/tools/local/install.php" "$SITE" # 2.ª pasada: ya con plugins cargados
 echo "Listo: php -S localhost:8899 -t $SITE"

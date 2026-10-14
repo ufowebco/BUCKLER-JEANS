@@ -19,8 +19,8 @@
 }
 
 /* Header sticky: Divi pone overflow en línea en body y #page-container. */
-body,
-#page-container {
+body.bk-m-layout,
+body.bk-m-layout #page-container {
 	overflow-x: clip !important;
 }
 
@@ -37,7 +37,7 @@ body,
 	border: 0;
 }
 
-:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+.bk-m-layout :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
 	outline: none;
 	box-shadow: var(--bk-focus);
 	border-radius: 4px;
@@ -120,7 +120,7 @@ html.bk-navigating::before {
 }
 
 /* Tarjetas: toda la superficie es clicable. */
-.products .product,
+.bk-m-clicks .products .product,
 .bk-card {
 	cursor: pointer;
 }

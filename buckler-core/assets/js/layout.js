@@ -178,5 +178,5 @@
 		window.jQuery(document.body).on('added_to_cart removed_from_cart updated_cart_totals wc_fragments_refreshed', () => refresh(true));
 	}
 	// API pública para el carrito flotante (fase 3).
-	window.bkCart = { refresh };
+	window.bkCart = { refresh, set: render };
 })();

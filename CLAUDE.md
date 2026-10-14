@@ -102,7 +102,12 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
 - El plugin no sube medios: Mediateca o importador en `buckler-core`.
 
 ## buckler-core (plugin propio)
-Versión actual 0.3.0 → `dist/buckler-core-0.3.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+**Módulos (Ajustes → Buckler Core, `includes/modules.php`)**: todo APAGADO al instalar; `bk_on('clave')`;
+cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa clase). Claves: layout,
+clicks, banners, cards, sidecart, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
+(solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
+siempre: sirve para leer la clave real en producción con todo apagado.
+Versión actual 0.4.0 → `dist/buckler-core-0.4.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -128,6 +133,16 @@ Versión actual 0.3.0 → `dist/buckler-core-0.3.0.zip` (`tools/build-plugin.sh`
 - `core.js`: anti rage click (450 ms por control, controles ocupados bloqueados, sin doble submit),
   anti dead click (tarjeta completa clicable, mensaje en línea en vez del `alert()` de variaciones),
   quick back (barra de navegación inmediata, limpieza en `pageshow`/bfcache).
+- Tarjeta de producto (`includes/product-card.php`, módulo cards): reemplaza `content-product.php`
+  vía `wc_get_template_part` (todas las grillas del loop Woo) + `[bk_productos categoria limite orden
+  destacados oferta columnas agotados ids titulo ver_todo eager]`. Datos cacheados en `bk_card_{id}`
+  (galería ≤5, tallas en stock, línea, % descuento) y limpiados en cambios de producto/stock. Fotos 2..n con
+  `data-bk-src` (se cargan al pasar el cursor/tocar). NUEVO = producto destacado (snippet favorito→Nuevo).
+  Línea de cuotas Addi (`addi_installments` en config).
+- Carrito flotante (`includes/side-cart.php`, módulo sidecart): panel vacío en footer + Store API
+  (cart, add-item, update-item, remove-item; nonce de la cabecera `Nonce`). Añadir en ficha sin recargar con
+  respaldo al envío normal. Sugerencias `GET bk/v1/suggest` (talla + línea del último item; candidatos
+  cacheados `bk_sc_*`). Icono del header (`data-bk-cart`) abre el panel. No se carga en carrito/checkout.
 - SKU → REF (`includes/woo-tweaks.php`): `gettext_woocommerce` + `ngettext_woocommerce`, regex `\bSKU(s?)\b`.
 - Carritos abandonados (`includes/abandoned-cart/`, reemplaza woo-save-abandoned-carts):
   tabla `{prefix}bk_abandoned_carts`; captura en checkout vía `?wc-ajax=bk_ac_capture` (casilla de
@@ -142,6 +157,8 @@ Versión actual 0.3.0 → `dist/buckler-core-0.3.0.zip` (`tools/build-plugin.sh`
 - Pruebas locales: `tools/local/setup.sh` → MariaDB + WordPress + **WooCommerce 11.2.1 real** (git del repo
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
+  Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
+  Suites Playwright en /tmp (cards 23 OK, sidecart 16 OK, carritos abandonados 21 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

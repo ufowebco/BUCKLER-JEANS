@@ -107,7 +107,9 @@ function bk_get_product_video( $product_id ) {
 	);
 }
 
-add_action( 'woocommerce_product_thumbnails', 'bk_render_gallery_video', 30 );
+if ( bk_on( 'video' ) ) {
+	add_action( 'woocommerce_product_thumbnails', 'bk_render_gallery_video', 30 );
+}
 
 /**
  * Añade el video como última diapositiva de la galería.
@@ -143,9 +145,11 @@ function bk_render_gallery_video() {
  * Caja en la edición del producto para asignar o cambiar el video.
  * ------------------------------------------------------------------------- */
 
-add_action( 'add_meta_boxes_product', 'bk_video_metabox' );
-add_action( 'save_post_product', 'bk_video_metabox_save', 10, 2 );
-add_action( 'admin_enqueue_scripts', 'bk_video_metabox_assets' );
+if ( bk_on( 'video' ) ) {
+	add_action( 'add_meta_boxes_product', 'bk_video_metabox' );
+	add_action( 'save_post_product', 'bk_video_metabox_save', 10, 2 );
+	add_action( 'admin_enqueue_scripts', 'bk_video_metabox_assets' );
+}
 
 /**
  * Registra la caja lateral "Video del producto".

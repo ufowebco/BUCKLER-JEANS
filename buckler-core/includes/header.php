@@ -17,7 +17,9 @@
 defined( 'ABSPATH' ) || exit;
 
 add_shortcode( 'bk_header', 'bk_shortcode_header' );
-add_action( 'wp_body_open', 'bk_skip_link', 1 );
+if ( bk_on( 'layout' ) ) {
+	add_action( 'wp_body_open', 'bk_skip_link', 1 );
+}
 
 /**
  * Enlace "Saltar al contenido" (accesibilidad de teclado).
@@ -106,6 +108,9 @@ function bk_search_form( $id ) {
  * @return string
  */
 function bk_shortcode_header( $atts ) {
+	if ( ! bk_on( 'layout' ) ) {
+		return '';
+	}
 	$atts  = shortcode_atts(
 		array(
 			'announcements' => 1,

@@ -4,7 +4,9 @@
  * tomados del catálogo vía MCP). Idempotente. Uso: php tools/local/install.php <ruta_sitio>
  */
 $site = $argv[1];
-define( 'WP_INSTALLING', true );
+if ( ( $argv[2] ?? '' ) === 'fresh' ) {
+	define( 'WP_INSTALLING', true ); // Solo en la primera instalación (en modo instalación no cargan plugins).
+}
 $_SERVER['HTTP_HOST'] = 'localhost:8899';
 require $site . '/wp-load.php';
 require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -24,6 +26,7 @@ foreach ( array( 'woocommerce/woocommerce.php', 'buckler-core/buckler-core.php' 
 		if ( is_wp_error( $r ) ) { fwrite( STDERR, $p . ': ' . $r->get_error_message() . "\n" ); exit( 1 ); }
 	}
 }
+switch_theme( 'bk-classic' ); // Tema clásico como Divi (plantillas clásicas de Woo).
 WC_Install::install();
 WC_Install::create_pages();
 update_option( 'woocommerce_currency', 'COP' );

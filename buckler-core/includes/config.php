@@ -68,6 +68,8 @@ function bk_config( $key = null ) {
 				'sale_page'     => '/sales/',
 				'faq_page'      => '/preguntas-frecuentes/',
 				'credit_url'    => 'https://ufoweb.co/',
+				// Cuotas sin interés de Addi que se muestran bajo el precio (0 = no mostrar).
+				'addi_installments' => 3,
 			)
 		);
 	}
@@ -194,4 +196,20 @@ function bk_nice_label( $name ) {
 	}
 	$lower = mb_strtolower( $name );
 	return mb_strtoupper( mb_substr( $lower, 0, 1 ) ) . mb_substr( $lower, 1 );
+}
+
+/**
+ * Línea (Slim / Curvy) de un producto según su categoría raíz.
+ *
+ * @param int $product_id Producto (padre).
+ * @return array{slug:string,label:string}|null
+ */
+function bk_product_line( $product_id ) {
+	foreach ( (array) bk_config( 'lines' ) as $slug => $l ) {
+		$term = get_term_by( 'slug', $slug, 'product_cat' );
+		if ( $term && has_term( $term->term_id, 'product_cat', $product_id ) ) {
+			return array( 'slug' => $slug, 'label' => $l['label'] );
+		}
+	}
+	return null;
 }

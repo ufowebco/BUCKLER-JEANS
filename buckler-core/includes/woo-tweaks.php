@@ -19,8 +19,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
-add_filter( 'gettext_woocommerce', 'bk_sku_to_ref', 10, 1 );
-add_filter( 'ngettext_woocommerce', 'bk_sku_to_ref', 10, 1 );
+if ( bk_on( 'sku_ref' ) ) {
+	add_filter( 'gettext_woocommerce', 'bk_sku_to_ref', 10, 1 );
+	add_filter( 'ngettext_woocommerce', 'bk_sku_to_ref', 10, 1 );
+}
 
 /**
  * Cambia la palabra SKU por REF en un texto ya traducido.

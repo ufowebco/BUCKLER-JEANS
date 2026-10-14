@@ -1,0 +1,7 @@
+/*
+Theme Name: BK Classic (local)
+Description: Tema clásico mínimo SOLO para pruebas locales: imita la estructura de Divi (#page-container, header/footer Theme Builder, #main-content) y usa las plantillas clásicas de WooCommerce.
+Version: 1.0
+*/
+body{margin:0;font-family:Manrope,system-ui,sans-serif;color:#10202f}
+#main-content .container{max-width:1280px;margin:0 auto;padding:32px 24px}

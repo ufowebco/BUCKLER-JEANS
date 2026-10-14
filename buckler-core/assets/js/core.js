@@ -14,6 +14,8 @@
 	const t = (k) => cfg.i18n[k] || k;
 	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 	const root = document.documentElement;
+	// Las protecciones de clics solo actúan con el módulo "clicks" encendido (clase en <body>).
+	const clicks = document.body.classList.contains('bk-m-clicks');
 
 	/* ------------------------------------------------------------------ *
 	 * Región viva para lectores de pantalla
@@ -42,7 +44,7 @@
 
 	const isBusy = (el) => el.classList.contains('is-busy') || el.classList.contains('loading') || el.getAttribute('aria-busy') === 'true';
 
-	document.addEventListener('click', (e) => {
+	if (clicks) document.addEventListener('click', (e) => {
 		const el = e.target.closest(CLICKABLE);
 		if (!el) return;
 
@@ -65,7 +67,7 @@
 	/* ------------------------------------------------------------------ *
 	 * 2a. Feedback al navegar (barra superior) + 3. Quick back
 	 * ------------------------------------------------------------------ */
-	document.addEventListener('click', (e) => {
+	if (clicks) document.addEventListener('click', (e) => {
 		if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 		const a = e.target.closest('a[href]');
 		if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
@@ -92,7 +94,7 @@
 	/* ------------------------------------------------------------------ *
 	 * 2b. Formularios: sin doble envío (el checkout lo controla WooCommerce)
 	 * ------------------------------------------------------------------ */
-	document.addEventListener('submit', (e) => {
+	if (clicks) document.addEventListener('submit', (e) => {
 		const form = e.target;
 		if (!(form instanceof HTMLFormElement) || form.matches('form.checkout, [data-bk-allow-resubmit]')) return;
 		if (form.dataset.bkSubmitted) {
@@ -118,7 +120,7 @@
 	 * 2c. Producto variable sin talla: mensaje en línea en vez de alert()
 	 * Se ejecuta en captura, antes del manejador de WooCommerce que abre el alert.
 	 * ------------------------------------------------------------------ */
-	document.addEventListener('click', (e) => {
+	if (clicks) document.addEventListener('click', (e) => {
 		const btn = e.target.closest('.single_add_to_cart_button.disabled');
 		if (!btn) return;
 		const form = btn.closest('form.variations_form');
@@ -150,7 +152,7 @@
 	}, true);
 
 	// Al elegir una talla se limpia el aviso.
-	document.addEventListener('change', (e) => {
+	if (clicks) document.addEventListener('change', (e) => {
 		const form = e.target.closest?.('form.variations_form');
 		if (!form) return;
 		form.querySelector('.bk-form-msg')?.remove();
@@ -160,14 +162,14 @@
 	/* ------------------------------------------------------------------ *
 	 * 2d. Añadir al carrito por AJAX: anuncio accesible (WooCommerce usa eventos jQuery)
 	 * ------------------------------------------------------------------ */
-	if (window.jQuery) {
+	if (clicks && window.jQuery) {
 		window.jQuery(document.body).on('added_to_cart', () => announce(t('added')));
 	}
 
 	/* ------------------------------------------------------------------ *
 	 * 2e. Tarjetas de producto: toda la tarjeta lleva a la ficha (no hay zonas "muertas")
 	 * ------------------------------------------------------------------ */
-	document.addEventListener('click', (e) => {
+	if (clicks) document.addEventListener('click', (e) => {
 		if (e.defaultPrevented || e.button !== 0) return;
 		const card = e.target.closest('.products .product, .bk-card');
 		if (!card || e.target.closest('a, button, input, select, label, textarea, [role="button"], .bk-carousel')) return;

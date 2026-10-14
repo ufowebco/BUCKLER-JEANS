@@ -1,9 +1,11 @@
 <?php
 /**
- * Registro y carga condicional de CSS/JS.
+ * Carga condicional de CSS/JS según los módulos encendidos.
  *
- * core.css / core.js: pequeños y globales (tokens, protección de clics, carrusel).
- * product-video.js: solo en la ficha de producto.
+ * - core.css / core.js: tokens, utilidades, protección de clics y carrusel (si hay algún módulo de front).
+ * - layout.css / layout.js: header y footer (módulo "layout").
+ * - product-video.js: solo en la ficha y con el módulo "video".
+ * Los módulos "cards" y "sidecart" encolan sus propios archivos.
  *
  * @package BucklerCore
  */
@@ -13,16 +15,26 @@ defined( 'ABSPATH' ) || exit;
 add_action( 'wp_enqueue_scripts', 'bk_enqueue_assets', 20 );
 
 /**
+ * Versión de un archivo: versión del plugin + fecha de modificación (rompe la caché al actualizar).
+ *
+ * @param string $rel Ruta relativa al plugin.
+ * @return string
+ */
+function bk_asset_ver( $rel ) {
+	return BK_VERSION . '.' . (int) @filemtime( BK_DIR . $rel ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+}
+
+/**
  * Encola los recursos del front.
  */
 function bk_enqueue_assets() {
-	$css_ver = BK_VERSION . '.' . filemtime( BK_DIR . 'assets/css/core.css' );
-	$js_ver  = BK_VERSION . '.' . filemtime( BK_DIR . 'assets/js/core.js' );
+	$front = array_filter( array( 'layout', 'clicks', 'banners', 'cards', 'sidecart', 'video' ), 'bk_on' );
+	if ( ! $front ) {
+		return; // Plugin instalado con todo apagado: no carga nada en el front.
+	}
 
-	wp_enqueue_style( 'bk-core', BK_URL . 'assets/css/core.css', array(), $css_ver );
-	wp_enqueue_style( 'bk-layout', BK_URL . 'assets/css/layout.css', array( 'bk-core' ), BK_VERSION . '.' . filemtime( BK_DIR . 'assets/css/layout.css' ) );
-
-	wp_enqueue_script( 'bk-core', BK_URL . 'assets/js/core.js', array(), $js_ver, array( 'strategy' => 'defer', 'in_footer' => true ) );
+	wp_enqueue_style( 'bk-core', BK_URL . 'assets/css/core.css', array(), bk_asset_ver( 'assets/css/core.css' ) );
+	wp_enqueue_script( 'bk-core', BK_URL . 'assets/js/core.js', array(), bk_asset_ver( 'assets/js/core.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
 	wp_localize_script(
 		'bk-core',
 		'bkCore',
@@ -38,15 +50,12 @@ function bk_enqueue_assets() {
 		)
 	);
 
-	wp_enqueue_script( 'bk-layout', BK_URL . 'assets/js/layout.js', array( 'bk-core' ), BK_VERSION . '.' . filemtime( BK_DIR . 'assets/js/layout.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
+	if ( bk_on( 'layout' ) ) {
+		wp_enqueue_style( 'bk-layout', BK_URL . 'assets/css/layout.css', array( 'bk-core' ), bk_asset_ver( 'assets/css/layout.css' ) );
+		wp_enqueue_script( 'bk-layout', BK_URL . 'assets/js/layout.js', array( 'bk-core' ), bk_asset_ver( 'assets/js/layout.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
+	}
 
-	if ( function_exists( 'is_product' ) && is_product() ) {
-		wp_enqueue_script(
-			'bk-product-video',
-			BK_URL . 'assets/js/product-video.js',
-			array(),
-			BK_VERSION . '.' . filemtime( BK_DIR . 'assets/js/product-video.js' ),
-			array( 'strategy' => 'defer', 'in_footer' => true )
-		);
+	if ( bk_on( 'video' ) && function_exists( 'is_product' ) && is_product() ) {
+		wp_enqueue_script( 'bk-product-video', BK_URL . 'assets/js/product-video.js', array(), bk_asset_ver( 'assets/js/product-video.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
 	}
 }

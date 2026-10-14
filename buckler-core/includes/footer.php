@@ -77,6 +77,9 @@ function bk_ext_link( $url, $label, $icon = '' ) {
  * @return string
  */
 function bk_whatsapp_button() {
+	if ( ! bk_on( 'layout' ) ) {
+		return '';
+	}
 	return sprintf(
 		'<a class="bk-wa" href="%1$s" target="_blank" rel="noopener" aria-label="%2$s">%3$s</a>',
 		esc_url( bk_whatsapp_url() ),
@@ -92,6 +95,9 @@ function bk_whatsapp_button() {
  * @return string
  */
 function bk_shortcode_footer( $atts ) {
+	if ( ! bk_on( 'layout' ) ) {
+		return '';
+	}
 	$atts = shortcode_atts( array( 'whatsapp' => 1 ), $atts, 'bk_footer' );
 	$ig   = (string) bk_config( 'instagram' );
 	$acct = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : bk_url( '/mi-cuenta/' );
