@@ -1,0 +1,1307 @@
+{
+  "post_types": [
+    {
+      "name": "post",
+      "label": "Entradas",
+      "supports": [
+        "title",
+        "editor",
+        "author",
+        "thumbnail",
+        "excerpt",
+        "trackbacks",
+        "custom-fields",
+        "revisions",
+        "post-formats",
+        "autosave"
+      ],
+      "taxonomies": [
+        "category",
+        "post_tag",
+        "post_format"
+      ],
+      "has_archive": false,
+      "hierarchical": false,
+      "count": 0
+    },
+    {
+      "name": "page",
+      "label": "Páginas",
+      "supports": [
+        "title",
+        "editor",
+        "author",
+        "thumbnail",
+        "page-attributes",
+        "custom-fields",
+        "revisions",
+        "autosave",
+        "excerpt"
+      ],
+      "taxonomies": [],
+      "has_archive": false,
+      "hierarchical": true,
+      "count": 9
+    },
+    {
+      "name": "attachment",
+      "label": "Medios",
+      "supports": [
+        "title",
+        "author",
+        "comments"
+      ],
+      "taxonomies": [
+        "gallery_categories"
+      ],
+      "has_archive": false,
+      "hierarchical": false,
+      "count": 1166
+    },
+    {
+      "name": "project",
+      "label": "Projects",
+      "supports": [
+        "title",
+        "author",
+        "editor",
+        "thumbnail",
+        "excerpt",
+        "comments",
+        "revisions",
+        "custom-fields",
+        "autosave"
+      ],
+      "taxonomies": [
+        "project_category",
+        "project_tag"
+      ],
+      "has_archive": true,
+      "hierarchical": false,
+      "count": 0
+    },
+    {
+      "name": "politica-empresa",
+      "label": "Políticas empresa",
+      "supports": [
+        "title"
+      ],
+      "taxonomies": [],
+      "has_archive": false,
+      "hierarchical": true,
+      "count": 4
+    },
+    {
+      "name": "pregunta-frecuente",
+      "label": "Preguntas frecuentes",
+      "supports": [
+        "title"
+      ],
+      "taxonomies": [
+        "caregoria-pf"
+      ],
+      "has_archive": false,
+      "hierarchical": false,
+      "count": 20
+    },
+    {
+      "name": "product",
+      "label": "Productos",
+      "supports": [
+        "thumbnail",
+        "title",
+        "editor",
+        "excerpt",
+        "custom-fields",
+        "publicize",
+        "wpcom-markdown",
+        "comments",
+        "autosave"
+      ],
+      "taxonomies": [
+        "product_brand",
+        "product_type",
+        "product_visibility",
+        "product_cat",
+        "product_tag",
+        "product_shipping_class",
+        "pos_product_visibility",
+        "pa_tallas-plus-size",
+        "pa_tallas-regular"
+      ],
+      "has_archive": true,
+      "hierarchical": false,
+      "count": 133
+    },
+    {
+      "name": "product-feed",
+      "label": "Alimentación de productos",
+      "supports": [
+        "title"
+      ],
+      "taxonomies": [],
+      "has_archive": true,
+      "hierarchical": false,
+      "count": 1
+    }
+  ],
+  "taxonomies": [
+    {
+      "name": "category",
+      "label": "Categorías",
+      "object_types": [
+        "post",
+        "dmach_tax"
+      ],
+      "hierarchical": true
+    },
+    {
+      "name": "post_tag",
+      "label": "Etiquetas",
+      "object_types": [
+        "post",
+        "dmach_tax"
+      ],
+      "hierarchical": false
+    },
+    {
+      "name": "post_format",
+      "label": "Formatos",
+      "object_types": [
+        "post"
+      ],
+      "hierarchical": false
+    },
+    {
+      "name": "layout_category",
+      "label": "Categorías",
+      "object_types": [
+        "et_pb_layout"
+      ],
+      "hierarchical": true
+    },
+    {
+      "name": "layout_tag",
+      "label": "Etiquetas",
+      "object_types": [
+        "et_pb_layout"
+      ],
+      "hierarchical": false
+    },
+    {
+      "name": "layout_pack",
+      "label": "Packs",
+      "object_types": [
+        "et_pb_layout"
+      ],
+      "hierarchical": false
+    },
+    {
+      "name": "layout_type",
+      "label": "Tipo",
+      "object_types": [
+        "et_pb_layout"
+      ],
+      "hierarchical": false
+    },
+    {
+      "name": "module_width",
+      "label": "Module Width",
+      "object_types": [
+        "et_pb_layout"
+      ],
+      "hierarchical": false
+    },
+    {
+      "name": "scope",
+      "label": "Scope",
+      "object_types": [
+        "et_pb_layout"
+      ],
+      "hierarchical": false
+    },
+    {
+      "name": "project_category",
+      "label": "Project Categories",
+      "object_types": [
+        "project"
+      ],
+      "hierarchical": true
+    },
+    {
+      "name": "project_tag",
+      "label": "Project Tags",
+      "object_types": [
+        "project"
+      ],
+      "hierarchical": false
+    },
+    {
+      "name": "caregoria-pf",
+      "label": "Categorías PF",
+      "object_types": [
+        "pregunta-frecuente"
+      ],
+      "hierarchical": true
+    },
+    {
+      "name": "product_brand",
+      "label": "Marcas de productos",
+      "object_types": [
+        "product"
+      ],
+      "hierarchical": true
+    },
+    {
+      "name": "product_cat",
+      "label": "Categorías del producto",
+      "object_types": [
+        "product"
+      ],
+      "hierarchical": true
+    },
+    {
+      "name": "product_tag",
+      "label": "Etiquetas del producto",
+      "object_types": [
+        "product"
+      ],
+      "hierarchical": false
+    },
+    {
+      "name": "gallery_categories",
+      "label": "Gallery Categories",
+      "object_types": [
+        "attachment"
+      ],
+      "hierarchical": true
+    }
+  ],
+  "image_sizes": [
+    {
+      "name": "thumbnail",
+      "width": 600,
+      "height": 600,
+      "crop": false
+    },
+    {
+      "name": "medium",
+      "width": 1200,
+      "height": 1200,
+      "crop": false
+    },
+    {
+      "name": "medium_large",
+      "width": 768,
+      "height": 0,
+      "crop": false
+    },
+    {
+      "name": "large",
+      "width": 2000,
+      "height": 2000,
+      "crop": false
+    },
+    {
+      "name": "1536x1536",
+      "width": 1536,
+      "height": 1536,
+      "crop": false
+    },
+    {
+      "name": "2048x2048",
+      "width": 2048,
+      "height": 2048,
+      "crop": false
+    },
+    {
+      "name": "et-pb-post-main-image",
+      "width": 400,
+      "height": 250,
+      "crop": true
+    },
+    {
+      "name": "et-pb-post-main-image-fullwidth",
+      "width": 1080,
+      "height": 675,
+      "crop": true
+    },
+    {
+      "name": "et-pb-portfolio-image",
+      "width": 400,
+      "height": 284,
+      "crop": true
+    },
+    {
+      "name": "et-pb-portfolio-module-image",
+      "width": 510,
+      "height": 382,
+      "crop": true
+    },
+    {
+      "name": "et-pb-portfolio-image-single",
+      "width": 1080,
+      "height": 9999,
+      "crop": false
+    },
+    {
+      "name": "et-pb-gallery-module-image-portrait",
+      "width": 400,
+      "height": 516,
+      "crop": true
+    },
+    {
+      "name": "et-pb-post-main-image-fullwidth-large",
+      "width": 2880,
+      "height": 1800,
+      "crop": true
+    },
+    {
+      "name": "et-pb-image--responsive--desktop",
+      "width": 1280,
+      "height": 720,
+      "crop": true
+    },
+    {
+      "name": "et-pb-image--responsive--tablet",
+      "width": 980,
+      "height": 551,
+      "crop": true
+    },
+    {
+      "name": "et-pb-image--responsive--phone",
+      "width": 480,
+      "height": 270,
+      "crop": true
+    },
+    {
+      "name": "woocommerce_thumbnail",
+      "width": 600,
+      "height": 900,
+      "crop": true
+    },
+    {
+      "name": "woocommerce_single",
+      "width": 1200,
+      "height": 0,
+      "crop": false
+    },
+    {
+      "name": "woocommerce_gallery_thumbnail",
+      "width": 100,
+      "height": 100,
+      "crop": true
+    },
+    {
+      "name": "dgwt-wcas-product-suggestion",
+      "width": 64,
+      "height": 0,
+      "crop": false
+    }
+  ],
+  "acf": {
+    "active": true,
+    "groups": [
+      {
+        "key": "group_6a31b264b7345",
+        "title": "Archivos Pedidos",
+        "location": [
+          [
+            "post_type == shop_order"
+          ]
+        ],
+        "fields": [
+          {
+            "name": "archivos_adjuntos",
+            "label": "Archivos Adjuntos",
+            "type": "repeater"
+          }
+        ]
+      },
+      {
+        "key": "group_6a1de1ca450da",
+        "title": "Banners Páginas",
+        "location": [
+          [
+            "options_page == banners"
+          ]
+        ],
+        "fields": [
+          {
+            "name": "",
+            "label": "Slider",
+            "type": "tab"
+          },
+          {
+            "name": "",
+            "label": "IMPORTANTE:",
+            "type": "message"
+          },
+          {
+            "name": "banners_pagina_inicio",
+            "label": "Banners Página Inicio",
+            "type": "repeater"
+          },
+          {
+            "name": "",
+            "label": "Categoría",
+            "type": "tab"
+          },
+          {
+            "name": "linea_slim_pc",
+            "label": "Línea Slim PC",
+            "type": "image"
+          },
+          {
+            "name": "linea_slim_mo",
+            "label": "Línea Slim MO",
+            "type": "image"
+          },
+          {
+            "name": "linea_curvy_pc",
+            "label": "Línea Curvy PC",
+            "type": "image"
+          },
+          {
+            "name": "linea_curvy_mo",
+            "label": "Línea Curvy MO",
+            "type": "image"
+          }
+        ]
+      },
+      {
+        "key": "group_6a1e21c572fdb",
+        "title": "Guía de Tallas y Siluetas",
+        "location": [
+          [
+            "options_page == guia-de-tallas"
+          ]
+        ],
+        "fields": [
+          {
+            "name": "imagen_guia_de_tallas",
+            "label": "Imagen Guía de Tallas",
+            "type": "image"
+          },
+          {
+            "name": "imagen_siluetas",
+            "label": "Imagen Siluetas",
+            "type": "image"
+          }
+        ]
+      },
+      {
+        "key": "group_6a2827e5e4881",
+        "title": "Imagenes Baners",
+        "location": [
+          [
+            "post_type == imagenes"
+          ]
+        ],
+        "fields": [
+          {
+            "name": "imagen_inicio_-_pc",
+            "label": "Imagen Inicio - PC",
+            "type": "image"
+          }
+        ]
+      },
+      {
+        "key": "group_6a1d974ff2e0b",
+        "title": "Listado de Políticas",
+        "location": [
+          [
+            "options_page == politicas-buckler"
+          ]
+        ],
+        "fields": [
+          {
+            "name": "",
+            "label": "Política de envío",
+            "type": "tab"
+          },
+          {
+            "name": "politica_de_envio_",
+            "label": "Política de envío",
+            "type": "wysiwyg"
+          },
+          {
+            "name": "",
+            "label": "Política de cambios, garantías, retracto y devoluciones",
+            "type": "tab"
+          },
+          {
+            "name": "politica_de_garantias",
+            "label": "Política de garantías",
+            "type": "wysiwyg"
+          },
+          {
+            "name": "",
+            "label": "Términos y condiciones del servicio",
+            "type": "tab"
+          },
+          {
+            "name": "terminos_y_condiciones_del_servicio",
+            "label": "Términos y condiciones del servicio",
+            "type": "wysiwyg"
+          },
+          {
+            "name": "",
+            "label": "Aviso legal",
+            "type": "tab"
+          },
+          {
+            "name": "aviso_legal",
+            "label": "Aviso legal",
+            "type": "wysiwyg"
+          },
+          {
+            "name": "",
+            "label": "Política de privacidad",
+            "type": "tab"
+          },
+          {
+            "name": "politica_de_privacidad",
+            "label": "Política de privacidad",
+            "type": "wysiwyg"
+          }
+        ]
+      },
+      {
+        "key": "group_6a8afe2b5d1ab",
+        "title": "Políticas Buckler",
+        "location": [
+          [
+            "post_type == politica-empresa"
+          ]
+        ],
+        "fields": [
+          {
+            "name": "texto_politica",
+            "label": "Texto Política",
+            "type": "wysiwyg"
+          }
+        ]
+      },
+      {
+        "key": "group_6a2d9d6516f22",
+        "title": "Texto pregunta frecuente",
+        "location": [
+          [
+            "post_type == pregunta-frecuente"
+          ]
+        ],
+        "fields": [
+          {
+            "name": "respuesta_pregunta_frecuente",
+            "label": "Respuesta pregunta frecuente",
+            "type": "wysiwyg"
+          }
+        ]
+      }
+    ]
+  },
+  "custom_fields": {
+    "post_types": [
+      {
+        "post_type": "page",
+        "sampled": 9,
+        "keys": [
+          {
+            "key": "Ano actual - Sitio",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Archivo (unidos) - Archivos Adjuntos - Archivos Pedidos",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Archivos Adjuntos (todas las filas) - Archivos Pedidos",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Atributos del producto - Woo",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Aviso legal - Listado de Politicas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Banner Moviles (unidos) - Banners Pagina Inicio - Banners Paginas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Banner PC (unidos) - Banners Pagina Inicio - Banners Paginas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Banners Pagina Inicio (todas las filas) - Banners Paginas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Cantidad en stock - Woo",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Categorias del producto - Woo",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Descuento ( ) - Woo",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Dimensiones - Woo",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Estado de stock - Woo",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Fecha de hoy - Sitio",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Imagen Guia de Tallas - Guia de Tallas y Siluetas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Imagen Inicio - PC - Imagenes Baners",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Imagen Siluetas - Guia de Tallas y Siluetas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Linea Curvy MO - Banners Paginas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Linea Curvy PC - Banners Paginas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Linea Slim MO - Banners Paginas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Linea Slim PC - Banners Paginas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Nombre del sitio - Sitio",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Peso - Woo",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Politica de envio - Listado de Politicas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Politica de garantias - Listado de Politicas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Politica de privacidad - Listado de Politicas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Precio (formateado) - Woo",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Precio normal - Woo",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Precio rebajado - Woo",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Respuesta pregunta frecuente - Texto pregunta frecuente",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "SKU - Woo",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Terminos y condiciones del servicio - Listado de Politicas - Opciones",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Texto Politica - Politicas Buckler",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Tiempo de lectura - Sitio",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Valoracion media - Woo",
+            "posts": 6,
+            "acf": null
+          },
+          {
+            "key": "Politica de devoluciones y reembolsos - Listado de Politicas - Opciones",
+            "posts": 3,
+            "acf": null
+          },
+          {
+            "key": "et_enqueued_post_fonts",
+            "posts": 2,
+            "acf": null
+          }
+        ]
+      },
+      {
+        "post_type": "politica-empresa",
+        "sampled": 4,
+        "keys": [
+          {
+            "key": "Ano actual - Sitio",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Archivo (unidos) - Archivos Adjuntos - Archivos Pedidos",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Archivos Adjuntos (todas las filas) - Archivos Pedidos",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Atributos del producto - Woo",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Aviso legal - Listado de Politicas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Banner Moviles (unidos) - Banners Pagina Inicio - Banners Paginas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Banner PC (unidos) - Banners Pagina Inicio - Banners Paginas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Banners Pagina Inicio (todas las filas) - Banners Paginas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Cantidad en stock - Woo",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Categorias del producto - Woo",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Descuento ( ) - Woo",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Dimensiones - Woo",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Estado de stock - Woo",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Fecha de hoy - Sitio",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Imagen Guia de Tallas - Guia de Tallas y Siluetas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Imagen Inicio - PC - Imagenes Baners",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Imagen Siluetas - Guia de Tallas y Siluetas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Linea Curvy MO - Banners Paginas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Linea Curvy PC - Banners Paginas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Linea Slim MO - Banners Paginas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Linea Slim PC - Banners Paginas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Nombre del sitio - Sitio",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Peso - Woo",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Politica de envio - Listado de Politicas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Politica de garantias - Listado de Politicas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Politica de privacidad - Listado de Politicas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Precio (formateado) - Woo",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Precio normal - Woo",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Precio rebajado - Woo",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Respuesta pregunta frecuente - Texto pregunta frecuente",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "SKU - Woo",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Terminos y condiciones del servicio - Listado de Politicas - Opciones",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Tiempo de lectura - Sitio",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "Valoracion media - Woo",
+            "posts": 4,
+            "acf": null
+          },
+          {
+            "key": "texto_politica",
+            "posts": 4,
+            "acf": {
+              "label": "Texto Política",
+              "type": "wysiwyg"
+            }
+          },
+          {
+            "key": "Texto Politica - Politicas Buckler",
+            "posts": 2,
+            "acf": null
+          }
+        ]
+      },
+      {
+        "post_type": "pregunta-frecuente",
+        "sampled": 20,
+        "keys": [
+          {
+            "key": "respuesta_pregunta_frecuente",
+            "posts": 20,
+            "acf": {
+              "label": "Respuesta pregunta frecuente",
+              "type": "wysiwyg"
+            }
+          }
+        ]
+      },
+      {
+        "post_type": "product",
+        "sampled": 20,
+        "keys": [
+          {
+            "key": "sp_wc_barcode_field",
+            "posts": 20,
+            "acf": null
+          },
+          {
+            "key": "sp_wc_barcode_type_field",
+            "posts": 20,
+            "acf": null
+          },
+          {
+            "key": "total_sales",
+            "posts": 20,
+            "acf": null
+          },
+          {
+            "key": "wpsr-settings-woo",
+            "posts": 20,
+            "acf": null
+          },
+          {
+            "key": "Ano actual - Sitio",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Archivo (unidos) - Archivos Adjuntos - Archivos Pedidos",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Archivos Adjuntos (todas las filas) - Archivos Pedidos",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Atributos del producto - Woo",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Aviso legal - Listado de Politicas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Banner Moviles (unidos) - Banners Pagina Inicio - Banners Paginas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Banner PC (unidos) - Banners Pagina Inicio - Banners Paginas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Banners Pagina Inicio (todas las filas) - Banners Paginas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Cantidad en stock - Woo",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Categorias del producto - Woo",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Descuento ( ) - Woo",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Dimensiones - Woo",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Estado de stock - Woo",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Fecha de hoy - Sitio",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Imagen Guia de Tallas - Guia de Tallas y Siluetas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Imagen Inicio - PC - Imagenes Baners",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Imagen Siluetas - Guia de Tallas y Siluetas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Linea Curvy MO - Banners Paginas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Linea Curvy PC - Banners Paginas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Linea Slim MO - Banners Paginas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Linea Slim PC - Banners Paginas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Nombre del sitio - Sitio",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Peso - Woo",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Politica de envio - Listado de Politicas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Politica de garantias - Listado de Politicas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Politica de privacidad - Listado de Politicas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Precio (formateado) - Woo",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Precio normal - Woo",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Precio rebajado - Woo",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Respuesta pregunta frecuente - Texto pregunta frecuente",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "SKU - Woo",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Terminos y condiciones del servicio - Listado de Politicas - Opciones",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Texto Politica - Politicas Buckler",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Tiempo de lectura - Sitio",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "Valoracion media - Woo",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "fb_visibility",
+            "posts": 19,
+            "acf": null
+          },
+          {
+            "key": "divi-bodyshop-woo_product_template_override",
+            "posts": 18,
+            "acf": null
+          },
+          {
+            "key": "divi-bodyshop-woo_product_template_override_primary",
+            "posts": 18,
+            "acf": null
+          },
+          {
+            "key": "fb_age_group",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "fb_brand",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "fb_color",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "fb_gender",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "fb_material",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "fb_mpn",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "fb_pattern",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "fb_product_condition",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "fb_product_description",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "fb_product_group_id",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "fb_product_video",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "fb_rich_text_description",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "fb_size",
+            "posts": 9,
+            "acf": null
+          },
+          {
+            "key": "Politica de devoluciones y reembolsos - Listado de Politicas - Opciones",
+            "posts": 5,
+            "acf": null
+          },
+          {
+            "key": "et_enqueued_post_fonts",
+            "posts": 1,
+            "acf": null
+          }
+        ]
+      },
+      {
+        "post_type": "product-feed",
+        "sampled": 1,
+        "keys": [
+          {
+            "key": "updated",
+            "posts": 1,
+            "acf": null
+          }
+        ]
+      }
+    ],
+    "note": "A sample: the keys seen on the most recently modified posts of each type that you can edit, not every key the site has. Values are never listed here; call get_custom_fields with a post id to read one post's values."
+  },
+  "truncated": false,
+  "notes": []
+}

@@ -1,0 +1,19 @@
+{
+  "pages": [
+    {
+      "id": 2503,
+      "title": "Preguntas frecuentes",
+      "status": "publish",
+      "post_type": "page",
+      "link": "https://buckler.com.co/preguntas-frecuentes/"
+    },
+    {
+      "id": 44,
+      "title": "Inicio",
+      "status": "publish",
+      "post_type": "page",
+      "link": "https://buckler.com.co/"
+    }
+  ],
+  "count": 2
+}

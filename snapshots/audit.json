@@ -1,0 +1,63 @@
+{
+  "scope": "all",
+  "total_items": 4,
+  "scanned": 4,
+  "items_with_findings": 4,
+  "findings": [
+    {
+      "kind": "page",
+      "id": 44,
+      "title": "Inicio",
+      "code": "CODE_MODULE_NOT_ALLOWED",
+      "count": 3,
+      "detail": "__root__[0]/divi/placeholder[0]/divi/section[0]/divi/row[0]/divi/column[0]/divi/code: The divi/code module (raw HTML or JavaScript) is not allowed: this plugin never saves custom code."
+    },
+    {
+      "kind": "page",
+      "id": 44,
+      "title": "Inicio",
+      "code": "CUSTOM_CSS_NOT_ALLOWED",
+      "count": 1,
+      "detail": "__root__[0]/divi/placeholder[1]/divi/section[3]/divi/row.css.desktop.value.mainElement: Custom CSS is not allowed: this plugin never saves custom CSS. Use the module's own style settings instead."
+    },
+    {
+      "kind": "footer",
+      "id": 119,
+      "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+      "code": "CUSTOM_CSS_NOT_ALLOWED",
+      "count": 1,
+      "detail": "__root__[0]/divi/placeholder[0]/divi/section[0]/divi/row[0]/divi/column[2]/divi/image.css.desktop.value.mainElement: Custom CSS is not allowed: this plugin never saves custom CSS. Use the module's own style settings instead."
+    },
+    {
+      "kind": "footer",
+      "id": 119,
+      "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+      "code": "LINK_NO_POST",
+      "count": 1,
+      "detail": "/politica-de-envio/ (no page or post has this address; it may be an archive or a custom route)"
+    },
+    {
+      "kind": "header",
+      "id": 1114,
+      "title": "Todos Los Políticas Empresa",
+      "code": "CUSTOM_CSS_NOT_ALLOWED",
+      "count": 2,
+      "detail": "__root__[0]/divi/placeholder[0]/divi/section[0]/divi/row[0]/divi/column[0]/divi/text.css.desktop.value.freeForm: Custom CSS is not allowed: this plugin never saves custom CSS. Use the module's own style settings instead."
+    },
+    {
+      "kind": "page",
+      "id": 2503,
+      "title": "Preguntas frecuentes",
+      "code": "CUSTOM_CSS_NOT_ALLOWED",
+      "count": 5,
+      "detail": "__root__[0]/divi/placeholder[1]/divi/section[0]/divi/row[1]/divi/column[0]/divi/row[0]/divi/column[1]/divi/accordion[0]/divi/accordion-item.css.desktop.value.mainElement: Custom CSS is not allowed: this plugin never saves custom CSS. Use the module's own style settings instead."
+    }
+  ],
+  "findings_truncated": false,
+  "totals_by_code": {
+    "CODE_MODULE_NOT_ALLOWED": 1,
+    "CUSTOM_CSS_NOT_ALLOWED": 4,
+    "LINK_NO_POST": 1
+  },
+  "next_cursor": null
+}

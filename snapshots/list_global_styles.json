@@ -1,0 +1,65 @@
+{
+  "presets": [],
+  "colors": [
+    {
+      "id": "gcid-link-color",
+      "label": "Color Del Enlace",
+      "color": "#e4ec6a",
+      "source": "theme"
+    },
+    {
+      "id": "gcid-primary-color",
+      "label": "Color Primario",
+      "color": "#1a3955",
+      "source": "theme"
+    },
+    {
+      "id": "gcid-secondary-color",
+      "label": "Color Secundario",
+      "color": "#ffffff",
+      "source": "theme"
+    },
+    {
+      "id": "gcid-body-color",
+      "label": "Color del Texto Principal",
+      "color": "#000000",
+      "source": "theme"
+    },
+    {
+      "id": "gcid-heading-color",
+      "label": "Color del Texto de Encabezados",
+      "color": "#000000",
+      "source": "theme"
+    },
+    {
+      "id": "gcid-n4xgct6tfg",
+      "label": "Bris",
+      "color": "#f0f0f0",
+      "source": "custom"
+    }
+  ],
+  "variables": {
+    "fonts": [
+      {
+        "id": "--et_global_heading_font",
+        "label": "Encabezado",
+        "value": "Manrope"
+      },
+      {
+        "id": "--et_global_body_font",
+        "label": "Texto Principal",
+        "value": "Manrope"
+      }
+    ]
+  },
+  "counts": {
+    "presets": 0,
+    "colors": 6,
+    "variables": 2
+  },
+  "truncated": false,
+  "notes": [
+    "This site has no module presets yet.",
+    "Read-only. To create or change presets, colors or variables, use Divi's Visual Builder."
+  ]
+}

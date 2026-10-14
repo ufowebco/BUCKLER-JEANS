@@ -1,0 +1,336 @@
+{
+  "templates": [
+    {
+      "template_id": 83,
+      "title": "Plantilla De Sitio Web Predeterminada",
+      "default": true,
+      "enabled": true,
+      "use_on": [],
+      "exclude_from": [],
+      "header": {
+        "layout_id": 1114,
+        "title": "Todos Los Políticas Empresa",
+        "enabled": true,
+        "editable": true
+      },
+      "footer": {
+        "layout_id": 119,
+        "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+        "enabled": true,
+        "editable": true
+      }
+    },
+    {
+      "template_id": 425,
+      "title": "Tienda",
+      "default": false,
+      "enabled": true,
+      "use_on": [
+        "woocommerce:shop"
+      ],
+      "exclude_from": [],
+      "header": {
+        "layout_id": 1114,
+        "title": "Todos Los Políticas Empresa",
+        "enabled": true,
+        "editable": true
+      },
+      "footer": {
+        "layout_id": 119,
+        "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+        "enabled": true,
+        "editable": true
+      },
+      "body": {
+        "layout_id": 423,
+        "title": "Diseño Tienda Texto Principal",
+        "enabled": true,
+        "editable": false
+      }
+    },
+    {
+      "template_id": 784,
+      "title": "Linea Slim",
+      "default": false,
+      "enabled": true,
+      "use_on": [
+        "singular:post_type:page:id:776"
+      ],
+      "exclude_from": [],
+      "header": {
+        "layout_id": 1114,
+        "title": "Todos Los Políticas Empresa",
+        "enabled": true,
+        "editable": true
+      },
+      "footer": {
+        "layout_id": 119,
+        "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+        "enabled": true,
+        "editable": true
+      },
+      "body": {
+        "layout_id": 782,
+        "title": "Diseño Tienda Texto Principal",
+        "enabled": true,
+        "editable": false
+      }
+    },
+    {
+      "template_id": 787,
+      "title": "Linea Curvy",
+      "default": false,
+      "enabled": true,
+      "use_on": [
+        "singular:post_type:page:id:778"
+      ],
+      "exclude_from": [],
+      "header": {
+        "layout_id": 1114,
+        "title": "Todos Los Políticas Empresa",
+        "enabled": true,
+        "editable": true
+      },
+      "footer": {
+        "layout_id": 119,
+        "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+        "enabled": true,
+        "editable": true
+      },
+      "body": {
+        "layout_id": 785,
+        "title": "Diseño Tienda Texto Principal",
+        "enabled": true,
+        "editable": false
+      }
+    },
+    {
+      "template_id": 1200,
+      "title": "¡Sales!",
+      "default": false,
+      "enabled": true,
+      "use_on": [
+        "singular:post_type:page:id:1201"
+      ],
+      "exclude_from": [],
+      "header": {
+        "layout_id": 1114,
+        "title": "Todos Los Políticas Empresa",
+        "enabled": true,
+        "editable": true
+      },
+      "footer": {
+        "layout_id": 119,
+        "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+        "enabled": true,
+        "editable": true
+      },
+      "body": {
+        "layout_id": 1199,
+        "title": "Diseño Tienda Texto Principal",
+        "enabled": true,
+        "editable": false
+      }
+    },
+    {
+      "template_id": 332,
+      "title": "Todos Los Productos",
+      "default": false,
+      "enabled": true,
+      "use_on": [
+        "singular:post_type:product:all"
+      ],
+      "exclude_from": [],
+      "header": {
+        "layout_id": 1114,
+        "title": "Todos Los Políticas Empresa",
+        "enabled": true,
+        "editable": true
+      },
+      "footer": {
+        "layout_id": 119,
+        "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+        "enabled": true,
+        "editable": true
+      },
+      "body": {
+        "layout_id": 330,
+        "title": "Diseño Todos Los Productos Texto Principal",
+        "enabled": true,
+        "editable": false
+      }
+    },
+    {
+      "template_id": 243,
+      "title": "Carrito",
+      "default": false,
+      "enabled": true,
+      "use_on": [
+        "woocommerce:cart"
+      ],
+      "exclude_from": [],
+      "header": {
+        "layout_id": 1114,
+        "title": "Todos Los Políticas Empresa",
+        "enabled": true,
+        "editable": true
+      },
+      "footer": {
+        "layout_id": 119,
+        "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+        "enabled": true,
+        "editable": true
+      },
+      "body": {
+        "layout_id": 231,
+        "title": "Diseño Carrito Texto Principal",
+        "enabled": true,
+        "editable": false
+      }
+    },
+    {
+      "template_id": 230,
+      "title": "Finalizar compra",
+      "default": false,
+      "enabled": true,
+      "use_on": [
+        "woocommerce:checkout"
+      ],
+      "exclude_from": [],
+      "header": {
+        "layout_id": 1114,
+        "title": "Todos Los Políticas Empresa",
+        "enabled": true,
+        "editable": true
+      },
+      "footer": {
+        "layout_id": 119,
+        "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+        "enabled": true,
+        "editable": true
+      },
+      "body": {
+        "layout_id": 218,
+        "title": "Diseño Finalizar compra Texto Principal",
+        "enabled": true,
+        "editable": false
+      }
+    },
+    {
+      "template_id": 193,
+      "title": "Mi cuenta",
+      "default": false,
+      "enabled": true,
+      "use_on": [
+        "woocommerce:my_account"
+      ],
+      "exclude_from": [],
+      "header": {
+        "layout_id": 1114,
+        "title": "Todos Los Políticas Empresa",
+        "enabled": true,
+        "editable": true
+      },
+      "footer": {
+        "layout_id": 119,
+        "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+        "enabled": true,
+        "editable": true
+      },
+      "body": {
+        "layout_id": 184,
+        "title": "Diseño Mi cuenta Texto Principal",
+        "enabled": true,
+        "editable": false
+      }
+    },
+    {
+      "template_id": 1365,
+      "title": "Resultados Busqueda",
+      "default": false,
+      "enabled": true,
+      "use_on": [
+        "search"
+      ],
+      "exclude_from": [],
+      "header": {
+        "layout_id": 1114,
+        "title": "Todos Los Políticas Empresa",
+        "enabled": true,
+        "editable": true
+      },
+      "footer": {
+        "layout_id": 119,
+        "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+        "enabled": true,
+        "editable": true
+      },
+      "body": {
+        "layout_id": 1364,
+        "title": "Diseño Tienda Texto Principal",
+        "enabled": true,
+        "editable": false
+      }
+    },
+    {
+      "template_id": 2417,
+      "title": "Archivos - Busqueda",
+      "default": false,
+      "enabled": true,
+      "use_on": [
+        "archive:taxonomy:product_cat:term:id:29",
+        "archive:taxonomy:product_cat:term:id:65",
+        "archive:taxonomy:product_cat:term:id:18"
+      ],
+      "exclude_from": [],
+      "header": {
+        "layout_id": 1114,
+        "title": "Todos Los Políticas Empresa",
+        "enabled": true,
+        "editable": true
+      },
+      "footer": {
+        "layout_id": 119,
+        "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+        "enabled": true,
+        "editable": true
+      },
+      "body": {
+        "layout_id": 2415,
+        "title": "Diseño Tienda Texto Principal",
+        "enabled": true,
+        "editable": false
+      }
+    },
+    {
+      "template_id": 171,
+      "title": "Todos Los Políticas Empresa",
+      "default": false,
+      "enabled": true,
+      "use_on": [
+        "singular:post_type:politica-empresa:all"
+      ],
+      "exclude_from": [],
+      "header": {
+        "layout_id": 1114,
+        "title": "Todos Los Políticas Empresa",
+        "enabled": true,
+        "editable": true
+      },
+      "footer": {
+        "layout_id": 119,
+        "title": "Diseño Plantilla De Sitio Web Predeterminada Pie De Página",
+        "enabled": true,
+        "editable": true
+      },
+      "body": {
+        "layout_id": 170,
+        "title": "Diseño Hijos De Páginas Específico: Política de devoluciones y reembolsos Texto Principal",
+        "enabled": true,
+        "editable": false
+      }
+    }
+  ],
+  "count": 12,
+  "note": null
+}

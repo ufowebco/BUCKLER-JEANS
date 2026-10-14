@@ -1,0 +1,4601 @@
+[
+ {
+  "id": 3645,
+  "name": "BERMUDA ANCHA DAMA – GAMUZA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "816 PLUS",
+  "price": "129800",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-ancha-dama-gamuza-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3646,
+  "name": "BERMUDA ANCHA DAMA – GAMUZA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "816",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 68,
+    "name": "PRENDAS CORTAS",
+    "slug": "prendas-cortas"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-ancha-dama-gamuza-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 725,
+  "name": "BERMUDA DAMA – BORDADA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "808 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-dama-bordada-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 3153,
+  "name": "BERMUDA DAMA – CLASSIC – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "811 plus",
+  "price": "119900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-dama-classic-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3154,
+  "name": "BERMUDA DAMA – CLASSIC – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "811",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 68,
+    "name": "PRENDAS CORTAS",
+    "slug": "prendas-cortas"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-dama-classic-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 3201,
+  "name": "BERMUDA DAMA – DIRTY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9894 PLUS",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-dama-dirty-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 1923,
+  "name": "BERMUDA DAMA – JACQUARD  COLOR CAFE– TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9890 Café Plus",
+  "price": "125900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-dama-jacquard-color-cafe-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 1935,
+  "name": "BERMUDA DAMA – JACQUARD COLOR IVORY– TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9890 Crudo Plus",
+  "price": "125900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-dama-jacquard-color-ivory-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3916,
+  "name": "BERMUDA DAMA – TIRO ALTO – DENIM RÍGIDO BORDADO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9906 PLUS",
+  "price": "129900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-dama-tiro-alto-denim-rigido-bordado/",
+  "variations_count": 6
+ },
+ {
+  "id": 1035,
+  "name": "BERMUDA DAMA – TIRO MEDIO – ESTILO VINTAGE",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9818 Plus",
+  "price": "69230",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 77,
+    "name": "PRENDAS CORTAS",
+    "slug": "prendas-cortas-sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-dama-tiro-medio-estilo-vintage/",
+  "variations_count": 6
+ },
+ {
+  "id": 3175,
+  "name": "BERMUDA DAMA – URBANA DESTROYED – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "810 plus",
+  "price": "124900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-dama-urbana-destroyed-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3176,
+  "name": "BERMUDA DAMA – URBANA DESTROYED – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "810",
+  "price": "124900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 68,
+    "name": "PRENDAS CORTAS",
+    "slug": "prendas-cortas"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-dama-urbana-destroyed-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 3441,
+  "name": "BERMUDA DAMA URBANA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9896 plus",
+  "price": "124900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/bermuda-dama-urbana-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 1810,
+  "name": "CHALECO DAMA ÍNDIGO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9836",
+  "price": "119900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 71,
+    "name": "CHAQUETAS Y CHALECOS",
+    "slug": "chaquetas-y-chalecos"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/chaleco-dama-indigo/",
+  "variations_count": 4
+ },
+ {
+  "id": 1819,
+  "name": "CHALECO DAMA ÍNDIGO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9836 Plus",
+  "price": "119900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 26,
+    "name": "CHAQUETAS Y CHALECOS",
+    "slug": "chaquetas-y-chalecos-plus"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/chaleco-dama-indigo-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 4953,
+  "name": "CHAQUETA DAMA",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9912",
+  "price": "169900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   },
+   {
+    "id": 71,
+    "name": "CHAQUETAS Y CHALECOS",
+    "slug": "chaquetas-y-chalecos"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/chaqueta-dama-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 4955,
+  "name": "CHAQUETA DAMA",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9912 plus",
+  "price": "169900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   },
+   {
+    "id": 26,
+    "name": "CHAQUETAS Y CHALECOS",
+    "slug": "chaquetas-y-chalecos-plus"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/chaqueta-dama/",
+  "variations_count": 6
+ },
+ {
+  "id": 1086,
+  "name": "CHAQUETA DAMA – DENIM – AJUSTE SEMI ENTALLADO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9859 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 26,
+    "name": "CHAQUETAS Y CHALECOS",
+    "slug": "chaquetas-y-chalecos-plus"
+   },
+   {
+    "id": 74,
+    "name": "CHAQUETAS Y CHALECOS",
+    "slug": "chaquetas-y-chalecos-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/chaqueta-dama-denim-ajuste-semi-entallado-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 975,
+  "name": "CONJUNTO BOTA  ANCHA DAMA – CHALECO + PALAZZO – DENIM",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9823 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   },
+   {
+    "id": 75,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/conjunto-bota-ancha-dama-chaleco-palazzo-denim/",
+  "variations_count": 6
+ },
+ {
+  "id": 2852,
+  "name": "CONJUNTO DAMA –  SET COLOR BLANCO - CHALECO + BERMUDA",
+  "type": "variable",
+  "status": "publish",
+  "sku": "798 PLUS",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 15,
+    "name": "Sin categoría",
+    "slug": "sin-categoria"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   },
+   {
+    "id": 75,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/conjunto-dama-set-color-negro-chaleco-bermuda-copia/",
+  "variations_count": 6
+ },
+ {
+  "id": 2801,
+  "name": "CONJUNTO DAMA –  SET COLOR CAFÉ - CHALECO + BERMUDA",
+  "type": "variable",
+  "status": "publish",
+  "sku": "798 cafe",
+  "price": "90930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 70,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol"
+   },
+   {
+    "id": 75,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/conjunto-dama-set-color-cafe-chaleco-bermuda/",
+  "variations_count": 4
+ },
+ {
+  "id": 2818,
+  "name": "CONJUNTO DAMA –  SET COLOR CAFÉ - CHALECO + BERMUDA",
+  "type": "variable",
+  "status": "publish",
+  "sku": "798 cafe plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   },
+   {
+    "id": 75,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/conjunto-dama-set-color-cafe-chaleco-bermuda-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 2188,
+  "name": "CONJUNTO DAMA –  SET COLOR GRIS",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9863 Gris",
+  "price": "118930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 70,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol"
+   },
+   {
+    "id": 75,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/conjunto-dama-set-color-gris/",
+  "variations_count": 4
+ },
+ {
+  "id": 2196,
+  "name": "CONJUNTO DAMA –  SET COLOR GRIS",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9863 Gris Plus",
+  "price": "118930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   },
+   {
+    "id": 75,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/conjunto-dama-set-color-gris-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 2594,
+  "name": "CONJUNTO DAMA – COLOR NEGRO -PANTALÓN + CAMISETA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9851 Negro Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   },
+   {
+    "id": 75,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/conjunto-dama-color-negro-pantalon-camiseta-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 2574,
+  "name": "CONJUNTO DAMA – SET COLOR BEIGE  -PANTALÓN + BLUSA",
+  "type": "variable",
+  "status": "publish",
+  "sku": "796 Arena Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   },
+   {
+    "id": 75,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/conjunto-dama-set-color-beige-pantalon-blusa/",
+  "variations_count": 6
+ },
+ {
+  "id": 2584,
+  "name": "CONJUNTO DAMA – SET COLOR NEGRO  -PANTALÓN + BLUSA",
+  "type": "variable",
+  "status": "publish",
+  "sku": "796 Negro Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   },
+   {
+    "id": 75,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/conjunto-dama-set-color-negro-pantalon-blusa/",
+  "variations_count": 6
+ },
+ {
+  "id": 2217,
+  "name": "CONJUNTO DEPORTIVO DAMA – SET COLOR NEGRO PALAZZO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "784 Negro",
+  "price": "118930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 70,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol"
+   },
+   {
+    "id": 75,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/conjunto-deportivo-dama-set-color-negro-palazzo/",
+  "variations_count": 4
+ },
+ {
+  "id": 2206,
+  "name": "CONJUNTO DEPORTIVO DAMA – SET COLOR VERDE PALAZZO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "784 Verde Plus",
+  "price": "118930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   },
+   {
+    "id": 75,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/conjunto-deportivo-dama-set-color-verde-palazzo/",
+  "variations_count": 6
+ },
+ {
+  "id": 1336,
+  "name": "FALDA BOTONES DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9853 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 20,
+    "name": "FALDAS",
+    "slug": "faldas-plus-size"
+   },
+   {
+    "id": 76,
+    "name": "FALDAS",
+    "slug": "faldas-sale"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/falda-botones-dama-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 4657,
+  "name": "FALDA BOTONES DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9908plus",
+  "price": "139900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 20,
+    "name": "FALDAS",
+    "slug": "faldas-plus-size"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/falda-botones-dama-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 4664,
+  "name": "FALDA BOTONES DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9908",
+  "price": "139900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 69,
+    "name": "FALDAS",
+    "slug": "faldas"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/falda-botones-dama-tiro-alto-3/",
+  "variations_count": 4
+ },
+ {
+  "id": 1997,
+  "name": "FALDA SHORT – DENIM – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9821 Plus",
+  "price": "69230",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 20,
+    "name": "FALDAS",
+    "slug": "faldas-plus-size"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/falda-short-denim-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 750,
+  "name": "JEAN AJUSTADO DAMA -SKINNY BLACK – BÁSICO ESENCIAL – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9875 Plus",
+  "price": "90930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-ajustado-dama-skinny-black-basico-esencial-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 1418,
+  "name": "JEAN AJUSTADO DAMA – SKINNY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "789 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-ajustado-dama-skinny-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 1442,
+  "name": "JEAN AJUSTADO DAMA – SKINNY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9861 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-ajustado-dama-skinny-tiro-alto-3/",
+  "variations_count": 6
+ },
+ {
+  "id": 1746,
+  "name": "JEAN AJUSTADO DAMA – SKINNY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9879",
+  "price": "90930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-ajustado-dama-skinny-tiro-alto-4/",
+  "variations_count": 4
+ },
+ {
+  "id": 1755,
+  "name": "JEAN AJUSTADO DAMA – SKINNY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9879 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-ajustado-dama-skinny-tiro-alto-5/",
+  "variations_count": 6
+ },
+ {
+  "id": 1971,
+  "name": "JEAN AJUSTADO DAMA – SKINNY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9869",
+  "price": "90930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-ajustado-dama-skinny-tiro-alto-6/",
+  "variations_count": 4
+ },
+ {
+  "id": 1980,
+  "name": "JEAN AJUSTADO DAMA – SKINNY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9869 Plus",
+  "price": "90930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-ajustado-dama-skinny-tiro-alto-7/",
+  "variations_count": 6
+ },
+ {
+  "id": 2604,
+  "name": "JEAN AJUSTADO DAMA – SKINNY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "801",
+  "price": "129900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-ajustado-dama-skinny-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 2615,
+  "name": "JEAN AJUSTADO DAMA – SKINNY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "801 Plus",
+  "price": "129900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-ajustado-dama-skinny-tiro-alto-8/",
+  "variations_count": 6
+ },
+ {
+  "id": 1018,
+  "name": "JEAN BOTA  ANCHA DAMA – PALAZZO SPORTY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9824 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 77,
+    "name": "PRENDAS CORTAS",
+    "slug": "prendas-cortas-sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-sporty-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 1527,
+  "name": "JEAN BOTA ANCHA - OXFORD – LICRADO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "763 Plus",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-oxford-licrado-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3011,
+  "name": "JEAN BOTA ANCHA – OXFORD – LICRADO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "763.",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-oxford-licrado-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 3410,
+  "name": "JEAN BOTA ANCHA –CULOTTE DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9898 PLUS",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-culotte-dama-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3411,
+  "name": "JEAN BOTA ANCHA –CULOTTE DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9898",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-culotte-dama-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 1732,
+  "name": "JEAN BOTA ANCHA DAMA - PALAZZO COLOR CRUDO CARGO - TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "806 PC Crudo Plus",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-color-crudo-cargo-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 4130,
+  "name": "JEAN BOTA ANCHA DAMA –  WIDE LEG – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "814 plus",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-wide-leg-tiro-alto-6/",
+  "variations_count": 6
+ },
+ {
+  "id": 2770,
+  "name": "JEAN BOTA ANCHA DAMA – COLOR BLANCO WIDE LEG – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9886 Plus",
+  "price": "104930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-color-blanco-wide-leg-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 2787,
+  "name": "JEAN BOTA ANCHA DAMA – COLOR BLANCO WIDE LEG – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9886",
+  "price": "104930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 67,
+    "name": "PANTALONES",
+    "slug": "pantalones-linea-slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-color-blanco-wide-leg-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 764,
+  "name": "JEAN BOTA ANCHA DAMA – FLARE – TIRO MEDIO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "800 Plus",
+  "price": "104930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-flare-tiro-medio/",
+  "variations_count": 6
+ },
+ {
+  "id": 1779,
+  "name": "JEAN BOTA ANCHA DAMA – FLARE BLUE – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9878",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-flare-blue-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 1790,
+  "name": "JEAN BOTA ANCHA DAMA – FLARE BLUE – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9878 Plus",
+  "price": "104930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-flare-blue-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 3591,
+  "name": "JEAN BOTA ANCHA DAMA – OXFORD – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9897 PLUS",
+  "price": "154900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-oxford-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 3592,
+  "name": "JEAN BOTA ANCHA DAMA – OXFORD – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9897",
+  "price": "154900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-oxford-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 1843,
+  "name": "JEAN BOTA ANCHA DAMA – OXFORD – TIRO ALTO – PROCESO DIRTY VINTAGE",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9868 Plus",
+  "price": "97930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-oxford-tiro-alto-proceso-dirty-vintage/",
+  "variations_count": 6
+ },
+ {
+  "id": 3558,
+  "name": "JEAN BOTA ANCHA DAMA – PALAZZO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9901 plus",
+  "price": "157900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3559,
+  "name": "JEAN BOTA ANCHA DAMA – PALAZZO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9901",
+  "price": "157900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 4112,
+  "name": "JEAN BOTA ANCHA DAMA – PALAZZO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9902 plus",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-tiro-alto-3/",
+  "variations_count": 6
+ },
+ {
+  "id": 1710,
+  "name": "JEAN BOTA ANCHA DAMA – PALAZZO COLOR CAFE CARGO - TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "806 PC Café",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 67,
+    "name": "PANTALONES",
+    "slug": "pantalones-linea-slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-color-cafe-cargo-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 1720,
+  "name": "JEAN BOTA ANCHA DAMA – PALAZZO COLOR CAFE CARGO - TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "806 PC Café Plus",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-color-cafe-cargo-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 2095,
+  "name": "JEAN BOTA ANCHA DAMA – PALAZZO CUTS  – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "786",
+  "price": "139900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-cuts-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 2105,
+  "name": "JEAN BOTA ANCHA DAMA – PALAZZO CUTS  – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "786 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-cuts-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 2138,
+  "name": "JEAN BOTA ANCHA DAMA – PALAZZO GRAY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9883",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-gray-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 2148,
+  "name": "JEAN BOTA ANCHA DAMA – PALAZZO GRAY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9883 Plus",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-gray-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 1690,
+  "name": "JEAN BOTA ANCHA DAMA – PALAZZO GREY ROTOS – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "805",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-grey-rotos-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 1698,
+  "name": "JEAN BOTA ANCHA DAMA – PALAZZO GREY ROTOS – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "805 Plus",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-grey-rotos-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 1830,
+  "name": "JEAN BOTA ANCHA DAMA – PALAZZO RÍGIDO BORDADO PAISLEY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9888 Plus",
+  "price": "118930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-palazzo-rigido-bordado-paisley-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 1515,
+  "name": "JEAN BOTA ANCHA DAMA – WIDE LEG – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9873 Plus",
+  "price": "139900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-wide-leg-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 1947,
+  "name": "JEAN BOTA ANCHA DAMA – WIDE LEG – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9854",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-wide-leg-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 1958,
+  "name": "JEAN BOTA ANCHA DAMA – WIDE LEG – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9854 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-wide-leg-tiro-alto-3/",
+  "variations_count": 6
+ },
+ {
+  "id": 2162,
+  "name": "JEAN BOTA ANCHA DAMA – WIDE LEG – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9855",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-wide-leg-tiro-alto-4/",
+  "variations_count": 4
+ },
+ {
+  "id": 2173,
+  "name": "JEAN BOTA ANCHA DAMA – WIDE LEG – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9855 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-wide-leg-tiro-alto-5/",
+  "variations_count": 6
+ },
+ {
+  "id": 4149,
+  "name": "JEAN BOTA ANCHA DAMA – WIDE LEG – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "814",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-wide-leg-tiro-alto-7/",
+  "variations_count": 4
+ },
+ {
+  "id": 1878,
+  "name": "JEAN BOTA ANCHA DAMA – WIDE LEG JACQUARD COLOR CAFE  – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9891 Café",
+  "price": "169900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 67,
+    "name": "PANTALONES",
+    "slug": "pantalones-linea-slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-wide-leg-jacquard-color-cafe-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 1900,
+  "name": "JEAN BOTA ANCHA DAMA – WIDE LEG JACQUARD COLOR CAFE – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9891 Café Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-wide-leg-jacquard-color-cafe-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 1911,
+  "name": "JEAN BOTA ANCHA DAMA – WIDE LEG JACQUARD COLOR IVORY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9891 Crudo Plus",
+  "price": "169900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-wide-leg-jacquard-color-ivory-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 2715,
+  "name": "JEAN BOTA ANCHA DAMA – WIDE LEG JACQUARD COLOR NEGRO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9891 Negro Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-wide-leg-jacquard-color-negro-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 1471,
+  "name": "JEAN BOTA ANCHA DAMA- CULOTTE – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9862 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-ancha-dama-culotte-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 4341,
+  "name": "JEAN BOTA CAMPANA – FLARE DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "815 PLUS",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-campana-flare-dama-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 4357,
+  "name": "JEAN BOTA CAMPANA – FLARE DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "815",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-bota-campana-flare-dama-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 1668,
+  "name": "JEAN CLÁSICO - BOTA AJUSTADA DAMA - COLOR AZUL",
+  "type": "variable",
+  "status": "publish",
+  "sku": "5001",
+  "price": "79900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 84,
+    "name": "LÍNEA BASIC",
+    "slug": "linea-basic-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-clasico-bota-ajustada-dama-color-azul/",
+  "variations_count": 4
+ },
+ {
+  "id": 1678,
+  "name": "JEAN CLÁSICO - BOTA AJUSTADA DAMA - COLOR AZUL",
+  "type": "variable",
+  "status": "publish",
+  "sku": "5001 Plus",
+  "price": "79900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 85,
+    "name": "LÍNEA BASIC",
+    "slug": "linea-basic-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-clasico-bota-ajustada-dama-color-azul-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 1646,
+  "name": "JEAN CLÁSICO - BOTA AJUSTADA DAMA - COLOR NEGRO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "5003",
+  "price": "79900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 84,
+    "name": "LÍNEA BASIC",
+    "slug": "linea-basic-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-clasico-bota-ajustada-dama-color-negro/",
+  "variations_count": 4
+ },
+ {
+  "id": 1656,
+  "name": "JEAN CLÁSICO - BOTA AJUSTADA DAMA - COLOR NEGRO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "5003 Plus",
+  "price": "79900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 85,
+    "name": "LÍNEA BASIC",
+    "slug": "linea-basic-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-clasico-bota-ajustada-dama-color-negro-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 3968,
+  "name": "JEAN HOLGADO – MOM FLARE DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9899 PLUS",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-mom-dama-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 1855,
+  "name": "JEAN HOLGADO DAMA - MOM FLARE BLACK - TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9885",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-mom-flare-black-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 1865,
+  "name": "JEAN HOLGADO DAMA - MOM FLARE BLACK - TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9885 Plus",
+  "price": "139900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-mom-flare-black-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 1503,
+  "name": "JEAN HOLGADO DAMA – MOM – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9844 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-mom-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 2698,
+  "name": "JEAN HOLGADO DAMA – MOM FIT – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9876 Plus",
+  "price": "104930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-mom-fit-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 2732,
+  "name": "JEAN HOLGADO DAMA – MOM FIT CUTS CROPPED – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "799 Plus",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-mom-fit-cuts-cropped-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 2765,
+  "name": "JEAN HOLGADO DAMA – MOM FIT CUTS CROPPED – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "799",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-mom-fit-cuts-cropped-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 2117,
+  "name": "JEAN HOLGADO DAMA – MOM FLARE CROPPED CON TACHES – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "795",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-mom-flare-cropped-con-taches-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 2127,
+  "name": "JEAN HOLGADO DAMA – MOM FLARE CROPPED CON TACHES – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "795 Plus",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-mom-flare-cropped-con-taches-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 1561,
+  "name": "JEAN HOLGADO DAMA – SLOUCHY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9877 Plus",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-slouchy-tiro-alto-5/",
+  "variations_count": 6
+ },
+ {
+  "id": 3833,
+  "name": "JEAN HOLGADO DAMA – SLOUCHY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "819 PLUS",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-slouchy-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3856,
+  "name": "JEAN HOLGADO DAMA – SLOUCHY – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "819",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 66,
+    "name": "JEANS",
+    "slug": "jeans-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-slouchy-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 1392,
+  "name": "JEAN HOLGADO DAMA – SLOUCHY CARPINTERO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9838 Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-slouchy-carpintero-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 737,
+  "name": "JEAN HOLGADO DAMA SLOUCHY BLACK – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9884 Plus",
+  "price": "97930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 21,
+    "name": "JEANS",
+    "slug": "jeans"
+   },
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/jean-holgado-dama-slouchy-black-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 4536,
+  "name": "MINI FALDA DAMA – AZUL – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9904 PLUS",
+  "price": "118900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 20,
+    "name": "FALDAS",
+    "slug": "faldas-plus-size"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/mini-falda-dama-azul-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3618,
+  "name": "MINI FALDA DAMA – BLACK – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9905 PLUS",
+  "price": "118900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 20,
+    "name": "FALDAS",
+    "slug": "faldas-plus-size"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/mini-falda-dama-black-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3526,
+  "name": "OVEROL CON ROTOS – BERMUDA DAMA",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9892 PLUS",
+  "price": "175900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/overol-con-rotos-bermuda-dama-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 3527,
+  "name": "OVEROL CON ROTOS – BERMUDA DAMA",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9892",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 70,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/overol-con-rotos-bermuda-dama/",
+  "variations_count": 4
+ },
+ {
+  "id": 3388,
+  "name": "OVEROL DAMA – BOTA RECTA",
+  "type": "variable",
+  "status": "publish",
+  "sku": "809",
+  "price": "189900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 70,
+    "name": "SET Y OVEROL",
+    "slug": "set-y-overol"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/overol-dama-bota-recta/",
+  "variations_count": 4
+ },
+ {
+  "id": 3398,
+  "name": "OVEROL DAMA – BOTA RECTA",
+  "type": "variable",
+  "status": "publish",
+  "sku": "809 PLUS",
+  "price": "189900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/overol-dama-bota-recta-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 3286,
+  "name": "OVEROL DAMA BOTA ANCHA – WIDE LEG DESTROYED",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9893 PLUS",
+  "price": "189900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/overol-dama-bota-ancha-wide-leg-destroyed/",
+  "variations_count": 6
+ },
+ {
+  "id": 1602,
+  "name": "PANTALON BOTA ANCHA DAMA – EFECTO CUERO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9889 Cuero",
+  "price": "104930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 67,
+    "name": "PANTALONES",
+    "slug": "pantalones-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/pantalon-bota-ancha-dama-efecto-cuero-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 1612,
+  "name": "PANTALON BOTA ANCHA DAMA – EFECTO CUERO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9889 Cuero Plus",
+  "price": "104930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 79,
+    "name": "JEANS",
+    "slug": "jeans-sale"
+   },
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/pantalon-bota-ancha-dama-efecto-cuero-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 2628,
+  "name": "PANTALON BOTA RECTA DAMA - EFECTO CUERO - TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "807",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 67,
+    "name": "PANTALONES",
+    "slug": "pantalones-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/pantalon-bota-recta-dama-efecto-cuero-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 2638,
+  "name": "PANTALON BOTA RECTA DAMA - EFECTO CUERO - TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "807 Plus",
+  "price": "149900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/pantalon-bota-recta-dama-efecto-cuero-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 2686,
+  "name": "PANTALÓN HOLGADO - COLOR CAKI - CARGO PARACHUTE DAMA – TIRO MEDIO – AJUSTE RELAJADO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "803 Caki Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/pantalon-holgado-color-caki-cargo-parachute-dama-tiro-medio-ajuste-relajado/",
+  "variations_count": 6
+ },
+ {
+  "id": 2650,
+  "name": "PANTALÓN HOLGADO - COLOR GRIS - CARGO PARACHUTE DAMA – TIRO MEDIO – AJUSTE RELAJADO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "803 Gris",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 67,
+    "name": "PANTALONES",
+    "slug": "pantalones-linea-slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/pantalon-holgado-color-gris-cargo-parachute-dama-tiro-medio-ajuste-relajado/",
+  "variations_count": 4
+ },
+ {
+  "id": 2661,
+  "name": "PANTALÓN HOLGADO - COLOR GRIS - CARGO PARACHUTE DAMA – TIRO MEDIO – AJUSTE RELAJADO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "803 Gris Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/pantalon-holgado-color-gris-cargo-parachute-dama-tiro-medio-ajuste-relajado-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 2674,
+  "name": "PANTALÓN HOLGADO - COLOR NEGRO - CARGO PARACHUTE DAMA – TIRO MEDIO – AJUSTE RELAJADO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "803 Negro Plus",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/pantalon-holgado-color-negro-cargo-parachute-dama-tiro-medio-ajuste-relajado/",
+  "variations_count": 6
+ },
+ {
+  "id": 1578,
+  "name": "SET DAMA – CHALECO Y BERMUDA COLOR ARENA",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9887 Arena Plus",
+  "price": "187900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/set-dama-chaleco-y-bermuda-color-arena/",
+  "variations_count": 6
+ },
+ {
+  "id": 4364,
+  "name": "SET DAMA JACQUARD – CHALECO Y BERMUDA COLOR CAFÉ",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9903 CAFE PLUS",
+  "price": "187900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/set-dama-jacquard-chaleco-y-bermuda-color-cafe/",
+  "variations_count": 6
+ },
+ {
+  "id": 4377,
+  "name": "SET DAMA JACQUARD – CHALECO Y BERMUDA COLOR IVORY",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9903 IVORY PLUS",
+  "price": "187900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 24,
+    "name": "SETS Y OVEROL",
+    "slug": "sets"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/set-dama-jacquard-chaleco-y-bermuda-color-ivory/",
+  "variations_count": 6
+ },
+ {
+  "id": 3863,
+  "name": "SHORT DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9907 plus",
+  "price": "119900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/short-dama-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3871,
+  "name": "SHORT DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9907",
+  "price": "119900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 68,
+    "name": "PRENDAS CORTAS",
+    "slug": "prendas-cortas"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/short-dama-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 4512,
+  "name": "SHORT DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "818 PLUS",
+  "price": "119900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/short-dama-tiro-alto-3/",
+  "variations_count": 6
+ },
+ {
+  "id": 1634,
+  "name": "SHORT DAMA – TIRO ALTO – DIRTY",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9865 Plus",
+  "price": "103900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/short-dama-tiro-alto-dirty-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 2448,
+  "name": "SHORT DAMA – TIRO ALTO – DIRTY",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9865",
+  "price": "103900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 68,
+    "name": "PRENDAS CORTAS",
+    "slug": "prendas-cortas"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/rt-dama-tiro-alto-dirty/",
+  "variations_count": 4
+ },
+ {
+  "id": 3279,
+  "name": "SUDADERA BOTA RECTA – COLOR CAQUI – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9874 CAQUI PLUS",
+  "price": "115900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/sudadera-bota-recta-color-caqui-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3251,
+  "name": "SUDADERA BOTA RECTA – COLOR NEGRO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9874 NEGRO",
+  "price": "115900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 67,
+    "name": "PANTALONES",
+    "slug": "pantalones-linea-slim"
+   },
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/sudadera-bota-recta-color-negro-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 3252,
+  "name": "SUDADERA BOTA RECTA – COLOR NEGRO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9874 NEGRO PLUS",
+  "price": "",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "outofstock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 22,
+    "name": "PANTALONES",
+    "slug": "pantalones"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/sudadera-bota-recta-color-negro-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3202,
+  "name": "TORERO DAMA – AZUL CLARO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9895 PLUS",
+  "price": "119900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/torero-dama-azul-claro-tiro-alto/",
+  "variations_count": 6
+ },
+ {
+  "id": 3212,
+  "name": "TORERO DAMA – AZUL CLARO – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "9895",
+  "price": "119900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 68,
+    "name": "PRENDAS CORTAS",
+    "slug": "prendas-cortas"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/torero-dama-azul-claro-tiro-alto-2/",
+  "variations_count": 4
+ },
+ {
+  "id": 3314,
+  "name": "TORERO DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "812",
+  "price": "119900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 83,
+    "name": "NUEVO - SLIM",
+    "slug": "slim"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   },
+   {
+    "id": 68,
+    "name": "PRENDAS CORTAS",
+    "slug": "prendas-cortas"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/torero-dama-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 3336,
+  "name": "TORERO DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "812 PLUS",
+  "price": "119900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/torero-dama-tiro-alto-2/",
+  "variations_count": 6
+ },
+ {
+  "id": 3809,
+  "name": "TORERO DAMA – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "813 plus",
+  "price": "119900",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": false,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 82,
+    "name": "NUEVO - CURVY",
+    "slug": "curvy"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   },
+   {
+    "id": 80,
+    "name": "LÍNEA NUEVA",
+    "slug": "linea-nueva"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/torero-dama-tiro-alto-3/",
+  "variations_count": 6
+ },
+ {
+  "id": 672,
+  "name": "TORERO DAMA BLACK – LUXURY CRYSTALS – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "797",
+  "price": "104930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 68,
+    "name": "PRENDAS CORTAS",
+    "slug": "prendas-cortas"
+   },
+   {
+    "id": 77,
+    "name": "PRENDAS CORTAS",
+    "slug": "prendas-cortas-sale"
+   },
+   {
+    "id": 65,
+    "name": "LÍNEA SLIM",
+    "slug": "linea-slim"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/torero-dama-black-luxury-crystals-tiro-alto/",
+  "variations_count": 4
+ },
+ {
+  "id": 677,
+  "name": "TORERO DAMA BLACK – LUXURY CRYSTALS – TIRO ALTO",
+  "type": "variable",
+  "status": "publish",
+  "sku": "797 Plus",
+  "price": "104930",
+  "regular_price": "",
+  "sale_price": "",
+  "on_sale": true,
+  "stock_status": "instock",
+  "manage_stock": false,
+  "stock_quantity": null,
+  "categories": [
+   {
+    "id": 29,
+    "name": "¡SALE!",
+    "slug": "sale"
+   },
+   {
+    "id": 23,
+    "name": "PRENDAS CORTAS",
+    "slug": "shorts"
+   },
+   {
+    "id": 77,
+    "name": "PRENDAS CORTAS",
+    "slug": "prendas-cortas-sale"
+   },
+   {
+    "id": 18,
+    "name": "LÍNEA CURVY",
+    "slug": "linea-curvy"
+   }
+  ],
+  "url": "https://buckler.com.co/producto/torero-dama-black-luxury-crystals-tiro-alto-plus/",
+  "variations_count": 6
+ }
+]

@@ -1,0 +1,710 @@
+<title>Buckler Rediseño 2026</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap">
+<style>
+/* Layout: documento de propuesta a una columna (max 1120px); los mockups se muestran en "marcos" de navegador y móvil con la marca real. */
+:root{
+  --bg:#f6f7f4; --surface:#ffffff; --fg:#14202c; --muted:#56606b; --line:#dde1e4;
+  --accent:#1a3955; --accent-ink:#ffffff; --hi:#e4ec6a; --ok:#1f7a4d; --warn:#9a5b00; --bad:#b3261e;
+  --chip:#eef1f4;
+  /* Tokens de marca para los mockups (siempre en claro: así se verá la tienda) */
+  --b-navy:#1a3955; --b-navy-2:#122a40; --b-lime:#e4ec6a; --b-paper:#ffffff; --b-denim:#f2f4f6; --b-ink:#10202f; --b-mute:#5b6773; --b-line:#e3e7ea; --b-sale:#b3261e;
+  --display:"Fraunces", Georgia, "Times New Roman", serif;
+  --sans:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1720; --surface:#16212d; --fg:#e8edf1; --muted:#a5b0bb; --line:#2a3846;
+  --accent:#9cc3e6; --accent-ink:#0f1720; --hi:#e4ec6a; --ok:#5fcf98; --warn:#f0b35a; --bad:#ff8a80; --chip:#1f2c3a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1720; --surface:#16212d; --fg:#e8edf1; --muted:#a5b0bb; --line:#2a3846;
+  --accent:#9cc3e6; --accent-ink:#0f1720; --hi:#e4ec6a; --ok:#5fcf98; --warn:#f0b35a; --bad:#ff8a80; --chip:#1f2c3a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--sans);margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{text-wrap:balance;line-height:1.15;margin:0}
+h1{font-family:var(--display);font-size:clamp(2.1rem,5vw,3.4rem);font-weight:700;letter-spacing:-.01em}
+h2{font-family:var(--display);font-size:clamp(1.5rem,3vw,2.1rem);font-weight:600}
+h3{font-size:1.05rem;font-weight:700}
+p{margin:0}
+.eyebrow{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.block{padding-block:56px;border-top:1px solid var(--line)}
+.lead{font-size:1.125rem;color:var(--muted);max-width:65ch}
+.stack{display:flex;flex-direction:column;gap:16px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--chip);color:var(--fg)}
+.pill.bad{color:var(--bad)} .pill.ok{color:var(--ok)} .pill.warn{color:var(--warn)}
+ul.clean{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+ul.clean li{padding-left:22px;position:relative}
+ul.clean li::before{content:"";position:absolute;left:4px;top:.62em;width:8px;height:8px;border-radius:2px;background:var(--accent)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:.92rem}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--chip)}
+tr:last-child td{border-bottom:0}
+code{font-size:.85em;background:var(--chip);padding:1px 6px;border-radius:4px}
+
+/* ---------- portada ---------- */
+.cover{padding-block:56px 40px;display:grid;gap:28px}
+.cover .meta{display:flex;flex-wrap:wrap;gap:8px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.kpi b{display:block;font-size:1.7rem;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi span{font-size:.82rem;color:var(--muted)}
+
+/* ---------- marcos de mockup ---------- */
+.frame{border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--b-paper);color:var(--b-ink);box-shadow:0 12px 40px -18px rgba(10,25,40,.35)}
+.frame .bar{display:flex;gap:6px;align-items:center;padding:9px 12px;background:#e9edf0;border-bottom:1px solid #d8dde1}
+.frame .bar i{width:10px;height:10px;border-radius:50%;background:#c4cbd1;display:block}
+.frame .bar span{margin-left:10px;font-size:.72rem;color:#5b6773;background:#fff;border-radius:6px;padding:2px 10px;flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.phone{width:min(100%,360px);margin-inline:auto;border-radius:34px;border:10px solid #0d1620;overflow:hidden;background:var(--b-paper);color:var(--b-ink)}
+.mock{font-family:var(--sans);font-size:14px;line-height:1.5}
+.mock h1,.mock h2,.mock h3{font-family:var(--sans)}
+
+/* Barra de anuncios + header de la marca */
+.m-topbar{background:var(--b-navy);color:#fff;font-size:12px;text-align:center;padding:7px 12px}
+.m-topbar b{color:var(--b-lime)}
+.m-head{display:flex;align-items:center;gap:20px;padding:14px 28px;border-bottom:1px solid var(--b-line);background:#fff;position:relative}
+.m-logo{font-weight:800;font-size:26px;color:var(--b-navy);letter-spacing:-.02em}
+.m-logo sup{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--b-navy);vertical-align:super;margin-left:2px}
+.m-nav{display:flex;gap:22px;font-weight:600;font-size:14px;flex:1}
+.m-nav span.sale{color:var(--b-sale)}
+.m-search{flex:0 1 260px;display:flex;align-items:center;gap:8px;border:1px solid var(--b-line);border-radius:99px;padding:7px 14px;color:var(--b-mute);font-size:13px;background:var(--b-denim)}
+.m-icons{display:flex;gap:14px;align-items:center}
+.m-ico{width:22px;height:22px;display:inline-grid;place-items:center;position:relative;color:var(--b-navy)}
+.m-ico svg{width:22px;height:22px}
+.m-badge{position:absolute;top:-6px;right:-8px;background:var(--b-lime);color:var(--b-navy);font-size:10px;font-weight:800;border-radius:99px;min-width:17px;height:17px;display:grid;place-items:center}
+
+/* hero */
+.m-hero{position:relative;display:grid;grid-template-columns:1.1fr 1fr;min-height:380px;background:var(--b-navy);color:#fff}
+.m-hero .copy{padding:48px 40px;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.m-hero .copy small{letter-spacing:.14em;font-weight:700;font-size:11px;color:var(--b-lime)}
+.m-hero .copy .mh1{font-size:40px;font-weight:800;line-height:1.05;letter-spacing:-.02em}
+.m-hero .copy p{color:#cdd8e2;max-width:40ch}
+.m-hero .img{background-size:cover;background-position:center 30%}
+.m-btns{display:flex;gap:10px;flex-wrap:wrap}
+.m-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:99px;font-weight:700;font-size:14px;border:2px solid transparent;cursor:pointer;font-family:inherit}
+.m-btn.lime{background:var(--b-lime);color:var(--b-navy)}
+.m-btn.ghost{border-color:#fff;color:#fff;background:transparent}
+.m-btn.navy{background:var(--b-navy);color:#fff}
+.m-btn.line{border-color:var(--b-navy);color:var(--b-navy);background:#fff}
+.m-btn.block{width:100%}
+
+/* tiras de confianza */
+.m-trust{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--b-line)}
+.m-trust div{display:flex;gap:10px;align-items:center;padding:14px 18px;font-size:12.5px;color:var(--b-mute)}
+.m-trust div+div{border-left:1px solid var(--b-line)}
+.m-trust b{display:block;color:var(--b-ink);font-size:13px}
+.m-trust svg{width:26px;height:26px;color:var(--b-navy);flex:none}
+
+/* lineas */
+.m-lines{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:28px}
+.m-line{border-radius:12px;overflow:hidden;position:relative;min-height:190px;display:flex;align-items:flex-end;background-size:cover;background-position:center 25%}
+.m-line::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(10,25,40,.85))}
+.m-line div{position:relative;z-index:1;padding:18px;color:#fff}
+.m-line b{font-size:24px;font-weight:800;letter-spacing:.02em;display:block}
+.m-line span{font-size:12.5px;color:#dbe4ec}
+
+.m-sec-h{display:flex;align-items:end;justify-content:space-between;gap:12px;padding:8px 28px 14px}
+.m-sec-h h2{font-size:22px;font-weight:800;color:var(--b-navy)}
+.m-tabs{display:flex;gap:6px}
+.m-tabs button{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--b-line);background:#fff;border-radius:99px;padding:6px 14px;cursor:pointer;color:var(--b-ink)}
+.m-tabs button[aria-pressed="true"]{background:var(--b-navy);color:#fff;border-color:var(--b-navy)}
+
+/* grilla de producto */
+.m-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding:0 28px 28px}
+.pc{display:flex;flex-direction:column;gap:8px;min-width:0}
+.pc-media{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:2/3;background:var(--b-denim)}
+.pc-track{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.pc-track::-webkit-scrollbar{display:none}
+.pc-track img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start}
+.pc-arrow{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:var(--b-navy);display:grid;place-items:center;cursor:pointer;opacity:0;transition:opacity .2s}
+.pc-media:hover .pc-arrow,.pc-arrow:focus-visible{opacity:1}
+.pc-arrow.prev{left:8px}.pc-arrow.next{right:8px}
+.pc-dots{position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:5px}
+.pc-dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55)}
+.pc-dots i.on{background:#fff;width:16px;border-radius:4px}
+.pc-tag{position:absolute;top:8px;left:8px;font-size:10.5px;font-weight:800;letter-spacing:.06em;padding:4px 8px;border-radius:4px;background:var(--b-navy);color:#fff}
+.pc-tag.sale{background:var(--b-sale)}
+.pc-tag.new{background:var(--b-lime);color:var(--b-navy)}
+.pc-fav{position:absolute;top:6px;right:6px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--b-navy);cursor:pointer}
+.pc-quick{position:absolute;left:8px;right:8px;bottom:22px;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;opacity:0;transform:translateY(6px);transition:.2s}
+.pc-media:hover .pc-quick{opacity:1;transform:none}
+.pc-quick span{background:#fff;font-size:11px;font-weight:700;border-radius:4px;min-width:30px;padding:4px 6px;text-align:center}
+.pc-quick span.off{color:#9aa4ad;text-decoration:line-through}
+.pc-line{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--b-mute);text-transform:uppercase}
+.pc h3{font-size:13.5px;font-weight:700;line-height:1.35;color:var(--b-ink)}
+.pc-price{font-weight:800;color:var(--b-navy);font-variant-numeric:tabular-nums}
+.pc-price s{color:var(--b-mute);font-weight:500;margin-right:6px}
+.pc-price em{font-style:normal;color:var(--b-sale);font-size:12px;margin-left:6px}
+.pc-addi{font-size:11.5px;color:var(--b-mute)}
+
+/* PDP */
+.pdp{display:grid;grid-template-columns:1.15fr 1fr;gap:32px;padding:24px 28px 32px}
+.pdp-gal{display:grid;grid-template-columns:72px 1fr;gap:10px}
+.pdp-thumbs{display:flex;flex-direction:column;gap:8px}
+.pdp-thumbs div{aspect-ratio:2/3;border-radius:6px;background-size:cover;background-position:center;border:2px solid transparent}
+.pdp-thumbs div.on{border-color:var(--b-navy)}
+.pdp-thumbs .vid{background:var(--b-navy);display:grid;place-items:center;color:#fff;font-size:10px;font-weight:800}
+.pdp-main{border-radius:10px;aspect-ratio:2/3;background-size:cover;background-position:center;position:relative}
+.pdp-main .play{position:absolute;right:12px;bottom:12px;background:rgba(16,32,47,.85);color:#fff;border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700;display:flex;gap:6px;align-items:center}
+.pdp-info{display:flex;flex-direction:column;gap:14px;min-width:0}
+.crumbs{font-size:12px;color:var(--b-mute)}
+.pdp-info .mh1{font-size:24px;font-weight:800;line-height:1.2;color:var(--b-ink)}
+.pdp-price{font-size:24px;font-weight:800;color:var(--b-navy)}
+.pdp-addi{font-size:12.5px;background:var(--b-denim);border-radius:8px;padding:8px 12px}
+.sizes{display:flex;flex-wrap:wrap;gap:8px}
+.sizes button{font:inherit;font-weight:700;min-width:48px;min-height:44px;border-radius:8px;border:1.5px solid var(--b-line);background:#fff;cursor:pointer;color:var(--b-ink)}
+.sizes button[aria-pressed="true"]{border-color:var(--b-navy);background:var(--b-navy);color:#fff}
+.sizes button:disabled{color:#a6afb8;background:repeating-linear-gradient(135deg,#fff 0 6px,#f1f3f5 6px 7px);cursor:not-allowed}
+.size-row{display:flex;justify-content:space-between;align-items:baseline}
+.size-row b{font-size:13px}
+.size-row a{font-size:12.5px;font-weight:700;color:var(--b-navy)}
+.pdp-perks{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px}
+.pdp-perks div{display:flex;gap:8px;align-items:center;background:var(--b-denim);border-radius:8px;padding:8px 10px}
+.pdp-perks svg{width:18px;height:18px;color:var(--b-navy);flex:none}
+details.acc{border-top:1px solid var(--b-line);padding:12px 0}
+details.acc summary{font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+details.acc summary::after{content:"+";font-weight:800}
+details.acc[open] summary::after{content:"–"}
+details.acc p,details.acc ul{font-size:13px;color:var(--b-mute);margin-top:8px}
+.sticky-buy{display:none}
+
+/* carrito flotante */
+.cartdemo{position:relative;min-height:620px;background:#eef1f4;display:flex;justify-content:flex-end;overflow:hidden}
+.cartdemo .scrim{position:absolute;inset:0;background:rgba(10,25,40,.35)}
+.drawer{position:relative;width:min(100%,420px);background:#fff;display:flex;flex-direction:column;box-shadow:-10px 0 40px rgba(0,0,0,.18)}
+.dr-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--b-line)}
+.dr-head h2{font-size:17px;font-weight:800;color:var(--b-navy)}
+.dr-ship{padding:12px 18px;background:var(--b-denim);font-size:12.5px}
+.meter{height:6px;border-radius:9px;background:#dce2e7;margin-top:6px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--b-navy);border-radius:9px}
+.dr-items{padding:14px 18px;display:flex;flex-direction:column;gap:14px;border-bottom:1px solid var(--b-line)}
+.ci{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:start}
+.ci img{width:64px;height:96px;object-fit:cover;border-radius:6px}
+.ci b{font-size:13px;display:block;line-height:1.3}
+.ci small{color:var(--b-mute);font-size:12px}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--b-line);border-radius:99px;margin-top:6px}
+.qty button{width:30px;height:30px;border:0;background:none;font-size:16px;cursor:pointer;color:var(--b-ink)}
+.qty span{min-width:20px;text-align:center;font-weight:700;font-size:13px}
+.dr-sug{padding:14px 18px;flex:1}
+.dr-sug h3{font-size:14px;color:var(--b-ink)}
+.dr-sug p.note{font-size:12px;color:var(--b-mute);margin:2px 0 10px}
+.sug-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
+.sg{flex:0 0 132px;scroll-snap-align:start;display:flex;flex-direction:column;gap:6px;font-size:12px}
+.sg img{width:132px;height:176px;object-fit:cover;border-radius:8px}
+.sg b{font-size:12px;line-height:1.3}
+.sg .add{font:inherit;font-size:12px;font-weight:800;border:1.5px solid var(--b-navy);color:var(--b-navy);background:#fff;border-radius:99px;min-height:34px;cursor:pointer}
+.sg .add.done{background:var(--b-navy);color:#fff}
+.dr-foot{padding:14px 18px;border-top:1px solid var(--b-line);display:flex;flex-direction:column;gap:10px}
+.dr-total{display:flex;justify-content:space-between;font-weight:800;font-size:16px}
+.dr-pay{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.dr-pay span{font-size:10.5px;font-weight:800;border:1px solid var(--b-line);border-radius:5px;padding:3px 7px;color:var(--b-mute)}
+.pick{display:flex;gap:6px;margin:4px 0 10px;flex-wrap:wrap}
+.pick button{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--b-line);border-radius:99px;padding:4px 12px;background:#fff;cursor:pointer;color:var(--b-ink)}
+.pick button[aria-pressed="true"]{background:var(--b-lime);border-color:var(--b-lime);color:var(--b-navy)}
+
+/* checkout */
+.co{display:grid;grid-template-columns:1.3fr 1fr;gap:0;min-height:520px}
+.co-l{padding:24px 28px;display:flex;flex-direction:column;gap:16px}
+.co-r{background:var(--b-denim);padding:24px 28px;display:flex;flex-direction:column;gap:12px}
+.steps{display:flex;gap:6px;font-size:12px;font-weight:700;color:var(--b-mute);flex-wrap:wrap}
+.steps span{display:flex;gap:6px;align-items:center}
+.steps span.on{color:var(--b-navy)}
+.steps span i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#dfe5ea;font-style:normal;font-size:11px}
+.steps span.on i{background:var(--b-navy);color:#fff}
+.fld{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;min-width:0}
+.fld input,.fld select{font:inherit;font-weight:500;min-height:44px;border:1.5px solid #cfd6dc;border-radius:8px;padding:0 12px;background:#fff;color:var(--b-ink);width:100%}
+.fld small{font-weight:500;color:var(--b-mute)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.paym{display:flex;flex-direction:column;gap:8px}
+.paym label{display:flex;gap:10px;align-items:center;border:1.5px solid #cfd6dc;border-radius:8px;padding:10px 12px;font-size:13px;font-weight:600;background:#fff}
+.paym label.on{border-color:var(--b-navy);box-shadow:inset 0 0 0 1px var(--b-navy)}
+.paym label span{margin-left:auto;font-size:11px;color:var(--b-mute);font-weight:500}
+.sum-line{display:flex;justify-content:space-between;font-size:13px}
+.sum-line.tot{font-weight:800;font-size:17px;border-top:1px solid #d5dbe0;padding-top:10px}
+
+/* gracias + cuenta */
+.ty{padding:28px;display:grid;grid-template-columns:1.2fr 1fr;gap:24px}
+.ty-ok{display:flex;gap:12px;align-items:center}
+.ty-ok i{width:44px;height:44px;border-radius:50%;background:#e6f4ec;color:#1f7a4d;display:grid;place-items:center;font-style:normal;font-weight:800}
+.timeline{display:flex;flex-direction:column;gap:10px;font-size:13px;border-left:2px solid var(--b-line);padding-left:16px;margin-left:6px}
+.timeline div{position:relative}
+.timeline div::before{content:"";position:absolute;left:-23px;top:5px;width:12px;height:12px;border-radius:50%;background:#cfd6dc}
+.timeline div.on::before{background:var(--b-navy)}
+.acct{display:grid;grid-template-columns:220px 1fr;min-height:420px}
+.acct nav{background:var(--b-denim);padding:18px;display:flex;flex-direction:column;gap:4px;font-size:13.5px;font-weight:600}
+.acct nav span{padding:9px 12px;border-radius:8px}
+.acct nav span.on{background:#fff;color:var(--b-navy);box-shadow:0 1px 0 var(--b-line)}
+.acct main{padding:22px 26px;display:flex;flex-direction:column;gap:14px}
+.ord{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;border:1px solid var(--b-line);border-radius:10px;padding:12px 14px;font-size:13px}
+.st{font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px}
+.st.p{background:#fff4dc;color:#7a4b00}.st.e{background:#e3eefb;color:#1a3955}.st.c{background:#e6f4ec;color:#1f7a4d}
+
+/* responsive del documento y mockups */
+@media (max-width:900px){
+  .m-nav,.m-search{display:none}
+  .m-hero{grid-template-columns:1fr}
+  .m-hero .img{min-height:260px;order:-1}
+  .m-trust{grid-template-columns:1fr 1fr}
+  .m-trust div:nth-child(3){border-left:0}
+  .m-trust div:nth-child(n+3){border-top:1px solid var(--b-line)}
+  .m-grid{grid-template-columns:repeat(2,1fr);padding:0 14px 20px;gap:12px}
+  .m-lines{grid-template-columns:1fr;padding:16px 14px}
+  .m-sec-h{padding:8px 14px 12px;flex-wrap:wrap}
+  .pdp,.co,.ty{grid-template-columns:1fr}
+  .acct{grid-template-columns:1fr}
+  .acct nav{flex-direction:row;overflow-x:auto}
+  .acct nav span{white-space:nowrap}
+}
+@media (max-width:560px){
+  .m-head{padding:12px 14px;gap:10px}
+  .m-hero .copy{padding:28px 18px}
+  .m-hero .copy .mh1{font-size:30px}
+  .pdp{padding:16px 14px}
+  .pdp-gal{grid-template-columns:1fr}.pdp-thumbs{flex-direction:row;order:2}.pdp-thumbs div{width:56px}
+  .co-l,.co-r{padding:18px 14px}
+  .row2{grid-template-columns:1fr}
+  .pdp-perks{grid-template-columns:1fr}
+  .pc-arrow{opacity:1;width:28px;height:28px}
+}
+.mockcap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px;margin:28px 0 12px}
+.mockcap p{color:var(--muted);font-size:.92rem;max-width:62ch}
+.split{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:28px;align-items:start}
+@media (max-width:980px){.split{grid-template-columns:1fr}}
+.note-ex{font-size:.78rem;color:var(--muted)}
+.phase{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:16px 0;border-top:1px solid var(--line)}
+.phase:first-child{border-top:0}
+.phase b.n{font-family:var(--display);font-size:1.35rem}
+@media (max-width:560px){.phase{grid-template-columns:1fr;gap:6px}}
+.ask li{padding-block:4px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="wrap">
+<header class="cover">
+  <div class="meta"><span class="pill">Propuesta para aprobación</span><span class="pill">14 oct 2026</span><span class="pill">WordPress · Divi 5 · WooCommerce</span></div>
+  <h1>Buckler: una tienda más rápida, más clara y lista para vender con pauta</h1>
+  <p class="lead">Mantenemos la marca que ya funciona (navy, lima y Manrope) y cambiamos lo que frena la compra: una página que carga casi 200 archivos, menús duplicados por línea, un carrito sin recomendaciones y fichas de producto con títulos repetidos para Google. Esta propuesta muestra cómo quedaría cada pantalla y qué plugins salen.</p>
+  <div class="kpis" aria-label="Diagnóstico medido el 14 de octubre de 2026">
+    <div class="kpi"><b>191</b><span>peticiones en la home (escritorio)</span></div>
+    <div class="kpi"><b>~153</b><span>scripts por página</span></div>
+    <div class="kpi"><b>3 H1</b><span>en la home; 2 en cada producto</span></div>
+    <div class="kpi"><b>37</b><span>nombres de producto repetidos (Slim/Curvy)</span></div>
+    <div class="kpi"><b>68</b><span>imágenes sin texto alternativo en la home</span></div>
+    <div class="kpi"><b>18+</b><span>plugins que cargan en el front</span></div>
+  </div>
+  <p class="note-ex">Medido con Playwright desde la nube, sin caché de navegador. El objetivo de la fase 1 es bajar de 60 peticiones y dejar un solo H1 por página.</p>
+</header>
+
+<section class="block" id="estructura">
+  <div class="stack">
+    <p class="eyebrow">01 · Estructura</p>
+    <h2>Mapa del sitio propuesto</h2>
+    <p class="lead">Una sola tienda con filtros por línea, en lugar de árboles de categorías repetidos (jeans, jeans-linea-slim, jeans-sale…). Las URLs actuales se conservan con redirecciones 301 para no perder posicionamiento ni enlaces de anuncios.</p>
+  </div>
+  <div class="grid3" style="margin-top:24px">
+    <div class="card stack"><h3>Comprar</h3><ul class="clean">
+      <li>Inicio</li><li>Tienda (filtros: línea, prenda, talla, precio, oferta)</li>
+      <li>Línea Slim · tallas 6–12</li><li>Línea Curvy · tallas 14–24</li>
+      <li>Lo nuevo</li><li>¡Sale!</li><li>Categorías SEO: Jeans, Pantalones, Prendas cortas, Faldas, Sets y overoles, Chaquetas y chalecos</li></ul></div>
+    <div class="card stack"><h3>Decidir</h3><ul class="clean">
+      <li>Ficha de producto con video, guía de tallas y siluetas</li>
+      <li>Guía de tallas (página propia indexable)</li>
+      <li>Envíos y cambios (resumen claro)</li><li>Preguntas frecuentes (con schema FAQ)</li>
+      <li>Paga con Addi / medios de pago</li></ul></div>
+    <div class="card stack"><h3>Comprar y volver</h3><ul class="clean">
+      <li>Carrito flotante + página de carrito</li><li>Finalizar compra en 3 pasos</li>
+      <li>Página de gracias con seguimiento</li><li>Mi cuenta: pedidos, direcciones, favoritos</li>
+      <li>Rastrear pedido (por número y cédula)</li><li>Políticas legales (ACF actual)</li></ul></div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <h3>Menú principal</h3>
+    <p style="margin-top:6px;color:var(--muted)">Tienda ▾ (mega menú con Slim / Curvy y prendas) · Lo nuevo · Línea Slim · Línea Curvy · <span style="color:var(--bad);font-weight:700">¡Sale!</span> · Guía de tallas — y a la derecha: buscador, favoritos, cuenta y carrito.</p>
+  </div>
+</section>
+
+<section class="block" id="visual">
+  <div class="stack">
+    <p class="eyebrow">02 · Dirección visual</p>
+    <h2>La misma marca, con más aire y mejor contraste</h2>
+    <p class="lead">El navy pasa a ser el color de acción y el lima se reserva para fondos navy y etiquetas de “Nuevo”: sobre blanco no se lee (contraste 1,3:1). Fotografía protagonista, tipografía Manrope en todo el sitio y bordes suaves solo donde hay algo que tocar.</p>
+  </div>
+  <div class="grid2" style="margin-top:24px">
+    <div class="card stack">
+      <h3>Paleta y contraste (WCAG)</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">
+        <div style="background:#1a3955;color:#fff;border-radius:8px;padding:12px;font-size:.82rem"><b>Navy #1A3955</b><br>blanco encima 11,9:1</div>
+        <div style="background:#e4ec6a;color:#1a3955;border-radius:8px;padding:12px;font-size:.82rem"><b>Lima #E4EC6A</b><br>navy encima 9,4:1</div>
+        <div style="background:#f2f4f6;color:#10202f;border-radius:8px;padding:12px;font-size:.82rem;border:1px solid #dde1e4"><b>Denim claro #F2F4F6</b><br>fondos de apoyo</div>
+        <div style="background:#b3261e;color:#fff;border-radius:8px;padding:12px;font-size:.82rem"><b>Oferta #B3261E</b><br>blanco encima 6,5:1</div>
+      </div>
+    </div>
+    <div class="card stack">
+      <h3>Tipografía y escala</h3>
+      <p style="font-weight:800;font-size:1.9rem;line-height:1.1;color:var(--fg)">Manrope 800 · Títulos</p>
+      <p style="font-weight:600">Manrope 600 · Nombres de producto y botones</p>
+      <p style="color:var(--muted)">Manrope 400 · Texto, 16 px mínimo en móvil para evitar el zoom de iOS en formularios.</p>
+      <p class="note-ex">Escala: 14 · 16 · 20 · 24 · 32 · 40 px. Se sirve local desde el plugin (sin Google Fonts) para ganar velocidad.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="home">
+  <div class="mockcap"><div><p class="eyebrow">03 · Inicio</p><h2>Home que vende desde el primer pantallazo</h2></div>
+  <p>El texto del banner deja de estar dentro de la foto: así Google lo lee, se traduce bien en móvil y cumple accesibilidad. En la maqueta usamos una foto de producto como ejemplo. Debajo, las dos líneas y lo nuevo con pestañas Slim/Curvy (un solo H1).</p></div>
+  <div class="frame mock" role="img" aria-label="Maqueta de la página de inicio propuesta">
+    <div class="bar"><i></i><i></i><i></i><span>buckler.com.co</span></div>
+    <div class="m-topbar">Envíos gratis a toda Colombia · Paga en 3 cuotas sin interés con <b>Addi</b></div>
+    <div class="m-head">
+      <span class="m-logo">Buckler<sup></sup></span>
+      <nav class="m-nav"><span>Tienda ▾</span><span>Lo nuevo</span><span>Línea Slim</span><span>Línea Curvy</span><span class="sale">¡Sale!</span></nav>
+      <span class="m-search">⌕ Buscar jeans, faldas, tallas…</span>
+      <span class="m-icons">
+        <span class="m-ico">{{ICON:heart}}</span><span class="m-ico">{{ICON:user}}</span>
+        <span class="m-ico">{{ICON:bag}}<span class="m-badge">2</span></span>
+      </span>
+    </div>
+    <div class="m-hero">
+      <div class="copy">
+        <small>COLECCIÓN 2026 · HECHO EN MEDELLÍN</small>
+        <p class="mh1">Aquí está tu nuevo favorito</p>
+        <p>Jeans y prendas en denim que realzan tu figura, en tallas 6 a 24.</p>
+        <div class="m-btns"><span class="m-btn lime">Ver Línea Slim</span><span class="m-btn ghost">Ver Línea Curvy</span></div>
+      </div>
+      <div class="img" style="background-image:url({{IMG:815P}})"></div>
+    </div>
+    <div class="m-trust">
+      <div>{{ICON:truck}}<span><b>Envío gratis</b>a toda Colombia</span></div>
+      <div>{{ICON:card}}<span><b>Addi, Bold, Wompi</b>y tarjetas</span></div>
+      <div>{{ICON:swap}}<span><b>Cambios fáciles</b>[PENDIENTE: plazo]</span></div>
+      <div>{{ICON:ruler}}<span><b>Guía de tallas</b>y siluetas</span></div>
+    </div>
+    <div class="m-lines">
+      <div class="m-line" style="background-image:url({{IMG:9897R}})"><div><b>LÍNEA SLIM</b><span>Tallas 6 a 12 · 44 estilos</span></div></div>
+      <div class="m-line" style="background-image:url({{IMG:814P}})"><div><b>LÍNEA CURVY</b><span>Tallas 14 a 24 · 89 estilos</span></div></div>
+    </div>
+    <div class="m-sec-h"><h2>Lo nuevo</h2>
+      <div class="m-tabs" role="group" aria-label="Filtrar lo nuevo por línea"><button type="button" aria-pressed="true">Slim</button><button type="button" aria-pressed="false">Curvy</button></div>
+    </div>
+    <div class="m-grid" id="gridDemo">{{GRID}}</div>
+  </div>
+  <p class="note-ex" style="margin-top:10px">Prueba la grilla: cada tarjeta tiene su propio slider (flechas, deslizar en móvil o teclado). Al pasar el cursor se ven las tallas disponibles. Los conteos de estilos salen del catálogo actual.</p>
+</section>
+
+<section class="block" id="grilla">
+  <div class="stack">
+    <p class="eyebrow">04 · Tarjeta de producto</p>
+    <h2>Slider de galería por producto, sin plugin</h2>
+    <p class="lead">Hoy el slider lo hace Divi Essential y deja tarjetas en blanco hasta que carga el JavaScript. La nueva tarjeta usa <code>scroll-snap</code> nativo: la primera foto se ve al instante, las demás cargan cuando el usuario desliza.</p>
+  </div>
+  <div class="grid3" style="margin-top:20px">
+    <div class="card stack"><h3>Qué muestra</h3><ul class="clean"><li>Galería del producto (hasta 5 fotos)</li><li>Etiqueta Nuevo / -30 % / Agotado</li><li>Tallas disponibles al pasar el cursor</li><li>Corazón de favoritos</li><li>Precio y cuota Addi</li></ul></div>
+    <div class="card stack"><h3>Accesibilidad</h3><ul class="clean"><li>Flechas con nombre (“Foto siguiente de …”)</li><li>Funciona con teclado y lector de pantalla</li><li>Respeta “reducir movimiento”</li><li>Áreas táctiles de 44 px</li></ul></div>
+    <div class="card stack"><h3>Rendimiento</h3><ul class="clean"><li>~2 KB de JS propio, sin jQuery</li><li>Imágenes WebP con <code>srcset</code> 600×900</li><li>Compatible con caché de página</li><li>Sin consultas extra: usa la galería de Woo</li></ul></div>
+  </div>
+</section>
+
+<section class="block" id="producto">
+  <div class="mockcap"><div><p class="eyebrow">05 · Ficha de producto</p><h2>Video, talla y compra en un solo vistazo</h2></div>
+  <p>El video que hoy pone BodyCommerce se migra a un campo propio y aparece como un elemento más de la galería. Si eliges talla agotada, ofrecemos avisarte cuando vuelva.</p></div>
+  <div class="frame mock" role="img" aria-label="Maqueta de la ficha de producto">
+    <div class="bar"><i></i><i></i><i></i><span>buckler.com.co/producto/jean-bota-ancha-dama-oxford-tiro-alto/</span></div>
+    <div class="pdp">
+      <div class="pdp-gal">
+        <div class="pdp-thumbs">
+          <div class="on" style="background-image:url({{IMG:9897R}})"></div>
+          <div style="background-image:url({{IMG:9897R1}})"></div>
+          <div class="vid">▶ VIDEO</div>
+        </div>
+        <div class="pdp-main" style="background-image:url({{IMG:9897R}})"><span class="play">▶ Ver en movimiento</span></div>
+      </div>
+      <div class="pdp-info">
+        <p class="crumbs">Inicio / Línea Slim / Jeans</p>
+        <p class="mh1">Jean bota ancha Oxford tiro alto · Línea Slim</p>
+        <p class="pdp-price">$154.900</p>
+        <p class="pdp-addi">Págalo en 3 cuotas de $51.633 sin interés con <b>Addi</b></p>
+        <div class="size-row"><b>Talla: 8</b><a href="#producto">Guía de tallas</a></div>
+        <div class="sizes" role="group" aria-label="Elige tu talla">
+          <button type="button">6</button><button type="button" aria-pressed="true">8</button><button type="button">10</button><button type="button" disabled aria-label="Talla 12 agotada">12</button>
+        </div>
+        <p style="font-size:12.5px;color:var(--b-mute)">¿Usas talla 14 o más? <b style="color:var(--b-navy)">Ver este modelo en Línea Curvy →</b></p>
+        <div class="m-btns"><span class="m-btn navy block">Añadir al carrito</span></div>
+        <div class="pdp-perks">
+          <div>{{ICON:truck}}Envío gratis a toda Colombia</div>
+          <div>{{ICON:swap}}Cambios: [PENDIENTE: plazo]</div>
+        </div>
+        <details class="acc" open><summary>Detalles que la hacen única</summary><ul><li>Silueta oxford y tiro alto</li><li>Hecho en Medellín, Colombia</li><li>Modelo: 1,60 m, usa talla 8 (dato tomado de la ficha actual)</li></ul></details>
+        <details class="acc"><summary>Guía de tallas y siluetas</summary><p>Se toma de las imágenes ACF actuales.</p></details>
+        <details class="acc"><summary>Envíos y cambios</summary><p>Resumen de la política ACF “Política de envío”.</p></details>
+        <details class="acc"><summary>Reseñas</summary><p>Reseñas nativas de WooCommerce con estrellas en Google.</p></details>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3>Productos duplicados Slim / Curvy (SEO)</h3>
+    <p style="margin-top:6px;color:var(--muted)">Hay 37 nombres repetidos porque cada modelo existe dos veces. Recomendación: conservar los dos productos (inventario y SKU separados) pero añadir la línea al título y al H1 (“… · Línea Curvy”), enlazarlos entre sí (“Ver este modelo en …”) y diferenciar la meta descripción. Fusionarlos en un solo producto es posible después, pero toca inventario, pedidos y feeds: no lo recomiendo en esta fase.</p>
+  </div>
+</section>
+
+<section class="block" id="carrito">
+  <div class="split">
+    <div class="stack">
+      <p class="eyebrow">06 · Carrito flotante</p>
+      <h2>Sugerencias que sí le quedan</h2>
+      <p class="lead">Reemplaza a Side Cart Premium. Las recomendaciones se filtran por la talla que la clienta ya eligió y por su línea, y solo muestran productos con esa talla en stock.</p>
+      <ul class="clean">
+        <li>Barra de envío gratis o de beneficio [PENDIENTE: confirmar si hay monto mínimo]</li>
+        <li>Cambiar cantidad y talla sin salir del carrito (AJAX con los fragments de Woo)</li>
+        <li>Añadir sugerido en un clic, ya con la talla correcta</li>
+        <li>Botón directo a pagar + medios de pago visibles</li>
+        <li>Foco atrapado en el panel, cierre con Esc y anuncio de cambios al lector de pantalla</li>
+      </ul>
+      <p class="note-ex">Demo interactiva: cambia la talla para ver cómo cambian las sugerencias. Productos y precios reales; la disponibilidad por talla es de ejemplo.</p>
+    </div>
+    <div class="phone mock" id="cartDemo">
+      <div class="cartdemo" style="min-height:640px">
+        <div class="drawer" role="dialog" aria-label="Carrito de compras (demo)">
+          <div class="dr-head"><h2>Tu carrito (<span id="cCount">1</span>)</h2><span aria-hidden="true">✕</span></div>
+          <div class="dr-ship">Tu envío es <b>gratis</b> a toda Colombia<div class="meter"><i style="width:100%"></i></div></div>
+          <div class="dr-items" id="cItems">
+            <div class="ci"><img src="{{IMG:815P}}" alt=""><div><b>Jean bota campana Flare tiro alto</b><small>Línea Curvy · Talla <span id="cSize">16</span></small><div class="qty"><button type="button" aria-label="Quitar uno">−</button><span>1</span><button type="button" aria-label="Añadir uno">+</button></div></div><b>$149.900</b></div>
+          </div>
+          <div class="dr-sug">
+            <h3>Combínalo en tu talla</h3>
+            <p class="note">Mostrando prendas Curvy disponibles en talla <b id="sugSize">16</b></p>
+            <div class="pick" role="group" aria-label="Talla de ejemplo"><button type="button" data-s="14">14</button><button type="button" data-s="16" aria-pressed="true">16</button><button type="button" data-s="18">18</button><button type="button" data-s="22">22</button></div>
+            <div class="sug-row" id="sugRow"></div>
+          </div>
+          <div class="dr-foot">
+            <div class="dr-total"><span>Subtotal</span><span id="cTotal">$149.900</span></div>
+            <span class="m-btn navy block">Finalizar compra</span>
+            <div class="dr-pay"><span>ADDI</span><span>BOLD</span><span>WOMPI</span><span>PSE</span><span>VISA</span><span>NEQUI</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="checkout">
+  <div class="mockcap"><div><p class="eyebrow">07 · Finalizar compra</p><h2>Checkout en tres pasos, con cédula</h2></div>
+  <p>Menos campos, teclado numérico para cédula y celular, departamento → ciudad en cascada y las pasarelas actuales (Bold, Wompi, Rapyd, Addi) sin cambios.</p></div>
+  <div class="frame mock" role="img" aria-label="Maqueta del checkout">
+    <div class="bar"><i></i><i></i><i></i><span>buckler.com.co/finalizar-compra/</span></div>
+    <div class="co">
+      <div class="co-l">
+        <div class="steps"><span class="on"><i>1</i>Datos</span><span>›</span><span class="on"><i>2</i>Envío</span><span>›</span><span><i>3</i>Pago</span></div>
+        <div class="row2"><label class="fld">Nombre<input value="Laura" readonly></label><label class="fld">Apellidos<input value="Gómez" readonly></label></div>
+        <div class="row2"><label class="fld">Cédula<input value="1.036…" readonly><small>Para la factura y rastrear tu pedido</small></label><label class="fld">Celular<input value="300 …" readonly></label></div>
+        <div class="row2"><label class="fld">Departamento<select disabled><option>Antioquia</option></select></label><label class="fld">Ciudad<select disabled><option>Medellín</option></select></label></div>
+        <label class="fld">Dirección<input value="Cra 43A # …" readonly></label>
+        <div class="paym" role="radiogroup" aria-label="Medio de pago">
+          <label class="on">◉ Tarjeta, PSE o Nequi <span>Bold / Wompi</span></label>
+          <label>○ Paga a cuotas sin interés <span>Addi</span></label>
+          <label>○ Otros medios <span>Rapyd</span></label>
+        </div>
+        <span class="m-btn navy block">Pagar $149.900</span>
+      </div>
+      <aside class="co-r">
+        <h3 style="color:var(--b-navy)">Tu pedido</h3>
+        <div class="ci"><img src="{{IMG:815P}}" alt=""><div><b>Jean Flare tiro alto</b><small>Curvy · Talla 16 · x1</small></div><b>$149.900</b></div>
+        <div class="sum-line"><span>Subtotal</span><span>$149.900</span></div>
+        <div class="sum-line"><span>Envío</span><span>Gratis</span></div>
+        <div class="sum-line tot"><span>Total</span><span>$149.900</span></div>
+        <p style="font-size:12px;color:var(--b-mute)">Compra protegida · [PENDIENTE: texto de cambios y garantía aprobado]</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="postventa">
+  <div class="stack"><p class="eyebrow">08 · Gracias y Mi cuenta</p><h2>Después de pagar, que todo sea claro</h2></div>
+  <div class="grid2" style="margin-top:20px">
+    <div class="frame mock" role="img" aria-label="Maqueta de la página de gracias">
+      <div class="bar"><i></i><i></i><i></i><span>…/pedido-recibido/</span></div>
+      <div class="ty" style="grid-template-columns:1fr">
+        <div class="ty-ok"><i>✓</i><div><h2 style="font-size:20px;color:var(--b-navy)">¡Gracias, Laura!</h2><p style="color:var(--b-mute);font-size:13px">Pedido #[número] · te escribimos a tu correo</p></div></div>
+        <div class="timeline"><div class="on">Pago confirmado</div><div>En preparación</div><div>Enviado (te mandamos la guía)</div><div>Entregado</div></div>
+        <div class="m-btns"><span class="m-btn navy">Ver mi pedido</span><span class="m-btn line">Seguir comprando</span></div>
+        <p style="font-size:12.5px;color:var(--b-mute)">Evento <code>purchase</code> a GA4 y Meta (con deduplicación por CAPI) solo una vez por pedido.</p>
+      </div>
+    </div>
+    <div class="frame mock" role="img" aria-label="Maqueta de Mi cuenta">
+      <div class="bar"><i></i><i></i><i></i><span>…/mi-cuenta/</span></div>
+      <div class="acct">
+        <nav><span class="on">Mis pedidos</span><span>Favoritos</span><span>Direcciones</span><span>Mis datos</span><span>Salir</span></nav>
+        <main>
+          <h2 style="font-size:18px;color:var(--b-navy)">Hola, Laura</h2>
+          <div class="ord"><span><b>#[número]</b><br><small>Jean Flare · 1 prenda</small></span><span class="st e">Enviado</span><span>Rastrear</span></div>
+          <div class="ord"><span><b>#[número]</b><br><small>Set jacquard · 2 prendas</small></span><span class="st c">Entregado</span><span>Comprar de nuevo</span></div>
+          <div class="ord"><span><b>#[número]</b><br><small>Bermuda gamuza · 1 prenda</small></span><span class="st p">Pendiente de pago</span><span>Pagar</span></div>
+        </main>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="plugins">
+  <div class="stack"><p class="eyebrow">09 · Velocidad</p><h2>Qué plugins salen y qué los reemplaza</h2>
+  <p class="lead">Todo lo nuevo vive en un solo plugin propio, <code>buckler-core</code>, que carga sus archivos solo en las páginas donde se usan. Cada reemplazo se prueba en el sitio real antes de desactivar el plugin viejo.</p></div>
+  <div class="tbl" style="margin-top:20px"><table>
+    <thead><tr><th>Plugin actual</th><th>Uso detectado</th><th>Reemplazo en buckler-core</th><th>Decisión</th></tr></thead>
+    <tbody>
+      <tr><td>Divi Essential (dnxte)</td><td>Slider de producto, módulos de la home</td><td>Tarjeta de producto con slider nativo + módulos Divi 5 nativos</td><td><span class="pill bad">Eliminar</span></td></tr>
+      <tr><td>Divi BodyCommerce (Divi Engine)</td><td>Video en galería, plantillas Woo</td><td>Campo de video propio + migración automática de los videos existentes</td><td><span class="pill bad">Eliminar</span></td></tr>
+      <tr><td>Side Cart Premium (Xootix)</td><td>Carrito flotante</td><td>Carrito flotante con sugeridos por talla</td><td><span class="pill bad">Eliminar</span></td></tr>
+      <tr><td>Themify Product Filter + filtrado-productos-ufo</td><td>Filtros de la tienda</td><td>Filtros propios por línea, prenda, talla y precio (consulta por taxonomías, cacheable)</td><td><span class="pill bad">Eliminar</span></td></tr>
+      <tr><td>FiboSearch (ajax-search)</td><td>Buscador</td><td>Búsqueda AJAX propia sobre la REST de Woo con sugerencias</td><td><span class="pill warn">Evaluar</span></td></tr>
+      <tr><td>Divi Assistant</td><td>Herramienta de edición</td><td>No hace falta en el front</td><td><span class="pill bad">Eliminar</span></td></tr>
+      <tr><td>Official Facebook Pixel</td><td>Pixel duplicado</td><td>Eventos desde GTM + CAPI de Facebook for WooCommerce</td><td><span class="pill bad">Eliminar</span></td></tr>
+      <tr><td>Jetpack</td><td>[PENDIENTE: qué módulos usas]</td><td>Según uso</td><td><span class="pill warn">Evaluar</span></td></tr>
+      <tr><td>YayPricing Pro</td><td>Reglas de precio y descuentos</td><td>Se mantiene (lógica de negocio); solo se limitan sus scripts al carrito</td><td><span class="pill ok">Mantener</span></td></tr>
+      <tr><td>Bold, Wompi, Rapyd, Addi</td><td>Pasarelas de pago</td><td>Sin cambios</td><td><span class="pill ok">Mantener</span></td></tr>
+      <tr><td>Facebook for WooCommerce</td><td>Catálogo y CAPI</td><td>Se mantiene para el catálogo de Meta</td><td><span class="pill ok">Mantener</span></td></tr>
+      <tr><td>CleanTalk, Save Abandoned Carts, ACF Pro</td><td>Antispam, recuperación de carritos, campos</td><td>Se mantienen</td><td><span class="pill ok">Mantener</span></td></tr>
+    </tbody></table></div>
+</section>
+
+<section class="block" id="snippets">
+  <div class="stack"><p class="eyebrow">10 · Funciones que conservamos</p><h2>Tus snippets, reescritos y mejorados</h2></div>
+  <div class="tbl" style="margin-top:20px"><table>
+    <thead><tr><th>Función</th><th>Cómo quedará</th><th>Mejora</th></tr></thead>
+    <tbody>
+      <tr><td>Destacado (★) → etiqueta “Nuevo”</td><td>Marcar un producto como destacado le pone la etiqueta “Nuevo” en grilla y ficha, y lo incluye en “Lo nuevo”</td><td>Fecha de caducidad opcional (p. ej. 30 días) y sin consultas por tarjeta</td></tr>
+      <tr><td>Vaciar carrito a la hora</td><td>Los carritos inactivos se vacían a los 60 minutos</td><td>Aviso previo en el carrito y tiempo configurable en ajustes</td></tr>
+      <tr><td>Descontar inventario en “Pendiente de pago”</td><td>El stock se reserva al crear el pedido</td><td>Se devuelve automáticamente si el pedido se cancela o caduca; compatible con HPOS</td></tr>
+      <tr><td>Buscar pedidos por cédula</td><td>Búsqueda en el admin de pedidos por número de cédula</td><td>Indexado para HPOS; también en “Rastrear pedido” para la clienta</td></tr>
+      <tr><td>Checkbox “Impreso”</td><td>Casilla en el pedido para marcar si ya se imprimió</td><td>Columna y filtro en la lista de pedidos + acción masiva</td></tr>
+    </tbody></table></div>
+  <p class="note-ex" style="margin-top:10px">Necesito el código actual de estos snippets (tema hijo o plugin de snippets) para no cambiar ningún comportamiento que hoy funcione.</p>
+</section>
+
+<section class="block" id="seo">
+  <div class="stack"><p class="eyebrow">11 · SEO, pauta y accesibilidad</p><h2>Preparado para Google, Meta y para todas las personas</h2></div>
+  <div class="grid3" style="margin-top:20px">
+    <div class="card stack"><h3>SEO técnico</h3><ul class="clean">
+      <li>Un H1 por página; títulos y metas por plantilla</li><li>Schema Product con precio, stock, talla y reseñas</li>
+      <li>Schema Organization, Breadcrumb y FAQ</li><li>Corregir “Buckler Jenas” en el nombre del sitio</li>
+      <li>Redirecciones 301 de categorías viejas</li><li>Alt automático en fotos de producto (nombre + línea + n.º)</li></ul></div>
+    <div class="card stack"><h3>Pauta Meta y Google</h3><ul class="clean">
+      <li>Data layer GA4 de comercio: view_item, add_to_cart, begin_checkout, purchase</li>
+      <li>Un solo píxel (hoy hay dos) + CAPI con deduplicación</li>
+      <li>Feed para Google Merchant con talla, color y línea</li><li>Landings sin menú para campañas (en borrador)</li>
+      <li>Modo de consentimiento [PENDIENTE: confirmar requisito]</li></ul></div>
+    <div class="card stack"><h3>Accesibilidad (WCAG 2.2 AA)</h3><ul class="clean">
+      <li>Contrastes revisados (lima solo sobre navy)</li><li>Navegación completa con teclado y foco visible</li>
+      <li>Etiquetas reales en formularios y errores claros</li><li>Botones de 44 px en móvil</li>
+      <li>Texto del banner como texto, no en la imagen</li></ul></div>
+  </div>
+</section>
+
+<section class="block" id="fases">
+  <div class="stack"><p class="eyebrow">12 · Plan de trabajo</p><h2>Por fases, sin apagar la tienda</h2>
+  <p class="lead">Cada fase se construye en borrador, se prueba en 1440 y 390 px y se publica cuando la apruebes.</p></div>
+  <div class="card" style="margin-top:20px">
+    <div class="phase"><b class="n">Fase 1</b><div><h3>Base y velocidad</h3><p style="color:var(--muted)">buckler-core: header, footer, iconos, tarjeta con slider, video de producto (con migración), snippets reescritos, fuentes locales, carga condicional de scripts.</p></div></div>
+    <div class="phase"><b class="n">Fase 2</b><div><h3>Tienda y producto</h3><p style="color:var(--muted)">Plantillas de tienda, categorías, líneas y ficha; filtros propios; títulos Slim/Curvy; schema.</p></div></div>
+    <div class="phase"><b class="n">Fase 3</b><div><h3>Conversión</h3><p style="color:var(--muted)">Carrito flotante con sugeridos por talla, carrito, checkout en pasos, gracias y Mi cuenta.</p></div></div>
+    <div class="phase"><b class="n">Fase 4</b><div><h3>Home, contenidos y pauta</h3><p style="color:var(--muted)">Home nueva, guía de tallas, FAQ, políticas, data layer, feed y landings de campaña. Desactivación final de plugins.</p></div></div>
+  </div>
+</section>
+
+<section class="block" id="pendientes">
+  <div class="stack"><p class="eyebrow">13 · Lo que necesito de ti</p><h2>Para arrancar la fase 1</h2></div>
+  <ol class="ask" style="margin-top:14px">
+    <li>Aprobación de esta dirección (o cambios que quieras).</li>
+    <li>El código de los 5 snippets actuales.</li>
+    <li>Fotos del banner principal <b>sin texto</b> (escritorio y móvil).</li>
+    <li>Plazo real de cambios y garantía, y si el envío gratis tiene monto mínimo.</li>
+    <li>Qué módulos de Jetpack usas y si quieres conservar FiboSearch.</li>
+    <li>Un entorno de staging o permiso para probar en borrador sobre el sitio en vivo.</li>
+  </ol>
+</section>
+</div>
+
+<script>
+// Datos reales del catálogo (nombre, precio, línea); disponibilidad por talla = ejemplo.
+const IMGS = {{IMGMAP}};
+const fmt = n => "$" + n.toLocaleString("es-CO");
+const GRID = [
+  {n:"Jean holgado Slouchy tiro alto", l:"Línea Slim", p:149900, img:["819R","819R1"], tag:"new", sz:["6","8","10","12"], off:["12"]},
+  {n:"Jean bota ancha Oxford tiro alto", l:"Línea Slim", p:154900, img:["9897R","9897R1"], tag:"new", sz:["6","8","10","12"], off:[]},
+  {n:"Jean bota ancha Palazzo tiro alto", l:"Línea Slim", p:157900, img:["9901R","9901R1"], tag:"", sz:["6","8","10","12"], off:["6"]},
+  {n:"Short dama tiro alto", l:"Línea Slim", p:119900, img:["9907R","9907R1"], tag:"new", sz:["6","8","10","12"], off:[]},
+];
+const ICON_HEART = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.5-9.2C1 8.3 3.3 5 6.6 5c2 0 3.4 1.1 4.2 2.4h2.4C14 6.1 15.4 5 17.4 5 20.7 5 23 8.3 21.5 11.8 19.5 16.4 12 21 12 21z"/></svg>';
+function card(p,i){
+  const imgs = p.img.map((k,j)=>`<img src="${IMGS[k]}" alt="${p.n}, ${p.l}, foto ${j+1} de ${p.img.length}" loading="lazy" width="360" height="540">`).join("");
+  const dots = p.img.map((_,j)=>`<i class="${j?'':'on'}"></i>`).join("");
+  const tag = p.tag==="new" ? '<span class="pc-tag new">NUEVO</span>' : "";
+  const sizes = p.sz.map(s=>`<span class="${p.off.includes(s)?'off':''}">${s}</span>`).join("");
+  return `<article class="pc">
+    <div class="pc-media">
+      <div class="pc-track" tabindex="0" aria-label="Fotos de ${p.n}">${imgs}</div>
+      ${tag}
+      <button class="pc-fav" type="button" aria-label="Guardar ${p.n} en favoritos" aria-pressed="false">${ICON_HEART}</button>
+      <button class="pc-arrow prev" type="button" aria-label="Foto anterior de ${p.n}">‹</button>
+      <button class="pc-arrow next" type="button" aria-label="Foto siguiente de ${p.n}">›</button>
+      <div class="pc-quick" aria-hidden="true">${sizes}</div>
+      <div class="pc-dots" aria-hidden="true">${dots}</div>
+    </div>
+    <span class="pc-line">${p.l}</span>
+    <h3>${p.n}</h3>
+    <span class="pc-price">${fmt(p.p)}</span>
+    <span class="pc-addi">o 3 cuotas de ${fmt(Math.round(p.p/3))} con Addi</span>
+  </article>`;
+}
+const grid = document.getElementById("gridDemo");
+grid.innerHTML = GRID.map(card).join("");
+grid.querySelectorAll(".pc-media").forEach(m=>{
+  const t = m.querySelector(".pc-track"), dots=[...m.querySelectorAll(".pc-dots i")];
+  const go = d => t.scrollBy({left: d*t.clientWidth, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  m.querySelector(".prev").addEventListener("click",()=>go(-1));
+  m.querySelector(".next").addEventListener("click",()=>go(1));
+  t.addEventListener("keydown",e=>{ if(e.key==="ArrowRight"){go(1);e.preventDefault()} if(e.key==="ArrowLeft"){go(-1);e.preventDefault()} });
+  t.addEventListener("scroll",()=>{ const i=Math.round(t.scrollLeft/t.clientWidth); dots.forEach((d,j)=>d.classList.toggle("on",j===i)); },{passive:true});
+  const f = m.querySelector(".pc-fav"); f.addEventListener("click",()=>{ const on=f.getAttribute("aria-pressed")!=="true"; f.setAttribute("aria-pressed",on); f.querySelector("svg").setAttribute("fill",on?"currentColor":"none"); });
+});
+document.querySelectorAll(".m-tabs button").forEach(b=>b.addEventListener("click",()=>{
+  b.parentElement.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b));
+}));
+document.querySelectorAll(".sizes button:not(:disabled)").forEach(b=>b.addEventListener("click",()=>{
+  b.parentElement.querySelectorAll("button").forEach(x=>x.removeAttribute("aria-pressed")); b.setAttribute("aria-pressed","true");
+  b.closest(".pdp-info").querySelector(".size-row b").textContent = "Talla: " + b.textContent;
+}));
+
+// Carrito demo: sugerencias Curvy filtradas por talla (disponibilidad de ejemplo)
+const SUG = [
+  {n:"Jean bota ancha Wide Leg tiro alto", p:149900, img:"814P", s:["14","16","18","22"]},
+  {n:"Jean bota ancha Wide Leg (otra vista)", p:149900, img:"814P1", s:["16","18"]},
+  {n:"Jean Flare tiro alto (vista lateral)", p:149900, img:"815P1", s:["14","22"]},
+  {n:"Jean holgado Slouchy tiro alto", p:149900, img:"819R1", s:["14","16","22"]},
+];
+let total = 149900, count = 1;
+function renderSug(size){
+  document.getElementById("sugSize").textContent = size;
+  document.getElementById("cSize").textContent = size;
+  const list = SUG.filter(x=>x.s.includes(size));
+  document.getElementById("sugRow").innerHTML = list.length ? list.map(x=>`<div class="sg"><img src="${IMGS[x.img]}" alt="" loading="lazy"><b>${x.n}</b><span>${fmt(x.p)}</span><button class="add" type="button" data-p="${x.p}" aria-label="Añadir ${x.n} talla ${size}">+ Añadir talla ${size}</button></div>`).join("") : `<p class="note">No hay sugerencias en talla ${size} ahora mismo.</p>`;
+}
+document.querySelector("#cartDemo .pick").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  b.parentElement.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b));
+  renderSug(b.dataset.s);
+});
+document.getElementById("sugRow").addEventListener("click",e=>{
+  const b=e.target.closest(".add"); if(!b || b.classList.contains("done")) return;
+  b.classList.add("done"); b.textContent="✓ Añadido";
+  total += +b.dataset.p; count++;
+  document.getElementById("cTotal").textContent = fmt(total);
+  document.getElementById("cCount").textContent = count;
+});
+renderSug("16");
+</script>
