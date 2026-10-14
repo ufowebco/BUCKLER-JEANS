@@ -89,8 +89,28 @@ Rama de trabajo: `claude/awesome-cori-fea1y8`. **No crear PR** salvo petición e
 - Radios/checkbox del formulario: repetir la clase para ganar especificidad.
 - El plugin no sube medios: Mediateca o importador en `buckler-core`.
 
-## Decisiones pendientes del cliente
-- Aprobación de la propuesta de diseño (`docs/propuesta/`).
+## buckler-core (plugin propio)
+Versión actual 0.1.0 → `dist/buckler-core-0.1.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+- `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
+  (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
+  `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
+- `[bk_lineas]`: `linea_slim_pc/mo`, `linea_curvy_pc/mo` a ancho completo, apilados.
+- `[bk_icon name="lucide:heart" label=""]`: Iconify local (`tools/icons.txt` → `python3 tools/icons.py`).
+- Video de producto: metas `_bk_video_id` / `_bk_video_url`; respaldo con la meta del plugin anterior
+  (opción `bk_legacy_video_key`, autodetectada al activar). Herramientas → Buckler: videos (detectar,
+  usar como respaldo, migrar). Se inserta con `woocommerce_product_thumbnails`; no se pinta si
+  BodyCommerce sigue activo (evita duplicado).
+- `core.js`: anti rage click (450 ms por control, controles ocupados bloqueados, sin doble submit),
+  anti dead click (tarjeta completa clicable, mensaje en línea en vez del `alert()` de variaciones),
+  quick back (barra de navegación inmediata, limpieza en `pageshow`/bfcache).
+- Pruebas locales: WP 7.1 + SQLite con stubs de Woo/ACF (wordpress.org está bloqueado en el entorno,
+  no se puede instalar WooCommerce aquí). Falta probar en el sitio real con Woo + flexslider.
+
+## Decisiones del cliente
+- 2026-10-14: propuesta de diseño **aprobada**.
+- Banners: se mantienen las imágenes ACF con texto dentro (rellenar el alt en la Mediateca).
+
+## Pendiente del cliente
 - Código de los snippets actuales (favorito→NUEVO, vaciar carrito a la hora, descontar stock en
   pendiente de pago, búsqueda de pedidos por cédula, checkbox “impreso”).
 - Lista de plugins que se pueden desactivar tras cada fase.

@@ -1,0 +1,342 @@
+/* ==========================================================================
+   Buckler Core: estilos globales
+   Tokens · accesibilidad · estados de interacción · banners · video de galería
+   ========================================================================== */
+
+:root {
+	--bk-navy: #1a3955;
+	--bk-navy-2: #122a40;
+	--bk-lime: #e4ec6a;
+	--bk-paper: #ffffff;
+	--bk-denim: #f2f4f6;
+	--bk-ink: #10202f;
+	--bk-mute: #5b6773;
+	--bk-line: #e3e7ea;
+	--bk-sale: #b3261e;
+	--bk-radius: 10px;
+	--bk-focus: 0 0 0 3px var(--bk-paper), 0 0 0 5px var(--bk-navy);
+	--bk-ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+/* Header sticky: Divi pone overflow en línea en body y #page-container. */
+body,
+#page-container {
+	overflow-x: clip !important;
+}
+
+/* --- Accesibilidad -------------------------------------------------------- */
+.bk-sr-only {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+	outline: none;
+	box-shadow: var(--bk-focus);
+	border-radius: 4px;
+}
+
+.bk-icon {
+	display: inline-block;
+	flex: none;
+	vertical-align: middle;
+}
+
+.bk-admin-note {
+	padding: 12px 16px;
+	background: #fff4dc;
+	color: #6b4100;
+	border-radius: 6px;
+}
+
+/* --- Estados de interacción (anti dead click / rage click) ---------------- */
+
+/* Cualquier control ocupado muestra que está trabajando y no admite más clics. */
+.is-busy,
+[aria-busy="true"] {
+	cursor: progress !important;
+	opacity: .72;
+}
+
+button.is-busy,
+.button.is-busy,
+.single_add_to_cart_button.is-busy {
+	position: relative;
+	color: transparent !important;
+}
+
+button.is-busy::after,
+.button.is-busy::after,
+.single_add_to_cart_button.is-busy::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	margin: auto;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	border: 2px solid currentColor;
+	border-color: var(--bk-paper) var(--bk-paper) transparent transparent;
+	animation: bk-spin .7s linear infinite;
+}
+
+/* Barra superior al navegar: respuesta inmediata al clic en un enlace. */
+html.bk-navigating::before {
+	content: "";
+	position: fixed;
+	z-index: 100000;
+	top: 0;
+	left: 0;
+	height: 3px;
+	width: 100%;
+	background: linear-gradient(90deg, var(--bk-navy), var(--bk-lime));
+	transform-origin: left;
+	animation: bk-progress 2.5s var(--bk-ease) forwards;
+	pointer-events: none;
+}
+
+/* Aviso en línea cuando falta elegir talla (reemplaza el alert de WooCommerce). */
+.bk-form-msg {
+	margin: 8px 0 12px;
+	padding: 10px 12px;
+	border-radius: 8px;
+	background: #fdecea;
+	color: #8a1c14;
+	font-weight: 600;
+	font-size: .9rem;
+}
+
+.variations.bk-needs-choice {
+	animation: bk-shake .4s ease;
+	border-radius: 8px;
+	box-shadow: 0 0 0 2px var(--bk-sale);
+}
+
+/* Tarjetas: toda la superficie es clicable. */
+.products .product,
+.bk-card {
+	cursor: pointer;
+}
+
+/* --- Banners a ancho completo [bk_hero] [bk_lineas] ------------------------ */
+.bk-hero,
+.bk-lineas {
+	width: 100%;
+	max-width: none;
+	margin: 0;
+}
+
+.bk-banner__picture,
+.bk-banner__img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.bk-carousel {
+	position: relative;
+	background: var(--bk-navy);
+}
+
+.bk-carousel__track {
+	display: flex;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: none;
+	overscroll-behavior-x: contain;
+}
+
+.bk-carousel__track::-webkit-scrollbar {
+	display: none;
+}
+
+.bk-carousel__slide {
+	flex: 0 0 100%;
+	scroll-snap-align: start;
+	scroll-snap-stop: always;
+}
+
+.bk-banner__link {
+	display: block;
+}
+
+.bk-carousel__controls {
+	position: absolute;
+	left: 50%;
+	bottom: 16px;
+	transform: translateX(-50%);
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 4px 6px;
+	border-radius: 99px;
+	background: rgba(16, 32, 47, .55);
+	backdrop-filter: blur(6px);
+}
+
+.bk-carousel__btn {
+	display: grid;
+	place-items: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: var(--bk-paper);
+	cursor: pointer;
+}
+
+.bk-carousel__btn .bk-icon {
+	width: 20px;
+	height: 20px;
+}
+
+.bk-carousel__btn:hover {
+	background: rgba(255, 255, 255, .16);
+}
+
+.bk-carousel__toggle .bk-icon--lucide-play,
+.bk-carousel__toggle.is-paused .bk-icon--lucide-pause {
+	display: none;
+}
+
+.bk-carousel__toggle.is-paused .bk-icon--lucide-play {
+	display: inline-block;
+}
+
+.bk-carousel__dots {
+	display: flex;
+	gap: 2px;
+}
+
+/* Área táctil de 24 px (WCAG 2.5.8) con punto visual pequeño. */
+.bk-carousel__dot {
+	display: grid;
+	place-items: center;
+	width: 24px;
+	height: 36px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+}
+
+.bk-carousel__dot::before {
+	content: "";
+	width: 8px;
+	height: 8px;
+	border-radius: 99px;
+	background: rgba(255, 255, 255, .6);
+	transition: width .25s var(--bk-ease), background .25s;
+}
+
+.bk-carousel__dot[aria-current="true"]::before {
+	width: 20px;
+	background: var(--bk-lime);
+}
+
+.bk-lineas {
+	display: flex;
+	flex-direction: column;
+}
+
+.bk-linea {
+	display: block;
+	overflow: hidden;
+}
+
+.bk-linea .bk-banner__img {
+	transition: transform .6s var(--bk-ease);
+}
+
+.bk-linea:hover .bk-banner__img {
+	transform: scale(1.02);
+}
+
+@media (max-width: 767px) {
+	.bk-carousel__controls {
+		bottom: 10px;
+	}
+
+	.bk-carousel__prev,
+	.bk-carousel__next {
+		display: none; /* En móvil se desliza con el dedo; quedan puntos y pausa. */
+	}
+}
+
+/* --- Video en la galería de producto -------------------------------------- */
+.bk-gallery-video {
+	position: relative;
+	background: var(--bk-denim);
+}
+
+.bk-gallery-video__media {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 2 / 3;
+	object-fit: cover;
+	cursor: pointer;
+}
+
+.bk-gallery-video__toggle {
+	position: absolute;
+	right: 14px;
+	bottom: 14px;
+	display: grid;
+	place-items: center;
+	width: 52px;
+	height: 52px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(16, 32, 47, .82);
+	color: var(--bk-paper);
+	cursor: pointer;
+}
+
+.bk-gallery-video__toggle .bk-icon--lucide-pause,
+.bk-gallery-video.is-playing .bk-gallery-video__toggle .bk-icon--lucide-play {
+	display: none;
+}
+
+.bk-gallery-video.is-playing .bk-gallery-video__toggle .bk-icon--lucide-pause {
+	display: inline-block;
+}
+
+/* --- Animaciones ---------------------------------------------------------- */
+@keyframes bk-spin {
+	to { transform: rotate(360deg); }
+}
+
+@keyframes bk-progress {
+	from { transform: scaleX(0); }
+	to { transform: scaleX(.85); }
+}
+
+@keyframes bk-shake {
+	0%, 100% { transform: translateX(0); }
+	25% { transform: translateX(-5px); }
+	75% { transform: translateX(5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html.bk-navigating::before {
+		animation: none;
+		transform: scaleX(.85);
+	}
+
+	.variations.bk-needs-choice,
+	.bk-linea .bk-banner__img {
+		animation: none;
+		transition: none;
+	}
+}

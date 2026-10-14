@@ -82,6 +82,13 @@ code{font-size:.85em;background:var(--chip);padding:1px 6px;border-radius:4px}
 .m-badge{position:absolute;top:-6px;right:-8px;background:var(--b-lime);color:var(--b-navy);font-size:10px;font-weight:800;border-radius:99px;min-width:17px;height:17px;display:grid;place-items:center}
 
 /* hero */
+.m-banner{position:relative;display:block;line-height:0;background:var(--b-navy)}
+.m-banner img{width:100%;height:auto;display:block}
+.m-ctrl{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:rgba(16,32,47,.55);border-radius:99px;padding:6px 10px;line-height:1}
+.m-ctrl i{width:8px;height:8px;border-radius:9px;background:rgba(255,255,255,.6);display:block}
+.m-ctrl i.on{width:20px;background:var(--b-lime)}
+.m-ctrl b{color:#fff;font-size:11px;margin-left:6px}
+.m-lines-full{display:flex;flex-direction:column}
 .m-hero{position:relative;display:grid;grid-template-columns:1.1fr 1fr;min-height:380px;background:var(--b-navy);color:#fff}
 .m-hero .copy{padding:48px 40px;display:flex;flex-direction:column;justify-content:center;gap:16px}
 .m-hero .copy small{letter-spacing:.14em;font-weight:700;font-size:11px;color:var(--b-lime)}
@@ -358,7 +365,7 @@ details.acc p,details.acc ul{font-size:13px;color:var(--b-mute);margin-top:8px}
 
 <section class="block" id="home">
   <div class="mockcap"><div><p class="eyebrow">03 · Inicio</p><h2>Home que vende desde el primer pantallazo</h2></div>
-  <p>El texto del banner deja de estar dentro de la foto: así Google lo lee, se traduce bien en móvil y cumple accesibilidad. En la maqueta usamos una foto de producto como ejemplo. Debajo, las dos líneas y lo nuevo con pestañas Slim/Curvy (un solo H1).</p></div>
+  <p>El banner principal y las dos líneas ocupan todo el ancho y salen de ACF (Opciones → Banners Páginas): imagen PC 16:9 y móvil 1:1, el navegador descarga solo la que necesita. El banner rota solo, se pausa al pasar el cursor y tiene botón de pausa.</p></div>
   <div class="frame mock" role="img" aria-label="Maqueta de la página de inicio propuesta">
     <div class="bar"><i></i><i></i><i></i><span>buckler.com.co</span></div>
     <div class="m-topbar">Envíos gratis a toda Colombia · Paga en 3 cuotas sin interés con <b>Addi</b></div>
@@ -371,24 +378,16 @@ details.acc p,details.acc ul{font-size:13px;color:var(--b-mute);margin-top:8px}
         <span class="m-ico">{{ICON:bag}}<span class="m-badge">2</span></span>
       </span>
     </div>
-    <div class="m-hero">
-      <div class="copy">
-        <small>COLECCIÓN 2026 · HECHO EN MEDELLÍN</small>
-        <p class="mh1">Aquí está tu nuevo favorito</p>
-        <p>Jeans y prendas en denim que realzan tu figura, en tallas 6 a 24.</p>
-        <div class="m-btns"><span class="m-btn lime">Ver Línea Slim</span><span class="m-btn ghost">Ver Línea Curvy</span></div>
-      </div>
-      <div class="img" style="background-image:url({{IMG:815P}})"></div>
-    </div>
+    <div class="m-banner"><img src="{{IMG:hero}}" alt="Aquí está tu nuevo favorito"><div class="m-ctrl"><i class="on"></i><i></i><i></i><i></i><b>❚❚</b></div></div>
     <div class="m-trust">
       <div>{{ICON:truck}}<span><b>Envío gratis</b>a toda Colombia</span></div>
       <div>{{ICON:card}}<span><b>Addi, Bold, Wompi</b>y tarjetas</span></div>
       <div>{{ICON:swap}}<span><b>Cambios fáciles</b>[PENDIENTE: plazo]</span></div>
       <div>{{ICON:ruler}}<span><b>Guía de tallas</b>y siluetas</span></div>
     </div>
-    <div class="m-lines">
-      <div class="m-line" style="background-image:url({{IMG:9897R}})"><div><b>LÍNEA SLIM</b><span>Tallas 6 a 12 · 44 estilos</span></div></div>
-      <div class="m-line" style="background-image:url({{IMG:814P}})"><div><b>LÍNEA CURVY</b><span>Tallas 14 a 24 · 89 estilos</span></div></div>
+    <div class="m-lines-full">
+      <span class="m-banner"><img src="{{IMG:lslim}}" alt="Línea Slim"></span>
+      <span class="m-banner"><img src="{{IMG:lcurvy}}" alt="Línea Curvy"></span>
     </div>
     <div class="m-sec-h"><h2>Lo nuevo</h2>
       <div class="m-tabs" role="group" aria-label="Filtrar lo nuevo por línea"><button type="button" aria-pressed="true">Slim</button><button type="button" aria-pressed="false">Curvy</button></div>
@@ -551,6 +550,27 @@ details.acc p,details.acc ul{font-size:13px;color:var(--b-mute);margin-top:8px}
   </div>
 </section>
 
+<section class="block" id="clics">
+  <div class="stack"><p class="eyebrow">Interacción</p><h2>Cero clics frustrados</h2>
+  <p class="lead">Medimos y evitamos los tres comportamientos que más ventas cuestan. Ya está programado en buckler-core y probado.</p></div>
+  <div class="grid3" style="margin-top:20px">
+    <div class="card stack"><h3>Rage click</h3><p style="color:var(--muted)">Clics repetidos y rápidos sobre lo mismo.</p><ul class="clean">
+      <li>Cada botón muestra al instante que está trabajando (spinner) y no acepta más clics</li>
+      <li>“Añadir al carrito” y formularios no se envían dos veces</li>
+      <li>Clics repetidos en un enlace = una sola navegación</li></ul></div>
+    <div class="card stack"><h3>Dead click</h3><p style="color:var(--muted)">Clic en algo que no responde.</p><ul class="clean">
+      <li>Toda la tarjeta de producto lleva a la ficha, no solo el nombre</li>
+      <li>Sin talla elegida: mensaje junto a las tallas en lugar de la ventana de alerta de Woo</li>
+      <li>Tocar el video lo pausa o reproduce</li>
+      <li>Nada parece clicable si no lo es</li></ul></div>
+    <div class="card stack"><h3>Quick back</h3><p style="color:var(--muted)">Entrar y volver en segundos.</p><ul class="clean">
+      <li>La tarjeta ya muestra tallas disponibles, línea y precio: se entra sabiendo qué hay</li>
+      <li>Título con la línea (Slim / Curvy) para no entrar al producto equivocado</li>
+      <li>Barra de carga inmediata y vuelta atrás instantánea (sin perder filtros ni posición)</li></ul></div>
+  </div>
+  <p class="note-ex" style="margin-top:10px">Para medirlo recomiendo Microsoft Clarity (gratis) cargado desde tu GTM: reporta exactamente rage, dead y quick back clicks por página.</p>
+</section>
+
 <section class="block" id="plugins">
   <div class="stack"><p class="eyebrow">09 · Velocidad</p><h2>Qué plugins salen y qué los reemplaza</h2>
   <p class="lead">Todo lo nuevo vive en un solo plugin propio, <code>buckler-core</code>, que carga sus archivos solo en las páginas donde se usan. Cada reemplazo se prueba en el sitio real antes de desactivar el plugin viejo.</p></div>
@@ -601,7 +621,7 @@ details.acc p,details.acc ul{font-size:13px;color:var(--b-mute);margin-top:8px}
     <div class="card stack"><h3>Accesibilidad (WCAG 2.2 AA)</h3><ul class="clean">
       <li>Contrastes revisados (lima solo sobre navy)</li><li>Navegación completa con teclado y foco visible</li>
       <li>Etiquetas reales en formularios y errores claros</li><li>Botones de 44 px en móvil</li>
-      <li>Texto del banner como texto, no en la imagen</li></ul></div>
+      <li>Banners con texto alternativo (el texto que va en la imagen)</li></ul></div>
   </div>
 </section>
 
@@ -621,7 +641,7 @@ details.acc p,details.acc ul{font-size:13px;color:var(--b-mute);margin-top:8px}
   <ol class="ask" style="margin-top:14px">
     <li>Aprobación de esta dirección (o cambios que quieras).</li>
     <li>El código de los 5 snippets actuales.</li>
-    <li>Fotos del banner principal <b>sin texto</b> (escritorio y móvil).</li>
+    <li>Rellenar el “Texto alternativo” de cada banner en la Mediateca con la frase que lleva la imagen.</li>
     <li>Plazo real de cambios y garantía, y si el envío gratis tiene monto mínimo.</li>
     <li>Qué módulos de Jetpack usas y si quieres conservar FiboSearch.</li>
     <li>Un entorno de staging o permiso para probar en borrador sobre el sitio en vivo.</li>

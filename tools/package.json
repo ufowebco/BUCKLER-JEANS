@@ -1,0 +1,9 @@
+{
+  "name": "buckler-tools",
+  "private": true,
+  "description": "Dependencias de build: iconos de Iconify que se empaquetan en buckler-core.",
+  "devDependencies": {
+    "@iconify-json/lucide": "1.2.137",
+    "@iconify-json/simple-icons": "1.2.97"
+  }
+}
