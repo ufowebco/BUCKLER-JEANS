@@ -19,6 +19,13 @@ después de cada paso.
 | Rendimiento (línea base) | Escritorio: 6,3 s y 169 peticiones de media · Móvil: 4,5 s y 152 · HTML ~430 KB |
 | Caché | LiteSpeed Cache (`X-Litespeed-Cache: hit`) + capa propia `X-Ufocache` (TTL 10 h) |
 
+## Fase 1 hecha (2026-10-14)
+
+- buckler-core 0.8.1 instalado y activo, con todos los módulos apagados.
+- Revisión posterior en `snapshots/review-2026-10-14-post/`: **0 diferencias** con la línea base en 28 páginas.
+- Se comparó: estados, títulos, H1, robots, canonical, número de productos, errores JS y peticiones fallidas.
+- 111 enlaces internos sin errores y el flujo de carrito funciona.
+
 ## Bloqueantes antes del despliegue
 
 1. **Todas las categorías redirigen (301) a `/tienda/`.**
