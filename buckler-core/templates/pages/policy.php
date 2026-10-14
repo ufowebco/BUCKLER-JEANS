@@ -10,6 +10,7 @@ defined( 'ABSPATH' ) || exit;
 $bk_others = get_posts( array( 'post_type' => 'politica-empresa', 'post_status' => 'publish', 'posts_per_page' => 20, 'orderby' => 'menu_order title', 'order' => 'ASC' ) );
 ?>
 <div class="bk-wrap bk-doc-page">
+	<?php bk_route_crumbs(); ?>
 	<?php while ( have_posts() ) : the_post(); ?>
 		<article class="bk-prose">
 			<h1 class="bk-page-title"><?php echo esc_html( trim( wp_strip_all_tags( get_the_title() ) ) ); ?></h1>

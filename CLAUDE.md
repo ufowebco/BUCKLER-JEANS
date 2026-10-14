@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.10.1 → `dist/buckler-core-0.10.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.11.0 → `dist/buckler-core-0.11.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -214,6 +214,18 @@ Versión actual 0.10.1 → `dist/buckler-core-0.10.1.zip` (`tools/build-plugin.s
   petición**: el carrito flotante abre al instante ("Añadiendo…"), reutiliza el nonce de la lectura del contador
   (`window.bkStoreNonce`) o lo pide al tocar el formulario, y no repite la lectura tras añadir (`bkCartSynced`).
   Peticiones por página: ~170 → ~100.
+- **0.11.0 (ronda de 9 puntos del cliente, 2026-10-14):** líneas Slim/Curvy en una sola fila (también móvil);
+  header con `z-index: 9990` (el desplegable "Tienda" quedaba debajo del contenido); barra "Ordenar / Prendas" de la
+  tienda ya no es sticky; botón flotante = **carrito** (`bk_float_cart_button()`, `bk_config('float_button')`
+  'cart'|'whatsapp'; no se pinta en carrito/checkout). Migas en todas las rutas: `bk_crumbs($items)` (nav +
+  JSON-LD BreadcrumbList), `bk_route_crumbs()`, `bk_shop_crumbs()` (línea + `?prenda`, ¡Sale!, Lo nuevo, búsqueda,
+  categorías), filtro `bk_crumbs`. Carrito (`bk_cart_hooks`): rejilla productos | resumen fijo, filas como tarjetas,
+  − / + con actualización automática (clic al botón `update_cart` → AJAX de Woo; foco restaurado tras
+  `updated_wc_div`), confianza + medios de pago bajo el total, "Seguir comprando", "Combínalo con" (ventas cruzadas o
+  lo nuevo de la línea, sin transitorios por carrito) en lugar de cross-sells; carrito vacío con accesos a líneas.
+  Buscador en vivo (`includes/search.php`, con `layout`): `GET bk/v1/search-index?v=<md5 bk_catalog_v>` (público,
+  `Cache-Control` 1 h, transitorio `bk_search_index` regenerado al cambiar la versión), combobox ARIA en
+  `layout.js` (sin tildes, flechas/Enter/Esc, "Ver todos los resultados (N)").
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -258,7 +270,7 @@ Versión actual 0.10.1 → `dist/buckler-core-0.10.1.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 33 = 247 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 60 = 274 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

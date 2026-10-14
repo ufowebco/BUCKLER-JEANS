@@ -44,3 +44,16 @@ global $wpdb;
 $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_bk_q_%' OR option_name LIKE '_transient_timeout_bk_q_%'" ); // Caché de [bk_productos].
 flush_rewrite_rules();
 echo "ok\n";
+// Imágenes de las líneas (ACF de opciones simulado): dos fotos cualquiera de la mediateca.
+$acf = (array) get_option( 'bk_local_acf', array() );
+if ( empty( $acf['linea_slim_pc'] ) ) {
+	$imgs = get_posts( array( 'post_type' => 'attachment', 'post_mime_type' => 'image', 'posts_per_page' => 2, 'fields' => 'ids' ) );
+	if ( count( $imgs ) === 2 ) {
+		$acf['linea_slim_pc']  = $imgs[0];
+		$acf['linea_slim_mo']  = $imgs[0];
+		$acf['linea_curvy_pc'] = $imgs[1];
+		$acf['linea_curvy_mo'] = $imgs[1];
+		update_option( 'bk_local_acf', $acf );
+	}
+}
+echo "lineas: " . ( empty( $acf['linea_slim_pc'] ) ? 'no' : 'sí' ) . "\n";

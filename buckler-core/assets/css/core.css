@@ -243,9 +243,10 @@ html.bk-navigating::before {
 	background: var(--bk-lime);
 }
 
+/* Las dos líneas en una sola fila (decisión del cliente), también en el celular. */
 .bk-lineas {
-	display: flex;
-	flex-direction: column;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .bk-linea {

@@ -145,4 +145,78 @@
 			if (e.key === 'ArrowLeft') { e.preventDefault(); show(tabs[(i + tabs.length - 1) % tabs.length], true); }
 		});
 	});
+
+	/* --- Carrito: cantidad con − / + y actualización automática ------------------- */
+	const cartWrap = document.querySelector('.bk-woo--cart');
+	if (cartWrap) {
+		const t = (window.bkPages && window.bkPages.i18n) || {};
+		let timer = 0;
+		let refocus = null;
+		const enhance = () => {
+			const form = cartWrap.querySelector('.woocommerce-cart-form');
+			if (!form) return;
+			form.classList.add('is-auto');
+			$$('.quantity', form).forEach((q) => {
+				const input = q.querySelector('input.qty');
+				if (q.dataset.bkQty || !input || input.type === 'hidden') return;
+				q.dataset.bkQty = '1';
+				const mk = (step, label, text) => {
+					const b = document.createElement('button');
+					b.type = 'button';
+					b.className = 'bk-qty-btn';
+					b.dataset.step = String(step);
+					b.setAttribute('aria-label', label);
+					b.textContent = text;
+					return b;
+				};
+				q.prepend(mk(-1, t.less || 'Quitar uno', '−'));
+				q.append(mk(1, t.more || 'Añadir uno', '+'));
+				sync(q);
+			});
+			if (refocus) {
+				const el = form.querySelector(`input[name="${refocus.name}"]`);
+				const target = el && (refocus.step ? el.closest('.quantity').querySelector(`.bk-qty-btn[data-step="${refocus.step}"]`) : el);
+				if (target && !target.disabled) target.focus();
+				refocus = null;
+			}
+		};
+		const sync = (q) => {
+			const input = q.querySelector('input.qty');
+			const v = parseInt(input.value, 10) || 0;
+			const max = parseInt(input.max, 10) || Infinity;
+			q.querySelector('.bk-qty-btn[data-step="-1"]').disabled = v <= 1;
+			q.querySelector('.bk-qty-btn[data-step="1"]').disabled = v >= max;
+		};
+		const update = (input, step) => {
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				const btn = cartWrap.querySelector('button[name="update_cart"]');
+				if (!btn) return;
+				refocus = { name: input.name, step };
+				btn.disabled = false;
+				btn.removeAttribute('aria-disabled');
+				btn.click();
+			}, 650);
+		};
+		cartWrap.addEventListener('click', (e) => {
+			const b = e.target.closest('.bk-qty-btn');
+			if (!b) return;
+			const q = b.closest('.quantity');
+			const input = q.querySelector('input.qty');
+			const max = parseInt(input.max, 10) || Infinity;
+			const v = Math.min(max, Math.max(1, (parseInt(input.value, 10) || 0) + Number(b.dataset.step)));
+			if (String(v) === input.value) return;
+			input.value = String(v);
+			input.dispatchEvent(new Event('change', { bubbles: true }));
+		});
+		cartWrap.addEventListener('change', (e) => {
+			const input = e.target.closest('input.qty');
+			if (!input) return;
+			sync(input.closest('.quantity'));
+			const active = document.activeElement;
+			update(input, active && active.classList.contains('bk-qty-btn') ? active.dataset.step : '');
+		});
+		enhance();
+		if (window.jQuery) window.jQuery(document.body).on('updated_wc_div updated_cart_totals', enhance);
+	}
 })();

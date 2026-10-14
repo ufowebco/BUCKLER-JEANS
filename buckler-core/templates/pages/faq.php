@@ -11,6 +11,7 @@ $bk_groups = bk_faq_groups();
 $bk_schema = array( '@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => array() );
 ?>
 <div class="bk-wrap bk-faq">
+	<?php bk_route_crumbs(); ?>
 	<h1 class="bk-page-title"><?php esc_html_e( 'Preguntas frecuentes', 'buckler-core' ); ?></h1>
 	<p class="bk-lead">
 		<?php esc_html_e( '¿No encuentras tu respuesta?', 'buckler-core' ); ?>

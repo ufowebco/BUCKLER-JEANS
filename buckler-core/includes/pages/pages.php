@@ -90,6 +90,9 @@ function bk_pages_template( $template ) {
 	if ( 'product' === $route ) {
 		bk_pdp_hooks();
 	}
+	if ( 'cart' === $route ) {
+		bk_cart_hooks();
+	}
 	return BK_DIR . 'templates/pages/document.php';
 }
 
@@ -113,6 +116,8 @@ function bk_pages_assets() {
 				'chooseSize' => __( 'Elige tu talla', 'buckler-core' ),
 				'prev'      => __( 'Foto anterior', 'buckler-core' ),
 				'next'      => __( 'Foto siguiente', 'buckler-core' ),
+				'less'      => __( 'Quitar una unidad', 'buckler-core' ),
+				'more'      => __( 'Añadir una unidad', 'buckler-core' ),
 			),
 		)
 	);
@@ -181,6 +186,122 @@ function bk_pdp_hooks() {
 }
 
 /**
+ * Migas de pan con datos estructurados BreadcrumbList.
+ *
+ * @param array $items Lista de [texto, url]; el último es la página actual (su url puede ir vacía).
+ */
+function bk_crumbs( $items ) {
+	$items = array_values( array_filter( (array) $items, static fn( $i ) => is_array( $i ) && '' !== trim( (string) $i[0] ) ) );
+	if ( count( $items ) < 2 ) {
+		return;
+	}
+	$last   = count( $items ) - 1;
+	$schema = array( '@context' => 'https://schema.org', '@type' => 'BreadcrumbList', 'itemListElement' => array() );
+	echo '<nav class="bk-crumbs" aria-label="' . esc_attr__( 'Ruta de navegación', 'buckler-core' ) . '"><ol>';
+	foreach ( $items as $i => $it ) {
+		$url = $i === $last ? '' : (string) ( $it[1] ?? '' );
+		if ( $i === $last ) {
+			echo '<li aria-current="page">' . esc_html( $it[0] ) . '</li>';
+		} else {
+			echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $it[0] ) . '</a></li>';
+		}
+		$el = array( '@type' => 'ListItem', 'position' => $i + 1, 'name' => wp_strip_all_tags( $it[0] ) );
+		if ( $url || ( $i === $last && ! empty( $it[1] ) ) ) {
+			$el['item'] = $url ? $url : (string) $it[1];
+		}
+		$schema['itemListElement'][] = $el;
+	}
+	echo '</ol></nav>';
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>';
+}
+
+/**
+ * Migas de la ruta actual (tienda, carrito, checkout, cuenta, FAQ, políticas, 404).
+ */
+function bk_route_crumbs() {
+	$home  = array( __( 'Inicio', 'buckler-core' ), home_url( '/' ) );
+	$shop  = array( __( 'Tienda', 'buckler-core' ), wc_get_page_permalink( 'shop' ) );
+	$here  = static fn( $label ) => array( $label, '' );
+	$items = array();
+	switch ( bk_pages_route() ) {
+		case 'shop':
+			$items = bk_shop_crumbs( $home, $shop );
+			break;
+		case 'cart':
+			$items = array( $home, $here( __( 'Carrito', 'buckler-core' ) ) );
+			break;
+		case 'checkout':
+			if ( ! is_order_received_page() ) {
+				$items = array( $home, array( __( 'Carrito', 'buckler-core' ), wc_get_cart_url() ), $here( __( 'Finalizar compra', 'buckler-core' ) ) );
+			}
+			break;
+		case 'account':
+			$items = array( $home, $here( __( 'Mi cuenta', 'buckler-core' ) ) );
+			break;
+		case 'faq':
+			$items = array( $home, $here( __( 'Preguntas frecuentes', 'buckler-core' ) ) );
+			break;
+		case 'policy':
+			$items = array( $home, $here( trim( wp_strip_all_tags( get_the_title( get_queried_object_id() ) ) ) ) );
+			break;
+		case '404':
+			$items = array( $home, $here( __( 'Página no encontrada', 'buckler-core' ) ) );
+			break;
+	}
+	bk_crumbs( (array) apply_filters( 'bk_crumbs', $items, bk_pages_route() ) );
+}
+
+/**
+ * Migas de la tienda: Tienda, línea (y prenda filtrada), ¡Sale!, Lo nuevo, categorías y búsqueda.
+ *
+ * @param array $home Miga de inicio.
+ * @param array $shop Miga de la tienda.
+ * @return array
+ */
+function bk_shop_crumbs( $home, $shop ) {
+	$lines  = (array) bk_config( 'lines' );
+	$prenda = isset( $_GET['prenda'] ) ? sanitize_title( wp_unslash( $_GET['prenda'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+	if ( is_search() ) {
+		/* translators: %s: búsqueda */
+		return array( $home, $shop, array( sprintf( __( 'Búsqueda: %s', 'buckler-core' ), get_search_query( false ) ), '' ) );
+	}
+	if ( is_product_category() ) {
+		$t     = get_queried_object();
+		$items = array( $home );
+		foreach ( array_reverse( get_ancestors( $t->term_id, 'product_cat' ) ) as $aid ) {
+			$a       = get_term( $aid, 'product_cat' );
+			$items[] = array( isset( $lines[ $a->slug ] ) ? $lines[ $a->slug ]['label'] : bk_nice_label( $a->name ), isset( $lines[ $a->slug ]['page'] ) ? bk_url( $lines[ $a->slug ]['page'] ) : get_term_link( $a ) );
+		}
+		$items[] = array( isset( $lines[ $t->slug ] ) ? $lines[ $t->slug ]['label'] : bk_nice_label( $t->name ), '' );
+		return $items;
+	}
+	if ( is_page() ) {
+		$path = trailingslashit( (string) wp_parse_url( get_permalink(), PHP_URL_PATH ) );
+		foreach ( $lines as $slug => $l ) {
+			if ( empty( $l['page'] ) || trailingslashit( $l['page'] ) !== $path ) {
+				continue;
+			}
+			$root = get_term_by( 'slug', $slug, 'product_cat' );
+			$name = '';
+			if ( $prenda && $root ) {
+				foreach ( get_terms( array( 'taxonomy' => 'product_cat', 'parent' => $root->term_id, 'hide_empty' => false ) ) as $c ) {
+					if ( bk_prenda_key( $c->name ) === $prenda ) {
+						$name = bk_nice_label( $c->name );
+						break;
+					}
+				}
+			}
+			return $name ? array( $home, array( $l['label'], get_permalink() ), array( $name, '' ) ) : array( $home, array( $l['label'], get_permalink() ) );
+		}
+		return array( $home, array( trim( wp_strip_all_tags( get_the_title() ) ), get_permalink() ) );
+	}
+	if ( ! empty( $_GET['nuevo'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		return array( $home, $shop, array( __( 'Lo nuevo', 'buckler-core' ), '' ) );
+	}
+	return array( $home, array( __( 'Tienda', 'buckler-core' ), $shop[1] ) );
+}
+
+/**
  * Migas de pan de la ficha: Inicio / Línea / Prenda / Producto (la primera categoría de Woo suele ser
  * "Línea nueva" o "¡Sale!", que no ayudan a ubicarse). Enlaces que funcionan con el redirect de categorías.
  */
@@ -206,11 +327,131 @@ function bk_pdp_crumbs() {
 	} else {
 		$items[] = array( __( 'Tienda', 'buckler-core' ), wc_get_page_permalink( 'shop' ) );
 	}
-	echo '<nav class="bk-crumbs" aria-label="' . esc_attr__( 'Ruta de navegación', 'buckler-core' ) . '"><ol>';
-	foreach ( $items as $it ) {
-		echo '<li><a href="' . esc_url( $it[1] ) . '">' . esc_html( $it[0] ) . '</a></li>';
+	$items[] = array( $p->get_name(), $p->get_permalink() );
+	bk_crumbs( $items );
+}
+
+/* ---------------------------------------------------------------------------
+ * Carrito
+ * ------------------------------------------------------------------------- */
+
+/**
+ * Carrito clásico reordenado: sugerencias propias en lugar de las ventas cruzadas de Woo, confianza bajo el
+ * total y enlace para seguir comprando. Las pasarelas, cupones y snippets siguen usando los hooks nativos.
+ */
+function bk_cart_hooks() {
+	remove_action( 'woocommerce_cart_collaterals', 'woocommerce_cross_sell_display' );
+	add_action( 'woocommerce_after_cart_table', 'bk_cart_continue' );
+	add_action( 'woocommerce_after_cart_totals', 'bk_cart_trust' );
+	add_action( 'woocommerce_after_cart', 'bk_cart_suggestions' );
+	add_action( 'woocommerce_cart_is_empty', 'bk_cart_empty_extra', 20 );
+}
+
+/**
+ * "Seguir comprando" bajo la lista de productos.
+ */
+function bk_cart_continue() {
+	echo '<p class="bk-cart-continue"><a href="' . esc_url( wc_get_page_permalink( 'shop' ) ) . '">' . bk_icon_svg( 'lucide:arrow-left', 16 ) . esc_html__( 'Seguir comprando', 'buckler-core' ) . '</a></p>'; // phpcs:ignore WordPress.Security.EscapeOutput
+}
+
+/**
+ * Confianza bajo el botón de pagar: envío, pago seguro, cambios y medios de pago.
+ */
+function bk_cart_trust() {
+	?>
+	<ul class="bk-cart-trust">
+		<li><?php echo bk_icon_svg( 'lucide:truck', 18 ); // phpcs:ignore ?><span><?php esc_html_e( 'Envío gratis a toda Colombia', 'buckler-core' ); ?></span></li>
+		<li><?php echo bk_icon_svg( 'lucide:shield-check', 18 ); // phpcs:ignore ?><span><?php esc_html_e( 'Pago 100 % seguro', 'buckler-core' ); ?></span></li>
+		<li><?php echo bk_icon_svg( 'lucide:credit-card', 18 ); // phpcs:ignore ?><span><?php esc_html_e( 'Paga con Addi, Bold, Wompi o tarjeta', 'buckler-core' ); ?></span></li>
+	</ul>
+	<?php if ( bk_config( 'payments' ) ) : ?>
+		<ul class="bk-pay bk-cart-pay" aria-label="<?php esc_attr_e( 'Medios de pago', 'buckler-core' ); ?>">
+			<?php foreach ( (array) bk_config( 'payments' ) as $p ) : ?>
+				<li><?php echo bk_upload_img( $p[0], $p[1], array( 'width' => 800, 'height' => 500, 'sizes' => '64px' ) ); // phpcs:ignore ?></li>
+			<?php endforeach; ?>
+		</ul>
+	<?php endif; ?>
+	<?php
+}
+
+/**
+ * IDs sugeridos: ventas cruzadas de los productos del carrito y, si no hay, lo más nuevo de la misma línea.
+ *
+ * @param int $limit Cantidad.
+ * @return int[]
+ */
+function bk_cart_suggest_ids( $limit = 4 ) {
+	$in_cart = array();
+	$cross   = array();
+	$line    = '';
+	foreach ( WC()->cart ? WC()->cart->get_cart() : array() as $item ) {
+		$pid       = (int) $item['product_id'];
+		$in_cart[] = $pid;
+		$p         = wc_get_product( $pid );
+		if ( $p ) {
+			$cross = array_merge( $cross, $p->get_cross_sell_ids() );
+		}
+		$l    = bk_product_line( $pid );
+		$line = $l ? $l['slug'] : $line;
 	}
-	echo '<li aria-current="page">' . esc_html( $p->get_name() ) . '</li></ol></nav>';
+	$ids = array();
+	foreach ( array_unique( array_map( 'intval', $cross ) ) as $id ) {
+		$p = wc_get_product( $id );
+		if ( $p && ! in_array( $id, $in_cart, true ) && $p->is_visible() && $p->is_in_stock() ) {
+			$ids[] = $id;
+		}
+	}
+	if ( count( $ids ) < $limit ) {
+		$q = array( 'status' => 'publish', 'limit' => $limit + count( $in_cart ) + count( $ids ), 'return' => 'ids', 'stock_status' => 'instock', 'orderby' => 'date', 'order' => 'DESC' );
+		if ( $line ) {
+			$q['category'] = array( $line );
+		}
+		$ids = array_merge( $ids, array_diff( array_map( 'intval', wc_get_products( $q ) ), $in_cart, $ids ) );
+	}
+	return array_slice( array_values( array_unique( $ids ) ), 0, $limit );
+}
+
+/**
+ * Pinta una rejilla de tarjetas de producto.
+ *
+ * @param int[]  $ids   Productos.
+ * @param string $title Título (h2).
+ */
+function bk_cart_grid( $ids, $title ) {
+	if ( ! $ids || ! function_exists( 'bk_product_card' ) ) {
+		return;
+	}
+	echo '<section class="bk-products bk-cart-suggest"><div class="bk-section-head"><h2 class="bk-section-title">' . esc_html( $title ) . '</h2></div><ul class="bk-grid" style="--bk-cols:4">';
+	foreach ( $ids as $id ) {
+		$p = wc_get_product( $id );
+		if ( $p ) {
+			echo '<li class="bk-grid__item">' . bk_product_card( $p ) . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		}
+	}
+	echo '</ul></section>';
+}
+
+/**
+ * "Combínalo con" bajo el carrito.
+ */
+function bk_cart_suggestions() {
+	bk_cart_grid( bk_cart_suggest_ids( 4 ), __( 'Combínalo con', 'buckler-core' ) );
+}
+
+/**
+ * Carrito vacío: accesos a las líneas y lo nuevo.
+ */
+function bk_cart_empty_extra() {
+	$links = array();
+	foreach ( (array) bk_config( 'lines' ) as $l ) {
+		if ( ! empty( $l['page'] ) ) {
+			$links[] = '<a class="bk-btn is-ghost" href="' . esc_url( bk_url( $l['page'] ) ) . '">' . esc_html( $l['label'] ) . '</a>';
+		}
+	}
+	if ( $links ) {
+		echo '<p class="bk-cart-empty-links">' . implode( '', $links ) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput
+	}
+	bk_cart_grid( bk_cart_suggest_ids( 4 ), __( 'Lo más nuevo', 'buckler-core' ) );
 }
 
 /**

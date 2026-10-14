@@ -53,6 +53,23 @@ function bk_enqueue_assets() {
 	if ( bk_on( 'layout' ) ) {
 		wp_enqueue_style( 'bk-layout', BK_URL . 'assets/css/layout.css', array( 'bk-core' ), bk_asset_ver( 'assets/css/layout.css' ) );
 		wp_enqueue_script( 'bk-layout', BK_URL . 'assets/js/layout.js', array( 'bk-core' ), bk_asset_ver( 'assets/js/layout.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
+		if ( function_exists( 'bk_search_index_url' ) ) {
+			wp_localize_script(
+				'bk-layout',
+				'bkSearch',
+				array(
+					'index' => esc_url_raw( bk_search_index_url() ),
+					'all'   => esc_url_raw( add_query_arg( 'post_type', 'product', home_url( '/' ) ) ),
+					'i18n'  => array(
+						'results' => __( '%d productos encontrados', 'buckler-core' ),
+						'one'     => __( '1 producto encontrado', 'buckler-core' ),
+						'none'    => __( 'No encontramos productos con esa búsqueda', 'buckler-core' ),
+						'seeAll'  => __( 'Ver todos los resultados', 'buckler-core' ),
+						'loading' => __( 'Buscando…', 'buckler-core' ),
+					),
+				)
+			);
+		}
 	}
 
 	if ( bk_on( 'video' ) && function_exists( 'is_product' ) && is_product() ) {

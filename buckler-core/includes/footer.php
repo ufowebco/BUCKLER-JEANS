@@ -89,6 +89,25 @@ function bk_whatsapp_button() {
 }
 
 /**
+ * Botón flotante del carrito (decisión del cliente 2026-10-14: reemplaza al de WhatsApp).
+ * Abre el carrito flotante (data-bk-cart) y muestra el contador; sin carrito flotante, lleva al carrito.
+ * No se muestra en el carrito ni en el checkout.
+ *
+ * @return string
+ */
+function bk_float_cart_button() {
+	if ( ! bk_on( 'layout' ) || ! function_exists( 'wc_get_cart_url' ) || is_cart() || is_checkout() ) {
+		return '';
+	}
+	return sprintf(
+		'<a class="bk-fcart" href="%1$s" data-bk-cart aria-label="%2$s">%3$s<span class="bk-cart-count" data-bk-cart-count hidden>0</span></a>',
+		esc_url( wc_get_cart_url() ),
+		esc_attr__( 'Abrir carrito', 'buckler-core' ),
+		bk_icon_svg( 'lucide:shopping-bag', 26 )
+	);
+}
+
+/**
  * Shortcode [bk_footer].
  *
  * @param array $atts Atributos.
@@ -189,7 +208,8 @@ function bk_shortcode_footer( $atts ) {
 	</div>
 	<?php
 	if ( $atts['whatsapp'] ) {
-		echo bk_whatsapp_button(); // phpcs:ignore WordPress.Security.EscapeOutput
+		// Botón flotante: carrito (por defecto) o WhatsApp, según bk_config( 'float_button' ).
+		echo 'whatsapp' === bk_config( 'float_button' ) ? bk_whatsapp_button() : bk_float_cart_button(); // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 	return trim( ob_get_clean() );
 }

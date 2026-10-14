@@ -71,6 +71,8 @@ function bk_config( $key = null ) {
 				// algo redirija las categorías a /tienda/, como pasa en producción el 2026-10-14); 'archive' = URL
 				// de la categoría (mejor para SEO cuando las categorías vuelvan a abrir).
 				'category_links' => 'filters',
+				// Botón flotante abajo a la derecha: 'cart' (carrito, decisión del cliente) o 'whatsapp'.
+				'float_button'  => 'cart',
 				'sale_cat'      => 'sale',
 				'sale_page'     => '/sales/',
 				'faq_page'      => '/preguntas-frecuentes/',

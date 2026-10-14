@@ -111,6 +111,103 @@
 		});
 	}
 
+	/* --- Buscador en vivo: muestra productos mientras se escribe (combobox ARIA) --- */
+	const S = window.bkSearch;
+	if (S && S.index) {
+		let data = null;
+		let loading = null;
+		const norm = (v) => String(v).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+		const load = () => {
+			if (!loading) {
+				loading = fetch(S.index, { credentials: 'same-origin', headers: { Accept: 'application/json' } })
+					.then((r) => (r.ok ? r.json() : []))
+					.then((d) => { data = Array.isArray(d) ? d : []; return data; })
+					.catch(() => { loading = null; return []; });
+			}
+			return loading;
+		};
+		const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+		document.querySelectorAll('.bk-search').forEach((form, f) => {
+			const input = form.querySelector('input[type="search"]');
+			if (!input) return;
+			const id = `bk-sr-${f}`;
+			const box = document.createElement('div');
+			box.className = 'bk-sr';
+			box.id = id;
+			box.setAttribute('role', 'listbox');
+			box.setAttribute('aria-label', input.placeholder || 'Productos');
+			box.hidden = true;
+			const live = document.createElement('div');
+			live.className = 'bk-sr-only';
+			live.setAttribute('role', 'status');
+			form.append(box, live);
+			input.setAttribute('role', 'combobox');
+			input.setAttribute('aria-autocomplete', 'list');
+			input.setAttribute('aria-expanded', 'false');
+			input.setAttribute('aria-controls', id);
+			let active = -1;
+			let timer = 0;
+
+			const options = () => [...box.querySelectorAll('[role="option"]')];
+			const close = () => {
+				box.hidden = true;
+				input.setAttribute('aria-expanded', 'false');
+				input.removeAttribute('aria-activedescendant');
+				active = -1;
+			};
+			const mark = (n) => {
+				const o = options();
+				if (!o.length) return;
+				active = (n + o.length) % o.length;
+				o.forEach((el, i) => el.setAttribute('aria-selected', String(i === active)));
+				input.setAttribute('aria-activedescendant', o[active].id);
+				o[active].scrollIntoView({ block: 'nearest' });
+			};
+			const allUrl = (q) => `${S.all}${S.all.includes('?') ? '&' : '?'}s=${encodeURIComponent(q)}`;
+			const render = (q) => {
+				const words = norm(q).split(' ').filter(Boolean);
+				const hits = (data || []).filter((it) => words.every((w) => it.t.includes(w)));
+				const first = norm(words[0] || '');
+				hits.sort((a, b) => (norm(b.n).startsWith(first) ? 1 : 0) - (norm(a.n).startsWith(first) ? 1 : 0));
+				const top = hits.slice(0, 6);
+				const t = S.i18n || {};
+				let html = top.map((it, i) => `<a role="option" id="${id}-${i}" aria-selected="false" class="bk-sr__item" href="${esc(it.u)}" tabindex="-1">`
+					+ (it.i ? `<img src="${esc(it.i)}" alt="" width="48" height="64" loading="lazy">` : '<span class="bk-sr__ph"></span>')
+					+ `<span class="bk-sr__txt"><span class="bk-sr__name">${esc(it.n)}</span>${it.l ? `<span class="bk-sr__line">${esc(it.l)}</span>` : ''}</span>`
+					+ `<span class="bk-sr__price">${it.o ? `<del>${esc(it.o)}</del> ` : ''}${esc(it.p)}</span></a>`).join('');
+				if (!top.length) html = `<p class="bk-sr__none">${esc(t.none || 'Sin resultados')}</p>`;
+				html += `<a role="option" id="${id}-all" aria-selected="false" class="bk-sr__all" href="${esc(allUrl(q))}" tabindex="-1">${esc(t.seeAll || 'Ver todos')}${hits.length ? ` (${hits.length})` : ''}</a>`;
+				box.innerHTML = html;
+				box.hidden = false;
+				input.setAttribute('aria-expanded', 'true');
+				input.removeAttribute('aria-activedescendant');
+				active = -1;
+				live.textContent = hits.length === 1 ? (t.one || '1') : (hits.length ? (t.results || '%d').replace('%d', hits.length) : (t.none || ''));
+			};
+			const run = () => {
+				const q = input.value.trim();
+				if (q.length < 2) { close(); return; }
+				if (data) render(q);
+				else {
+					box.innerHTML = `<p class="bk-sr__none">${esc((S.i18n && S.i18n.loading) || '…')}</p>`;
+					box.hidden = false;
+					load().then(() => { if (input.value.trim() === q) render(q); });
+				}
+			};
+			input.addEventListener('focus', () => { load(); if (input.value.trim().length >= 2 && box.hidden) run(); }, { passive: true });
+			input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(run, 90); });
+			input.addEventListener('keydown', (e) => {
+				if (e.key === 'ArrowDown') { e.preventDefault(); if (box.hidden) run(); else mark(active + 1); }
+				else if (e.key === 'ArrowUp') { e.preventDefault(); if (!box.hidden) mark(active - 1); }
+				else if (e.key === 'Escape' && !box.hidden) { e.preventDefault(); e.stopPropagation(); close(); }
+				else if (e.key === 'Enter' && active > -1 && !box.hidden) { e.preventDefault(); window.location.href = options()[active].href; }
+			});
+			box.addEventListener('mousedown', (e) => e.preventDefault()); // El clic no quita el foco antes de navegar.
+			form.addEventListener('focusout', (e) => { if (!form.contains(e.relatedTarget)) close(); });
+		});
+	}
+
 	/* --- Menú lateral (diálogo modal accesible) ------------------------------ */
 	const burger = header.querySelector('.bk-burger');
 	const drawer = burger && document.getElementById(burger.getAttribute('aria-controls'));

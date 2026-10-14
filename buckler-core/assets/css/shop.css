@@ -46,11 +46,9 @@
 	color: var(--bk-mute);
 }
 
-/* Barra: filtrar / conteo / ordenar */
+/* Barra: filtrar / conteo / ordenar (fluye con la página; decisión del cliente: no fija). */
 .bk-shop__bar {
-	position: sticky;
-	top: var(--bk-header-h, 0px);
-	z-index: 5;
+	position: relative;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
