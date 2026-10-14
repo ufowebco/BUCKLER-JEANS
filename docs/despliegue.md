@@ -26,6 +26,10 @@ después de cada paso.
 - Se comparó: estados, títulos, H1, robots, canonical, número de productos, errores JS y peticiones fallidas.
 - 111 enlaces internos sin errores y el flujo de carrito funciona.
 
+- Videos: 132 productos con MP4 en la galería; las "claves encontradas" eran falsos positivos, corregidos en 0.8.2.
+  **No pulsar "Usar como respaldo".**
+- Pedidos: claves reales identificadas (ver CLAUDE.md). En 0.8.2 son los valores por defecto del dashboard.
+
 ## Bloqueantes antes del despliegue
 
 1. **Todas las categorías redirigen (301) a `/tienda/`.**

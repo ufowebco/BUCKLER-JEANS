@@ -9,6 +9,7 @@
  * Campos de pedido configurables (Ajustes del dashboard, solo administradores):
  *   consecutivo: meta del consecutivo actual (vacío = no se muestra)
  *   impreso:     meta del check "Impreso"
+ *   despachado:  meta del check "Despachado"
  *   cedula:      metas donde se guarda la cédula (para buscar)
  *   adjuntos:    repeater ACF de archivos del pedido (archivos_adjuntos)
  *
@@ -34,10 +35,13 @@ function bk_g_can() {
  * @return array{consecutivo:string,impreso:string,cedula:string[],adjuntos:string}
  */
 function bk_g_fields() {
+	// Valores por defecto = claves reales de buckler.com.co (detector de Ajustes, 2026-10-14):
+	// consecutivo de WCDN "PEDIDO-3841", checks "yes" de los snippets y cédula en `_billing_id`.
 	$d = array(
-		'consecutivo' => '',
-		'impreso'     => '_bk_impreso',
-		'cedula'      => array( 'billing_cedula', '_billing_cedula', 'cedula', '_cedula', 'billing_document', '_billing_document', 'billing_nit', '_billing_nit', 'billing_dni', '_billing_dni' ),
+		'consecutivo' => '_wcdn_invoice_number',
+		'impreso'     => '_impreso_status',
+		'despachado'  => '_despachado_status',
+		'cedula'      => array( '_billing_id', 'billing_id', 'billing_cedula', '_billing_cedula', 'cedula', '_cedula', 'billing_document', '_billing_document', 'billing_nit', '_billing_nit', 'billing_dni', '_billing_dni' ),
 		'adjuntos'    => 'archivos_adjuntos',
 	);
 	$s = (array) get_option( 'bk_gestion_fields', array() );
@@ -229,6 +233,7 @@ function bk_g_order_row( $o ) {
 		'items'       => (int) $o->get_item_count(),
 		'payment'     => $o->get_payment_method_title(),
 		'printed'     => $f['impreso'] ? in_array( strtolower( (string) $o->get_meta( $f['impreso'] ) ), BK_G_TRUE, true ) : false,
+		'dispatched'  => $f['despachado'] ? in_array( strtolower( (string) $o->get_meta( $f['despachado'] ) ), BK_G_TRUE, true ) : null,
 		'consecutivo' => $f['consecutivo'] ? (string) $o->get_meta( $f['consecutivo'] ) : '',
 		'tracking'    => function_exists( 'bk_ship_get' ) ? bk_ship_get( $o ) : null,
 	);
@@ -257,17 +262,26 @@ function bk_g_orders( WP_REST_Request $r ) {
 	if ( $r['from'] ) {
 		$args['date_created'] = sanitize_text_field( (string) $r['from'] ) . '...' . sanitize_text_field( (string) ( $r['to'] ? $r['to'] : gmdate( 'Y-m-d' ) ) );
 	}
-	if ( '' !== (string) $r['printed'] && $f['impreso'] ) {
-		$printed = bk_g_meta_ids( array( $f['impreso'] ), BK_G_TRUE, false, 5000 );
-		if ( 'yes' === $r['printed'] ) {
-			$args['post__in'] = $printed ? $printed : array( 0 );
-		} elseif ( $printed ) {
-			$args['post__not_in'] = $printed;
+	// Filtros de checks (impreso / despachado): SQL indexado + post__in / post__not_in (nunca meta_query OR en HPOS).
+	foreach ( array( 'printed' => 'impreso', 'dispatched' => 'despachado' ) as $param => $field ) {
+		if ( '' === (string) $r[ $param ] || ! $f[ $field ] ) {
+			continue;
+		}
+		$on = bk_g_meta_ids( array( $f[ $field ] ), BK_G_TRUE, false, 5000 );
+		if ( 'yes' === $r[ $param ] ) {
+			$args['post__in'] = isset( $args['post__in'] ) ? array_intersect( $args['post__in'], $on ) : $on;
+			$args['post__in'] = $args['post__in'] ? array_values( $args['post__in'] ) : array( 0 );
+		} elseif ( $on ) {
+			$args['post__not_in'] = array_values( array_unique( array_merge( $args['post__not_in'] ?? array(), $on ) ) );
 		}
 	}
 
 	if ( '' !== $q ) {
 		$num = ltrim( $q, '#' );
+		// "PEDIDO-3841" (formato del consecutivo de WCDN) → 3841.
+		if ( ! ctype_digit( $num ) && preg_match( '/^[a-z]+[\s\-#]*(\d+)$/i', $num, $m ) ) {
+			$num = $m[1];
+		}
 		if ( ctype_digit( $num ) ) {
 			// Número de pedido o cédula (dígitos): se busca por ambos.
 			$ids = array();
@@ -276,7 +290,13 @@ function bk_g_orders( WP_REST_Request $r ) {
 			}
 			$ids = array_merge( $ids, bk_g_meta_ids( $f['cedula'], array( $num ), true, 100 ) );
 			if ( $f['consecutivo'] ) {
-				$ids = array_merge( $ids, bk_g_meta_ids( array( $f['consecutivo'] ), array( $num ), false, 20 ) );
+				// El consecutivo puede llevar prefijo ("PEDIDO-3841"): LIKE y luego se compara solo la parte numérica.
+				foreach ( bk_g_meta_ids( array( $f['consecutivo'] ), array( $num ), true, 50 ) as $cid ) {
+					$co = wc_get_order( $cid );
+					if ( $co && preg_replace( '/\D/', '', (string) $co->get_meta( $f['consecutivo'] ) ) === $num ) {
+						$ids[] = $cid;
+					}
+				}
 			}
 			$ids = array_values( array_unique( array_map( 'intval', $ids ) ) );
 			$res = array( 'orders' => array(), 'total' => count( $ids ), 'max_num_pages' => 1 );
@@ -418,8 +438,13 @@ function bk_g_order_update( WP_REST_Request $r ) {
 		/* translators: %s: usuario */
 		$o->update_status( $status, sprintf( __( 'Cambiado desde Gestión de tienda por %s.', 'buckler-core' ), $user ) );
 	}
+	// Mismo formato que los snippets actuales: 'yes' / 'no'.
 	if ( null !== $r['printed'] && $f['impreso'] ) {
 		$o->update_meta_data( $f['impreso'], rest_sanitize_boolean( $r['printed'] ) ? 'yes' : 'no' );
+		$o->save();
+	}
+	if ( null !== $r['dispatched'] && $f['despachado'] ) {
+		$o->update_meta_data( $f['despachado'], rest_sanitize_boolean( $r['dispatched'] ) ? 'yes' : 'no' );
 		$o->save();
 	}
 	if ( $r['note'] ) {
@@ -625,6 +650,7 @@ function bk_g_settings_save( WP_REST_Request $r ) {
 		array(
 			'consecutivo' => sanitize_text_field( (string) $r['consecutivo'] ),
 			'impreso'     => sanitize_text_field( (string) $r['impreso'] ),
+			'despachado'  => sanitize_text_field( (string) $r['despachado'] ),
 			'cedula'      => array_filter( array_map( 'trim', explode( ',', sanitize_text_field( (string) $r['cedula'] ) ) ) ),
 			'adjuntos'    => sanitize_text_field( (string) $r['adjuntos'] ),
 		),

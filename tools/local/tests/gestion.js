@@ -39,6 +39,23 @@ const login = async (p, u, pw) => { await p.goto(B + '/wp-login.php?redirect_to=
   await cb.click(); await p.waitForTimeout(800);
   await p.reload(); await p.click('[data-tab="pedidos"]').catch(() => {}); await p.waitForSelector('[data-printed]');
   ok(await p.locator('[data-printed]').first().isChecked() === !before, 'check "Impreso" se guarda');
+  // Consecutivo con prefijo (PEDIDO-2405) y despachado
+  for (const q of ['PEDIDO-2405', '2405', '#2405']) {
+    await p.fill('input[name="q"]', q); await p.waitForTimeout(1200);
+    const cons = await p.locator('.bk-g-orders tbody .c-cons').allTextContents();
+    ok(cons.length >= 1 && cons.every(c => /PEDIDO-2405/.test(c)), `búsqueda por consecutivo "${q}" → ${cons.length}`);
+  }
+  await p.fill('input[name="q"]', ''); await p.waitForTimeout(900);
+  ok((await p.textContent('.bk-g-orders thead')).includes('Despachado'), 'columna Despachado con la clave real por defecto');
+  await p.selectOption('select[name="dispatched"]', 'yes'); await p.waitForTimeout(1000);
+  ok(await p.$$eval('[data-dispatched]', els => els.length > 0 && els.every(e => e.checked)), 'filtro "Despachados"');
+  await p.selectOption('select[name="dispatched"]', 'no'); await p.waitForTimeout(1000);
+  const dcb = p.locator('[data-dispatched]').first(); const did = await dcb.getAttribute('data-dispatched');
+  await dcb.click(); await p.waitForTimeout(900);
+  ok(/despachado/.test(await p.textContent('#bk-g-toast')), 'check "Despachado" desde la lista');
+  await p.selectOption('select[name="dispatched"]', 'yes'); await p.waitForTimeout(1000);
+  ok(await p.locator(`[data-dispatched="${did}"]`).count() === 1, 'el pedido marcado aparece en "Despachados"');
+  await p.selectOption('select[name="dispatched"]', ''); await p.waitForTimeout(900);
   // Detalle
   await p.fill('input[name="q"]', '464'); await p.waitForTimeout(1200); await p.locator('[data-order="464"]').click(); await p.waitForSelector('#bk-g-osave');
   ok((await p.textContent('.bk-g-dbody')).includes('Cédula'), 'detalle muestra cédula');

@@ -51,6 +51,7 @@ function bk_video_detect_candidates() {
 		 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type = 'product'
 		 INNER JOIN {$wpdb->posts} a ON a.ID = pm.meta_value AND a.post_type = 'attachment' AND a.post_mime_type LIKE 'video/%'
 		 WHERE pm.meta_value REGEXP '^[0-9]+$'
+		   AND pm.meta_key REGEXP 'video|vid|mp4|clip|media'
 		 GROUP BY pm.meta_key
 		 ORDER BY products DESC
 		 LIMIT 20",
@@ -63,7 +64,10 @@ function bk_video_detect_candidates() {
 		}
 	}
 
-	foreach ( $own as $k ) {
+	// Un número cualquiera (contador de visitas, SKU, ID de galería) puede coincidir con el ID de un video:
+	// por eso los numéricos solo cuentan si la clave habla de video (arriba) y se excluyen claves conocidas.
+	// En producción (2026-10-14) daban falsos positivos `_conteo_visitas_woo`, `_sku` y `_product_image_gallery`.
+	foreach ( array_merge( $own, array( '_sku', '_product_image_gallery', '_thumbnail_id' ) ) as $k ) {
 		unset( $found[ $k ] );
 	}
 	uasort(
@@ -163,7 +167,10 @@ function bk_video_admin_page() {
 			<?php echo bk_plugin_folder_active( 'divi-bodycommerce' ) ? esc_html__( 'activo (el video propio no se pinta para no duplicar)', 'buckler-core' ) : esc_html__( 'inactivo', 'buckler-core' ); ?>
 		</p>
 
-		<h2><?php esc_html_e( 'Claves encontradas', 'buckler-core' ); ?></h2>
+		<?php if ( bk_video_count_gallery() ) : ?>
+			<div class="notice notice-info inline"><p><?php esc_html_e( 'Los videos de tus productos están dentro de la galería (así los guarda BodyCommerce). Buckler Core los usa directamente: no necesitas elegir una clave de respaldo ni migrar.', 'buckler-core' ); ?></p></div>
+		<?php endif; ?>
+		<h2><?php esc_html_e( 'Otras claves encontradas (avanzado)', 'buckler-core' ); ?></h2>
 		<?php if ( ! $candidates ) : ?>
 			<p><?php esc_html_e( 'No se encontraron videos en los datos de los productos.', 'buckler-core' ); ?></p>
 		<?php else : ?>

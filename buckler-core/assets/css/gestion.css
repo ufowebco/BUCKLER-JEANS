@@ -573,7 +573,7 @@ code { font-size: 13px; background: #f1f4f6; padding: 2px 6px; border-radius: 4p
 	.bk-g-orders tbody { display: grid; gap: 10px; }
 	.bk-g-orders tr {
 		display: grid;
-		grid-template-areas: "num status" "cust total" "date print" "cons cons";
+		grid-template-areas: "num status" "cust total" "date print" "cons disp";
 		grid-template-columns: minmax(0, 1fr) auto;
 		gap: 4px 12px;
 		padding: 14px 16px;
@@ -588,6 +588,7 @@ code { font-size: 13px; background: #f1f4f6; padding: 2px 6px; border-radius: 4p
 	.bk-g-orders .c-total { grid-area: total; text-align: right; }
 	.bk-g-orders .c-date { grid-area: date; color: var(--g-mute); font-size: 13px; }
 	.bk-g-orders .c-print { grid-area: print; justify-self: end; }
+	.bk-g-orders .c-disp { grid-area: disp; }
 	.bk-g-orders .c-cons { grid-area: cons; color: var(--g-mute); font-size: 13px; }
 	.bk-g-orders .bk-g-check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; }
 

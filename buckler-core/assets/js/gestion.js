@@ -111,7 +111,7 @@
 
 	/* --- Pedidos ------------------------------------------------------------------- */
 	const hashParams = () => new URLSearchParams(location.hash.split('?')[1] || '');
-	const oState = { q: '', status: 'all', printed: '', from: '', to: '', page: 1 };
+	const oState = { q: '', status: 'all', printed: '', dispatched: '', from: '', to: '', page: 1 };
 
 	async function viewOrders() {
 		const hp = hashParams();
@@ -119,9 +119,10 @@
 		main.innerHTML = `<h1 class="bk-g-h1">Pedidos</h1>
 			<form class="bk-g-filters" id="bk-g-of" role="search">
 				<label class="bk-g-search"><span class="bk-g-sr">Buscar pedidos</span>${C.icons.search}
-					<input type="search" name="q" value="${esc(oState.q)}" placeholder="Número, cédula, nombre, correo o celular" autocomplete="off"></label>
+					<input type="search" name="q" value="${esc(oState.q)}" placeholder="Número, consecutivo, cédula, nombre, correo o celular" autocomplete="off"></label>
 				<label><span>Estado</span><select name="status"><option value="all">Todos</option>${Object.entries(C.statuses).map(([k, v]) => `<option value="${k}" ${oState.status === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></label>
 				<label><span>Impresión</span><select name="printed"><option value="">Todos</option><option value="no" ${oState.printed === 'no' ? 'selected' : ''}>Sin imprimir</option><option value="yes" ${oState.printed === 'yes' ? 'selected' : ''}>Impresos</option></select></label>
+				${C.hasDispatch ? `<label><span>Despacho</span><select name="dispatched"><option value="">Todos</option><option value="no" ${oState.dispatched === 'no' ? 'selected' : ''}>Sin despachar</option><option value="yes" ${oState.dispatched === 'yes' ? 'selected' : ''}>Despachados</option></select></label>` : ''}
 				<label><span>Desde</span><input type="date" name="from" value="${esc(oState.from)}"></label>
 				<label><span>Hasta</span><input type="date" name="to" value="${esc(oState.to)}"></label>
 				<button type="submit" class="bk-g-btn">Buscar</button>
@@ -147,10 +148,11 @@
 			const d = await api(`orders?${qs(oState)}`);
 			if (seq !== oSeq || !box.isConnected) return;
 			const showCons = d.orders.some((o) => o.consecutivo);
+			const showDisp = d.orders.some((o) => o.dispatched !== null);
 			box.innerHTML = d.orders.length ? `
 				<p class="bk-g-count">${d.total} pedido${d.total === 1 ? '' : 's'}</p>
 				<div class="bk-g-table-wrap"><table class="bk-g-table bk-g-orders">
-					<thead><tr><th>Pedido</th>${showCons ? '<th>Consecutivo</th>' : ''}<th>Fecha</th><th>Clienta</th><th>Total</th><th>Estado</th><th>Impreso</th></tr></thead>
+					<thead><tr><th>Pedido</th>${showCons ? '<th>Consecutivo</th>' : ''}<th>Fecha</th><th>Clienta</th><th>Total</th><th>Estado</th><th>Impreso</th>${showDisp ? '<th>Despachado</th>' : ''}</tr></thead>
 					<tbody>${d.orders.map((o) => `<tr>
 						<td class="c-num"><button type="button" class="bk-g-link" data-order="${o.id}">#${esc(o.number)}</button></td>
 						${showCons ? `<td class="c-cons"><span class="bk-g-mlabel">Consecutivo </span>${esc(o.consecutivo)}</td>` : ''}
@@ -159,6 +161,7 @@
 						<td class="c-total"><b>${esc(o.total)}</b><small>${esc(o.payment)}</small></td>
 						<td class="c-status"><span class="bk-g-pill is-${esc(o.status)}">${esc(statusLabel(o.status))}</span>${o.tracking ? `<small class="bk-g-trk">${C.icons.truck} ${esc(C.carriers[o.tracking.carrier] || '')}</small>` : ''}</td>
 						<td class="c-print"><label class="bk-g-check"><input type="checkbox" data-printed="${o.id}" ${o.printed ? 'checked' : ''}><span class="bk-g-mlabel">Impreso</span><span class="bk-g-sr">Pedido ${esc(o.number)} impreso</span></label></td>
+						${showDisp ? `<td class="c-print c-disp"><label class="bk-g-check"><input type="checkbox" data-dispatched="${o.id}" ${o.dispatched ? 'checked' : ''}><span class="bk-g-mlabel">Despachado</span><span class="bk-g-sr">Pedido ${esc(o.number)} despachado</span></label></td>` : ''}
 					</tr>`).join('')}</tbody>
 				</table></div>
 				${pager(d.pages, oState.page, 'o')}` : '<p class="bk-g-empty">No hay pedidos con esos filtros.</p>';
@@ -196,6 +199,7 @@
 			<div class="bk-g-row2">
 				<label><span>Estado</span><select id="bk-g-ostatus">${Object.entries(C.statuses).map(([k, v]) => `<option value="${k}" ${o.status === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></label>
 				<label class="bk-g-switch"><input type="checkbox" id="bk-g-oprinted" ${o.printed ? 'checked' : ''}><span>Impreso</span></label>
+				${o.dispatched !== null && o.dispatched !== undefined ? `<label class="bk-g-switch"><input type="checkbox" id="bk-g-odispatched" ${o.dispatched ? 'checked' : ''}><span>Despachado</span></label>` : ''}
 			</div>
 			<button type="button" class="bk-g-btn" id="bk-g-osave" data-id="${o.id}">Guardar estado</button>
 			${shipHtml(o)}
@@ -322,17 +326,19 @@
 				<form id="bk-g-sf" class="bk-g-sform">
 					<label><span>Consecutivo</span><input name="consecutivo" value="${esc(f.consecutivo)}" placeholder="Ej.: _wcdn_invoice_number"></label>
 					<label><span>Check "Impreso"</span><input name="impreso" value="${esc(f.impreso)}"></label>
+					<label><span>Check "Despachado"</span><input name="despachado" value="${esc(f.despachado)}"></label>
 					<label><span>Cédula (una o varias, separadas por coma)</span><input name="cedula" value="${esc(f.cedula.join(', '))}"></label>
 					<label><span>Archivos del pedido (repeater ACF)</span><input name="adjuntos" value="${esc(f.adjuntos)}"></label>
 					<button class="bk-g-btn" type="submit">Guardar campos</button>
 				</form></section>
 				<section class="bk-g-card"><h2>Campos encontrados en los últimos 40 pedidos</h2>
-				<p class="bk-g-hint">Usa esta lista para identificar el consecutivo, la cédula y el impreso. Toca un botón para asignarlo.</p>
+				<p class="bk-g-hint">Usa esta lista para identificar el consecutivo, la cédula, el impreso y el despachado. Toca un botón para asignarlo.</p>
 				<div class="bk-g-table-wrap"><table class="bk-g-table"><thead><tr><th>Campo</th><th>Ejemplo</th><th>Pedidos</th><th>Usar como</th></tr></thead><tbody>
 				${d.meta.map((m) => `<tr><td><code>${esc(m.key)}</code></td><td>${esc(m.example)}</td><td>${m.orders}</td><td class="bk-g-use">
 					<button type="button" class="bk-g-btn is-small is-ghost" data-use="consecutivo" data-key="${esc(m.key)}">Consecutivo</button>
 					<button type="button" class="bk-g-btn is-small is-ghost" data-use="cedula" data-key="${esc(m.key)}">Cédula</button>
-					<button type="button" class="bk-g-btn is-small is-ghost" data-use="impreso" data-key="${esc(m.key)}">Impreso</button></td></tr>`).join('') || '<tr><td colspan="4">Aún no hay pedidos.</td></tr>'}
+					<button type="button" class="bk-g-btn is-small is-ghost" data-use="impreso" data-key="${esc(m.key)}">Impreso</button>
+					<button type="button" class="bk-g-btn is-small is-ghost" data-use="despachado" data-key="${esc(m.key)}">Despachado</button></td></tr>`).join('') || '<tr><td colspan="4">Aún no hay pedidos.</td></tr>'}
 				</tbody></table></div></section>
 				<section class="bk-g-card"><h2>Correo "Tu pedido ha sido enviado"</h2>
 				<p class="bk-g-hint">Revisa cómo se ve con un pedido real y envíate una prueba antes de usarlo con clientas.</p>
@@ -361,7 +367,7 @@
 		const save = t.closest('#bk-g-osave');
 		if (save) {
 			await busy(save, async () => {
-				const o = await api(`orders/${save.dataset.id}`, { method: 'POST', body: { status: $('#bk-g-ostatus').value, printed: $('#bk-g-oprinted').checked } });
+				const o = await api(`orders/${save.dataset.id}`, { method: 'POST', body: { status: $('#bk-g-ostatus').value, printed: $('#bk-g-oprinted').checked, ...($('#bk-g-odispatched') ? { dispatched: $('#bk-g-odispatched').checked } : {}) } });
 				panel.innerHTML = orderHtml(o);
 				toast(`Pedido #${o.number}: ${statusLabel(o.status)}`);
 				loadOrders();
@@ -444,12 +450,13 @@
 	});
 
 	document.addEventListener('change', async (e) => {
-		const cb = e.target.closest('[data-printed]');
+		const cb = e.target.closest('[data-printed], [data-dispatched]');
 		if (!cb) return;
+		const disp = cb.hasAttribute('data-dispatched');
 		cb.disabled = true;
 		try {
-			await api(`orders/${cb.dataset.printed}`, { method: 'POST', body: { printed: cb.checked } });
-			toast(cb.checked ? 'Marcado como impreso' : 'Marcado como no impreso');
+			await api(`orders/${disp ? cb.dataset.dispatched : cb.dataset.printed}`, { method: 'POST', body: disp ? { dispatched: cb.checked } : { printed: cb.checked } });
+			toast(disp ? (cb.checked ? 'Marcado como despachado' : 'Marcado como no despachado') : (cb.checked ? 'Marcado como impreso' : 'Marcado como no impreso'));
 		} catch (err) { cb.checked = !cb.checked; toast(err.message, 'err'); } finally { cb.disabled = false; }
 	});
 

@@ -107,6 +107,7 @@ function bk_g_render() {
 		'lines'    => array_map( static fn( $l ) => $l['label'], (array) bk_config( 'lines' ) ),
 		'carriers' => array_map( static fn( $c ) => $c['name'], (array) bk_config( 'carriers' ) ),
 		'isAdmin'  => current_user_can( 'manage_options' ),
+		'hasDispatch' => (bool) bk_g_fields()['despachado'],
 		'user'     => wp_get_current_user()->display_name,
 		'logout'   => wp_logout_url( home_url( '/' . BK_G_SLUG . '/' ) ),
 		'site'     => home_url( '/' ),

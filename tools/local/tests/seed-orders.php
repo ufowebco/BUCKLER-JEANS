@@ -15,5 +15,16 @@ if(!get_option('bk_seed_orders')){
   $last->update_meta_data('archivos_adjuntos',1); $last->update_meta_data('archivos_adjuntos_0_archivo',$img); $last->save();
   update_option('bk_seed_orders',1);
 }
+// Mismas claves y formatos que producción (detector de Ajustes, 2026-10-14): cédula en _billing_id,
+// consecutivo WCDN "PEDIDO-NNNN", checks _impreso_status / _despachado_status = yes. Idempotente.
+foreach(wc_get_orders(['limit'=>-1,'type'=>'shop_order','orderby'=>'ID','order'=>'ASC']) as $k=>$o){
+  if($o->get_meta('_bk_seed_v2')) continue;
+  if($o->get_meta('billing_cedula')) $o->update_meta_data('_billing_id',$o->get_meta('billing_cedula'));
+  $inv=$o->get_meta('_wcdn_invoice_number'); if($inv!=='' && ctype_digit((string)$inv)) $o->update_meta_data('_wcdn_invoice_number','PEDIDO-'.$inv);
+  if($o->get_meta('_bk_impreso')==='yes') $o->update_meta_data('_impreso_status','yes');
+  if($k%2===0) $o->update_meta_data('_despachado_status','yes');
+  $o->update_meta_data('_bk_seed_v2',1); $o->save();
+}
+delete_option('bk_gestion_fields'); // Valores por defecto = claves reales.
 if(!get_user_by('login','gestora')){ $uid=wp_create_user('gestora','gestora','gestora@ejemplo.com'); (new WP_User($uid))->set_role('bk_gestor'); }
 echo "pedidos: ".count(wc_get_orders(['limit'=>-1,'return'=>'ids','type'=>'shop_order']))."\n";

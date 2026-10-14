@@ -125,6 +125,10 @@ function bk_ship_handle( WP_REST_Request $r ) {
 	}
 
 	$user = wp_get_current_user()->display_name;
+	$f    = bk_g_fields();
+	if ( $f['despachado'] ) {
+		$o->update_meta_data( $f['despachado'], 'yes' ); // Guía enviada = despachado.
+	}
 	$o->update_meta_data(
 		BK_TRACKING_META,
 		array(

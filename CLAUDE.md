@@ -82,6 +82,18 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
 - "Ocultar agotados" activo (Store API: 99 de 133). `pantalones-sale` eliminada. `/politica-de-envio/` ya 301 OK.
 - Header 1114 es el global de las 12 plantillas aunque se titule "Todos Los Políticas Empresa".
 
+## Producción (fase 1, 2026-10-14): buckler-core instalado, módulos apagados salvo lo indicado
+- Revisión posterior: 0 diferencias con la línea base (`snapshots/review-2026-10-14-post/`).
+- Videos: **132 productos con MP4 en la galería**; ninguna clave de respaldo (no hace falta). El detector daba
+  falsos positivos (`_conteo_visitas_woo`, `_sku`, `_product_image_gallery`: números que coinciden con IDs de
+  video) → corregido en 0.8.2 (numéricos solo si la clave habla de video). **No usar "Usar como respaldo".**
+- Claves reales de pedidos (detector de Ajustes, últimos 40): consecutivo `_wcdn_invoice_number` = "PEDIDO-3841"
+  (+ `_wcdn_invoice_number_counter` 841, `_wcdn_invoice_date`, `_wcdn_receipt_pdf`), `_order_number` 3846,
+  cédula `_billing_id`, impreso `_impreso_status`=yes, **despachado `_despachado_status`=yes** (otro snippet),
+  adjuntos `archivos_adjuntos`. Otros: `_ufo_purchase_tracked`, `_meta_event_id`, `_meta_purchase_tracked_*`.
+  Desde 0.8.2 son los **valores por defecto** de `bk_g_fields()`; "Despachado" tiene columna, filtro y check, y
+  enviar la guía lo marca. La búsqueda acepta "3841", "#3841" y "PEDIDO-3841".
+
 ## Auditoría (audit_site)
 - Inicio 44: 3× `divi/code` (no permitido por el plugin) y CSS propio en una fila.
 - Footer 119: CSS propio; enlace a `/politica-de-envio/` sin página.
@@ -119,7 +131,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.8.1 → `dist/buckler-core-0.8.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.8.2 → `dist/buckler-core-0.8.2.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
