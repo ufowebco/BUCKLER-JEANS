@@ -57,7 +57,8 @@
 
 	/* --- Página actual en el menú ------------------------------------------- */
 	header.querySelectorAll('.bk-nav__link[href], .bk-drawer__link[href]').forEach((a) => {
-		if (new URL(a.href).pathname === location.pathname) a.setAttribute('aria-current', 'page');
+		const u = new URL(a.href);
+		if (u.pathname === location.pathname && u.search === location.search) a.setAttribute('aria-current', 'page');
 	});
 
 	/* --- Menú desplegable de la tienda (clic, teclado y hover con retardo) ---- */

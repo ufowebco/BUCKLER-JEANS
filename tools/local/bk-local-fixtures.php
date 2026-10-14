@@ -42,3 +42,9 @@ add_filter( 'pre_wp_mail', function ( $null, $atts ) {
 
 // El admin de WooCommerce en React no está compilado en este entorno (sin npm build): se desactiva.
 add_filter( 'woocommerce_admin_disabled', '__return_true' );
+
+// Igual que producción (2026-10-14): un plugin envuelve galería + resumen de la ficha en un div.clearfix.
+add_action( 'woocommerce_before_single_product_summary', function () { echo '<div class="clearfix">'; }, 1 );
+add_action( 'woocommerce_after_single_product_summary', function () { echo '</div>'; }, 1 );
+// Igual que producción: un plugin de "compartir" en la ficha (debe desaparecer con Páginas limpias).
+add_action( 'woocommerce_share', function () { echo '<div class="bk-test-share">Share on</div>'; } );

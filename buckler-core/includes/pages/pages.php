@@ -130,7 +130,7 @@ function bk_pages_diet() {
 	if ( ! bk_pages_route() ) {
 		return;
 	}
-	$re = (string) apply_filters( 'bk_pages_diet_regex', '/^(divi|et[-_]|et_|dnxte|bc-|divi-bodyshop|bodycommerce|pac[-_]?da|spotlight|effect_card|wpf|themify|dgwt-wcas|bold-elementor|de[-_]|dmach|divi-machine|divi-ajax|da[-_]|ddch|dipl|wp-block-library|global-styles|classic-theme-styles|wc-blocks|xoo-)/i' );
+	$re = (string) apply_filters( 'bk_pages_diet_regex', '/^(divi|et[-_]|et_|dnxte|bc-|daf-|divi-bodyshop|bodycommerce|pac[-_]?da|spotlight|effect_card|wpf|themify|dgwt-wcas|bold-elementor|de[-_]|dmach|divi-machine|divi-ajax|da[-_]|ddch|dipl|wp-block-library|global-styles|classic-theme-styles|wc-blocks|xoo-)/i' );
 	foreach ( array( wp_styles(), wp_scripts() ) as $deps ) {
 		foreach ( (array) $deps->queue as $handle ) {
 			if ( preg_match( $re, $handle ) && ! in_array( $handle, array( 'dashicons', 'admin-bar' ), true ) ) {
@@ -147,8 +147,9 @@ function bk_pages_diet() {
  * @return string
  */
 function bk_pages_clean_head( $html ) {
-	$html = preg_replace( '#<style[^>]+id=["\'](et-|et_|divi|dnxte|bc-)[^"\']*["\'][^>]*>.*?</style>#is', '', $html );
-	$html = preg_replace( '#<link[^>]+id=["\'](et-|et_|divi|dnxte)[^"\']*["\'][^>]*>#i', '', $html );
+	$ids  = '(et-|et_|divi|dnxte|bc-|daf-|dmach)';
+	$html = preg_replace( '#<style[^>]+id=["\']' . $ids . '[^"\']*["\'][^>]*>.*?</style>#is', '', $html );
+	$html = preg_replace( '#<link[^>]+id=["\']' . $ids . '[^"\']*["\'][^>]*>#i', '', $html );
 	return (string) $html;
 }
 
@@ -169,6 +170,7 @@ function bk_pdp_hooks() {
 	add_action( 'woocommerce_single_product_summary', 'bk_pdp_addi', 11 );
 	add_action( 'woocommerce_single_product_summary', 'bk_pdp_size_tools', 25 );
 	remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
+	remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_sharing', 50 ); // "Share on" de plugins.
 	add_action( 'woocommerce_single_product_summary', 'bk_pdp_benefits', 40 );
 
 	remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15 );

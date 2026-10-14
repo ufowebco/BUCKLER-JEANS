@@ -394,12 +394,11 @@ html.bk-shop-lock {
 	}
 
 	.bk-shop__filters {
-		position: sticky;
-		inset: auto; /* Antes de top: si va después lo anula. */
-		top: calc(var(--bk-header-h, 0px) + 72px);
+		/* Columna normal: con sticky + max-height las últimas tallas y el precio quedaban ocultos en un scroll interno. */
+		position: static;
+		inset: auto;
 		z-index: 1;
 		display: flex;
-		max-height: calc(100vh - var(--bk-header-h, 0px) - 90px);
 		background: none;
 	}
 

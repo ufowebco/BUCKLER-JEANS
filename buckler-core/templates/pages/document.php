@@ -26,6 +26,10 @@ $bk_head = bk_pages_clean_head( (string) ob_get_clean() );
 	<?php include BK_DIR . 'templates/pages/' . $bk_route . '.php'; ?>
 </main>
 <?php echo do_shortcode( '[bk_footer]' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
-<?php wp_footer(); ?>
+<?php
+ob_start();
+wp_footer();
+echo bk_pages_clean_head( (string) ob_get_clean() ); // phpcs:ignore WordPress.Security.EscapeOutput -- salida de wp_footer().
+?>
 </body>
 </html>

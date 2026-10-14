@@ -36,6 +36,11 @@ const OUT = '/tmp/claude-0/bk-local';
   ok(d.h1.length === 1 && /Línea Slim/.test(d.h1[0]), `ficha: un H1 con la línea "${d.h1[0]}"`);
   ok(await p.locator('.bk-pg__slide').count() >= 1, `galería propia (${await p.locator('.bk-pg__slide').count()} diapositivas)`);
   ok(await p.locator('.bk-crumbs').count() === 1, 'migas de pan');
+  const pos = await p.evaluate(() => { const g = document.querySelector('.bk-pg').getBoundingClientRect(); const sm = document.querySelector('.summary').getBoundingClientRect(); return { side: sm.left > g.right - 5, top: Math.abs(sm.top - g.top) < 40 }; });
+  ok(pos.side && pos.top, 'ficha: compra al lado de la galería (aunque haya un div.clearfix envolviendo)');
+  ok(await p.locator('.bk-test-share').count() === 0, 'ficha: sin botones de compartir de plugins');
+  const colors = await p.evaluate(() => ({ price: getComputedStyle(document.querySelector('.summary .price')).color, btn: getComputedStyle(document.querySelector('.single_add_to_cart_button')).backgroundColor }));
+  ok(colors.price === 'rgb(26, 57, 85)' && colors.btn === 'rgb(26, 57, 85)', 'precio y botón en azul de marca: ' + JSON.stringify(colors));
   const sizes = p.locator('.bk-sizes [role="radio"]');
   ok(await sizes.count() >= 3 && await p.locator('.bk-sizes[role="radiogroup"]').count() === 1, `tallas como radiogroup (${await sizes.count()})`);
   ok(await p.locator('select[name^="attribute_"]').evaluate((s) => s.classList.contains('bk-visually-hidden')), 'el select de Woo queda oculto pero presente');
@@ -81,6 +86,9 @@ const OUT = '/tmp/claude-0/bk-local';
   ok(/order-received/.test(p.url()) && /Gracias/.test(d.h1[0] || ''), `pedido creado → "${d.h1[0]}"`);
   await p.screenshot({ path: `${OUT}/pg-thanks-1440.png`, fullPage: true });
 
+  // Footer: títulos y enlaces visibles (no heredan el azul de la página)
+  const fc = await p.evaluate(() => { const f = document.querySelector('.bk-footer'); const h = f.querySelector('h2, h3'); const a = f.querySelector('nav a, li a'); return { bg: getComputedStyle(f).backgroundColor, h: h && getComputedStyle(h).color, a: a && getComputedStyle(a).color }; });
+  ok(fc.h !== fc.bg && fc.a !== 'rgb(26, 57, 85)', 'footer: títulos y enlaces legibles ' + JSON.stringify(fc));
   // Mi cuenta, FAQ, política
   const anon = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
   anon.on('pageerror', (e) => errs.push(e.message));
