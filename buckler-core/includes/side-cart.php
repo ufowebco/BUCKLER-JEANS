@@ -70,6 +70,7 @@ function bk_sc_assets() {
 				'suggest'   => __( 'Combínalo en tu talla', 'buckler-core' ),
 				'add'       => __( 'Añadir talla', 'buckler-core' ),
 				'added'     => __( 'Añadido al carrito', 'buckler-core' ),
+				'adding'    => __( 'Añadiendo a tu carrito…', 'buckler-core' ),
 				'removed'   => __( 'Producto quitado del carrito', 'buckler-core' ),
 				'error'     => __( 'No pudimos actualizar tu carrito. Intenta de nuevo.', 'buckler-core' ),
 				'addi'      => __( 'o %1$d cuotas de %2$s con Addi', 'buckler-core' ),

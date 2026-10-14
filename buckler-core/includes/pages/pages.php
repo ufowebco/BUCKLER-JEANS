@@ -130,7 +130,7 @@ function bk_pages_diet() {
 	if ( ! bk_pages_route() ) {
 		return;
 	}
-	$re = (string) apply_filters( 'bk_pages_diet_regex', '/^(divi|et[-_]|et_|dnxte|bc-|daf-|divi-bodyshop|bodycommerce|pac[-_]?da|spotlight|effect_card|wpf|themify|dgwt-wcas|bold-elementor|de[-_]|dmach|divi-machine|divi-ajax|da[-_]|ddch|dipl|wp-block-library|global-styles|classic-theme-styles|wc-blocks|xoo-)/i' );
+	$re = (string) apply_filters( 'bk_pages_diet_regex', '/^(divi|et[-_]|et_|dnxte|bc-|daf-|divi-bodyshop|bodycommerce|pac[-_]?da|spotlight|effect_card|wpf|themify|dgwt-wcas|jquery-dgwt|bold-elementor|de[-_]|dmach|divi-machine|divi-ajax|da[-_]|ddch|dipl|wp-block-library|global-styles|classic-theme-styles|wc-blocks|xoo-)/i' );
 	foreach ( array( wp_styles(), wp_scripts() ) as $deps ) {
 		foreach ( (array) $deps->queue as $handle ) {
 			if ( preg_match( $re, $handle ) && ! in_array( $handle, array( 'dashicons', 'admin-bar' ), true ) ) {

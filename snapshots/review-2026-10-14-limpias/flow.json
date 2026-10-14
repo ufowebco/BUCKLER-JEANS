@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-14T23:00:03.598Z",
+  "pages": [],
+  "links": [],
+  "flow": [
+    {
+      "step": "elegir talla (botones)",
+      "ok": true,
+      "extra": "8"
+    },
+    {
+      "step": "añadir al carrito",
+      "ok": false,
+      "extra": ""
+    },
+    {
+      "step": "carrito con el producto",
+      "ok": false,
+      "extra": "0 línea(s)"
+    },
+    {
+      "step": "carrito vaciado",
+      "ok": true,
+      "extra": "0 línea(s)"
+    },
+    {
+      "step": "checkout responde",
+      "ok": true,
+      "extra": "200 → /finalizar-compra/"
+    }
+  ],
+  "linksChecked": 0
+}

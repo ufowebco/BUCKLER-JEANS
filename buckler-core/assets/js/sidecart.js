@@ -27,8 +27,17 @@
 	const icon = (name) => (cfg.icons && cfg.icons[name]) || '';
 
 	/* --- API ------------------------------------------------------------------ */
+	let warming = null;
+	// Pide el nonce de la Store API por adelantado (mientras la clienta elige talla), no al pulsar "Añadir".
+	const warm = () => {
+		nonce = nonce || window.bkStoreNonce || '';
+		if (nonce || warming) return warming;
+		warming = api('cart').catch(() => null).finally(() => { warming = null; });
+		return warming;
+	};
 	const api = async (path, opts = {}) => {
-		if (opts.method === 'POST' && !nonce) await api('cart'); // Obtiene el nonce de la Store API.
+		nonce = nonce || window.bkStoreNonce || '';
+		if (opts.method === 'POST' && !nonce) await (warming || api('cart')); // Obtiene el nonce de la Store API.
 		const res = await fetch(cfg.store + path, {
 			method: opts.method || 'GET',
 			credentials: 'same-origin',
@@ -62,7 +71,12 @@
 			requestAnimationFrame(() => root.classList.add('is-open'));
 			panel.querySelector('.bk-sc__close').focus();
 		}
-		if (opts.cart) {
+		if (opts.pending) {
+			// Respuesta inmediata mientras el servidor añade el producto.
+			foot.hidden = true;
+			body.setAttribute('aria-busy', 'true');
+			body.innerHTML = `<p class="bk-sc__msg bk-sc__msg--pending">${esc(t.adding || '…')}</p>`;
+		} else if (opts.cart) {
 			render(opts.cart);
 		} else {
 			body.setAttribute('aria-busy', 'true');
@@ -239,12 +253,16 @@
 		}
 		btn.classList.add('is-busy');
 		btn.setAttribute('aria-busy', 'true');
+		open({ pending: true });
 		try {
 			const cart = await api('cart/add-item', { method: 'POST', body: { id: productId, quantity: Number(fd.get('quantity')) || 1, variation } });
+			render(cart);
+			window.bkCartSynced = Date.now();
 			fireJq('added_to_cart');
 			say(t.added);
 			await open({ cart });
 		} catch (err) {
+			close();
 			if (err.data?.code) {
 				// Error de negocio (sin stock, cantidad, etc.): se muestra junto al botón.
 				let box = form.querySelector('.bk-form-msg');
@@ -272,6 +290,11 @@
 			if ($btn && $btn.length && !$btn.closest('.bk-sc').length) open();
 		});
 	}
+
+	// Calentar el nonce en cuanto la clienta interactúa con el formulario de compra.
+	['pointerdown', 'focusin', 'change'].forEach((ev) => document.addEventListener(ev, (e) => {
+		if (e.target.closest?.('form.cart')) warm();
+	}, { passive: true }));
 
 	window.bkSideCart = { open, close };
 })();

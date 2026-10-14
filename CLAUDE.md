@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.10.0 → `dist/buckler-core-0.10.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.10.1 → `dist/buckler-core-0.10.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -206,7 +206,14 @@ Versión actual 0.10.0 → `dist/buckler-core-0.10.0.zip` (`tools/build-plugin.s
   Inicio: `[bk_hero]` + H1 + `[bk_lineas]` + Lo nuevo con pestañas por línea (`new_child`) + ¡Sale! + beneficios.
   FAQ: CPT `pregunta-frecuente` por `caregoria-pf`, `<details>` + JSON-LD FAQPage. Fuente Manrope local
   (`assets/fonts`, OFL) con preload. `[bk_hero]`/`[bk_lineas]` funcionan con `pages` aunque `banners` esté apagado.
-  Suite `paginas.js` (33): incluye compra real hasta "¡Gracias por tu compra!".
+  Suite `paginas.js` (37): incluye compra real hasta "¡Gracias por tu compra!".
+  Revisión en vivo 2026-10-14 (0.10.1): en producción un plugin envuelve galería+resumen en `div.clearfix` → la
+  rejilla se aplica con `:has(> .bk-pg)`; colores de Woo (oliva/morado) anulados con `body.bk-doc`; sin
+  `woocommerce_share`; estilos base con `:where()` (antes pisaban el footer); filtros sin scroll interno;
+  estilos tardíos `bc-`/`daf-` limpiados también en wp_footer. **La Store API en producción tarda ~2,6–3,4 s por
+  petición**: el carrito flotante abre al instante ("Añadiendo…"), reutiliza el nonce de la lectura del contador
+  (`window.bkStoreNonce`) o lo pide al tocar el formulario, y no repite la lectura tras añadir (`bkCartSynced`).
+  Peticiones por página: ~170 → ~100.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.

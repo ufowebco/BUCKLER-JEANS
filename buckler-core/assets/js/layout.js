@@ -166,8 +166,18 @@
 	const hasCartCookie = () => /(?:^|;\s*)woocommerce_items_in_cart=1/.test(document.cookie);
 	const refresh = (bump) => {
 		if (!hasCartCookie()) { render(0); return; }
+		// Si el carrito flotante acaba de actualizar el contador, no se vuelve a pedir el carrito (el servidor tarda ~3 s).
+		if (bump && Date.now() - (window.bkCartSynced || 0) < 2000) {
+			if (cartLink) { cartLink.classList.remove('is-bump'); void cartLink.offsetWidth; cartLink.classList.add('is-bump'); }
+			return;
+		}
 		fetch((window.bkCore && window.bkCore.cartApi) || '/wp-json/wc/store/v1/cart', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
-			.then((r) => (r.ok ? r.json() : null))
+			.then((r) => {
+				// El nonce de la Store API se comparte con el carrito flotante: así "Añadir" no espera otra petición.
+				const n = r.headers.get('Nonce');
+				if (n) window.bkStoreNonce = n;
+				return r.ok ? r.json() : null;
+			})
 			.then((cart) => {
 				if (!cart) return;
 				render(cart.items_count || 0);

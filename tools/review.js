@@ -106,14 +106,15 @@ const PAGES = [
       await p.goto(product, { waitUntil: 'load', timeout: 90000 });
       // Tallas: <select> nativo o botones de BodyCommerce (li.variable-item con el select oculto).
       const sel = p.locator('form.variations_form select').first();
-      const swatches = p.locator('form.variations_form li.variable-item.instock');
+      // Botones de talla propios (Páginas limpias) o, si no, los de BodyCommerce.
+      const swatches = p.locator('.bk-sizes [role="radio"]:not(.is-out), form.variations_form li.variable-item.instock:visible');
       let picked = '';
       if (await swatches.count()) {
         for (let i = 0; i < await swatches.count() && !picked; i++) {
           await swatches.nth(i).click({ force: true }); await p.waitForTimeout(700);
           if (await p.locator('.single_add_to_cart_button:not(.disabled)').count()) picked = await swatches.nth(i).getAttribute('data-value');
         }
-        step('elegir talla (botones BodyCommerce)', !!picked, picked);
+        step('elegir talla (botones)', !!picked, picked);
       } else if (await sel.count()) {
         for (const v of await sel.locator('option').evaluateAll((o) => o.map((x) => x.value).filter(Boolean))) {
           await sel.selectOption(v); await p.waitForTimeout(600);
@@ -122,7 +123,7 @@ const PAGES = [
         step('elegir talla (select)', !!picked, picked);
       } else step('elegir talla', false, 'sin selector de variaciones');
       await p.locator('.single_add_to_cart_button').first().click();
-      await p.waitForTimeout(4000);
+      await p.waitForTimeout(9000); // La Store API en producción tarda ~3 s por petición.
       const count = await p.evaluate(() => document.cookie.includes('woocommerce_items_in_cart'));
       step('añadir al carrito', count, count ? 'cookie de carrito creada' : '');
       await p.goto(BASE + '/carrito/', { waitUntil: 'load' }); await p.waitForTimeout(1500);
