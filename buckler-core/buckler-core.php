@@ -67,6 +67,9 @@ add_action(
 		if ( bk_on( 'shop' ) ) {
 			require_once BK_DIR . 'includes/shop.php';
 		}
+		if ( bk_on( 'pages' ) ) {
+			require_once BK_DIR . 'includes/pages/pages.php';
+		}
 		if ( bk_on( 'gestion' ) ) {
 			require_once BK_DIR . 'includes/gestion/api.php';
 			require_once BK_DIR . 'includes/gestion/page.php';

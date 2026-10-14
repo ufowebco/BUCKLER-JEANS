@@ -188,6 +188,25 @@ Versión actual 0.9.1 → `dist/buckler-core-0.9.1.zip` (`tools/build-plugin.sh`
   "Lo nuevo" = `/tienda/?nuevo=1` (categoría `new_cat`). Enlaces de prendas en header/footer según
   `category_links`: `filters` (por defecto, `/linea-x/?prenda=clave`, inmune al redirect de categorías) o `archive`.
   Caché de menús `bk_cats2_*` (formato con `key` de prenda, `bk_prenda_key()`).
+- **Páginas limpias** (`includes/pages/pages.php`, `templates/pages/*`, `assets/css/pages.css`, `assets/js/pages.js`,
+  módulo `pages`; decisión del cliente 2026-10-14: "reemplaza todas las páginas con tu código, sin residuos"):
+  `template_include` 100000 → `templates/pages/document.php` (HTML propio: wp_head limpio de estilos `et-*`,
+  `[bk_header]`, contenido, `[bk_footer]`, wp_footer). Rutas (`bk_pages_route()`, filtro `bk_pages_routes`): home,
+  shop (tienda/categorías/líneas/¡Sale!/búsqueda), product, cart, checkout (+ gracias), account, faq
+  (`faq_page`), policy (CPT politica-empresa, ACF `texto_politica` → opciones "Listado de Políticas"), 404.
+  Requiere `layout` (sin él no toma ninguna ruta). Dieta (`bk_pages_diet`, regex filtrable `bk_pages_diet_regex`):
+  quita CSS/JS de Divi, Divi Engine/BodyCommerce, Divi Essential, Themify, FiboSearch, Xootix y bloques de Gutenberg
+  en esas páginas; conserva Woo, pasarelas, analítica. El tema Divi + hijo sigue activo (snippets intactos).
+  Carrito/checkout/mi cuenta: **shortcodes clásicos** (en producción las páginas 14/15 tienen bloques, pero hoy
+  Divi muestra el clásico; pasarelas y carritos abandonados usan el clásico). Ficha: plantilla nativa de Woo
+  reordenada con hooks (`bk_pdp_hooks`): galería propia scroll-snap + video (galería MP4/meta), H1 "Nombre · Línea",
+  REF, cuotas Addi, tallas: el `<select>` se convierte en radiogroup accesible (ordenado numérico, agotadas
+  tachadas; oculta el marcado de BodyCommerce), guía de tallas ACF en `<dialog>`, enlace "ver este modelo en la otra
+  línea" (`bk_pdp_twin`, mismo título), beneficios, relacionados con `[bk_productos]`, migas Inicio/Línea/Prenda.
+  Inicio: `[bk_hero]` + H1 + `[bk_lineas]` + Lo nuevo con pestañas por línea (`new_child`) + ¡Sale! + beneficios.
+  FAQ: CPT `pregunta-frecuente` por `caregoria-pf`, `<details>` + JSON-LD FAQPage. Fuente Manrope local
+  (`assets/fonts`, OFL) con preload. `[bk_hero]`/`[bk_lineas]` funcionan con `pages` aunque `banners` esté apagado.
+  Suite `paginas.js` (33): incluye compra real hasta "¡Gracias por tu compra!".
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.

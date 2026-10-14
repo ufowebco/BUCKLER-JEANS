@@ -28,7 +28,7 @@ function bk_asset_ver( $rel ) {
  * Encola los recursos del front.
  */
 function bk_enqueue_assets() {
-	$front = array_filter( array( 'layout', 'clicks', 'banners', 'cards', 'sidecart', 'video' ), 'bk_on' );
+	$front = array_filter( array( 'layout', 'clicks', 'banners', 'cards', 'sidecart', 'video', 'pages' ), 'bk_on' );
 	if ( ! $front ) {
 		return; // Plugin instalado con todo apagado: no carga nada en el front.
 	}

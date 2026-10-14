@@ -60,6 +60,12 @@ function bk_modules() {
 			'replaces' => 'Pantallas lentas de wp-admin para el día a día',
 			'woo'      => true,
 		),
+		'pages'     => array(
+			'label'    => 'Páginas limpias',
+			'desc'     => 'buckler-core pinta inicio, tienda, ficha de producto, carrito, checkout, mi cuenta, preguntas frecuentes y políticas con su propio HTML, sin CSS ni JS de Divi. Requiere Header y footer, Tarjeta de producto y Tienda con filtros.',
+			'replaces' => 'Plantillas del Theme Builder, BodyCommerce (ficha), Divi Essential, FiboSearch en esas páginas',
+			'woo'      => true,
+		),
 		'video'     => array(
 			'label'    => 'Video de producto',
 			'desc'     => 'Video en la galería de la ficha y caja para asignarlo. Usa como respaldo el video que ya cargaste con BodyCommerce.',

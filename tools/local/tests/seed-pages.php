@@ -1,0 +1,46 @@
+<?php
+/** Módulo "Páginas limpias" en local: lo activa y crea preguntas frecuentes de ejemplo (idempotente). */
+require '/tmp/claude-0/bk-local/site/wp-load.php';
+$m = (array) get_option( 'bk_modules', array() );
+update_option( 'bk_modules', array_values( array_unique( array_merge( $m, array( 'pages', 'layout', 'cards', 'shop', 'sidecart' ) ) ) ) );
+if ( ! get_posts( array( 'post_type' => 'pregunta-frecuente', 'posts_per_page' => 1 ) ) ) {
+	$cats = array( 'envios-y-entregas' => 'Envíos y Entregas', 'pagos' => 'Pagos' );
+	foreach ( $cats as $slug => $name ) {
+		wp_insert_term( $name, 'caregoria-pf', array( 'slug' => $slug ) );
+	}
+	$qs = array(
+		array( '¿Cuánto tarda mi pedido?', 'Respuesta de prueba sobre tiempos de entrega.', 'envios-y-entregas' ),
+		array( '¿Hacen envíos a toda Colombia?', 'Respuesta de prueba sobre cobertura.', 'envios-y-entregas' ),
+		array( '¿Qué medios de pago aceptan?', 'Respuesta de prueba sobre pagos.', 'pagos' ),
+	);
+	foreach ( $qs as $q ) {
+		$id = wp_insert_post( array( 'post_type' => 'pregunta-frecuente', 'post_status' => 'publish', 'post_title' => $q[0], 'post_content' => $q[1] ) );
+		wp_set_object_terms( $id, $q[2], 'caregoria-pf' );
+	}
+}
+// Preguntas sin categoría (si se crearon antes de registrar la taxonomía).
+$map = array( '¿Cuánto tarda mi pedido?' => 'envios-y-entregas', '¿Hacen envíos a toda Colombia?' => 'envios-y-entregas', '¿Qué medios de pago aceptan?' => 'pagos' );
+foreach ( array( 'envios-y-entregas' => 'Envíos y Entregas', 'pagos' => 'Pagos' ) as $slug => $name ) {
+	if ( ! term_exists( $slug, 'caregoria-pf' ) ) {
+		wp_insert_term( $name, 'caregoria-pf', array( 'slug' => $slug ) );
+	}
+}
+foreach ( get_posts( array( 'post_type' => 'pregunta-frecuente', 'posts_per_page' => -1 ) ) as $p ) {
+	if ( isset( $map[ $p->post_title ] ) && ! wp_get_object_terms( $p->ID, 'caregoria-pf' ) ) {
+		wp_set_object_terms( $p->ID, $map[ $p->post_title ], 'caregoria-pf' );
+	}
+}
+// "Lo nuevo Curvy": un producto Curvy publicado y con stock en la categoría hija de Línea nueva.
+$curvy = get_term_by( 'slug', 'curvy', 'product_cat' );
+foreach ( wc_get_products( array( 'category' => array( 'linea-curvy' ), 'status' => 'publish', 'stock_status' => 'instock', 'limit' => 3 ) ) as $p ) {
+	if ( $curvy ) {
+		wp_set_object_terms( $p->get_id(), array( (int) $curvy->term_id ), 'product_cat', true );
+	}
+}
+foreach ( array( 'slim', 'curvy' ) as $c ) {
+	echo $c . ': ' . count( wc_get_products( array( 'category' => array( $c ), 'status' => 'publish', 'limit' => -1, 'return' => 'ids' ) ) ) . "\n";
+}
+global $wpdb;
+$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_bk_q_%' OR option_name LIKE '_transient_timeout_bk_q_%'" ); // Caché de [bk_productos].
+flush_rewrite_rules();
+echo "ok\n";

@@ -5,6 +5,8 @@
  */
 add_action( 'init', function () {
 	register_post_type( 'politica-empresa', array( 'public' => true, 'label' => 'Políticas empresa', 'rewrite' => array( 'slug' => 'politica-empresa' ) ) );
+	register_post_type( 'pregunta-frecuente', array( 'public' => true, 'label' => 'Preguntas frecuentes' ) );
+	register_taxonomy( 'caregoria-pf', 'pregunta-frecuente', array( 'public' => true, 'label' => 'Categoría PF' ) );
 }, 5 );
 
 if ( ! function_exists( 'get_field' ) ) {
