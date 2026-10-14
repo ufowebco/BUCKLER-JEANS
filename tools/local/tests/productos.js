@@ -92,9 +92,11 @@ const toastText = (p) => p.textContent('#bk-g-toast');
   // Ficha pública: galería sin el MP4 como foto + video del módulo
   const pub = await (await b.newContext()).newPage();
   await pub.goto(d.url);
-  const galleryImgs = await pub.$$eval('.woocommerce-product-gallery__image img', els => els.map(e => e.getAttribute('src') || ''));
+  // Con "Páginas limpias" la galería es propia (.bk-pg); sin el módulo, la de WooCommerce.
+  const own = await pub.locator('.bk-pg').count() > 0;
+  const galleryImgs = await pub.$$eval(own ? '.bk-pg__slide img' : '.woocommerce-product-gallery__image img', els => els.map(e => e.getAttribute('src') || ''));
   ok(galleryImgs.length === 2 && galleryImgs.every(s => /\.(webp|jpe?g)/.test(s)), 'ficha: 2 fotos en la galería (el MP4 no sale como foto)');
-  ok(await pub.locator('.bk-gallery-video video source[src$=".mp4"]').count() === 1, 'ficha: el video se pinta con buckler-core');
+  ok(await pub.locator(own ? '.bk-pg__slide video source[src$=".mp4"]' : '.bk-gallery-video video source[src$=".mp4"]').count() === 1, 'ficha: el video se pinta con buckler-core');
   ok((await pub.textContent('body')).includes('JEAN PRUEBA DAMA'), 'ficha publicada visible');
 
   // Editar

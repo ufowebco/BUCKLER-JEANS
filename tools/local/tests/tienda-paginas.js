@@ -5,7 +5,7 @@ const B = 'http://localhost:8899';
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1440, height: 900 } }); const errs = [];
   p.on('pageerror', e => errs.push(e.message));
-  const info = async (path) => { await p.goto(B + path); return p.evaluate(() => ({ h1: [...document.querySelectorAll('h1')].map(h => h.innerText.trim()), shop: !!document.querySelector('.bk-shop'), cards: document.querySelectorAll('.bk-card').length, main: !!document.querySelector('#main-content.bk-shop-page'), robots: document.querySelector('meta[name="robots"]')?.content || '' })); };
+  const info = async (path) => { await p.goto(B + path); return p.evaluate(() => ({ h1: [...document.querySelectorAll('h1')].map(h => h.innerText.trim()), shop: !!document.querySelector('.bk-shop'), cards: document.querySelectorAll('.bk-card').length, main: !!document.querySelector('#main-content.bk-shop-page, main#main-content .bk-shop-page'), robots: document.querySelector('meta[name="robots"]')?.content || '' })); };
   for (const [path, h1] of [['/shop/', 'Tienda'], ['/linea-slim/', 'Línea Slim'], ['/linea-curvy/', 'Línea Curvy'], ['/sales/', '¡Sale!'], ['/shop/?nuevo=1', 'Lo nuevo'], ['/?s=jean&post_type=product', 'Resultados']]) {
     const i = await info(path);
     ok(i.shop && i.main && i.h1.length === 1 && i.h1[0].includes(h1) && i.cards > 0, `${path}: tienda propia, un H1 "${i.h1.join(' | ')}", ${i.cards} productos`);
