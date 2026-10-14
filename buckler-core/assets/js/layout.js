@@ -173,7 +173,7 @@
 				const top = hits.slice(0, 6);
 				const t = S.i18n || {};
 				let html = top.map((it, i) => `<a role="option" id="${id}-${i}" aria-selected="false" class="bk-sr__item" href="${esc(it.u)}" tabindex="-1">`
-					+ (it.i ? `<img src="${esc(it.i)}" alt="" width="48" height="64" loading="lazy">` : '<span class="bk-sr__ph"></span>')
+					+ (it.i ? `<img src="${esc(it.i)}" alt="" width="48" height="64" decoding="async">` : '<span class="bk-sr__ph"></span>')
 					+ `<span class="bk-sr__txt"><span class="bk-sr__name">${esc(it.n)}</span>${it.l ? `<span class="bk-sr__line">${esc(it.l)}</span>` : ''}</span>`
 					+ `<span class="bk-sr__price">${it.o ? `<del>${esc(it.o)}</del> ` : ''}${esc(it.p)}</span></a>`).join('');
 				if (!top.length) html = `<p class="bk-sr__none">${esc(t.none || 'Sin resultados')}</p>`;

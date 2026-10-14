@@ -100,6 +100,7 @@ const OUT = '/tmp/claude-0/bk-local';
   const cl = await p.evaluate(() => { const f = document.querySelector('.woocommerce-cart-form').getBoundingClientRect(); const t = document.querySelector('.cart_totals').getBoundingClientRect(); return t.left > f.right - 5 && Math.abs(t.top - f.top) < 60; });
   ok(cl, 'carrito: resumen al lado de los productos');
   ok(await p.locator('.cart_item .bk-qty-btn').count() >= 2 && await p.locator('.bk-cart-trust li').count() === 3, 'carrito: botones − / + y confianza bajo el total');
+  ok(await p.locator('.cart_item .quantity > .minus:visible, .cart_item .quantity > .plus:visible').count() === 0, 'carrito: sin los − / + duplicados del snippet del tema');
   ok(await p.locator('.bk-cart-suggest .bk-card').count() >= 1 && await p.locator('.cart-collaterals .cross-sells').count() === 0, 'carrito: sugerencias "Combínalo con"');
   // Una variación con stock ≥ 3 para probar el + (las tallas con 1 unidad lo dejan desactivado, como debe ser).
   if (!(await p.locator('.cart_item .bk-qty-btn[data-step="1"]:not([disabled])').count())) {

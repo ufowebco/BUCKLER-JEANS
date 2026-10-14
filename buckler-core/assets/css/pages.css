@@ -288,6 +288,8 @@ body.bk-doc .bk-woo--cart .woocommerce-cart-form.is-auto button[name="update_car
 body.bk-doc .bk-woo--cart .quantity { display: inline-flex; align-items: center; border: 1.5px solid #cfd6dc; border-radius: 99px; background: #fff; }
 body.bk-doc .bk-woo--cart .quantity .qty { width: 40px; min-height: 40px; padding: 0; border: 0; background: transparent; font: inherit; font-weight: 700; text-align: center; -moz-appearance: textfield; appearance: textfield; }
 body.bk-doc .bk-woo--cart .quantity .qty::-webkit-inner-spin-button, body.bk-doc .bk-woo--cart .quantity .qty::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; }
+/* Un snippet del tema añade sus propios <span class="minus|plus"> (no accesibles): en el carrito se usan los de buckler-core. */
+body.bk-doc .bk-woo--cart .quantity > .minus, body.bk-doc .bk-woo--cart .quantity > .plus { display: none; }
 .bk-qty-btn { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--bk-navy); cursor: pointer; }
 .bk-qty-btn:hover { background: var(--bk-denim); }
 .bk-qty-btn:disabled { opacity: .35; cursor: default; }

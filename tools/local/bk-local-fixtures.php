@@ -48,3 +48,12 @@ add_action( 'woocommerce_before_single_product_summary', function () { echo '<di
 add_action( 'woocommerce_after_single_product_summary', function () { echo '</div>'; }, 1 );
 // Igual que producción: un plugin de "compartir" en la ficha (debe desaparecer con Páginas limpias).
 add_action( 'woocommerce_share', function () { echo '<div class="bk-test-share">Share on</div>'; } );
+
+// Simula el snippet del tema de producción que añade <span class="minus|plus"> a cada .quantity.
+add_action(
+	'wp_footer',
+	static function () {
+		echo "<script>jQuery(function($){ if ($('.quantity input.qty').length && !$('.quantity .minus').length) { $('.quantity').prepend('<span class=\"minus\">-</span>'); $('.quantity').append('<span class=\"plus\">+</span>'); } });</script>";
+	},
+	99
+);

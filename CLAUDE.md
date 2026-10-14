@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.11.0 → `dist/buckler-core-0.11.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.11.1 → `dist/buckler-core-0.11.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -226,6 +226,9 @@ Versión actual 0.11.0 → `dist/buckler-core-0.11.0.zip` (`tools/build-plugin.s
   Buscador en vivo (`includes/search.php`, con `layout`): `GET bk/v1/search-index?v=<md5 bk_catalog_v>` (público,
   `Cache-Control` 1 h, transitorio `bk_search_index` regenerado al cambiar la versión), combobox ARIA en
   `layout.js` (sin tildes, flechas/Enter/Esc, "Ver todos los resultados (N)").
+- **0.11.1 (revisión en vivo de la 0.11.0, todo OK):** un snippet del tema añade `<span class="minus|plus">` a cada
+  `.quantity` (jQuery, no accesible) → en el carrito se ocultan y quedan los `.bk-qty-btn` (simulado en los fixtures).
+  Índice de búsqueda en producción: 99 productos, 40 KB, LiteSpeed lo sirve en caché (0,17 s). Miniaturas sin lazy.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -270,7 +273,7 @@ Versión actual 0.11.0 → `dist/buckler-core-0.11.0.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 60 = 274 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 61 = 275 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
