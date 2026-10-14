@@ -90,7 +90,7 @@ Rama de trabajo: `claude/awesome-cori-fea1y8`. **No crear PR** salvo petición e
 - El plugin no sube medios: Mediateca o importador en `buckler-core`.
 
 ## buckler-core (plugin propio)
-Versión actual 0.1.0 → `dist/buckler-core-0.1.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.2.0 → `dist/buckler-core-0.2.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -100,6 +100,19 @@ Versión actual 0.1.0 → `dist/buckler-core-0.1.0.zip` (`tools/build-plugin.sh`
   (opción `bk_legacy_video_key`, autodetectada al activar). Herramientas → Buckler: videos (detectar,
   usar como respaldo, migrar). Se inserta con `woocommerce_product_thumbnails`; no se pinta si
   BodyCommerce sigue activo (evita duplicado).
+- `[bk_header]`: anuncios rotativos con pausa, logo, menú (Tienda con desplegable por línea generado
+  desde `product_cat`, Lo nuevo, Línea Slim, Línea Curvy, ¡Sale!), buscador de productos, cuenta y
+  carrito (contador por Store API solo si existe la cookie `woocommerce_items_in_cart` → cacheable).
+  Móvil: menú lateral modal (foco atrapado, Esc). Enlace "Saltar al contenido" en `wp_body_open`.
+  Sticky con `.et-l--header:has(.bk-header.is-sticky)`.
+- `[bk_footer]`: beneficios, marca y redes, columnas por línea (dinámicas), ayuda, contacto y horario,
+  medios de pago, políticas desde el CPT `politica-empresa`, botón flotante de WhatsApp (`[bk_whatsapp]`).
+- Datos del negocio en `includes/config.php` (`bk_config()`, filtro `bk_site_config`).
+- `divi-layouts/theme_hf.py`: reemplaza header 1114 / footer 119 por los shortcodes
+  (dry_run por defecto; `--apply` guarda snapshot antes). Dry run validado el 2026-10-14.
+  **Solo aplicar con buckler-core ≥ 0.2.0 activo.**
+- Corrección: el footer anterior enlazaba `/politica-de-envio/` (404); la URL real es
+  `/politica-empresa/politica-de-envio/`.
 - `core.js`: anti rage click (450 ms por control, controles ocupados bloqueados, sin doble submit),
   anti dead click (tarjeta completa clicable, mensaje en línea en vez del `alert()` de variaciones),
   quick back (barra de navegación inmediata, limpieza en `pageshow`/bfcache).
@@ -109,6 +122,7 @@ Versión actual 0.1.0 → `dist/buckler-core-0.1.0.zip` (`tools/build-plugin.sh`
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
 - Banners: se mantienen las imágenes ACF con texto dentro (rellenar el alt en la Mediateca).
+- Header y footer: los diseña Claude (shortcodes en buckler-core).
 
 ## Pendiente del cliente
 - Código de los snippets actuales (favorito→NUEVO, vaciar carrito a la hora, descontar stock en

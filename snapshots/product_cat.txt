@@ -1,0 +1,27 @@
+15 0 sin-categoria 0 Sin categoría https://buckler.com.co/categoria-producto/sin-categoria/
+18 0 linea-curvy 63 LÍNEA CURVY https://buckler.com.co/categoria-producto/linea-curvy/
+29 0 sale 23 ¡SALE! https://buckler.com.co/categoria-producto/sale/
+65 0 linea-slim 36 LÍNEA SLIM https://buckler.com.co/categoria-producto/linea-slim/
+80 0 linea-nueva 57 LÍNEA NUEVA https://buckler.com.co/categoria-producto/linea-nueva/
+20 18 faldas-plus-size 4 FALDAS https://buckler.com.co/categoria-producto/linea-curvy/faldas-plus-size/
+21 18 jeans 27 JEANS https://buckler.com.co/categoria-producto/linea-curvy/jeans/
+22 18 pantalones 7 PANTALONES https://buckler.com.co/categoria-producto/linea-curvy/pantalones/
+23 18 shorts 15 PRENDAS CORTAS https://buckler.com.co/categoria-producto/linea-curvy/shorts/
+24 18 sets 8 SETS Y OVEROL https://buckler.com.co/categoria-producto/linea-curvy/sets/
+26 18 chaquetas-y-chalecos-plus 2 CHAQUETAS Y CHALECOS https://buckler.com.co/categoria-producto/linea-curvy/chaquetas-y-chalecos-plus/
+85 18 linea-basic-curvy 2 LÍNEA BASIC https://buckler.com.co/categoria-producto/linea-curvy/linea-basic-curvy/
+74 29 chaquetas-y-chalecos-sale 0 CHAQUETAS Y CHALECOS https://buckler.com.co/categoria-producto/sale/chaquetas-y-chalecos-sale/
+75 29 set-y-overol-sale 5 SET Y OVEROL https://buckler.com.co/categoria-producto/sale/set-y-overol-sale/
+76 29 faldas-sale 0 FALDAS https://buckler.com.co/categoria-producto/sale/faldas-sale/
+77 29 prendas-cortas-sale 3 PRENDAS CORTAS https://buckler.com.co/categoria-producto/sale/prendas-cortas-sale/
+78 29 pantalones-sale 0 PANTALONES https://buckler.com.co/categoria-producto/sale/pantalones-sale/
+79 29 jeans-sale 15 JEANS https://buckler.com.co/categoria-producto/sale/jeans-sale/
+66 65 jeans-linea-slim 17 JEANS https://buckler.com.co/categoria-producto/linea-slim/jeans-linea-slim/
+67 65 pantalones-linea-slim 6 PANTALONES https://buckler.com.co/categoria-producto/linea-slim/pantalones-linea-slim/
+68 65 prendas-cortas 6 PRENDAS CORTAS https://buckler.com.co/categoria-producto/linea-slim/prendas-cortas/
+69 65 faldas 1 FALDAS https://buckler.com.co/categoria-producto/linea-slim/faldas/
+70 65 set-y-overol 4 SET Y OVEROL https://buckler.com.co/categoria-producto/linea-slim/set-y-overol/
+71 65 chaquetas-y-chalecos 2 CHAQUETAS Y CHALECOS https://buckler.com.co/categoria-producto/linea-slim/chaquetas-y-chalecos/
+84 65 linea-basic-slim 2 LÍNEA BASIC https://buckler.com.co/categoria-producto/linea-slim/linea-basic-slim/
+82 80 curvy 37 NUEVO - CURVY https://buckler.com.co/categoria-producto/linea-nueva/curvy/
+83 80 slim 20 NUEVO - SLIM https://buckler.com.co/categoria-producto/linea-nueva/slim/

@@ -20,13 +20,15 @@ function bk_enqueue_assets() {
 	$js_ver  = BK_VERSION . '.' . filemtime( BK_DIR . 'assets/js/core.js' );
 
 	wp_enqueue_style( 'bk-core', BK_URL . 'assets/css/core.css', array(), $css_ver );
+	wp_enqueue_style( 'bk-layout', BK_URL . 'assets/css/layout.css', array( 'bk-core' ), BK_VERSION . '.' . filemtime( BK_DIR . 'assets/css/layout.css' ) );
 
 	wp_enqueue_script( 'bk-core', BK_URL . 'assets/js/core.js', array(), $js_ver, array( 'strategy' => 'defer', 'in_footer' => true ) );
 	wp_localize_script(
 		'bk-core',
 		'bkCore',
 		array(
-			'i18n' => array(
+			'cartApi' => esc_url_raw( rest_url( 'wc/store/v1/cart' ) ),
+			'i18n'    => array(
 				'added'       => __( 'Añadido al carrito', 'buckler-core' ),
 				'chooseSize'  => __( 'Elige tu talla para continuar.', 'buckler-core' ),
 				'unavailable' => __( 'Esta talla está agotada. Elige otra.', 'buckler-core' ),
@@ -35,6 +37,8 @@ function bk_enqueue_assets() {
 			),
 		)
 	);
+
+	wp_enqueue_script( 'bk-layout', BK_URL . 'assets/js/layout.js', array( 'bk-core' ), BK_VERSION . '.' . filemtime( BK_DIR . 'assets/js/layout.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
 
 	if ( function_exists( 'is_product' ) && is_product() ) {
 		wp_enqueue_script(
