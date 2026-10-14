@@ -10,6 +10,15 @@
 	transition: opacity .2s;
 }
 
+/* Contenedor propio de la página de tienda (templates/shop-page.php): no depende de los márgenes del tema. */
+.bk-shop-page {
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 1360px;
+	margin-inline: auto;
+	padding: clamp(20px, 3vw, 40px) clamp(16px, 4vw, 48px) clamp(40px, 6vw, 80px);
+}
+
 .bk-shop * {
 	box-sizing: border-box;
 }
