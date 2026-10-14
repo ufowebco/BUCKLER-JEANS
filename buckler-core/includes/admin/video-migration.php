@@ -99,6 +99,24 @@ function bk_video_admin_menu() {
 }
 
 /**
+ * Productos con un video adjunto en la galería (formato de BodyCommerce; se usa directamente, sin migrar).
+ *
+ * @return int
+ */
+function bk_video_count_gallery() {
+	global $wpdb;
+	$ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_type = 'attachment' AND post_mime_type LIKE 'video/%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	if ( ! $ids ) {
+		return 0;
+	}
+	$n = 0;
+	foreach ( $wpdb->get_col( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key = '_product_image_gallery' AND meta_value <> ''" ) as $g ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$n += array_intersect( explode( ',', $g ), $ids ) ? 1 : 0;
+	}
+	return $n;
+}
+
+/**
  * Cuenta productos que ya tienen video propio.
  *
  * @return int
@@ -138,6 +156,8 @@ function bk_video_admin_page() {
 			<code><?php echo $current ? esc_html( $current ) : esc_html__( 'ninguna', 'buckler-core' ); ?></code>
 			&nbsp;·&nbsp;
 			<strong><?php esc_html_e( 'Productos con video propio:', 'buckler-core' ); ?></strong> <?php echo (int) $migrated; ?>
+			&nbsp;·&nbsp;
+			<strong><?php esc_html_e( 'Productos con MP4 en la galería:', 'buckler-core' ); ?></strong> <?php echo (int) bk_video_count_gallery(); ?>
 			&nbsp;·&nbsp;
 			<strong><?php esc_html_e( 'BodyCommerce:', 'buckler-core' ); ?></strong>
 			<?php echo bk_plugin_folder_active( 'divi-bodycommerce' ) ? esc_html__( 'activo (el video propio no se pinta para no duplicar)', 'buckler-core' ) : esc_html__( 'inactivo', 'buckler-core' ); ?>

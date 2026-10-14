@@ -4,7 +4,11 @@
  *
  * Fuente del video, en orden:
  *   1. Meta propia `_bk_video_id` (adjunto de la Mediateca) o `_bk_video_url`.
- *   2. Meta del plugin anterior (clave detectada y guardada en la opción `bk_legacy_video_key`).
+ *   2. MP4 adjunto en la galería de WooCommerce (así lo guarda hoy BodyCommerce: 16 de 17 productos
+ *      revisados en producción el 2026-10-14 tienen el .mp4 dentro de `_product_image_gallery`).
+ *      Con el módulo activo y BodyCommerce apagado, los videos se quitan de la galería de fotos
+ *      (`bk_gallery_only_images`) para que no salgan como imágenes vacías, y se pintan como video.
+ *   3. Meta del plugin anterior (clave detectada y guardada en la opción `bk_legacy_video_key`).
  *      Así los videos ya cargados siguen funcionando aunque se desactive BodyCommerce,
  *      incluso antes de ejecutar la migración.
  *
@@ -85,6 +89,15 @@ function bk_get_product_video( $product_id ) {
 	}
 
 	if ( ! $url ) {
+		$gid = bk_gallery_video_id( $product_id );
+		if ( $gid ) {
+			$id  = $gid;
+			$url = (string) wp_get_attachment_url( $gid );
+			$src = 'gallery';
+		}
+	}
+
+	if ( ! $url ) {
 		$legacy_key = (string) get_option( 'bk_legacy_video_key', '' );
 		if ( $legacy_key ) {
 			$found = bk_video_parse_value( get_post_meta( $product_id, $legacy_key, true ) );
@@ -107,8 +120,42 @@ function bk_get_product_video( $product_id ) {
 	);
 }
 
+/**
+ * Primer video (MP4/WebM/MOV) adjunto en la galería del producto (meta en bruto: no pasa por el filtro).
+ *
+ * @param int $product_id ID del producto.
+ * @return int
+ */
+function bk_gallery_video_id( $product_id ) {
+	foreach ( array_filter( array_map( 'intval', explode( ',', (string) get_post_meta( $product_id, '_product_image_gallery', true ) ) ) ) as $aid ) {
+		if ( 0 === strpos( (string) get_post_mime_type( $aid ), 'video/' ) ) {
+			return $aid;
+		}
+	}
+	return 0;
+}
+
+/**
+ * Galería de fotos sin videos (solo en contexto "view": no afecta al guardado del producto).
+ *
+ * @param int[] $ids IDs de la galería.
+ * @return int[]
+ */
+function bk_gallery_only_images( $ids ) {
+	return array_values( array_filter( (array) $ids, 'wp_attachment_is_image' ) );
+}
+
 if ( bk_on( 'video' ) ) {
 	add_action( 'woocommerce_product_thumbnails', 'bk_render_gallery_video', 30 );
+	add_action(
+		'init',
+		static function () {
+			// Mientras BodyCommerce siga activo, él necesita el MP4 en la galería.
+			if ( ! bk_plugin_folder_active( 'divi-bodycommerce' ) ) {
+				add_filter( 'woocommerce_product_get_gallery_image_ids', 'bk_gallery_only_images' );
+			}
+		}
+	);
 }
 
 /**

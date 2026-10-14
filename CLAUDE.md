@@ -107,12 +107,16 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.7.0 → `dist/buckler-core-0.7.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.8.0 → `dist/buckler-core-0.8.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
 - `[bk_lineas]`: `linea_slim_pc/mo`, `linea_curvy_pc/mo` a ancho completo, apilados.
 - `[bk_icon name="lucide:heart" label=""]`: Iconify local (`tools/icons.txt` → `python3 tools/icons.py`).
+- **Hallazgo 2026-10-14 (MCP, 16 de 17 productos revisados):** BodyCommerce guarda el video como **adjunto MP4
+  dentro de la galería** (`_product_image_gallery`). buckler-core lo lee de ahí (`bk_gallery_video_id`) y, con el
+  módulo video activo y BodyCommerce apagado, lo quita de las fotos (`woocommerce_product_get_gallery_image_ids`,
+  solo contexto view) y lo pinta como video. Las tarjetas filtran con `wp_attachment_is_image`.
 - Video de producto: metas `_bk_video_id` / `_bk_video_url`; respaldo con la meta del plugin anterior
   (opción `bk_legacy_video_key`, autodetectada al activar). Herramientas → Buckler: videos (detectar,
   usar como respaldo, migrar). Se inserta con `woocommerce_product_thumbnails`; no se pinta si
@@ -181,11 +185,22 @@ Versión actual 0.7.0 → `dist/buckler-core-0.7.0.zip` (`tools/build-plugin.sh`
   Plantilla `templates/emails/order-shipped.php`. Transportadoras en `bk_config('carriers')`; `track` vacío
   (enlace al sitio de la transportadora) hasta tener la URL de rastreo con `{guia}`. La clienta ve la guía en
   Mi cuenta → pedido (`woocommerce_order_details_after_order_table`).
+- Editor de productos (`includes/gestion/product-editor.php` + `assets/js/gestion-product.js`, módulo gestion):
+  `#productos/nuevo`, `#productos/editar/ID`, `#productos/nuevo?desde=ID` (mismo modelo en la otra línea: REF
+  816 ↔ 816 PLUS, prenda equivalente por nombre normalizado, sin fotos ni stock). Producto variable con el
+  atributo de la línea (`lines[*].attribute`), una variación por talla (stock gestionado); talla desactivada →
+  variación `private` (no se borra). Categorías: línea + prenda; Nuevo = destacado + `linea-nueva` + hija
+  (`lines[*].new_child`); rebaja → `sale` + hija equivalente. **Solo se tocan si cambian** (crear, interruptor
+  Nuevo, precio): guardar sin cambios no altera nada. La estrella de la lista usa `bk_gp_set_new`.
+  Subida propia `POST bk/v1/gestion/media` (la gestora no tiene `upload_files`): jpg/png/webp/mp4 validados por
+  contenido; tamaños en WebP (`image_editor_output_format` solo en esa subida); el navegador reduce fotos a
+  2400 px. Alt automático con el nombre. El video se guarda en `_bk_video_id` **y** al final de la galería
+  (compatible con BodyCommerce mientras siga activo). Descripción: editor básico (negrita/lista), HTML limpio.
 - Pruebas locales: `tools/local/setup.sh` → MariaDB + WordPress + **WooCommerce 11.2.1 real** (git del repo
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 26, envío 28 = 139 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 26, envío 28, productos 53 = 192 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

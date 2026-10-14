@@ -61,10 +61,13 @@ function bk_config( $key = null ) {
 				),
 				// Categorías raíz que forman el menú de la tienda (slugs de product_cat).
 				'lines'         => array(
-					'linea-slim'  => array( 'label' => 'Línea Slim', 'sizes' => 'Tallas 6 a 12', 'page' => '/linea-slim/' ),
-					'linea-curvy' => array( 'label' => 'Línea Curvy', 'sizes' => 'Tallas 14 a 24', 'page' => '/linea-curvy/' ),
+					// attribute: taxonomía de tallas de la línea; new_child: subcategoría de "Línea nueva";
+					// sku_suffix: cómo se distingue la REF del mismo modelo en esta línea (816 ↔ 816 PLUS).
+					'linea-slim'  => array( 'label' => 'Línea Slim', 'sizes' => 'Tallas 6 a 12', 'page' => '/linea-slim/', 'attribute' => 'pa_tallas-regular', 'new_child' => 'slim', 'sku_suffix' => '' ),
+					'linea-curvy' => array( 'label' => 'Línea Curvy', 'sizes' => 'Tallas 14 a 24', 'page' => '/linea-curvy/', 'attribute' => 'pa_tallas-plus-size', 'new_child' => 'curvy', 'sku_suffix' => ' PLUS' ),
 				),
 				'new_cat'       => 'linea-nueva',
+				'sale_cat'      => 'sale',
 				'sale_page'     => '/sales/',
 				'faq_page'      => '/preguntas-frecuentes/',
 				'credit_url'    => 'https://ufoweb.co/',

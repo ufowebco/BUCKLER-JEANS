@@ -41,7 +41,8 @@ function bk_card_data( $product ) {
 		return $data;
 	}
 
-	$images = array_filter( array_merge( array( (int) $product->get_image_id() ), array_map( 'intval', $product->get_gallery_image_ids() ) ) );
+	// Solo fotos: la galería puede traer el MP4 del video de producto.
+	$images = array_filter( array_merge( array( (int) $product->get_image_id() ), array_map( 'intval', $product->get_gallery_image_ids() ) ), 'wp_attachment_is_image' );
 	$images = array_slice( array_values( array_unique( $images ) ), 0, 5 );
 
 	$line = bk_product_line( $product->get_id() );

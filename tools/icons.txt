@@ -31,3 +31,9 @@ simple-icons:whatsapp
 simple-icons:tiktok
 simple-icons:facebook
 lucide:sliders-horizontal
+lucide:image-plus
+lucide:video
+lucide:pencil
+lucide:arrow-left
+lucide:copy
+lucide:external-link

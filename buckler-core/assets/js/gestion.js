@@ -24,7 +24,7 @@
 			body: opts.body ? JSON.stringify(opts.body) : undefined,
 		});
 		const data = await res.json().catch(() => ({}));
-		if (!res.ok) throw new Error(data.message || 'No se pudo completar la acción.');
+		if (!res.ok) throw Object.assign(new Error(data.message || 'No se pudo completar la acción.'), { field: data.data?.field });
 		return data;
 	};
 
@@ -77,9 +77,12 @@
 	let pSeq = 0;
 	const route = () => {
 		viewSeq++;
-		const tab = (location.hash.replace('#', '') || 'resumen').split('?')[0];
+		const [path, query = ''] = (location.hash.replace('#', '') || 'resumen').split('?');
+		const [tab, ...sub] = path.split('/');
 		const valid = tabs.some(([k]) => k === tab) ? tab : 'resumen';
 		$$('.bk-g-tabs a').forEach((a) => a.toggleAttribute('aria-current', a.dataset.tab === valid));
+		// Subrutas de productos (#productos/nuevo, #productos/editar/ID): gestion-product.js.
+		if (valid === 'productos' && sub.length && window.bkGProduct) { window.bkGProduct.view(sub, new URLSearchParams(query)); return; }
 		({ resumen: viewSummary, pedidos: viewOrders, productos: viewProducts, ajustes: viewSettings })[valid]();
 	};
 	window.addEventListener('hashchange', route);
@@ -257,7 +260,7 @@
 	/* --- Productos ---------------------------------------------------------------- */
 	const pState = { q: '', line: '', stock: '', page: 1 };
 	function viewProducts() {
-		main.innerHTML = `<h1 class="bk-g-h1">Productos</h1>
+		main.innerHTML = `<div class="bk-g-h1row"><h1 class="bk-g-h1">Productos</h1><a class="bk-g-btn" href="#productos/nuevo">${C.icons.plus} Nuevo producto</a></div>
 			<form class="bk-g-filters" id="bk-g-pf" role="search">
 				<label class="bk-g-search"><span class="bk-g-sr">Buscar productos</span>${C.icons.search}<input type="search" name="q" value="${esc(pState.q)}" placeholder="Nombre o REF" autocomplete="off"></label>
 				<label><span>Línea</span><select name="line"><option value="">Todas</option>${Object.entries(C.lines).map(([k, v]) => `<option value="${k}" ${pState.line === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></label>
@@ -290,6 +293,7 @@
 						<span class="bk-g-pill ${p.stock === 'instock' ? 'is-completed' : 'is-cancelled'}">${p.stock === 'instock' ? 'Con stock' : 'Agotado'}</span>
 						<button type="button" class="bk-g-star ${p.featured ? 'is-on' : ''}" data-feat="${p.id}" aria-pressed="${p.featured}" title="Destacado = etiqueta Nuevo">${C.icons.prod}<span class="bk-g-sr">Nuevo (destacado): ${esc(p.name)}</span></button>
 						<button type="button" class="bk-g-btn is-ghost" data-sizes="${p.id}" aria-expanded="false">Tallas y precios</button>
+						<a class="bk-g-btn is-ghost" href="#productos/editar/${p.id}">${C.icons.edit} Editar<span class="bk-g-sr">: ${esc(p.name)}</span></a>
 					</div><div class="bk-g-vars" hidden></div></li>`).join('')}</ul>${pager(d.pages, pState.page, 'p')}` : '<p class="bk-g-empty">No hay productos con esos filtros.</p>';
 		} catch (e) { box.innerHTML = `<p class="bk-g-error">${esc(e.message)}</p>`; }
 	}
@@ -497,5 +501,7 @@
 		}
 	});
 
+	// API para gestion-product.js (editor de productos).
+	window.bkGApp = { C, api, esc, $, $$, toast, busy, main, route, seq: () => viewSeq, openPreview, closePreview };
 	route();
 })();

@@ -530,8 +530,12 @@ function bk_g_product_update( WP_REST_Request $r ) {
 		return new WP_Error( 'bk_not_found', 'Producto no encontrado.', array( 'status' => 404 ) );
 	}
 	if ( null !== $r['featured'] ) {
-		$p->set_featured( rest_sanitize_boolean( $r['featured'] ) );
-		$p->save();
+		if ( function_exists( 'bk_gp_set_new' ) ) {
+			bk_gp_set_new( $p, rest_sanitize_boolean( $r['featured'] ) ); // Destacado + categorías de Línea nueva.
+		} else {
+			$p->set_featured( rest_sanitize_boolean( $r['featured'] ) );
+			$p->save();
+		}
 	}
 	return bk_g_product( $r );
 }

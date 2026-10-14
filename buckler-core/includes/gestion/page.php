@@ -115,6 +115,16 @@ function bk_g_render() {
 			'ext'     => 'lucide:arrow-right',
 			'truck'   => 'lucide:truck',
 			'mail'    => 'lucide:mail',
+			'plus'    => 'lucide:plus',
+			'image'   => 'lucide:image-plus',
+			'video'   => 'lucide:video',
+			'edit'    => 'lucide:pencil',
+			'back'    => 'lucide:arrow-left',
+			'copy'    => 'lucide:copy',
+			'left'    => 'lucide:chevron-left',
+			'right'   => 'lucide:chevron-right',
+			'trash'   => 'lucide:trash-2',
+			'open'    => 'lucide:external-link',
 		) ),
 	);
 	$ver = static fn( $f ) => esc_url( BK_URL . $f . '?v=' . bk_asset_ver( $f ) );
@@ -133,6 +143,7 @@ function bk_g_render() {
 <div id="bk-g-app" class="bk-g-app"><p class="bk-g-boot"><?php esc_html_e( 'Cargando…', 'buckler-core' ); ?></p></div>
 <script>window.bkG = <?php echo wp_json_encode( $cfg ); ?>;</script>
 <script src="<?php echo $ver( 'assets/js/gestion.js' ); // phpcs:ignore ?>" defer></script>
+<script src="<?php echo $ver( 'assets/js/gestion-product.js' ); // phpcs:ignore ?>" defer></script>
 </body>
 </html>
 	<?php
