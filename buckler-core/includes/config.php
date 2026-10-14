@@ -68,6 +68,19 @@ function bk_config( $key = null ) {
 				'sale_page'     => '/sales/',
 				'faq_page'      => '/preguntas-frecuentes/',
 				'credit_url'    => 'https://ufoweb.co/',
+				// Transportadoras para la guía de envío. 'track' (opcional): URL de rastreo con {guia};
+				// si está vacía, el correo enlaza al sitio de la transportadora y muestra el número para copiar.
+				'carriers'      => array(
+					'interrapidisimo' => array( 'name' => 'Inter Rapidísimo', 'url' => 'https://www.interrapidisimo.com/', 'track' => '' ),
+					'servientrega'    => array( 'name' => 'Servientrega', 'url' => 'https://www.servientrega.com/', 'track' => '' ),
+					'coordinadora'    => array( 'name' => 'Coordinadora', 'url' => 'https://coordinadora.com/', 'track' => '' ),
+					'envia'           => array( 'name' => 'Envía (Colvanes)', 'url' => 'https://envia.co/', 'track' => '' ),
+					'tcc'             => array( 'name' => 'TCC', 'url' => 'https://www.tcc.com.co/', 'track' => '' ),
+					'472'             => array( 'name' => '4-72', 'url' => 'https://www.4-72.com.co/', 'track' => '' ),
+					'deprisa'         => array( 'name' => 'Deprisa', 'url' => 'https://www.deprisa.com/', 'track' => '' ),
+					'domina'          => array( 'name' => 'Domina Entrega Total', 'url' => 'https://www.domina.com.co/', 'track' => '' ),
+					'mensajeros'      => array( 'name' => 'Mensajeros Urbanos', 'url' => 'https://mensajerosurbanos.com/', 'track' => '' ),
+				),
 				// Cuotas sin interés de Addi que se muestran bajo el precio (0 = no mostrar).
 				'addi_installments' => 3,
 			)

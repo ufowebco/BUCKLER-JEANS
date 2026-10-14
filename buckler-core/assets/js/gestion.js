@@ -64,6 +64,9 @@
 			<div class="bk-g-drawer__scrim" data-close></div>
 			<section class="bk-g-drawer__panel" role="dialog" aria-modal="true" aria-labelledby="bk-g-dtitle"></section>
 		</div>
+		<div id="bk-g-preview" class="bk-g-preview" hidden>
+			<div class="bk-g-preview__box" role="dialog" aria-modal="true" aria-labelledby="bk-g-ptitle"></div>
+		</div>
 		<div id="bk-g-toast" class="bk-g-toast" role="status" aria-live="polite"></div>`;
 	const main = $('#bk-g-main');
 
@@ -151,7 +154,7 @@
 						<td class="c-date">${esc(o.date)}</td>
 						<td class="c-cust">${esc(o.customer)}<small>${esc(o.city)} · ${o.items} prenda${o.items === 1 ? '' : 's'}</small></td>
 						<td class="c-total"><b>${esc(o.total)}</b><small>${esc(o.payment)}</small></td>
-						<td class="c-status"><span class="bk-g-pill is-${esc(o.status)}">${esc(statusLabel(o.status))}</span></td>
+						<td class="c-status"><span class="bk-g-pill is-${esc(o.status)}">${esc(statusLabel(o.status))}</span>${o.tracking ? `<small class="bk-g-trk">${C.icons.truck} ${esc(C.carriers[o.tracking.carrier] || '')}</small>` : ''}</td>
 						<td class="c-print"><label class="bk-g-check"><input type="checkbox" data-printed="${o.id}" ${o.printed ? 'checked' : ''}><span class="bk-g-mlabel">Impreso</span><span class="bk-g-sr">Pedido ${esc(o.number)} impreso</span></label></td>
 					</tr>`).join('')}</tbody>
 				</table></div>
@@ -192,6 +195,7 @@
 				<label class="bk-g-switch"><input type="checkbox" id="bk-g-oprinted" ${o.printed ? 'checked' : ''}><span>Impreso</span></label>
 			</div>
 			<button type="button" class="bk-g-btn" id="bk-g-osave" data-id="${o.id}">Guardar estado</button>
+			${shipHtml(o)}
 			<section><h3>Clienta</h3><p><b>${esc(o.customer)}</b>${o.cedula ? `<br>Cédula: ${esc(o.cedula)}` : ''}<br>
 				${o.phone ? `<a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> · <a href="https://wa.me/57${esc(String(o.phone).replace(/\D/g, '').replace(/^57/, ''))}" target="_blank" rel="noopener">WhatsApp</a><br>` : ''}
 				<a href="mailto:${esc(o.email)}">${esc(o.email)}</a><br>${esc(o.address)}</p>
@@ -209,6 +213,41 @@
 				<ul class="bk-g-notes">${o.notes.map((n) => `<li class="${n.customer ? 'is-customer' : ''}"><p>${esc(n.content)}</p><small>${esc(n.date)}${n.by ? ` · ${esc(n.by)}` : ''}${n.customer ? ' · enviada a la clienta' : ''}</small></li>`).join('')}</ul></section>
 			<a class="bk-g-link" href="${esc(o.edit_url)}" target="_blank" rel="noopener">Abrir en WooCommerce ${C.icons.ext}</a>
 		</div>`;
+
+	/* --- Guía de envío ------------------------------------------------------------ */
+	const shipHtml = (o) => `<section class="bk-g-ship"><h3>${C.icons.truck} Enviar guía de envío</h3>
+		${o.tracking ? `<p class="bk-g-shipped">Enviado con <b>${esc(C.carriers[o.tracking.carrier] || o.tracking.carrier)}</b> · guía <b>${esc(o.tracking.number)}</b><small>${esc(o.tracking.date)}${o.tracking.sent_by ? ` · ${esc(o.tracking.sent_by)}` : ''}</small></p>` : ''}
+		<form id="bk-g-shipform" data-id="${o.id}" novalidate>
+			<div class="bk-g-row2">
+				<label><span>Transportadora</span><select name="carrier" required><option value="">Elige…</option>${Object.entries(C.carriers).map(([k, v]) => `<option value="${k}" ${o.tracking?.carrier === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></label>
+				<label><span>Número de guía</span><input name="number" required inputmode="text" autocomplete="off" value="${esc(o.tracking?.number || '')}" placeholder="Ej.: 2401234567"></label>
+			</div>
+			${o.status !== 'completed' ? '<label class="bk-g-switch"><input type="checkbox" name="complete" checked><span>Marcar como Completado (sin el correo estándar de WooCommerce)</span></label>' : ''}
+			<p class="bk-g-formerr" role="alert" hidden></p>
+			<button type="submit" class="bk-g-btn">${C.icons.mail} ${o.tracking ? 'Reenviar correo' : 'Ver correo antes de enviar'}</button>
+		</form></section>`;
+
+	const pv = $('#bk-g-preview');
+	const pvBox = $('.bk-g-preview__box');
+	let pvReturn = null;
+	let pendingShip = null; // { id, body } del envío que se está confirmando.
+	const openPreview = (html) => {
+		pvReturn = document.activeElement;
+		pvBox.innerHTML = html;
+		pv.hidden = false;
+		$('[data-pv-focus]', pvBox)?.focus();
+	};
+	const closePreview = () => { pendingShip = null; pv.hidden = true; pvBox.innerHTML = ''; pvReturn?.focus?.(); };
+	pv.addEventListener('click', (e) => { if (e.target === pv || e.target.closest('[data-pv-close]')) closePreview(); });
+	document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !pv.hidden) { e.stopImmediatePropagation(); closePreview(); } }, true);
+
+	const previewHtml = (d, actions) => `
+		<header class="bk-g-pvhead"><h2 id="bk-g-ptitle">Vista previa del correo</h2><button type="button" class="bk-g-icon" data-pv-close aria-label="Cerrar">${C.icons.x}</button></header>
+		<dl class="bk-g-pvmeta">${d.to ? `<div><dt>Para</dt><dd>${esc(d.to)}</dd></div>` : ''}<div><dt>Asunto</dt><dd>${esc(d.subject)}</dd></div></dl>
+		<iframe class="bk-g-pvframe" title="Vista previa del correo" sandbox=""></iframe>
+		<footer class="bk-g-pvfoot">${actions}</footer>`;
+
+	const fillFrame = (html) => { const f = $('.bk-g-pvframe', pvBox); if (f) f.srcdoc = html; };
 
 	const showOrder = async (id) => {
 		openDrawer('<div class="bk-g-loading">Cargando pedido…</div>');
@@ -290,7 +329,15 @@
 					<button type="button" class="bk-g-btn is-small is-ghost" data-use="consecutivo" data-key="${esc(m.key)}">Consecutivo</button>
 					<button type="button" class="bk-g-btn is-small is-ghost" data-use="cedula" data-key="${esc(m.key)}">Cédula</button>
 					<button type="button" class="bk-g-btn is-small is-ghost" data-use="impreso" data-key="${esc(m.key)}">Impreso</button></td></tr>`).join('') || '<tr><td colspan="4">Aún no hay pedidos.</td></tr>'}
-				</tbody></table></div></section>`;
+				</tbody></table></div></section>
+				<section class="bk-g-card"><h2>Correo "Tu pedido ha sido enviado"</h2>
+				<p class="bk-g-hint">Revisa cómo se ve con un pedido real y envíate una prueba antes de usarlo con clientas.</p>
+				<form id="bk-g-shiptest" class="bk-g-sform">
+					<label><span>Transportadora de ejemplo</span><select name="carrier">${Object.entries(C.carriers).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')}</select></label>
+					<button type="button" class="bk-g-btn is-ghost" data-ship-sample>Ver vista previa</button>
+					<label><span>Enviar prueba a</span><input type="email" name="to" required value="" placeholder="tu@correo.com"></label>
+					<button type="submit" class="bk-g-btn">Enviar correo de prueba</button>
+				</form></section>`;
 		} catch (e) { main.innerHTML = `<p class="bk-g-error">${esc(e.message)}</p>`; }
 	}
 
@@ -358,6 +405,30 @@
 			return;
 		}
 
+		const confirmShip = t.closest('[data-ship-confirm]');
+		if (confirmShip) {
+			await busy(confirmShip, async () => {
+				if (!pendingShip) return;
+				const o = await api(`orders/${pendingShip.id}/shipment`, { method: 'POST', body: { ...pendingShip.body, confirm: true } });
+				pendingShip = null;
+				closePreview();
+				panel.innerHTML = orderHtml(o);
+				toast(`Correo enviado a ${o.email}`);
+				loadOrders();
+			});
+			return;
+		}
+
+		const sample = t.closest('[data-ship-sample]');
+		if (sample) {
+			await busy(sample, async () => {
+				const d = await api('shipment-sample', { method: 'POST', body: { carrier: $('#bk-g-shiptest').carrier.value } });
+				openPreview(previewHtml({ subject: `${d.subject} (ejemplo con el pedido #${d.order})` }, '<button type="button" class="bk-g-btn" data-pv-close data-pv-focus>Cerrar</button>'));
+				fillFrame(d.html);
+			});
+			return;
+		}
+
 		const use = t.closest('[data-use]');
 		if (use) {
 			const form = $('#bk-g-sf');
@@ -388,6 +459,32 @@
 				const o = await api(`orders/${form.dataset.id}`, { method: 'POST', body: { note: text, customer_note: $('#bk-g-notecust').checked } });
 				panel.innerHTML = orderHtml(o);
 				toast('Nota añadida');
+			});
+		}
+		if (form.id === 'bk-g-shipform') {
+			e.preventDefault();
+			const err = $('.bk-g-formerr', form);
+			const body = { carrier: form.carrier.value, number: form.number.value.trim(), complete: !!form.complete?.checked };
+			err.hidden = true;
+			if (!body.carrier || body.number.length < 4) {
+				err.textContent = !body.carrier ? 'Elige la transportadora.' : 'Escribe el número de guía.';
+				err.hidden = false;
+				(!body.carrier ? form.carrier : form.number).focus();
+				return;
+			}
+			await busy(form.querySelector('button[type="submit"]'), async () => {
+				const d = await api(`orders/${form.dataset.id}/shipment`, { method: 'POST', body });
+				openPreview(previewHtml(d, `<button type="button" class="bk-g-btn is-ghost" data-pv-close>Volver a editar</button>
+					<button type="button" class="bk-g-btn" data-pv-focus data-ship-confirm>${C.icons.check} Confirmar y enviar a ${esc(d.to)}</button>`));
+				fillFrame(d.html);
+				pendingShip = { id: form.dataset.id, body };
+			});
+		}
+		if (form.id === 'bk-g-shiptest') {
+			e.preventDefault();
+			await busy(form.querySelector('button[type="submit"]'), async () => {
+				const d = await api('shipment-sample', { method: 'POST', body: { to: form.to.value.trim(), carrier: form.carrier.value } });
+				toast(d.sent ? `Correo de prueba enviado a ${d.to}` : 'No se pudo enviar. Revisa la configuración de correo (SMTP).', d.sent ? 'ok' : 'err');
 			});
 		}
 		if (form.id === 'bk-g-sf') {

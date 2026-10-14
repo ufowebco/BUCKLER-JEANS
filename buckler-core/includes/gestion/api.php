@@ -230,6 +230,7 @@ function bk_g_order_row( $o ) {
 		'payment'     => $o->get_payment_method_title(),
 		'printed'     => $f['impreso'] ? in_array( strtolower( (string) $o->get_meta( $f['impreso'] ) ), BK_G_TRUE, true ) : false,
 		'consecutivo' => $f['consecutivo'] ? (string) $o->get_meta( $f['consecutivo'] ) : '',
+		'tracking'    => function_exists( 'bk_ship_get' ) ? bk_ship_get( $o ) : null,
 	);
 }
 

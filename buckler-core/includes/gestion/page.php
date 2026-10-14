@@ -100,6 +100,7 @@ function bk_g_render() {
 			array_values( wc_get_order_statuses() )
 		),
 		'lines'    => array_map( static fn( $l ) => $l['label'], (array) bk_config( 'lines' ) ),
+		'carriers' => array_map( static fn( $c ) => $c['name'], (array) bk_config( 'carriers' ) ),
 		'isAdmin'  => current_user_can( 'manage_options' ),
 		'user'     => wp_get_current_user()->display_name,
 		'logout'   => wp_logout_url( home_url( '/' . BK_G_SLUG . '/' ) ),
@@ -112,6 +113,8 @@ function bk_g_render() {
 			'x'       => 'lucide:x',
 			'check'   => 'lucide:check',
 			'ext'     => 'lucide:arrow-right',
+			'truck'   => 'lucide:truck',
+			'mail'    => 'lucide:mail',
 		) ),
 	);
 	$ver = static fn( $f ) => esc_url( BK_URL . $f . '?v=' . bk_asset_ver( $f ) );

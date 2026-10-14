@@ -107,7 +107,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.6.0 → `dist/buckler-core-0.6.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.7.0 → `dist/buckler-core-0.7.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -173,11 +173,19 @@ Versión actual 0.6.0 → `dist/buckler-core-0.6.0.zip` (`tools/build-plugin.sh`
   (retención 60 días); exportar/borrar datos personales. Admin: WooCommerce → Carritos abandonados.
   Plantilla: `templates/emails/abandoned-cart.php` (logo PNG porque Outlook no muestra WebP).
   Ajustes en la opción `bk_ac_settings`. Suite e2e: 21 comprobaciones OK.
+- Guía de envío (`includes/gestion/shipping.php`, módulo gestion): en el detalle del pedido, transportadora +
+  número de guía → vista previa del correo (iframe) → "Confirmar y enviar". Guarda la meta `_bk_tracking`
+  {carrier, number, date, sent_by}, deja nota, opcionalmente pasa a Completado **sin** el correo estándar de
+  Woo. Rutas `POST bk/v1/gestion/orders/{id}/shipment` (confirm=false → vista previa) y
+  `POST bk/v1/gestion/shipment-sample` (solo admin: vista previa / correo de prueba "[Prueba]").
+  Plantilla `templates/emails/order-shipped.php`. Transportadoras en `bk_config('carriers')`; `track` vacío
+  (enlace al sitio de la transportadora) hasta tener la URL de rastreo con `{guia}`. La clienta ve la guía en
+  Mi cuenta → pedido (`woocommerce_order_details_after_order_table`).
 - Pruebas locales: `tools/local/setup.sh` → MariaDB + WordPress + **WooCommerce 11.2.1 real** (git del repo
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 26 = 111 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 26, envío 28 = 139 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
