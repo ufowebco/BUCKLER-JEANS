@@ -50,6 +50,18 @@ El bloqueante de las categorías ya no frena la activación (0.9.0):
 7. **Cliente**: purgar caché otra vez.
 8. **Claude**: `node tools/review.js snapshots/review-<fecha>-fase2`, comparar con la línea base y corregir.
 
+### Avance de la fase 2 (2026-10-14)
+- [x] Pasos 1–5: el cliente activó `layout`, `clicks`, `cards`, `shop`, `sidecart`, `abandoned` (y `gestion`), desactivó Xootix y Save Abandoned Carts y purgó la caché.
+  - Quedan reglas CSS `.xoo-wsc-*` en el HTML (CSS personalizado de Divi o del tema hijo), sin efecto; conviene limpiarlas.
+- [x] Revisión `snapshots/review-2026-10-14-fase2a/`:
+  - Las 28 páginas responden 200, sin errores JS ni recursos nuevos fallidos, sin imágenes rotas ni scroll horizontal.
+  - Hay entre 20 y 50 peticiones menos por página.
+  - Tienda, líneas, ¡Sale!, categorías y búsqueda se pintan con la tienda propia (24 productos, un H1).
+  - Los tiempos de carga salieron más altos, probablemente por la caché recién purgada; hay que medirlos de nuevo con caché caliente.
+- [x] Añadir al carrito en la ficha: Store API 201, cookies de carrito creadas y carrito flotante abierto con el producto.
+  - El fallo de la revisión automática fue por stock desactualizado en la página cacheada (talla 6 agotada). Al cliente se le muestra el aviso junto al botón.
+- [ ] Paso 6, header y footer (`theme_hf.py --apply`): bloqueado por el control de permisos del entorno de Claude. Pendiente de que el cliente lo autorice o lo haga a mano.
+
 ### Qué queda para después
 | Módulo o tarea | Por qué espera |
 |---|---|
