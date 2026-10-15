@@ -938,3 +938,9 @@ code { padding: 1px 5px; border-radius: 4px; background: #eef1f4; font-size: .9e
 	.bk-gd-item__act { grid-column: 1 / -1; justify-content: flex-start; }
 	.bk-gc-slide__imgs { grid-template-columns: 1fr 1fr; }
 }
+
+/* Pedidos: buscar pedidos nuevos (botón + revisión automática cada 10 min) */
+.bk-g-refresh { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.bk-g-refresh small { color: var(--g-mute); }
+.bk-g-orders tr.is-new td { background: #f6f9d2; }
+.bk-g-orders tr.is-new td:first-child { box-shadow: inset 4px 0 0 var(--g-lime); }

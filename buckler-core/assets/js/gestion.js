@@ -23,6 +23,7 @@
 		const res = await fetch(C.api + path, {
 			method: opts.method || 'GET',
 			credentials: 'same-origin',
+			cache: 'no-store', // Siempre datos nuevos (pedidos recién llegados).
 			headers: { 'X-WP-Nonce': C.nonce, 'Content-Type': 'application/json', Accept: 'application/json' },
 			body: opts.body ? JSON.stringify(opts.body) : undefined,
 		});
@@ -180,7 +181,8 @@
 	async function viewOrders() {
 		const hp = hashParams();
 		if (hp.get('status')) oState.status = hp.get('status');
-		main.innerHTML = `<h1 class="bk-g-h1">Pedidos</h1>
+		main.innerHTML = `<div class="bk-g-h1row"><h1 class="bk-g-h1">Pedidos</h1>
+				<div class="bk-g-refresh"><small id="bk-g-oupd" aria-live="polite"></small><button type="button" class="bk-g-btn" data-orders-refresh>${C.icons.refresh || ''} Buscar pedidos nuevos</button></div></div>
 			<form class="bk-g-filters" id="bk-g-of" role="search">
 				<label class="bk-g-search"><span class="bk-g-sr">Buscar pedidos</span>${C.icons.search}
 					<input type="search" name="q" value="${esc(oState.q)}" placeholder="Número, consecutivo, cédula, nombre, correo o celular" autocomplete="off"></label>
@@ -215,13 +217,48 @@
 			const d = await fetchFresh(path);
 			if (seq !== oSeq || !box.isConnected) return;
 			if (JSON.stringify(d) !== JSON.stringify(old)) paintOrders(box, d);
+			markUpdated();
+			return d;
 		} catch (e) { if (!old) box.innerHTML = `<p class="bk-g-error">${esc(e.message)}</p>`; }
+		return null;
 	}
+
+	/* --- Pedidos nuevos: botón y revisión automática cada 10 minutos ------------------------------- */
+	const REFRESH_MS = 10 * 60 * 1000;
+	let lastRefresh = Date.now();
+	const seenIds = new Set();
+	const hhmm = () => new Date().toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' });
+	const markUpdated = () => { const el = $('#bk-g-oupd'); if (el) el.textContent = `Actualizado ${hhmm()}`; };
+	const rememberIds = (d) => (d?.orders || []).forEach((o) => seenIds.add(o.id));
+
+	async function refreshOrders(manual) {
+		lastRefresh = Date.now();
+		forget('orders?');
+		forget('summary');
+		if (!$('#bk-g-olist')) {
+			if (/^#?(resumen)?$/.test(location.hash.split('?')[0])) viewSummary(); // En otras secciones solo se vacía la caché.
+			return;
+		}
+		const before = new Set(seenIds);
+		const d = await loadOrders();
+		if (!d) return;
+		const fresh = (d.orders || []).filter((o) => before.size && !before.has(o.id));
+		rememberIds(d);
+		fresh.forEach((o) => $(`[data-row="${o.id}"]`)?.classList.add('is-new'));
+		if (fresh.length) toast(fresh.length === 1 ? '1 pedido nuevo' : `${fresh.length} pedidos nuevos`);
+		else if (manual) toast('No hay pedidos nuevos');
+	}
+	setInterval(() => { if (document.visibilityState === 'visible') refreshOrders(false).catch(() => {}); }, REFRESH_MS);
+	// Si la pestaña estuvo oculta más de 10 minutos, revisa apenas vuelve.
+	document.addEventListener('visibilitychange', () => {
+		if (document.visibilityState === 'visible' && Date.now() - lastRefresh >= REFRESH_MS) refreshOrders(false).catch(() => {});
+	});
 
 	const check = (kind, o, label, on) => `<label class="bk-g-check"><input type="checkbox" data-flag="${kind}" data-id="${o.id}" ${on ? 'checked' : ''}><span class="bk-g-mlabel">${label}</span><span class="bk-g-sr">Pedido ${esc(o.number)}: ${label.toLowerCase()}</span></label>`;
 
 	// Sin columna Consecutivo (repetía el número): se sigue buscando por consecutivo y sale en el detalle e impresión.
 	const paintOrders = (box, d) => {
+		if (!seenIds.size) rememberIds(d);
 		const showDisp = d.orders.some((o) => o.dispatched !== null);
 		box.innerHTML = d.orders.length ? `
 			<p class="bk-g-count">${d.total} pedido${d.total === 1 ? '' : 's'}</p>
@@ -478,6 +515,8 @@
 
 	/* --- Eventos delegados -------------------------------------------------------------- */
 	document.addEventListener('click', async (e) => {
+		const ref = e.target.closest?.('[data-orders-refresh]');
+		if (ref) { await busy(ref, () => refreshOrders(true)); return; }
 		const t = e.target;
 		const ord = t.closest('[data-order]');
 		if (ord) { showOrder(ord.dataset.order); return; }

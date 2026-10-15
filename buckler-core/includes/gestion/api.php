@@ -27,11 +27,22 @@ add_filter(
 		if ( defined( 'BK_FAST_REST_ON' ) && $res instanceof WP_REST_Response && 0 === strpos( $request->get_route(), '/bk/v1/' ) ) {
 			$res->header( 'X-Bk-Fast', '1' );
 		}
+		// La gestión nunca se guarda en caché (servidor, LiteSpeed ni navegador): los pedidos nuevos deben verse ya.
+		if ( $res instanceof WP_REST_Response && 0 === strpos( $request->get_route(), '/bk/v1/gestion' ) ) {
+			$res->header( 'Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private' );
+			$res->header( 'X-LiteSpeed-Cache-Control', 'no-cache' );
+		}
 		return $res;
 	},
 	10,
 	3
 );
+
+// Pedido nuevo o cambio de estado: el resumen (guardado 5 min) se vuelve a calcular.
+foreach ( array( 'woocommerce_new_order', 'woocommerce_order_status_changed', 'woocommerce_checkout_order_processed' ) as $bk_hook ) {
+	add_action( $bk_hook, static function () { delete_transient( 'bk_g_summary' ); } );
+}
+unset( $bk_hook );
 
 /**
  * ¿Puede usar el dashboard?
@@ -337,7 +348,7 @@ function bk_g_orders( WP_REST_Request $r ) {
 		'orderby'  => 'date',
 		'order'    => 'DESC',
 		'type'     => 'shop_order',
-		'status'   => $status && 'all' !== $status ? array( 'wc-' . $status ) : array_keys( wc_get_order_statuses() ),
+		'status'   => $status && 'all' !== $status ? array( 'wc-' . $status ) : bk_g_all_statuses(),
 	);
 	if ( $r['from'] ) {
 		$args['date_created'] = sanitize_text_field( (string) $r['from'] ) . '...' . sanitize_text_field( (string) ( $r['to'] ? $r['to'] : gmdate( 'Y-m-d' ) ) );
@@ -445,6 +456,28 @@ function bk_g_extra_meta( $o, $f ) {
 			'value' => mb_substr( wp_strip_all_tags( (string) $val ), 0, 160 ),
 		);
 	}
+	return $out;
+}
+
+/**
+ * Todos los estados que tienen pedidos, leídos de la base de datos (no de los registrados en esta petición).
+ * En la lectura rápida (bk-fast-rest) no cargan los demás plugins/snippets: un estado propio de una pasarela o
+ * snippet no estaría registrado y sus pedidos (incluidos los nuevos) no salían en "Todos".
+ *
+ * @return string[]
+ */
+function bk_g_all_statuses() {
+	static $out = null;
+	if ( null !== $out ) {
+		return $out;
+	}
+	global $wpdb;
+	$hpos = class_exists( '\Automattic\WooCommerce\Utilities\OrderUtil' ) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+	$rows = $hpos
+		? $wpdb->get_col( "SELECT DISTINCT status FROM {$wpdb->prefix}wc_orders WHERE type = 'shop_order'" ) // phpcs:ignore WordPress.DB
+		: $wpdb->get_col( "SELECT DISTINCT post_status FROM {$wpdb->posts} WHERE post_type = 'shop_order'" ); // phpcs:ignore WordPress.DB
+	$skip = array( 'trash', 'auto-draft', 'draft', 'wc-checkout-draft', 'checkout-draft', '' );
+	$out  = array_values( array_unique( array_merge( array_keys( wc_get_order_statuses() ), array_diff( array_map( 'strval', (array) $rows ), $skip ) ) ) );
 	return $out;
 }
 

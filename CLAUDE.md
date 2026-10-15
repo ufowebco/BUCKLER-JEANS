@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.17.4 → `dist/buckler-core-0.17.4.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.17.5 → `dist/buckler-core-0.17.5.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -483,6 +483,14 @@ Versión actual 0.17.4 → `dist/buckler-core-0.17.4.zip` (`tools/build-plugin.s
     nombres). Lista de pedidos con 📎 N (`nfiles`, `bk_g_files_count()`). Fixtures: definición ACF del repeater y
     `get_field('woo_order_*')` desde la opción `bk_test_acf_woo_order_{id}_{campo}`.
   - ronda172.js 18.
+- **0.17.5 (urgente, 2026-10-15): pedidos nuevos no aparecían en la gestión.** La lista "Todos" pedía
+  `array_keys(wc_get_order_statuses())`, pero en la API rápida (bk-fast-rest, sin otros plugins/snippets) los estados
+  propios de pasarelas/snippets no están registrados → esos pedidos quedaban fuera. Ahora `bk_g_all_statuses()` lee los
+  estados reales de la tabla (`wc_orders` en HPOS / posts) + los registrados. Respuestas `bk/v1/gestion*` con
+  `Cache-Control: no-store` y `X-LiteSpeed-Cache-Control: no-cache`; `fetch` con `cache: 'no-store'`. El resumen
+  (`bk_g_summary`, 5 min) se borra en `woocommerce_new_order` / cambio de estado. Pedidos: botón "Buscar pedidos
+  nuevos" + "Actualizado hh:mm", revisión automática cada 10 min (solo con la pestaña visible; al volver si pasaron
+  10 min), filas nuevas resaltadas y aviso "N pedidos nuevos". Suite `pedidos-nuevos.js` (10, usa `clock` de Playwright).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -527,7 +535,7 @@ Versión actual 0.17.4 → `dist/buckler-core-0.17.4.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18 = 541 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10 = 551 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
