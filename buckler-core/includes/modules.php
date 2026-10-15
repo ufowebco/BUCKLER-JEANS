@@ -78,6 +78,12 @@ function bk_modules() {
 			'replaces' => 'Snippet "PALABRA - SKU POR REF"',
 			'woo'      => true,
 		),
+		'adminmenu' => array(
+			'label'    => 'Administrador del menú de WordPress',
+			'desc'     => 'Menú lateral con los colores de la marca (200 px en escritorio), logo opcional, orden por arrastrar y soltar, ocultar elementos y submenús, separadores y encabezados, global o por usuario (Herramientas → Administrador del menú). Restringe los plugins de IA y buckler-core a los usuarios autorizados. Recuperación: BK_AM_SAFE_MODE en wp-config.',
+			'replaces' => 'Admin Menu Editor y similares',
+			'woo'      => false,
+		),
 		'cache'     => array(
 			'label'    => 'Caché de páginas (LiteSpeed)',
 			'desc'     => 'Guarda en el servidor las páginas de buckler-core (inicio, tienda, ficha, FAQ y políticas) para visitantes sin sesión ni carrito: se entregan al instante. Quita las cookies que impedían la caché y la vacía sola al cambiar productos, stock, páginas o banners. Botón "Vaciar caché" abajo. Requiere Páginas limpias.',

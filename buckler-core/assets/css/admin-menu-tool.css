@@ -1,0 +1,53 @@
+/* Herramientas → Administrador del menú (todo bajo .bk-am-tool). */
+.bk-am-tool .bk-am-scope fieldset { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin: 16px 0 8px; padding: 12px 16px; border: 1px solid #dcdcde; border-radius: 6px; background: #fff; }
+.bk-am-tool .bk-am-scope legend { padding: 0 6px; font-weight: 600; }
+.bk-am-tool .bk-am-help { max-width: 900px; margin: 12px 0; padding: 4px 16px; border-left: 4px solid #1a3955; background: #fff; }
+.bk-am-tool .bk-am-cols { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 24px; align-items: start; max-width: 1180px; margin-top: 12px; }
+.bk-am-tool .bk-am-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+.bk-am-tool .bk-am-toolbar .dashicons { margin-top: 3px; }
+.bk-am-tool .bk-am-list { margin: 8px 0 0; padding: 0; }
+.bk-am-tool .bk-am-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 6px; padding: 8px 10px; border: 1px solid #dcdcde; border-radius: 6px; background: #fff; }
+.bk-am-tool .bk-am-row.is-hidden { background: #f6f7f7; }
+.bk-am-tool .bk-am-row.is-hidden .bk-am-title { color: #787c82; text-decoration: line-through; }
+.bk-am-tool .bk-am-row.is-head { border-color: #1a3955; background: #eef2f6; }
+.bk-am-tool .bk-am-row.is-sep, .bk-am-tool .bk-am-row.is-wpsep { padding-block: 4px; border-style: dashed; }
+.bk-am-tool .bk-am-handle { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: #50575e; cursor: grab; }
+.bk-am-tool .bk-am-handle:focus { outline: 2px solid #1a3955; outline-offset: 1px; }
+.bk-am-tool .bk-am-icon { display: inline-flex; width: 20px; color: #1a3955; }
+.bk-am-tool .bk-am-ico { width: 20px; height: 20px; object-fit: contain; filter: invert(.2); }
+.bk-am-tool .bk-am-title { flex: 1 1 220px; min-width: 0; }
+.bk-am-tool .bk-am-title code { margin-left: 6px; font-size: 11px; color: #646970; background: none; }
+.bk-am-tool .bk-am-head-input { width: 100%; max-width: 280px; font-weight: 600; }
+.bk-am-tool .bk-am-sep-line { color: #646970; font-style: italic; }
+.bk-am-tool .bk-am-badge { padding: 1px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; line-height: 18px; }
+.bk-am-tool .bk-am-badge.is-lock { background: #1a3955; color: #fff; }
+.bk-am-tool .bk-am-badge.is-nocap { background: #fcf0f1; color: #8a2424; }
+.bk-am-tool .bk-am-badge.is-custom { background: #e4ec6a; color: #1a3955; }
+.bk-am-tool .bk-am-vis { white-space: nowrap; }
+.bk-am-tool .bk-am-subs { flex: 1 0 100%; margin: 2px 0 0 44px; }
+.bk-am-tool .bk-am-subs summary { cursor: pointer; color: #2271b1; }
+.bk-am-tool .bk-am-subs ul { margin: 6px 0 0; columns: 2 220px; }
+.bk-am-tool .bk-am-subs li { break-inside: avoid; }
+.bk-am-tool .bk-am-placeholder { height: 46px; margin: 0 0 6px; border: 2px dashed #1a3955; border-radius: 6px; background: #f0f4f8; }
+.bk-am-tool .bk-am-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.bk-am-tool .bk-am-preview-wrap { position: sticky; top: 46px; }
+.bk-am-tool .bk-am-preview-wrap h2 { margin-top: 0; }
+.bk-am-tool .bk-am-preview { margin: 0; padding: 8px 0; border-radius: 6px; background: #1a3955; color: #fff; }
+.bk-am-tool .bk-am-preview li { display: flex; align-items: center; gap: 8px; margin: 0; padding: 6px 12px; font-size: 13px; }
+.bk-am-tool .bk-am-preview li .dashicons { color: #c9d4de; }
+.bk-am-tool .bk-am-preview li img { width: 18px; height: 18px; filter: brightness(0) invert(.85); }
+.bk-am-tool .bk-am-preview li.is-head { padding-top: 12px; color: #e4ec6a; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.bk-am-tool .bk-am-preview li.is-sep { height: 1px; margin: 6px 12px; padding: 0; background: rgba(255, 255, 255, .15); }
+.bk-am-tool .bk-am-preview li.is-nocap { opacity: .45; }
+.bk-am-tool .bk-am-logo-prev img { display: block; max-width: 180px; max-height: 80px; margin: 0 0 8px; padding: 10px; border-radius: 6px; background: #1a3955; object-fit: contain; }
+.bk-am-tool .bk-am-plugin { margin: 0 0 12px; padding: 10px 14px; border: 1px solid #dcdcde; border-radius: 6px; background: #fff; }
+.bk-am-tool .bk-am-plugin legend { padding: 0 6px; font-weight: 600; }
+.bk-am-tool .bk-am-plugin label { display: block; margin: 4px 0; }
+.bk-am-tool .bk-am-users { margin: 0 0 16px; }
+.bk-am-tool .bk-am-users .dashicons-yes-alt { color: #00a32a; }
+.bk-am-tool .bk-am-users .dashicons-warning { color: #d63638; }
+@media (max-width: 960px) {
+	.bk-am-tool .bk-am-cols { grid-template-columns: minmax(0, 1fr); }
+	.bk-am-tool .bk-am-preview-wrap { position: static; }
+	.bk-am-tool .bk-am-subs { margin-left: 0; }
+}

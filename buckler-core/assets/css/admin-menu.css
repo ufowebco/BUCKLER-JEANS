@@ -1,0 +1,226 @@
+/*
+ * Menú lateral de WordPress con la marca Buckler (colores globales de Divi: navy #1a3955, lima #e4ec6a).
+ * Solo afecta al menú lateral y a los márgenes que dependen de su ancho. No toca formularios, tablas ni modales.
+ * Contrastes (WCAG AA): blanco sobre navy 12:1, lima sobre #24496b 7,5:1, #d5dee7 sobre #12293d 11:1.
+ */
+#adminmenuback,
+#adminmenuwrap,
+#adminmenu {
+	background: #1a3955;
+}
+
+#adminmenu a {
+	color: #fff;
+}
+
+#adminmenu div.wp-menu-image::before {
+	color: #c9d4de;
+}
+
+/* Hover y foco */
+#adminmenu li.menu-top:hover,
+#adminmenu li.opensub > a.menu-top,
+#adminmenu li > a.menu-top:focus {
+	background-color: #24496b;
+	color: #e4ec6a;
+}
+
+#adminmenu li.menu-top:hover div.wp-menu-image::before,
+#adminmenu li.opensub > a.menu-top div.wp-menu-image::before,
+#adminmenu li > a.menu-top:focus div.wp-menu-image::before {
+	color: #e4ec6a;
+}
+
+#adminmenu a:focus,
+#adminmenu .wp-submenu a:focus,
+#collapse-button:focus {
+	outline: 2px solid #e4ec6a;
+	outline-offset: -2px;
+	box-shadow: none;
+}
+
+/* Activo: fondo más oscuro + barra lima a la izquierda (identificable sin depender solo del color). */
+#adminmenu li.wp-has-current-submenu a.wp-has-current-submenu,
+#adminmenu li.current a.menu-top,
+#adminmenu .wp-menu-arrow,
+#adminmenu .wp-menu-arrow div {
+	background: #0f2236;
+	color: #fff;
+	font-weight: 600;
+}
+
+#adminmenu li.wp-has-current-submenu > a.menu-top,
+#adminmenu li.current > a.menu-top {
+	box-shadow: inset 4px 0 0 #e4ec6a;
+}
+
+#adminmenu li.wp-has-current-submenu div.wp-menu-image::before,
+#adminmenu li.current div.wp-menu-image::before {
+	color: #e4ec6a;
+}
+
+#adminmenu li.wp-has-current-submenu .wp-submenu .wp-submenu-head,
+#adminmenu .wp-menu-arrow {
+	display: none;
+}
+
+/* Submenús (abiertos y desplegables) */
+#adminmenu .wp-submenu,
+#adminmenu .wp-has-current-submenu .wp-submenu,
+#adminmenu .wp-has-current-submenu.opensub .wp-submenu,
+#adminmenu a.wp-has-current-submenu:focus + .wp-submenu,
+.folded #adminmenu .wp-has-current-submenu .wp-submenu {
+	background: #12293d;
+}
+
+#adminmenu .wp-submenu a {
+	color: #d5dee7;
+}
+
+#adminmenu .wp-submenu a:hover,
+#adminmenu .wp-submenu a:focus {
+	color: #e4ec6a;
+}
+
+#adminmenu .wp-submenu li.current a,
+#adminmenu .wp-submenu li.current a:hover,
+#adminmenu .wp-submenu li.current a:focus {
+	color: #e4ec6a;
+	font-weight: 600;
+}
+
+#adminmenu li.wp-has-submenu.wp-not-current-submenu.opensub:hover::after,
+#adminmenu li.wp-has-submenu.wp-not-current-submenu:focus-within::after {
+	border-right-color: #12293d;
+}
+
+/* Burbujas de notificación (pedidos, actualizaciones) */
+#adminmenu .awaiting-mod,
+#adminmenu .update-plugins,
+#adminmenu .menu-counter {
+	background: #e4ec6a;
+	color: #1a3955;
+}
+
+/* Separadores y encabezados propios */
+#adminmenu li.wp-menu-separator.bk-am-sep {
+	height: 13px;
+	margin: 0;
+}
+
+#adminmenu li.wp-menu-separator.bk-am-sep .separator {
+	height: 1px;
+	margin: 6px 12px;
+	background: rgba(255, 255, 255, .14);
+}
+
+#adminmenu li.bk-am-head {
+	margin: 14px 0 4px;
+	padding: 0 12px;
+	pointer-events: none;
+}
+
+#adminmenu .bk-am-head__label {
+	display: block;
+	overflow: hidden;
+	color: #e4ec6a;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .08em;
+	line-height: 1.6;
+	text-overflow: ellipsis;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.folded #adminmenu li.bk-am-head {
+	margin: 8px 0;
+	padding: 0;
+}
+
+.folded #adminmenu .bk-am-head__label {
+	height: 1px;
+	margin: 0 6px;
+	background: rgba(228, 236, 106, .5);
+	font-size: 0;
+}
+
+/* Logo arriba del menú */
+#adminmenu {
+	display: flex;
+	flex-direction: column;
+}
+
+#adminmenu .bk-am-logo {
+	order: -1;
+	margin: 0 0 6px;
+	padding: 14px 12px 12px;
+	border-bottom: 1px solid rgba(255, 255, 255, .12);
+}
+
+#adminmenu .bk-am-logo a {
+	display: block;
+	padding: 4px;
+	border-radius: 6px;
+}
+
+#adminmenu .bk-am-logo img {
+	display: block;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	max-height: 64px;
+	margin: 0 auto;
+}
+
+.folded #adminmenu .bk-am-logo {
+	padding: 10px 4px;
+}
+
+.folded #adminmenu .bk-am-logo img {
+	max-width: 28px;
+	max-height: 28px;
+}
+
+#collapse-button {
+	color: #c9d4de;
+}
+
+#collapse-button:hover {
+	color: #e4ec6a;
+}
+
+/* Ancho de 200 px solo en escritorio y con el menú expandido (en tableta WordPress lo contrae y en el
+   celular lo muestra como panel: ahí no se toca). */
+@media only screen and (min-width: 961px) {
+	body:not(.folded) #adminmenuback,
+	body:not(.folded) #adminmenuwrap,
+	body:not(.folded) #adminmenu,
+	body:not(.folded) #adminmenu .wp-submenu-wrap {
+		width: 200px;
+	}
+
+	body:not(.folded) #wpcontent,
+	body:not(.folded) #wpfooter {
+		margin-left: 200px;
+	}
+
+	body:not(.folded) #adminmenu .wp-submenu {
+		left: 200px;
+	}
+
+	body:not(.folded) #adminmenu .wp-has-current-submenu .wp-submenu,
+	body:not(.folded) #adminmenu .wp-has-current-submenu.opensub .wp-submenu {
+		left: auto;
+		width: auto;
+	}
+
+	/* Pantallas con barras fijas que se alinean al menú (editor de bloques, WooCommerce). */
+	body:not(.folded) .interface-interface-skeleton {
+		left: 200px;
+	}
+
+	body:not(.folded) .woocommerce-layout__header {
+		width: calc(100% - 200px);
+	}
+}
