@@ -9,15 +9,52 @@ add_action( 'init', function () {
 	register_taxonomy( 'caregoria-pf', 'pregunta-frecuente', array( 'public' => true, 'label' => 'Categoría PF' ) );
 }, 5 );
 
-if ( ! function_exists( 'get_field' ) ) {
-	function get_field( $name, $where = null ) { $o = get_option( 'bk_local_acf', array() ); return $o[ $name ] ?? null; }
+// ACF simulado con el MISMO almacenamiento que ACF Pro (opciones `options_{campo}`, repeater `options_{rep}` = filas y
+// `options_{rep}_{i}_{sub}`, posts en post meta). Si no hay dato real, respaldo en la opción bk_local_acf (semillas viejas).
+function bk_local_acf_defs() {
+	return array(
+		'banners_pagina_inicio' => array( 'key' => 'field_bk_banners', 'name' => 'banners_pagina_inicio', 'label' => 'Banners Página Inicio', 'type' => 'repeater', 'sub_fields' => array(
+			array( 'key' => 'field_bk_banner_pc', 'name' => 'banner_pc', 'label' => 'Banner PC', 'type' => 'image' ),
+			array( 'key' => 'field_bk_banner_mo', 'name' => 'banner_moviles', 'label' => 'Banner Moviles', 'type' => 'image' ),
+			array( 'key' => 'field_bk_banner_link', 'name' => 'enlace', 'label' => 'Enlace', 'type' => 'link' ),
+		) ),
+		'linea_slim_pc' => array( 'key' => 'field_bk_lspc', 'name' => 'linea_slim_pc', 'label' => 'Línea Slim PC', 'type' => 'image' ),
+		'linea_slim_mo' => array( 'key' => 'field_bk_lsmo', 'name' => 'linea_slim_mo', 'label' => 'Línea Slim MO', 'type' => 'image' ),
+		'linea_curvy_pc' => array( 'key' => 'field_bk_lcpc', 'name' => 'linea_curvy_pc', 'label' => 'Línea Curvy PC', 'type' => 'image' ),
+		'linea_curvy_mo' => array( 'key' => 'field_bk_lcmo', 'name' => 'linea_curvy_mo', 'label' => 'Línea Curvy MO', 'type' => 'image' ),
+		'imagen_guia_de_tallas' => array( 'key' => 'field_bk_guia', 'name' => 'imagen_guia_de_tallas', 'label' => 'Imagen Guía de Tallas', 'type' => 'image' ),
+		'imagen_siluetas' => array( 'key' => 'field_bk_silu', 'name' => 'imagen_siluetas', 'label' => 'Imagen Siluetas', 'type' => 'image' ),
+		'texto_politica' => array( 'key' => 'field_bk_tpol', 'name' => 'texto_politica', 'label' => 'Texto Política', 'type' => 'wysiwyg' ),
+		'respuesta_pregunta_frecuente' => array( 'key' => 'field_bk_rpf', 'name' => 'respuesta_pregunta_frecuente', 'label' => 'Respuesta pregunta frecuente', 'type' => 'wysiwyg' ),
+	);
 }
 if ( ! function_exists( 'acf_get_field' ) ) {
-	function acf_get_field( $name ) {
-		return 'banners_pagina_inicio' === $name ? array( 'sub_fields' => array(
-			array( 'name' => 'banner_pc', 'label' => 'Banner PC', 'type' => 'image' ),
-			array( 'name' => 'banner_moviles', 'label' => 'Banner Moviles', 'type' => 'image' ),
-		) ) : false;
+	function acf_get_field( $name ) { return bk_local_acf_defs()[ $name ] ?? false; }
+}
+if ( ! function_exists( 'get_field' ) ) {
+	function get_field( $name, $where = null ) {
+		$def = bk_local_acf_defs()[ $name ] ?? null;
+		if ( 'option' === $where || 'options' === $where ) {
+			$raw = get_option( 'options_' . $name, null );
+			if ( null !== $raw && $def && 'repeater' === $def['type'] ) {
+				$rows = array();
+				for ( $i = 0; $i < (int) $raw; $i++ ) {
+					$row = array();
+					foreach ( $def['sub_fields'] as $sf ) {
+						$row[ $sf['name'] ] = get_option( "options_{$name}_{$i}_{$sf['name']}", '' );
+					}
+					$rows[] = $row;
+				}
+				return $rows;
+			}
+			if ( null !== $raw ) {
+				return $raw;
+			}
+			$o = get_option( 'bk_local_acf', array() );
+			return $o[ $name ] ?? null;
+		}
+		$id = is_numeric( $where ) ? (int) $where : get_the_ID();
+		return get_post_meta( $id, $name, true );
 	}
 }
 

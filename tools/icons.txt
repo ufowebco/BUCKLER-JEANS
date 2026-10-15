@@ -55,3 +55,9 @@ lucide:bar-chart-3
 lucide:refresh-cw
 lucide:send
 lucide:eye
+lucide:info
+lucide:log-in
+lucide:key-round
+lucide:image
+lucide:tag
+lucide:percent

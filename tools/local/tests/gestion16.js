@@ -42,7 +42,7 @@ const login = async (p, u, pw) => { await p.goto(B + '/wp-login.php?redirect_to=
 
   // --- Menú -------------------------------------------------------------------------------------
   const tabs = await p.locator('.bk-g-tabs a').allTextContents();
-  ok(tabs.join('|') === 'Resumen|Pedidos|Productos|Carritos|Correos|SEO y ADS', 'menú: ' + tabs.join(', '));
+  ok(tabs.join('|') === 'Resumen|Pedidos|Productos|Descuentos|Carritos|Correos|Contenido|SEO y ADS|Ayuda', 'menú: ' + tabs.join(', '));
 
   // --- Pedidos: columnas, pago confirmado, imprimir ------------------------------------------------
   await p.click('[data-tab="pedidos"]'); await p.waitForSelector('.bk-g-orders tbody tr');
@@ -66,7 +66,7 @@ const login = async (p, u, pw) => { await p.goto(B + '/wp-login.php?redirect_to=
   const two = await (await p.request.get(`${B}/gestion-tienda/?imprimir=464,465`)).text();
   ok((two.match(/class="sheet"/g) || []).length === 2, 'varios pedidos en una sola impresión (salto de página)');
   const anonPrint = await (await b.newContext()).request.get(`${B}/gestion-tienda/?imprimir=464`, { maxRedirects: 0 });
-  ok(anonPrint.status() === 302, 'impresión sin sesión → login');
+  ok(anonPrint.status() === 200 && !/Pedido #464/.test(await anonPrint.text()) && /bk-g-login__form/.test(await anonPrint.text()), 'impresión sin sesión → pantalla de acceso (sin datos del pedido)');
   php(`$o=wc_get_order(464); $o->update_meta_data("_impreso_status","no"); $o->save();`);
   await p.fill('input[name="q"]', ''); await p.fill('input[name="q"]', '464'); await p.waitForTimeout(1200);
   await p.evaluate(() => { window.print = () => {}; });

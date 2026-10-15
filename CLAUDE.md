@@ -131,10 +131,10 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
 ## buckler-core (plugin propio)
 **Módulos (Ajustes → Buckler Core, `includes/modules.php`)**: todo APAGADO al instalar; `bk_on('clave')`;
 cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa clase). Claves: layout,
-clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats. `define('BK_MODULES_ALL', true)` enciende todo
+clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.16.1 → `dist/buckler-core-0.16.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.17.0 → `dist/buckler-core-0.17.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -384,6 +384,47 @@ Versión actual 0.16.1 → `dist/buckler-core-0.16.1.zip` (`tools/build-plugin.s
   Respeta `_seopress_titles_title/_desc` escritos a mano (la descripción se recorta). Apagar: filtro `bk_seo_enabled`.
   Fixtures simulan SEOPress (opción `bk_test_keep_wc_ld` para probar sin duplicar). Suite `seo.js` (17).
   **Pendiente del cliente:** corregir "Jenas" en Ajustes → Generales → Título del sitio.
+- **0.17.0 — ronda de 14 puntos (2026-10-15):**
+  - Grid: la franja de fotos de la tarjeta medía 3 px más que su caja → `overflow-y:auto` implícito la volvía desplazable
+    en vertical y se quedaba con la rueda del mouse. `overflow-y: hidden` en todos los carruseles horizontales
+    (tarjetas, hero, galería, miniaturas, reseñas, carrito flotante, menú de cuenta) + `img{display:block}`.
+  - Buscador: `.bk-doc input:focus` (pages.css) le ponía radio 6 px y sombra al campo dentro de la píldora → el anillo
+    va en `.bk-search:focus-within`; "x" nativa de borrar en navy.
+  - Checkout: `woocommerce_states` → CO-SAP = "San Andrés" (filtro `bk_state_names`; el código no cambia).
+  - 404: decisión del cliente → `bk_config('redirect_404') = 'home'` (301 al inicio, `X-Redirect-By: buckler-core`);
+    archivos y rutas técnicas (`/.well-known/`, `.json/.xml/...`, wp-content, wp-json) siguen con 404 real
+    (`bk_pages_404_is_file()`), así ai-catalog.json y Merchant no reciben la portada.
+  - Gestión: acceso propio (`bk_g_login_page`, `wp_signon`, nonce, 6 intentos/15 min por IP, mensaje genérico; si
+    otro plugin (captcha/2FA) rechaza → enlace a wp-login); Salir = `/gestion-tienda/?salir=1&_wpnonce` → vuelve a la
+    misma página con "Cerraste sesión". Usuarios de solo SEO y ADS: opción `bk_g_seo_users` (por defecto Gestor_ADS,
+    rol Colaborador) o capacidad `bk_seo_ads` → `bk_g_can_seo()`, pestañas SEO y ADS + Ayuda, wp-admin → #seo, sin
+    pedidos ni impresión. Menú de 9 secciones (íconos con el nombre de la actual entre 861 y 1680 px).
+  - SEO y ADS: alerta "¿Falta alguna etiqueta? → contacto@ufoweb.co" con mailto que lista las faltantes/duplicadas.
+  - Ayuda (`assets/js/gestion-more.js`): explicación de cada módulo (según el rol).
+  - Contenido (`includes/gestion/content.php`): banners (repeater `banners_pagina_inicio`: PC, móvil, enlace, alt,
+    orden; conserva subcampos no manejados con `from`), líneas, guía de tallas, políticas (texto_politica), preguntas
+    (respuesta_pregunta_frecuente, caregoria-pf, menu_order). Escribe en el formato de almacenamiento de ACF
+    (`options_{campo}` + `_options_{campo}` = clave; repeater con filas) para que wp-admin lo vea igual; purga caché.
+    Los fixtures locales simulan ACF con ese mismo almacenamiento (`bk_local_acf_defs()`).
+  - Descuentos (módulo `discounts`, `includes/discounts.php` + `includes/gestion/discounts-api.php`; opción
+    `bk_discounts` {campaigns, qty}): campañas % por fechas (toda la tienda o categorías, sin ¡Sale!: categoría
+    sale_cat o cualquier talla con rebaja propia → `bk_disc_is_sale()` por modelo) vía filtros de precio de Woo
+    (+ hash de precios de variaciones con `bk_disc_signature()`); por cantidad (tramos, cuenta por modelo o carrito,
+    alcance todo/categorías/productos) en `woocommerce_before_calculate_totals` con precio fijado por objeto
+    (`bk_disc_fixed`, sin propiedades dinámicas). No acumulables: se aplica el mayor sobre el precio normal. Ficha
+    (`bk_disc_pdp_box`, solo tramos que superan la campaña), aviso en carrito/checkout ("agrega N prendas más…"),
+    meta "Descuento" en la línea del pedido, anuncio en la barra (`bk_site_config`), sección en el inicio
+    (`bk_home_after_lines`, destacados elegidos o los más nuevos), etiqueta en tarjetas (`bk-badge--camp`; la caché
+    de la tarjeta guarda solo la rebaja propia con `$GLOBALS['bk_disc_raw']`), filtro "En descuento" de la tienda.
+    Inicio/fin: Action Scheduler `bk_disc_tick` → `bk_disc_flush()` (versión de catálogo, transitorios de precios de
+    Woo, purga de caché). Aviso si YayPricing está activo.
+  - ¡Sale! sin garantía (`includes/sale-notice.php`, `bk_config('sale_notice')`): ficha, línea del carrito/checkout,
+    aviso antes de pagar y meta "Garantía" en el pedido. Las campañas NO cuentan como ¡Sale!.
+  - Correos (módulo `emails`, `includes/emails.php`): `woocommerce_locate_template` para emails/email-header.php y
+    email-footer.php (templates/woocommerce/emails, misma línea que carrito abandonado: barra navy, logo PNG, título,
+    ayuda por WhatsApp, pie navy) + colores de Woo forzados (pre_option_woocommerce_email_*) + CSS
+    (`woocommerce_email_styles`). No aplica a correos del editor por bloques de Woo.
+  - Suite `ronda17.js` (59). paginas.js: la comprobación de banners diferidos ahora se mide antes de interactuar.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -428,7 +469,7 @@ Versión actual 0.16.1 → `dist/buckler-core-0.16.1.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 17 = 433 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 17, ronda 0.17 59 = 492 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

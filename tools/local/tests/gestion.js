@@ -7,7 +7,7 @@ const login = async (p, u, pw) => { await p.goto(B + '/wp-login.php?redirect_to=
   // Sin sesión
   const anon = await (await b.newContext()).newPage();
   await anon.goto(B + '/gestion-tienda/');
-  ok(/wp-login\.php/.test(anon.url()), 'sin sesión → login');
+  ok(/gestion-tienda/.test(anon.url()) && await anon.locator('.bk-g-login__form').count() === 1, 'sin sesión → pantalla de acceso propia');
   const r = await anon.request.get(B + '/wp-json/bk/v1/gestion/orders');
   ok(r.status() === 401, 'API sin sesión rechazada: ' + r.status());
   // Gestora

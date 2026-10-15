@@ -73,19 +73,27 @@
 	};
 
 	/* --- Estructura ------------------------------------------------------------- */
-	const tabs = [
+	// Usuarios de solo SEO y ADS (p. ej. Gestor_ADS): ese módulo y la ayuda.
+	const tabs = C.scope === 'seo' ? [
+		['seo', 'SEO y ADS', 'chart'],
+		['ayuda', 'Ayuda', 'help'],
+	] : [
 		['resumen', 'Resumen', 'home'],
 		['pedidos', 'Pedidos', 'orders'],
 		['productos', 'Productos', 'prod'],
+		['descuentos', 'Descuentos', 'percent'],
 		['carritos', 'Carritos', 'cart'],
 		['correos', 'Correos', 'mail'],
+		['contenido', 'Contenido', 'layout'],
 		['seo', 'SEO y ADS', 'chart'],
+		['ayuda', 'Ayuda', 'help'],
 	];
 	// Ajustes ya no va en el menú (los campos reales quedaron por defecto): sigue en #ajustes para administradores.
-	const hidden = C.isAdmin ? ['ajustes'] : [];
+	const hidden = C.isAdmin && C.scope !== 'seo' ? ['ajustes'] : [];
+	const home = tabs[0][0];
 	app.innerHTML = `
 		<header class="bk-g-top">
-			<a class="bk-g-brand" href="#resumen"><strong>Buckler</strong> <span>Gestión de tienda</span></a>
+			<a class="bk-g-brand" href="#${home}"><strong>Buckler</strong> <span>Gestión de tienda</span></a>
 			<nav class="bk-g-tabs" aria-label="Secciones">${tabs.map(([k, l, i]) => `<a href="#${k}" data-tab="${k}">${C.icons[i] || ''}<span>${l}</span></a>`).join('')}</nav>
 			<div class="bk-g-user"><a href="${esc(C.site)}" target="_blank" rel="noopener">Ver tienda</a><span>${esc(C.user)}</span><a href="${esc(C.logout)}">Salir</a></div>
 		</header>
@@ -108,15 +116,22 @@
 	let pSeq = 0;
 	const route = () => {
 		viewSeq++;
-		const [path, query = ''] = (location.hash.replace('#', '') || 'resumen').split('?');
+		const [path, query = ''] = (location.hash.replace('#', '') || home).split('?');
 		const [tab, ...sub] = path.split('/');
-		const valid = tabs.some(([k]) => k === tab) || hidden.includes(tab) ? tab : 'resumen';
+		const valid = tabs.some(([k]) => k === tab) || hidden.includes(tab) ? tab : home;
 		$$('.bk-g-tabs a').forEach((a) => a.toggleAttribute('aria-current', a.dataset.tab === valid));
 		// Subrutas de productos (#productos/nuevo, #productos/editar/ID): gestion-product.js (se carga al usarlo).
 		if (valid === 'productos' && sub.length) {
 			const seq = viewSeq;
 			if (!window.bkGProduct) main.innerHTML = '<div class="bk-g-loading">Cargando…</div>';
 			loadScript('product').then(() => { if (seq === viewSeq) window.bkGProduct.view(sub, new URLSearchParams(query)); }).catch((e) => { main.innerHTML = `<p class="bk-g-error">${esc(e.message)}</p>`; });
+			return;
+		}
+		// Descuentos, Contenido y Ayuda: gestion-more.js.
+		if (['descuentos', 'contenido', 'ayuda'].includes(valid)) {
+			const seq = viewSeq;
+			if (!window.bkGMore) main.innerHTML = '<div class="bk-g-loading">Cargando…</div>';
+			loadScript('more').then(() => { if (seq === viewSeq) window.bkGMore.view(valid, sub, new URLSearchParams(query)); }).catch((e) => { main.innerHTML = `<p class="bk-g-error">${esc(e.message)}</p>`; });
 			return;
 		}
 		// Carritos, Correos y SEO y ADS: gestion-extra.js.
@@ -445,6 +460,7 @@
 					<label><span>Check "Pago confirmado"</span><input name="pago" value="${esc(f.pago)}"></label>
 					<label><span>Cédula (una o varias, separadas por coma)</span><input name="cedula" value="${esc(f.cedula.join(', '))}"></label>
 					<label><span>Archivos del pedido (repeater ACF)</span><input name="adjuntos" value="${esc(f.adjuntos)}"></label>
+					<label><span>Usuarios que solo ven SEO y ADS (nombres de usuario, separados por coma)</span><input name="seo_users" value="${esc((d.seo_users || []).join(', '))}"></label>
 					<button class="bk-g-btn" type="submit">Guardar campos</button>
 				</form></section>
 				<section class="bk-g-card"><h2>Campos encontrados en los últimos 40 pedidos</h2>
@@ -468,7 +484,7 @@
 
 		const pg = t.closest('[data-page]');
 		if (pg) {
-			if (pg.dataset.kind === 'o') { oState.page = Number(pg.dataset.page); loadOrders(); } else if (pg.dataset.kind === 'p') { pState.page = Number(pg.dataset.page); loadProducts(); } else window.bkGExtra?.page(pg.dataset.kind, Number(pg.dataset.page));
+			if (pg.dataset.kind === 'o') { oState.page = Number(pg.dataset.page); loadOrders(); } else if (pg.dataset.kind === 'p') { pState.page = Number(pg.dataset.page); loadProducts(); } else { window.bkGExtra?.page(pg.dataset.kind, Number(pg.dataset.page)); window.bkGMore?.page?.(pg.dataset.kind, Number(pg.dataset.page)); }
 			main.focus();
 			return;
 		}

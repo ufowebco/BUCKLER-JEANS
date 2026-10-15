@@ -415,7 +415,7 @@
 			$('[name="video"]')?.focus();
 			return;
 		}
-		const cmd = t.closest('[data-cmd]');
+		const cmd = t.closest('#bk-gp [data-cmd]');
 		if (cmd) {
 			$('#bk-gp-desc').focus();
 			document.execCommand(cmd.dataset.cmd, false, null);

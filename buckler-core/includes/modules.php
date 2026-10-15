@@ -90,6 +90,18 @@ function bk_modules() {
 			'replaces' => 'LiteSpeed Cache / capa Ufocache',
 			'woo'      => true,
 		),
+		'discounts' => array(
+			'label'    => 'Descuentos (campañas y por cantidad)',
+			'desc'     => 'Aplica las campañas por porcentaje (toda la tienda menos ¡Sale!, entre dos fechas) y los descuentos por cantidad que se crean en Gestión de tienda → Descuentos. Precio tachado, etiqueta, anuncio y sección en el inicio; se apagan solos al terminar.',
+			'replaces' => 'Reglas de YayPricing (desactivar las que se crucen)',
+			'woo'      => true,
+		),
+		'emails'    => array(
+			'label'    => 'Correos con el diseño de la marca',
+			'desc'     => 'Los correos de WooCommerce (pedido recibido, en espera, completado, cancelado…) con el mismo encabezado, colores y pie que los de carrito abandonado y guía de envío. Se revisan en Gestión → Correos.',
+			'replaces' => 'Diseño por defecto de WooCommerce / plugins de plantillas de correo',
+			'woo'      => true,
+		),
 		'stats'     => array(
 			'label'    => 'Estadísticas de visitas (SEO y ADS)',
 			'desc'     => 'Cuenta visitas sin cookies ni datos personales (visitantes por día, semana y mes, páginas, origen, ciudad y dispositivo) y las muestra en Gestión de tienda → SEO y ADS. No cuenta robots ni al equipo.',

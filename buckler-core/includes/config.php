@@ -91,6 +91,11 @@ function bk_config( $key = null ) {
 				'category_links' => 'filters',
 				// Botón flotante abajo a la derecha: 'cart' (carrito, decisión del cliente) o 'whatsapp'.
 				'float_button'  => 'cart',
+				// Direcciones que no existen: 'home' = 301 a la portada (decisión del cliente 2026-10-15; los archivos y
+				// /.well-known/ siguen con 404 real) o '404' = página 404 propia.
+				'redirect_404'  => 'home',
+				// Aviso en prendas de ¡Sale! (ficha, carrito, checkout y pedido). Vacío = sin aviso.
+				'sale_notice'   => 'Producto en descuento: no tiene garantía ni cambio.',
 				'sale_cat'      => 'sale',
 				'sale_page'     => '/sales/',
 				'faq_page'      => '/preguntas-frecuentes/',

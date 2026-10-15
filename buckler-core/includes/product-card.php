@@ -53,6 +53,7 @@ function bk_card_data( $product ) {
 		bk_product_sizes( $product )
 	);
 	$discount = 0;
+	$GLOBALS['bk_disc_raw'] = true; // Solo el descuento propio del producto; las campañas se suman al pintar.
 	if ( $product->is_type( 'variable' ) ) {
 		/** @var WC_Product_Variable $product */
 		$prices = $product->get_variation_prices( true );
@@ -65,6 +66,7 @@ function bk_card_data( $product ) {
 	} elseif ( $product->is_on_sale() && (float) $product->get_regular_price() > 0 ) {
 		$discount = (int) round( ( 1 - (float) $product->get_sale_price() / (float) $product->get_regular_price() ) * 100 );
 	}
+	$GLOBALS['bk_disc_raw'] = false;
 
 	$data = array(
 		'images'   => $images,
@@ -126,13 +128,20 @@ function bk_product_card( $product, $args = array() ) {
 		$imgs = wc_placeholder_img( 'woocommerce_thumbnail', array( 'class' => 'bk-card__img', 'alt' => $name ) );
 	}
 
-	// Etiquetas.
+	// Etiquetas (la campaña de descuentos vigente se calcula al pintar: la caché de la tarjeta no la guarda).
+	$camp = function_exists( 'bk_disc_campaign_for' ) && bk_on( 'discounts' ) ? bk_disc_campaign_for( $product ) : null;
+	if ( $camp ) {
+		$d['discount'] = max( $d['discount'], (int) round( (float) $camp['pct'] ) );
+	}
 	$badges = '';
 	if ( ! $in ) {
 		$badges .= '<span class="bk-badge bk-badge--out">' . esc_html__( 'Agotado', 'buckler-core' ) . '</span>';
 	} elseif ( $d['discount'] > 0 ) {
 		/* translators: %d: porcentaje */
 		$badges .= '<span class="bk-badge bk-badge--sale">' . esc_html( sprintf( __( '-%d %%', 'buckler-core' ), $d['discount'] ) ) . '</span>';
+		if ( $camp && ! empty( $camp['badge'] ) ) {
+			$badges .= '<span class="bk-badge bk-badge--camp">' . esc_html( $camp['badge'] ) . '</span>';
+		}
 	}
 	if ( $product->is_featured() && $in ) {
 		$badges .= '<span class="bk-badge bk-badge--new">' . esc_html__( 'Nuevo', 'buckler-core' ) . '</span>';

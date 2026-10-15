@@ -220,7 +220,8 @@ function bk_shop_prenda_key( $name ) {
 function bk_shop_universe( $ctx ) {
 	global $wpdb;
 	$ver = (string) get_option( 'bk_catalog_v', '1' );
-	$key = 'bk_shop_' . md5( wp_json_encode( array( $ctx['cats'], $ctx['search'], $ctx['sale'], $ver ) ) );
+	$camp = function_exists( 'bk_disc_signature' ) && bk_on( 'discounts' ) ? bk_disc_signature() : '';
+	$key  = 'bk_shop_' . md5( wp_json_encode( array( $ctx['cats'], $ctx['search'], $ctx['sale'], $ver, $camp ) ) );
 	$u   = get_transient( $key );
 	if ( is_array( $u ) ) {
 		return $u;
@@ -308,7 +309,8 @@ function bk_shop_universe( $ctx ) {
 		$items[] = array(
 			'id'     => $id,
 			'price'  => (float) ( $p->is_type( 'variable' ) ? $p->get_variation_price( 'min', true ) : wc_get_price_to_display( $p ) ),
-			'sale'   => in_array( $id, $on_sale, true ),
+			// En descuento: precio rebajado propio o campaña vigente (Gestión → Descuentos).
+			'sale'   => in_array( $id, $on_sale, true ) || ( $camp && bk_disc_campaign_for( $p ) ),
 			'sales'  => (int) $p->get_total_sales(),
 			'ts'     => (int) $r['ts'],
 			'line'   => $by_product[ $id ]['line'] ?? '',

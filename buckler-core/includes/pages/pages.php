@@ -43,8 +43,8 @@ add_action( 'template_redirect', 'bk_pages_llms_txt', 0 );
  * @return string
  */
 function bk_pages_no_soft404( $location ) {
-	if ( is_admin() || ! is_404() || '404' !== bk_pages_route() ) {
-		return $location;
+	if ( is_admin() || ! is_404() || '404' !== bk_pages_route() || ! bk_pages_404_is_file() ) {
+		return $location; // Páginas: la redirección a la portada es lo que pidió el cliente (2026-10-15).
 	}
 	$to = untrailingslashit( (string) strtok( (string) $location, '?#' ) );
 	if ( untrailingslashit( home_url() ) !== $to && untrailingslashit( home_url( '/' ) ) !== $to ) {
@@ -57,11 +57,28 @@ function bk_pages_no_soft404( $location ) {
 }
 
 /**
+ * ¿La dirección pedida es un archivo o una ruta técnica? (404 real en vez de ir a la portada).
+ *
+ * @return bool
+ */
+function bk_pages_404_is_file() {
+	$path = (string) wp_parse_url( isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '', PHP_URL_PATH ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	return (bool) preg_match( '#^/(\.well-known|wp-content|wp-includes|wp-json|xmlrpc)|\.[a-z0-9]{2,5}$#i', $path );
+}
+
+/**
  * Pinta la página 404 propia (con estado 404) y termina, antes de que otro código redirija a la portada.
  */
 function bk_pages_render_404() {
 	if ( ! is_404() || '404' !== bk_pages_route() ) {
 		return;
+	}
+	// Decisión del cliente (2026-10-15): una dirección que no existe lleva a la portada (301).
+	// Excepción: archivos y rutas técnicas (/.well-known/, .json, .xml, imágenes…) responden 404 real, para que
+	// agentes de IA, Google Merchant y validadores no reciban la portada como si fuera el archivo pedido.
+	if ( 'home' === bk_config( 'redirect_404' ) && ! bk_pages_404_is_file() ) {
+		wp_safe_redirect( home_url( '/' ), 301, 'buckler-core' );
+		exit;
 	}
 	status_header( 404 );
 	nocache_headers();

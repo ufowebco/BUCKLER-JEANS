@@ -158,9 +158,17 @@
 	};
 	const list = (rows, unit, empty) => rows?.length ? `<ol class="bk-g-rank">${rows.map((r) => { const max = rows[0].n || 1; return `<li><span class="bk-g-rank__l" title="${esc(r.label)}">${esc(r.label)}</span><b>${num(r.n)}</b><i style="--w:${Math.round((r.n / max) * 100)}%"></i></li>`; }).join('')}</ol><small class="bk-g-hint">${unit}</small>` : `<p class="bk-g-empty">${empty}</p>`;
 
+	// Correo a UFO Web con las etiquetas faltantes ya listadas.
+	const mailto = (missing) => {
+		const body = `Hola, en Buckler (${C.site}) necesitamos instalar o revisar:\n\n${missing.length ? missing.map((m) => `- ${m}`).join('\n') : '- (escribe aquí la etiqueta, su ID y qué debe medir)'}\n\nGracias.`;
+		return `mailto:contacto@ufoweb.co?subject=${encodeURIComponent('Etiquetas faltantes · Buckler (SEO y ADS)')}&body=${encodeURIComponent(body)}`;
+	};
+
 	async function viewSeo(sub) {
 		const tab = sub[0] === 'etiquetas' || sub[0] === 'rastreo' ? sub[0] : 'visitas';
 		main.innerHTML = `<h1 class="bk-g-h1">SEO y ADS</h1>
+			<aside class="bk-g-alert" role="note" aria-labelledby="bk-g-alert-t">${C.icons.info || ''}<div><p id="bk-g-alert-t"><b>¿Falta alguna etiqueta o píxel?</b></p>
+				<p>Si necesitas medir algo que no aparece aquí (Google Ads, GA4, píxel de Meta o TikTok, conversiones, Merchant Center…), envía el ID y qué debe medir a <a id="bk-g-alert-mail" href="${mailto([])}">contacto@ufoweb.co</a>. No pegues códigos directamente en el sitio: se instalan con carga diferida para no hacerlo más lento.</p></div></aside>
 			<nav class="bk-g-subtabs" aria-label="SEO y ADS">${[['visitas', 'Visitas'], ['etiquetas', 'Etiquetas Google y Meta'], ['rastreo', 'Clases y eventos rastreables']].map(([k, l]) => `<a href="#seo/${k}" ${tab === k ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>
 			<div id="bk-g-seo"><div class="bk-g-loading">Cargando…</div></div>`;
 		({ visitas: seoVisits, etiquetas: seoTags, rastreo: seoTrack })[tab]();
@@ -226,6 +234,9 @@
 		try { d = old || await api(`seo/tags${refresh ? '?refresh=1' : ''}`); } catch (e) { box.innerHTML = err(e); return; }
 		if (!old) A.forget('seo/tags');
 		if (seq !== A.seq() || !box.isConnected) return;
+		const missing = d.tags.filter((t) => t.status === 'missing' || t.status === 'warn').map((t) => `${t.name}: ${t.note}`);
+		const am = $('#bk-g-alert-mail');
+		if (am) am.href = mailto(missing);
 		const o = d.orders;
 		const yes = (b) => (b ? '<span class="bk-g-pill is-completed">Sí</span>' : '<span class="bk-g-pill is-failed">No</span>');
 		box.innerHTML = `<div class="bk-g-h2row"><p class="bk-g-hint">Revisado el ${esc(d.checked)} (se guarda 6 horas).</p><button type="button" class="bk-g-btn is-ghost is-small" data-tags-refresh>${C.icons.refresh} Revisar ahora</button></div>

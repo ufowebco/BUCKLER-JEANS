@@ -43,6 +43,41 @@ function bk_g_can() {
 }
 
 /**
+ * Usuarios que SOLO ven el módulo SEO y ADS (p. ej. la agencia de pauta "Gestor_ADS", rol Colaborador).
+ * Lista de nombres de usuario en la opción bk_g_seo_users (Ajustes avanzados); también la capacidad bk_seo_ads.
+ *
+ * @return string[]
+ */
+function bk_g_seo_users() {
+	$list = get_option( 'bk_g_seo_users', null );
+	$list = null === $list ? array( 'Gestor_ADS' ) : (array) $list;
+	return array_values( array_filter( array_map( 'strtolower', array_map( 'trim', $list ) ) ) );
+}
+
+/**
+ * ¿Es un usuario de solo SEO y ADS?
+ *
+ * @param WP_User|null $u Usuario (actual por defecto).
+ * @return bool
+ */
+function bk_g_is_seo_user( $u = null ) {
+	$u = $u instanceof WP_User ? $u : wp_get_current_user();
+	if ( ! $u->exists() || user_can( $u, 'bk_gestion' ) || user_can( $u, 'manage_woocommerce' ) ) {
+		return false;
+	}
+	return user_can( $u, 'bk_seo_ads' ) || in_array( strtolower( $u->user_login ), bk_g_seo_users(), true );
+}
+
+/**
+ * ¿Puede ver SEO y ADS? (gestión completa o usuario de solo SEO).
+ *
+ * @return bool
+ */
+function bk_g_can_seo() {
+	return bk_g_can() || bk_g_is_seo_user();
+}
+
+/**
  * Campos de pedido configurables.
  *
  * @return array{consecutivo:string,impreso:string,cedula:string[],adjuntos:string}
@@ -737,7 +772,7 @@ function bk_g_settings() {
 		}
 	}
 	ksort( $found );
-	return rest_ensure_response( array( 'fields' => bk_g_fields(), 'meta' => array_values( $found ) ) );
+	return rest_ensure_response( array( 'fields' => bk_g_fields(), 'meta' => array_values( $found ), 'seo_users' => array_map( 'trim', (array) get_option( 'bk_g_seo_users', array( 'Gestor_ADS' ) ) ) ) );
 }
 
 /**
@@ -747,6 +782,9 @@ function bk_g_settings() {
  * @return WP_REST_Response
  */
 function bk_g_settings_save( WP_REST_Request $r ) {
+	if ( null !== $r['seo_users'] ) {
+		update_option( 'bk_g_seo_users', array_values( array_filter( array_map( 'sanitize_user', array_map( 'trim', explode( ',', (string) $r['seo_users'] ) ) ) ) ), false );
+	}
 	update_option(
 		'bk_gestion_fields',
 		array(

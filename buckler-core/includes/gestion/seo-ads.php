@@ -26,8 +26,8 @@ add_action( 'rest_api_init', 'bk_gs_routes' );
  */
 function bk_gs_routes() {
 	$ns = 'bk/v1';
-	register_rest_route( $ns, '/gestion/seo/tags', array( 'methods' => 'GET', 'callback' => 'bk_gs_tags', 'permission_callback' => 'bk_g_can' ) );
-	register_rest_route( $ns, '/gestion/seo/visits', array( 'methods' => 'GET', 'callback' => 'bk_gs_visits', 'permission_callback' => 'bk_g_can' ) );
+	register_rest_route( $ns, '/gestion/seo/tags', array( 'methods' => 'GET', 'callback' => 'bk_gs_tags', 'permission_callback' => 'bk_g_can_seo' ) );
+	register_rest_route( $ns, '/gestion/seo/visits', array( 'methods' => 'GET', 'callback' => 'bk_gs_visits', 'permission_callback' => 'bk_g_can_seo' ) );
 	register_rest_route( $ns, '/gestion/seo/geo', array( 'methods' => 'POST', 'callback' => 'bk_gs_geo', 'permission_callback' => static fn() => current_user_can( 'manage_options' ) ) );
 	register_rest_route( $ns, '/gestion/abandoned', array( 'methods' => 'GET', 'callback' => 'bk_gs_abandoned', 'permission_callback' => 'bk_g_can' ) );
 }

@@ -229,6 +229,7 @@ html.bk-sc-open {
 	display: flex;
 	gap: 12px;
 	overflow-x: auto;
+	overflow-y: hidden; /* Si no, 2–3 px de alto sobrante la vuelven desplazable en vertical y se queda con la rueda del mouse. */
 	padding: 0 20px 8px 0 !important;
 	scroll-snap-type: x mandatory;
 }

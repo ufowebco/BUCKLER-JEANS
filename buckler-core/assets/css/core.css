@@ -148,6 +148,7 @@ html.bk-navigating::before {
 .bk-carousel__track {
 	display: flex;
 	overflow-x: auto;
+	overflow-y: hidden; /* Si no, 2–3 px de alto sobrante la vuelven desplazable en vertical y se queda con la rueda del mouse. */
 	scroll-snap-type: x mandatory;
 	scrollbar-width: none;
 	overscroll-behavior-x: contain;

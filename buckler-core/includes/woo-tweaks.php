@@ -36,3 +36,24 @@ function bk_sku_to_ref( $translation ) {
 	}
 	return preg_replace( '/\bSKU(s?)\b/', 'REF$1', $translation );
 }
+
+/**
+ * Departamentos de Colombia: "San Andrés y Providencia" → "San Andrés" (no hay envíos a Providencia;
+ * decisión del cliente 2026-10-15). Se cambia solo el nombre: el código CO-SAP de los pedidos no cambia.
+ * Nombre configurable con el filtro bk_state_names.
+ */
+add_filter(
+	'woocommerce_states',
+	static function ( $states ) {
+		$names = (array) apply_filters( 'bk_state_names', array( 'CO' => array( 'CO-SAP' => 'San Andrés' ) ) );
+		foreach ( $names as $country => $map ) {
+			foreach ( (array) $map as $code => $name ) {
+				if ( isset( $states[ $country ][ $code ] ) ) {
+					$states[ $country ][ $code ] = $name;
+				}
+			}
+		}
+		return $states;
+	},
+	99
+);

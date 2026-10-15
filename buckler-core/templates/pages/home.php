@@ -35,6 +35,8 @@ $bk_sale = function_exists( 'wc_get_product_ids_on_sale' ) ? wc_get_product_ids_
 
 <?php echo do_shortcode( '[bk_lineas]' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 
+<?php do_action( 'bk_home_after_lines' ); // Campaña de descuentos vigente (includes/discounts.php). ?>
+
 <?php if ( $bk_tabs ) : ?>
 	<section class="bk-wrap bk-home-new" aria-labelledby="bk-new-t">
 		<div class="bk-section-head">

@@ -5,7 +5,8 @@ const B = 'http://localhost:8899';
 (async () => {
   const b = await chromium.launch(); const anon = await b.newContext();
   for (const u of ['/wp-json/wp/v2/users', '/wp-json/wp/v2/users/1']) ok((await anon.request.get(B + u)).status() === 401, `sin sesión: ${u} → 401`);
-  ok((await anon.request.get(B + '/?author=1', { maxRedirects: 0 })).status() === 404, 'sin sesión: /?author=1 → 404 (no revela el usuario)');
+  const au = await anon.request.get(B + '/?author=1', { maxRedirects: 0 });
+  ok([404, 301].includes(au.status()) && !/author|sebas|admin/i.test(au.headers().location || '') && !/\/author\//.test(au.headers().location || ''), 'sin sesión: /?author=1 → 404 o portada (no revela el usuario) ' + au.status() + ' ' + (au.headers().location || ''));
   ok(!/wp-sitemap-users/.test(await (await anon.request.get(B + '/wp-sitemap.xml')).text()), 'mapa del sitio sin usuarios');
   ok((await anon.request.get(B + '/wp-json/wc/store/v1/products?per_page=1')).status() === 200, 'la tienda (Store API) sigue pública');
   const lg = await anon.newPage(); await lg.goto(B + '/wp-login.php'); await lg.fill('#user_login', 'sebas_ufoweb'); await lg.fill('#user_pass', 'mala'); await lg.click('#wp-submit'); await lg.waitForLoadState('load');
