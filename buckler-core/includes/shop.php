@@ -82,6 +82,10 @@ function bk_shop_assets() {
 	if ( ! ( is_shop() || is_product_taxonomy() || is_search() || is_page() ) ) {
 		return;
 	}
+	// Con Páginas limpias, solo en la ruta de la tienda (no en inicio, FAQ, cuenta…).
+	if ( function_exists( 'bk_pages_route' ) && bk_pages_route() && 'shop' !== bk_pages_route() ) {
+		return;
+	}
 	wp_enqueue_style( 'bk-shop', BK_URL . 'assets/css/shop.css', array( 'bk-core' ), bk_asset_ver( 'assets/css/shop.css' ) );
 	wp_enqueue_script( 'bk-shop', BK_URL . 'assets/js/shop.js', array( 'bk-core' ), bk_asset_ver( 'assets/js/shop.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
 }

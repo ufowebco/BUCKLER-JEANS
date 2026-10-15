@@ -69,3 +69,55 @@ function bk_plugin_folder_active( $folder ) {
 	}
 	return false;
 }
+
+/**
+ * srcset con los tamaños ya generados que tienen la misma proporción que $size (p. ej. 400, 600, 768, 800 px
+ * para fotos 2:3). Respaldo para cuando WordPress no lo genera (en producción algo lo quita en las fotos de
+ * producto) y el navegador terminaría bajando siempre la versión grande.
+ *
+ * @param int    $id   Adjunto.
+ * @param string $size Tamaño base.
+ * @param int    $max  Ancho máximo a incluir.
+ * @return string
+ */
+function bk_ratio_srcset( $id, $size, $max = 1300 ) {
+	$meta = wp_get_attachment_metadata( $id );
+	$base = image_get_intermediate_size( $id, $size );
+	if ( empty( $meta['sizes'] ) || empty( $base['width'] ) || empty( $base['height'] ) ) {
+		return '';
+	}
+	$ratio = $base['width'] / $base['height'];
+	$dir   = trailingslashit( dirname( (string) wp_get_attachment_url( $id ) ) );
+	$set   = array();
+	foreach ( $meta['sizes'] as $s ) {
+		if ( empty( $s['width'] ) || empty( $s['height'] ) || $s['width'] > $max || $s['width'] < 200 ) {
+			continue;
+		}
+		if ( abs( $s['width'] / $s['height'] - $ratio ) < 0.02 ) {
+			$set[ (int) $s['width'] ] = $dir . $s['file'] . ' ' . (int) $s['width'] . 'w';
+		}
+	}
+	ksort( $set );
+	return count( $set ) > 1 ? implode( ', ', $set ) : '';
+}
+
+/**
+ * Añade srcset/sizes a un <img> que no los trae.
+ *
+ * @param string $html  <img>.
+ * @param int    $id    Adjunto.
+ * @param string $size  Tamaño base.
+ * @param string $sizes Atributo sizes.
+ * @return string
+ */
+function bk_img_add_srcset( $html, $id, $size, $sizes ) {
+	if ( ! $html || false !== strpos( $html, ' srcset=' ) ) {
+		return $html;
+	}
+	$set = bk_ratio_srcset( $id, $size );
+	if ( ! $set ) {
+		return $html;
+	}
+	$html = preg_replace( '/\ssizes="[^"]*"/', '', $html );
+	return preg_replace( '/<img /', '<img srcset="' . esc_attr( $set ) . '" sizes="' . esc_attr( $sizes ) . '" ', $html, 1 );
+}

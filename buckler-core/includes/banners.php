@@ -87,9 +87,10 @@ function bk_link_url( $value ) {
  * @param int    $mo_id    Adjunto móvil (opcional; si falta se usa el de PC).
  * @param bool   $priority Primera imagen visible (LCP): carga inmediata y prioridad alta.
  * @param string $alt      Texto alternativo.
+ * @param string $sizes    Atributo sizes (100vw a ancho completo; 50vw para las dos líneas).
  * @return string
  */
-function bk_picture( $pc_id, $mo_id, $priority, $alt ) {
+function bk_picture( $pc_id, $mo_id, $priority, $alt, $sizes = '100vw' ) {
 	$mo_id = $mo_id ? $mo_id : $pc_id;
 	$mo    = wp_get_attachment_image_src( $mo_id, 'full' );
 	$pc    = wp_get_attachment_image_src( $pc_id, 'full' );
@@ -100,11 +101,12 @@ function bk_picture( $pc_id, $mo_id, $priority, $alt ) {
 	$source = '';
 	if ( $mo ) {
 		$source = sprintf(
-			'<source media="(max-width: %1$dpx)" srcset="%2$s" sizes="100vw" width="%3$d" height="%4$d">',
+			'<source media="(max-width: %1$dpx)" srcset="%2$s" sizes="%5$s" width="%3$d" height="%4$d">',
 			BK_BANNER_BREAKPOINT,
 			esc_attr( (string) wp_get_attachment_image_srcset( $mo_id, 'full' ) ?: $mo[0] ),
 			(int) $mo[1],
-			(int) $mo[2]
+			(int) $mo[2],
+			esc_attr( $sizes )
 		);
 	}
 
@@ -115,7 +117,7 @@ function bk_picture( $pc_id, $mo_id, $priority, $alt ) {
 		array(
 			'class'         => 'bk-banner__img',
 			'alt'           => $alt,
-			'sizes'         => '100vw',
+			'sizes'         => $sizes,
 			'loading'       => $priority ? 'eager' : 'lazy',
 			'fetchpriority' => $priority ? 'high' : 'auto',
 			'decoding'      => $priority ? 'sync' : 'async',
@@ -246,7 +248,7 @@ function bk_shortcode_lineas( $atts ) {
 			esc_attr( $key ),
 			esc_url( $line[1] ),
 			esc_attr( $line[0] ),
-			bk_picture( $pc_id ? $pc_id : $mo_id, $mo_id, false, '' )
+			bk_picture( $pc_id ? $pc_id : $mo_id, $mo_id, false, '', '50vw' ) // Las dos líneas van en una fila.
 		);
 	}
 	return $out ? '<nav class="bk-lineas" aria-label="' . esc_attr__( 'Líneas', 'buckler-core' ) . '">' . $out . '</nav>' : '';

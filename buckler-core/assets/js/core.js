@@ -216,10 +216,19 @@
 		};
 
 		const stop = () => { window.clearInterval(timer); timer = 0; };
+		// No rota hasta la primera interacción: la página carga quieta (mejor Speed Index y menos distracción).
+		let armed = false;
 		const start = () => {
 			stop();
-			if (!userPaused && !hovered && visible && !document.hidden) timer = window.setInterval(() => go(index + 1), delay);
+			if (armed && !userPaused && !hovered && visible && !document.hidden) timer = window.setInterval(() => go(index + 1), delay);
 		};
+		const arm = () => {
+			if (armed) return;
+			armed = true;
+			['pointermove', 'pointerdown', 'keydown', 'scroll', 'touchstart', 'wheel'].forEach((e) => window.removeEventListener(e, arm));
+			start();
+		};
+		['pointermove', 'pointerdown', 'keydown', 'scroll', 'touchstart', 'wheel'].forEach((e) => window.addEventListener(e, arm, { passive: true }));
 		const renderToggle = () => {
 			if (!toggle) return;
 			toggle.classList.toggle('is-paused', userPaused);

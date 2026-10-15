@@ -57,3 +57,15 @@ add_action(
 	},
 	99
 );
+
+// Simula el <head> de producción: snippets antiguos del tema (ocultar la página hasta load, grilla de Divi) y
+// Google Tag Manager. Con Páginas limpias, buckler-core quita los primeros y retrasa GTM hasta la interacción.
+add_action(
+	'wp_head',
+	static function () {
+		echo "<script>\n// 1. Ocultamos la página con una transición suave\ndocument.documentElement.style.opacity = '0';\nwindow.addEventListener('load', () => { document.documentElement.style.opacity = '1'; });\n</script>\n";
+		echo "<script>jQuery(document).ready(function($) { function cargarGrillaAjax(urlDestino) { return urlDestino; } });</script>\n";
+		echo "<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});w.bkGtmRan=1;})(window,document,'script','dataLayer','GTM-TEST');</script>\n";
+	},
+	20
+);

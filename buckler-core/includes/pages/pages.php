@@ -17,6 +17,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/speed.php';
+
 add_filter( 'template_include', 'bk_pages_template', 100000 );
 add_action( 'wp_enqueue_scripts', 'bk_pages_assets', 30 );
 add_action( 'wp_enqueue_scripts', 'bk_pages_diet', 9999 );
@@ -89,6 +91,9 @@ function bk_pages_template( $template ) {
 	if ( ! $route ) {
 		return $template;
 	}
+	// Emojis de WordPress: script y estilos que estas páginas no usan.
+	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+	remove_action( 'wp_print_styles', 'print_emoji_styles' );
 	if ( 'product' === $route ) {
 		bk_pdp_hooks();
 	}
@@ -173,7 +178,7 @@ function bk_pages_diet_route() {
 			// Formularios de dirección.
 			array( '#^(selectWoo|select2|wc-country-select|wc-address-i18n|wc-checkout|wc-custom-place-order-button)$#', $forms ),
 			array( '#^(woocommerce-general|woocommerce-layout|woocommerce-smallscreen)$#', $forms ),
-			array( '#^(jquery-blockui|wc-add-to-cart)$#', array( 'product', 'cart', 'checkout', 'account' ) ),
+			array( '#^(jquery-blockui|wc-add-to-cart|woocommerce|wc-js-cookie|js-cookie)$#', array( 'product', 'cart', 'checkout', 'account' ) ),
 			// Galería, pestañas y comentarios de Woo: la ficha tiene los suyos.
 			array( '#^(photoswipe|photoswipe-ui-default|photoswipe-default-skin|flexslider|zoom|wc-zoom|wc-flexslider|wc-photoswipe|wc-photoswipe-ui-default|wc-single-product|comment-reply)$#', array() ),
 			// Fragmentos del carrito (el contador usa la Store API) y medidor de contraseñas (zxcvbn, 800 KB).
@@ -631,16 +636,21 @@ function bk_pdp_gallery() {
 			<?php foreach ( $ids as $i => $id ) : ?>
 				<figure class="bk-pg__slide" id="bk-pg-<?php echo (int) $i; ?>">
 					<?php
-					$bk_img = wp_get_attachment_image(
+					$bk_img = bk_img_add_srcset(
+						wp_get_attachment_image(
+							$id,
+							'woocommerce_single',
+							false,
+							array(
+								'alt'           => bk_image_alt( $id, $i ? sprintf( '%s – foto %d', $name, $i + 1 ) : $name ),
+								'loading'       => $i ? 'lazy' : 'eager',
+								'fetchpriority' => $i ? 'auto' : 'high',
+								'sizes'         => '(max-width: 900px) 100vw, 50vw',
+							)
+						),
 						$id,
 						'woocommerce_single',
-						false,
-						array(
-							'alt'           => bk_image_alt( $id, $i ? sprintf( '%s – foto %d', $name, $i + 1 ) : $name ),
-							'loading'       => $i ? 'lazy' : 'eager',
-							'fetchpriority' => $i ? 'auto' : 'high',
-							'sizes'         => '(max-width: 900px) 100vw, 50vw',
-						)
+						'(max-width: 900px) 100vw, 50vw'
 					);
 					// Fotos 2..n: se descargan solo cuando la persona se acerca a ellas (pages.js). El navegador
 					// trataría la carga diferida nativa como "cerca" en un carrusel horizontal y las bajaría todas.

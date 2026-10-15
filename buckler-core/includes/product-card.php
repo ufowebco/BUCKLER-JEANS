@@ -114,7 +114,7 @@ function bk_product_card( $product, $args = array() ) {
 		if ( 0 === $i && $args['eager'] ) {
 			$attrs['fetchpriority'] = 'high';
 		}
-		$html = wp_get_attachment_image( $id, 'woocommerce_thumbnail', false, $attrs );
+		$html = bk_img_add_srcset( wp_get_attachment_image( $id, 'woocommerce_thumbnail', false, $attrs ), $id, 'woocommerce_thumbnail', $attrs['sizes'] );
 		if ( $i > 0 ) {
 			// Diferir: src → data-bk-src, srcset → data-bk-srcset.
 			$html = preg_replace( '/\ssrc="([^"]+)"/', ' src="' . $blank . '" data-bk-src="$1"', $html, 1 );

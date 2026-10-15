@@ -35,7 +35,8 @@ echo bk_pages_clean_head( (string) ob_get_clean() ); // phpcs:ignore WordPress.S
 </body>
 </html>
 <?php
+$bk_html = bk_pages_optimize_html( (string) ob_get_clean(), $bk_route );
 if ( function_exists( 'bk_cache_headers' ) ) {
 	bk_cache_headers();
 }
-ob_end_flush();
+echo $bk_html; // phpcs:ignore WordPress.Security.EscapeOutput -- documento completo ya escapado al generarse.

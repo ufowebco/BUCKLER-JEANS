@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.12.1 → `dist/buckler-core-0.12.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.13.0 → `dist/buckler-core-0.13.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -244,6 +244,20 @@ Versión actual 0.12.1 → `dist/buckler-core-0.12.1.zip` (`tools/build-plugin.s
     si existe; respaldo: shortcode `[wp_social_ninja id="3143" platform="reviews"]` (`reviews_template`). **Esquema
     supuesto, verificado en producción con 0.12.0: 78 reseñas, 5,0.** Shortcode `[bk_resenas]`. En ficha y carrito.
     0.12.1: `bk_review_original_text()` quita la traducción automática "(Translated by Google) …" / usa "(Original)".
+- **0.13.0 (velocidad, PageSpeed del cliente: 49 escritorio; LCP 3,3 s, SI 8,5 s, TBT 540 ms):** hallazgos en el HTML
+  real: snippet del tema que ponía `documentElement.style.opacity = '0'` hasta `load` (o 1,5 s), 8 snippets jQuery del
+  diseño Divi, stub "jQuery diferido" de Divi, GTM + gtag G-BR4MXPY7HS, AdsAgent (`frontendInjection.js`, Azure),
+  Rapyd/Bold externos y select2 en todas las páginas, fotos de tarjetas **sin srcset** (algo lo quita en producción;
+  bajaban 600×900 para 300 px). `includes/pages/speed.php`: `bk_pages_optimize_html()` sobre el documento completo
+  (document.php: optimizar → `bk_cache_headers()` → echo): quita snippets por firma (`bk_legacy_snippets`), stub de
+  Divi, pasarelas externas fuera de checkout, select2 fuera de formularios; retrasa analítica/píxeles/AdsAgent hasta
+  la primera interacción (`type="text/bk-delay"`, cargador `#bk-delay` en orden; `bk_delay_patterns`;
+  `bk_config('delay_trackers') === false` lo apaga; nunca en checkout); quita jQuery en home/shop/faq/policy/404 si
+  ningún script restante lo usa (`bk_pages_maybe_drop_jquery`, lista `bk_vanilla_scripts`). Hero y barra de anuncios
+  no rotan hasta la primera interacción. `bk_ratio_srcset()`/`bk_img_add_srcset()` (helpers) en tarjetas y galería.
+  Líneas con sizes 50vw. shop.js solo en la ruta shop. Sin emojis de WP. `woocommerce`/js-cookie/blockUI solo en
+  ficha/carrito/checkout/cuenta. Fixtures locales simulan los snippets + GTM. Lighthouse desde este entorno no llega a
+  Google (proxy): medir GTM real solo con PageSpeed del cliente. Novamira no carga nada en el front.
   - Promo "Califícanos en Google y gana 10 %" (`review_promo` on/incentive/discount, `review_url` =
     g.page/r/CRGTFeM2O9V5EAE/review): bloque de reseñas, gracias, Mi cuenta y anuncio de la barra. **Aviso dado al
     cliente: Google prohíbe reseñas incentivadas**; `incentive => false` deja solo la invitación.
@@ -307,7 +321,7 @@ Versión actual 0.12.1 → `dist/buckler-core-0.12.1.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 82 = 296 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 89 = 303 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

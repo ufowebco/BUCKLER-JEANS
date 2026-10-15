@@ -61,7 +61,10 @@
 		let rt = 0;
 		window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(build, 150); }, { passive: true });
 		build();
-		run();
+		// Empieza a rotar con la primera interacción (la página carga quieta).
+		const EV = ['pointermove', 'pointerdown', 'keydown', 'scroll', 'touchstart', 'wheel'];
+		const arm = () => { EV.forEach((e) => window.removeEventListener(e, arm)); run(); };
+		EV.forEach((e) => window.addEventListener(e, arm, { passive: true }));
 	}
 
 	/* --- Altura del header para elementos pegajosos (barra de filtros, etc.) --- */
