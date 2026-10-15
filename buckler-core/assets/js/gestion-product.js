@@ -46,10 +46,10 @@
 			let d;
 			if (sub[0] === 'editar' && /^\d+$/.test(sub[1] || '')) d = await api(`products/${sub[1]}/form`);
 			else if (sub[0] === 'nuevo' && /^\d+$/.test(params.get('desde') || '')) d = await api(`products/${params.get('desde')}/form?twin=1`);
-			else if (sub[0] === 'nuevo') d = { id: 0, name: '', sku: '', line: '', cats: [], is_new: true, status: 'publish', short: '', description: '', regular: '', sale: '', mixed: false, sizes: {}, images: [], video: null };
+			else if (sub[0] === 'nuevo') d = { id: 0, name: '', sku: '', line: '', cats: [], all_cats: [], is_new: true, status: 'publish', short: '', description: '', regular: '', sale: '', mixed: false, sizes: {}, images: [], video: null };
 			else { location.hash = '#productos'; return; }
 			if (seq !== A.seq()) return;
-			st = { ...d, images: [...d.images], uploading: 0, origRegular: d.regular, origSale: d.sale };
+			st = { ...d, all_cats: [...(d.all_cats || [])], images: [...d.images], uploading: 0, origRegular: d.regular, origSale: d.sale };
 			render();
 			dirty = false;
 		} catch (e) { main.innerHTML = `<p class="bk-g-error">${esc(e.message)}</p>`; }
@@ -72,6 +72,20 @@
 		const line = meta.lines[st.line];
 		if (!line) return '<p class="bk-g-hint">Elige primero la línea.</p>';
 		return line.cats.length ? `<div class="bk-gp-chips">${line.cats.map((c) => `<label class="bk-gp-chip"><input type="checkbox" name="cats" value="${c.id}" ${st.cats.includes(c.id) ? 'checked' : ''}><span>${esc(c.name)}</span></label>`).join('')}</div>` : '<p class="bk-g-hint">Esta línea no tiene prendas (subcategorías).</p>';
+	};
+
+	// Todas las categorías de la tienda (árbol). Se sincroniza con "Prenda" y con la línea.
+	const treeHtml = () => `<details class="bk-gp-tree"><summary>Todas las categorías <small>(${st.all_cats.length} marcadas)</small></summary>
+		<p class="bk-g-hint">Marca o desmarca cualquier categoría de la tienda. "Nuevo" y "¡Sale!" también se ajustan solos al cambiar el interruptor Nuevo o el precio rebajado.</p>
+		<ul>${meta.allCats.map((c) => `<li style="--d:${c.depth}"><label class="bk-gp-tcat"><input type="checkbox" name="all_cats" value="${c.id}" ${st.all_cats.includes(c.id) ? 'checked' : ''}><span>${esc(c.name)}</span><small>${c.count}</small></label></li>`).join('')}</ul></details>`;
+	const setTree = (id, on) => {
+		const i = st.all_cats.indexOf(id);
+		if (on && i < 0) st.all_cats.push(id);
+		if (!on && i >= 0) st.all_cats.splice(i, 1);
+		const box = document.querySelector(`#bk-gp [name="all_cats"][value="${id}"]`);
+		if (box) box.checked = on;
+		const sum = document.querySelector('#bk-gp .bk-gp-tree summary small');
+		if (sum) sum.textContent = `(${st.all_cats.length} marcadas)`;
 	};
 
 	const imagesHtml = () => `<ul class="bk-gp-imgs" aria-label="Fotos del producto">
@@ -121,6 +135,7 @@
 							${isEdit ? `<p class="bk-gp-static">${esc(lines[st.line]?.label || 'Sin línea')}</p>` : `<div class="bk-gp-lines">${Object.entries(lines).map(([k, l]) => `<label class="bk-gp-line"><input type="radio" name="line" value="${k}" ${st.line === k ? 'checked' : ''} required><span><b>${esc(l.label)}</b><small>${esc(l.note)}</small></span></label>`).join('')}</div>`}
 						</fieldset>
 						<fieldset class="bk-gp-field" data-field="cats"><legend>Prenda</legend><div id="bk-gp-cats">${catsHtml()}</div></fieldset>
+						<div id="bk-gp-tree">${treeHtml()}</div>
 						<label class="bk-g-switch"><input type="checkbox" name="is_new" ${st.is_new ? 'checked' : ''}><span>Mostrar como <b>Nuevo</b> (etiqueta y sección "Lo nuevo")</span></label>
 					</section>
 					<section class="bk-g-card" data-field="images"><h2>Fotos y video</h2>
@@ -228,7 +243,7 @@
 		if (bad) { showErr(...bad); return; }
 		$('.bk-g-formerr', f).hidden = true;
 		const body = {
-			name: st.name, sku: st.sku, line: st.line, cats: st.cats, is_new: st.is_new, status,
+			name: st.name, sku: st.sku, line: st.line, cats: st.cats, all_cats: st.all_cats, is_new: st.is_new, status,
 			short: st.short, description: cleanHtml($('#bk-gp-desc').innerHTML),
 			regular: st.regular, sale: st.sale,
 			prices: !st.id || st.regular !== digits(st.origRegular) || st.sale !== digits(st.origSale),
@@ -238,12 +253,13 @@
 			try {
 				const d = await api(st.id ? `products/${st.id}/form` : 'products', { method: 'POST', body });
 				dirty = false;
+				A.forget?.('products');
 				if (!st.id) {
 					toast(status === 'publish' ? 'Producto publicado' : 'Borrador guardado');
 					location.hash = `#productos/editar/${d.id}`;
 					return;
 				}
-				st = { ...d, images: [...d.images], uploading: 0, origRegular: d.regular, origSale: d.sale };
+				st = { ...d, all_cats: [...(d.all_cats || [])], images: [...d.images], uploading: 0, origRegular: d.regular, origSale: d.sale };
 				render();
 				toast('Cambios guardados');
 			} catch (e) {
@@ -327,12 +343,22 @@
 		dirty = true;
 		const t = e.target;
 		if (t.name === 'line') {
+			const prev = [...st.cats];
+			Object.values(meta.lines).forEach((l) => setTree(l.term, false));
+			prev.forEach((id) => setTree(id, false));
 			readForm();
+			setTree(meta.lines[st.line].term, true);
 			st.cats = [];
 			st.sizes = {};
 			$('#bk-gp-cats').innerHTML = catsHtml();
 			$('#bk-gp-sizes').innerHTML = sizesHtml();
 			$('#bk-gp-sku-h').textContent = meta.lines[st.line].suffix ? `En ${meta.lines[st.line].label} la REF termina en${meta.lines[st.line].suffix} (ej.: 816${meta.lines[st.line].suffix}).` : 'Debe ser única. El mismo modelo en Curvy lleva PLUS al final.';
+		}
+		if (t.name === 'cats') setTree(Number(t.value), t.checked);
+		if (t.name === 'all_cats') {
+			setTree(Number(t.value), t.checked);
+			const chip = f.querySelector(`[name="cats"][value="${t.value}"]`);
+			if (chip) chip.checked = t.checked;
 		}
 		if (t.name === 'size_on') {
 			const stock = f[`stock_${t.value}`];

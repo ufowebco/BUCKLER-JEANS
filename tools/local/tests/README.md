@@ -7,7 +7,7 @@ Rutas asumidas: `BK_LOCAL=/tmp/claude-0/bk-local` (ajustar en los scripts si cam
 php tools/local/tests/seed-cards.php     # galerías, destacado, oferta, talla agotada
 php tools/local/tests/seed-shop.php      # ~60 productos con nombres/precios/categorías reales
 php tools/local/tests/seed-orders.php    # pedidos de ejemplo, usuaria "gestora" (rol Gestor de tienda)
-cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas; do NODE_PATH=$(npm root -g) node $t.js; done
+cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16; do NODE_PATH=$(npm root -g) node $t.js; done
 ```
 
 | Suite | Qué prueba | Comprobaciones |
@@ -22,4 +22,5 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `tienda-paginas.js` | Tienda pintada por buckler-core en tienda, líneas, ¡Sale!, Lo nuevo y búsqueda (un H1); enlaces de prendas por filtro en header/footer | 13 |
 | `paginas.js` | Páginas limpias (módulo `pages`, antes `php seed-pages.php`): inicio (líneas en una fila), menú Tienda visible, carrito flotante, buscador en vivo, migas + BreadcrumbList, ficha (tallas accesibles, gemelo), carrito (− / + con actualización automática, sugerencias), compra real hasta "Gracias" (promo), barra verde (3/1 anuncios, sellos), reseñas de Google, video automático, fotos diferidas, caché y dieta, mi cuenta (acceso y panel), FAQ + JSON-LD, política, móvil | 100 |
 | `adminmenu.js` | Administrador del menú (antes `php seed-adminmenu.php`): diseño 200 px y colores, foco, contraído, celular, reordenar (teclado y arrastrar), ocultar, encabezado/separador, submenú, por usuario y restablecer, restricción de IA/buckler-core (403 en URL y acciones), logo (pestaña nueva, sin deformar), listado de usuarios sin ID | 34 |
+| `gestion16.js` | Gestión 0.16: API rápida (X-Bk-Fast), carga diferida, menú (sin Ajustes), pedidos sin Consecutivo, Pago confirmado (lista, filtro, detalle), impresión (hoja, varios, sin sesión, marco oculto, marca Impreso), historial (panel, notas antiguas, cambios externos), archivos ACF (subir PDF, quitar, formato ACF), todas las categorías, saltos de línea, Carritos, Correos (vista previa Woo/propios, prueba), contador de visitas (robots/equipo excluidos, origen, campaña, sin cookies), etiquetas y SEO técnico, selectores y dataLayer, móvil | 61 |
 | `seguridad.js` | Nombres de usuario ocultos a visitantes: REST de usuarios 401, ?author 404, sin sitemap de usuarios, Store API pública, error de acceso genérico, editor con sesión intacto | 7 |

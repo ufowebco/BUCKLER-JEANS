@@ -49,3 +49,9 @@ lucide:rotate-ccw
 lucide:volume-x
 flag:co-4x3
 simple-icons:google
+lucide:printer
+lucide:shopping-cart
+lucide:bar-chart-3
+lucide:refresh-cw
+lucide:send
+lucide:eye

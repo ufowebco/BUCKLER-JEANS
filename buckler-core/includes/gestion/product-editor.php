@@ -130,7 +130,9 @@ function bk_gp_sizes( $line ) {
 function bk_gp_form_meta() {
 	$lines = array();
 	foreach ( (array) bk_config( 'lines' ) as $slug => $l ) {
+		$lt             = bk_gp_term( $slug );
 		$lines[ $slug ] = array(
+			'term'   => $lt ? $lt->term_id : 0,
 			'label'  => $l['label'],
 			'note'   => $l['sizes'],
 			'suffix' => $l['sku_suffix'] ?? '',
@@ -141,10 +143,49 @@ function bk_gp_form_meta() {
 	return rest_ensure_response(
 		array(
 			'lines'    => $lines,
+			'allCats'  => bk_gp_cat_tree(),
 			'maxImage' => bk_gp_max_size( 'image' ),
 			'maxVideo' => bk_gp_max_size( 'video' ),
 		)
 	);
+}
+
+/**
+ * Todas las categorías de producto en árbol (padre seguido de sus hijas), para el editor.
+ *
+ * @return array<int,array{id:int,name:string,depth:int,parent:int,count:int}>
+ */
+function bk_gp_cat_tree() {
+	$terms = get_terms( array( 'taxonomy' => 'product_cat', 'hide_empty' => false, 'orderby' => 'name' ) );
+	$terms = is_array( $terms ) ? $terms : array();
+	$by    = array();
+	foreach ( $terms as $t ) {
+		$by[ (int) $t->parent ][] = $t;
+	}
+	$out  = array();
+	$walk = static function ( $parent, $depth ) use ( &$walk, &$out, $by ) {
+		foreach ( $by[ $parent ] ?? array() as $t ) {
+			$out[] = array( 'id' => (int) $t->term_id, 'name' => bk_nice_label( $t->name ), 'depth' => $depth, 'parent' => (int) $t->parent, 'count' => (int) $t->count );
+			$walk( (int) $t->term_id, $depth + 1 );
+		}
+	};
+	$walk( 0, 0 );
+	return $out;
+}
+
+/**
+ * Descripción para el editor: si es texto con saltos de línea (sin párrafos HTML), se convierte en
+ * párrafos y <br> como lo hace WordPress al mostrarla (wpautop). Así el editor muestra los saltos.
+ *
+ * @param string $html Descripción guardada.
+ * @return string
+ */
+function bk_gp_desc_for_editor( $html ) {
+	$html = (string) $html;
+	if ( '' === trim( $html ) || preg_match( '#<(p|ul|ol|h[1-6]|div|table|blockquote)[\s>]#i', $html ) ) {
+		return $html;
+	}
+	return wpautop( $html );
 }
 
 /**
@@ -233,7 +274,8 @@ function bk_gp_data( $p ) {
 		'is_new'      => $p->is_featured(),
 		'status'      => $p->get_status( 'edit' ),
 		'short'       => $p->get_short_description( 'edit' ),
-		'description' => $p->get_description( 'edit' ),
+		'description' => bk_gp_desc_for_editor( $p->get_description( 'edit' ) ),
+		'all_cats'    => array_map( 'intval', $p->get_category_ids( 'edit' ) ),
 		'regular'     => $first[0],
 		'sale'        => $first[1] ?? '',
 		'mixed'       => count( array_unique( $prices ) ) > 1,
@@ -280,6 +322,7 @@ function bk_gp_get( WP_REST_Request $r ) {
 				'from'   => $d['id'],
 				'line'   => $other,
 				'cats'   => $cats,
+				'all_cats' => array_values( array_filter( array_merge( array( bk_gp_term( $other ) ? bk_gp_term( $other )->term_id : 0 ), $cats ) ) ),
 				'sku'    => $base . ( $lines[ $other ]['sku_suffix'] ?? '' ),
 				'status' => 'draft',
 				'sizes'  => (object) array(),
@@ -415,6 +458,17 @@ function bk_gp_save( $p, WP_REST_Request $r ) {
 		$t = get_term( $cid, 'product_cat' );
 		if ( $t instanceof WP_Term && (int) $t->parent === (int) $lterm->term_id ) {
 			$cats[] = $t->term_id;
+		}
+	}
+
+	// Todas las categorías (sección "Todas las categorías" del editor): manda lo que se marcó ahí.
+	if ( is_array( $r['all_cats'] ) ) {
+		$keep = array();
+		foreach ( array_map( 'absint', $r['all_cats'] ) as $cid ) {
+			$t = $cid ? get_term( $cid, 'product_cat' ) : null;
+			if ( $t instanceof WP_Term ) {
+				$keep[] = $t->term_id;
+			}
 		}
 	}
 

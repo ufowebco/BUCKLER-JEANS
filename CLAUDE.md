@@ -131,10 +131,10 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
 ## buckler-core (plugin propio)
 **Módulos (Ajustes → Buckler Core, `includes/modules.php`)**: todo APAGADO al instalar; `bk_on('clave')`;
 cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa clase). Claves: layout,
-clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu. `define('BK_MODULES_ALL', true)` enciende todo
+clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.15.1 → `dist/buckler-core-0.15.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.16.0 → `dist/buckler-core-0.16.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -285,7 +285,7 @@ Versión actual 0.15.1 → `dist/buckler-core-0.15.1.zip` (`tools/build-plugin.s
     `bk_p{id}`. Tras `*` se programa `bk_cache_warm` (+45 s): inicio, tienda, Lo nuevo, líneas, ¡Sale!, FAQ y 16
     productos recientes (≤50 s, UA móvil).
   - Local: `tools/local/router.php` para `php -S` (imita el .htaccess: /llms.txt y 404 pasan por WP; estáticos que
-    faltan → 404). Arranque: `php -S localhost:8899 -t site /home/user/BUCKLER-JEANS/tools/local/router.php`.
+    faltan → 404). Arranque: `PHP_CLI_SERVER_WORKERS=6 php -S localhost:8899 -t site /home/user/BUCKLER-JEANS/tools/local/router.php`.
     Fixtures simulan el soft 404.
 - **0.14.1:** fotos de ficha "ampliadas" (p. ej. /producto/chaqueta-dama/): **Divi mete en el srcset sus recortes
   16:9** (`et-pb-image--responsive--*`, 980×551 / 480×270) y el navegador los elegía para fotos 2:3. `bk_img_add_srcset()`
@@ -334,6 +334,45 @@ Versión actual 0.15.1 → `dist/buckler-core-0.15.1.zip` (`tools/build-plugin.s
     en `bk_catalog_flushed` (nuevo action de bk_catalog_flush), save_post, ACF, módulos, menús, ajustes Woo; si no hay
     respuesta HTTP (cron) queda `bk_cache_purge_pending` para la siguiente. Botón "Vaciar caché de páginas" en
     Ajustes → Buckler Core. WordPress corta las peticiones HEAD antes de la plantilla (probar con GET).
+- **0.16.0 — ronda gestion-tienda (10 puntos, 2026-10-15):**
+  - Velocidad: `includes/fast-rest.php` instala el mu-plugin `bk-fast-rest.php` (con módulos gestion o stats; se quita al
+    apagarlos/desactivar; `define('BK_FAST_REST', false)` lo anula): en GET `bk/v1/gestion/(summary|orders|products|
+    product-form|abandoned|seo/visits)` y POST `bk/v1/hit` solo carga WooCommerce, buckler-core, ACF y plugins de
+    número/estado de pedido (filtro `bk_fast_rest_keep`). Las escrituras cargan todo. Cabecera `X-Bk-Fast: 1` para
+    verificar. Resumen con 1 consulta en HPOS (`bk_g_sum_orders`) y conteos con paginate; resumen dentro de la página
+    (`bkG.boot.summary`); JS con caché en memoria (stale-while-revalidate), detalle precargado al pasar el cursor;
+    `gestion-product.js` y `gestion-extra.js` se cargan bajo demanda (`bkG.js`).
+  - Pedidos: sin columna Consecutivo (se busca igual y sale en detalle/impresión); checks por `data-flag`
+    (paid_ok|printed|dispatched); **Pago confirmado** = campo `pago` de `bk_g_fields()` (`_bk_pago_confirmado`, 'yes'/'no')
+    con filtro; botón Imprimir al final. Impresión: `/gestion-tienda/?imprimir=ID[,ID]` (`bk_g_print_render`, A4/carta,
+    `&auto=1` imprime solo); en escritorio iframe oculto, en celular pestaña; imprimir marca Impreso.
+  - Historial (`includes/gestion/orders-extra.php`): meta `_bk_history` (≤80 eventos {t, ev, v, by, via}) desde
+    `woocommerce_order_status_changed` (cualquier origen) + checks, guía (`guia`) y archivos; pedidos viejos: estados
+    leídos de las notas ("Order status changed from…"/"Estado del pedido cambiado de…"). `bk_g_history()`.
+  - Archivos ACF `archivos_adjuntos`: `bk_g_files()` lee todas las filas/subcampos (ID, URL o texto; respaldo postmeta),
+    siempre visible; subir (PDF/JPG/PNG/WebP ≤15 MB, `POST orders/{id}/files`) y quitar (`/files/delete`, reordena) con
+    formato ACF (`{n}`, `{n}_{i}_{sub}` y claves `_…` si ACF está activo; subcampo de tipo file/image de la definición).
+  - Productos: sección "Todas las categorías" (árbol `allCats` de `product-form`, `all_cats` en la ficha) sincronizada
+    con Prenda y línea; si llega `all_cats` manda eso (+ línea + prendas); Nuevo/Sale siguen ajustándose solo si cambian.
+    Descripción: `bk_gp_desc_for_editor()` aplica wpautop si es texto plano (los saltos no se veían en el editor; el
+    front ya los mostraba).
+  - Ajustes fuera del menú (sigue en `#ajustes` para admin, enlace al pie); su tarjeta de correo pasó a Correos.
+  - **Carritos** (`GET gestion/abandoned`), **Correos** (`includes/gestion/emails.php`: correos de pedido de Woo con
+    WC_Email clonado sin trigger + guía + 3 de carrito; vista previa con pedido elegido y prueba "[Prueba]", 20/h),
+    **SEO y ADS** (`includes/gestion/seo-ads.php`): visitas (módulo stats), etiquetas (lee el HTML público de inicio,
+    tienda y un producto + `gtm.js` del contenedor; detecta GTM, GA4, Ads, píxel de Meta y duplicados, eventos fbq/gtag/
+    dataLayer, compras con `_meta_purchase_tracked*`/atribución de 30 días, SEO técnico, robots/sitemap/llms/feeds;
+    transitorio `bk_gs_tags` 6 h) y clases/eventos rastreables.
+  - Módulo **stats** (`includes/stats.php`): script inline `#bk-stats` en wp_footer → `sendBeacon` a `POST bk/v1/hit`
+    (sin cookies; omite `navigator.webdriver`, robots por UA y usuarios del equipo vía cookie logged_in). Tablas
+    `{prefix}bk_stats` (day, kind total|page|src|device|city|camp|landing, k, views, visitors) y `{prefix}bk_stats_seen`
+    (day, h = sha256(IP|UA|sal del mes)[0..16]); sal `bk_stats_salt_Ym` (la anterior se borra). Limpieza diaria (AS).
+    Ciudades: base DB-IP Lite en `uploads/bk-geo/city.mmdb` (botón de admin, descarga en segundo plano, renovación
+    mensual; MaxMind\Db\Reader de Woo). Sin base → solo ciudades de compra (pedidos). Desde este entorno db-ip.com da 403.
+  - dataLayer (`window.bkTrack` en layout.js; sidecart.js): bk_add_to_cart (ecommerce GA4), bk_begin_checkout,
+    bk_select_item, bk_search, bk_whatsapp_click, bk_size_select, bk_size_guide_open, bk_other_line_click,
+    bk_review_click, bk_banner_click.
+  - Suite `gestion16.js` (61). Servidor local con `PHP_CLI_SERVER_WORKERS=6` (la revisión de etiquetas se pide a sí misma).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -378,7 +417,7 @@ Versión actual 0.15.1 → `dist/buckler-core-0.15.1.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7 = 355 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61 = 416 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

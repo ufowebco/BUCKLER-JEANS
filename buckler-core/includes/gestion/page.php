@@ -96,6 +96,13 @@ function bk_g_render() {
 	if ( ! bk_g_can() ) {
 		wp_die( esc_html__( 'No tienes permiso para ver la gestión de la tienda.', 'buckler-core' ), esc_html__( 'Sin permiso', 'buckler-core' ), array( 'response' => 403 ) );
 	}
+	// Hoja de impresión de uno o varios pedidos: /gestion-tienda/?imprimir=123[,124].
+	if ( isset( $_GET['imprimir'] ) && function_exists( 'bk_g_print_render' ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		bk_g_print_render( explode( ',', sanitize_text_field( wp_unslash( $_GET['imprimir'] ) ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
+	}
+	$ver = static fn( $f ) => esc_url( BK_URL . $f . '?v=' . bk_asset_ver( $f ) );
+	// El resumen va dentro de la página si ya está calculado (cero esperas al abrir).
+	$summary = get_transient( 'bk_g_summary' );
 
 	$cfg = array(
 		'api'      => esc_url_raw( rest_url( 'bk/v1/gestion/' ) ),
@@ -111,6 +118,12 @@ function bk_g_render() {
 		'user'     => wp_get_current_user()->display_name,
 		'logout'   => wp_logout_url( home_url( '/' . BK_G_SLUG . '/' ) ),
 		'site'     => home_url( '/' ),
+		'printUrl' => esc_url_raw( home_url( '/' . BK_G_SLUG . '/' ) ) . '?imprimir=',
+		'js'       => array(
+			'product' => html_entity_decode( $ver( 'assets/js/gestion-product.js' ) ),
+			'extra'   => html_entity_decode( $ver( 'assets/js/gestion-extra.js' ) ),
+		),
+		'boot'     => array( 'summary' => is_array( $summary ) ? $summary : null ),
 		'icons'    => array_map( static fn( $n ) => bk_icon_svg( $n, 20 ), array(
 			'home'    => 'lucide:package',
 			'orders'  => 'lucide:shopping-bag',
@@ -131,9 +144,15 @@ function bk_g_render() {
 			'right'   => 'lucide:chevron-right',
 			'trash'   => 'lucide:trash-2',
 			'open'    => 'lucide:external-link',
+			'print'   => 'lucide:printer',
+			'cart'    => 'lucide:shopping-cart',
+			'mail'    => 'lucide:mail',
+			'chart'   => 'lucide:bar-chart-3',
+			'refresh' => 'lucide:refresh-cw',
+			'send'    => 'lucide:send',
+			'eye'     => 'lucide:eye',
 		) ),
 	);
-	$ver = static fn( $f ) => esc_url( BK_URL . $f . '?v=' . bk_asset_ver( $f ) );
 	?>
 <!doctype html>
 <html lang="es-CO">
@@ -149,7 +168,6 @@ function bk_g_render() {
 <div id="bk-g-app" class="bk-g-app"><p class="bk-g-boot"><?php esc_html_e( 'Cargando…', 'buckler-core' ); ?></p></div>
 <script>window.bkG = <?php echo wp_json_encode( $cfg ); ?>;</script>
 <script src="<?php echo $ver( 'assets/js/gestion.js' ); // phpcs:ignore ?>" defer></script>
-<script src="<?php echo $ver( 'assets/js/gestion-product.js' ); // phpcs:ignore ?>" defer></script>
 </body>
 </html>
 	<?php

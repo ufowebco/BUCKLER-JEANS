@@ -5,6 +5,34 @@
 (() => {
 	'use strict';
 
+	/* --- Seguimiento para Google Tag Manager (dataLayer) --------------------------------------
+	 * Eventos propios con prefijo bk_ (no chocan con los de otros plugins). GTM los recibe aunque cargue
+	 * después (cola de dataLayer). Lista completa en Gestión de tienda → SEO y ADS. */
+	window.bkTrack = window.bkTrack || ((event, data = {}) => {
+		window.dataLayer = window.dataLayer || [];
+		if (data.ecommerce) window.dataLayer.push({ ecommerce: null });
+		window.dataLayer.push({ event, ...data });
+	});
+	const txt = (el) => (el?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 100);
+	document.addEventListener('click', (e) => {
+		const a = e.target.closest('a, button');
+		if (!a) return;
+		const href = a.getAttribute('href') || '';
+		if (/wa\.me|whatsapp\.com/.test(href)) window.bkTrack('bk_whatsapp_click', { link_url: href, link_text: txt(a) });
+		else if (a.matches('.bk-card__link')) window.bkTrack('bk_select_item', { item_name: txt(a.closest('.bk-card')?.querySelector('.bk-card__title')), link_url: href });
+		else if (a.matches('.bk-pdp__guide')) window.bkTrack('bk_size_guide_open');
+		else if (a.matches('.bk-size')) window.bkTrack('bk_size_select', { size: txt(a) });
+		else if (a.matches('.bk-pdp__twin')) window.bkTrack('bk_other_line_click', { link_url: href });
+		else if (a.closest('.bk-promo, .bk-mega__card.is-review') || /g\.page\/r\/|google\.com\/maps.*review/.test(href)) window.bkTrack('bk_review_click', { link_url: href });
+		else if (a.matches('.bk-sc__btn--primary, .checkout-button, a[href*="finalizar-compra"], a[href*="/checkout"]')) window.bkTrack('bk_begin_checkout', { link_url: href });
+		else if (a.closest('.bk-hero')) window.bkTrack('bk_banner_click', { link_url: href, banner: 'hero' });
+		else if (a.closest('.bk-lineas')) window.bkTrack('bk_banner_click', { link_url: href, banner: 'lineas' });
+	}, { passive: true });
+	document.addEventListener('submit', (e) => {
+		const f = e.target;
+		if (f.matches?.('.bk-search, [role="search"]')) window.bkTrack('bk_search', { search_term: (new FormData(f).get('s') || '').toString().slice(0, 100) });
+	});
+
 	const header = document.querySelector('[data-bk-header]');
 	if (!header) return;
 

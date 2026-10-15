@@ -10,6 +10,7 @@
  *   consecutivo: meta del consecutivo actual (vacío = no se muestra)
  *   impreso:     meta del check "Impreso"
  *   despachado:  meta del check "Despachado"
+ *   pago:        meta del check "Pago confirmado" (propio: _bk_pago_confirmado)
  *   cedula:      metas donde se guarda la cédula (para buscar)
  *   adjuntos:    repeater ACF de archivos del pedido (archivos_adjuntos)
  *
@@ -19,6 +20,18 @@
 defined( 'ABSPATH' ) || exit;
 
 add_action( 'rest_api_init', 'bk_g_routes' );
+// Verificable desde el navegador: X-Bk-Fast: 1 cuando la API rápida cargó solo WooCommerce y buckler-core.
+add_filter(
+	'rest_post_dispatch',
+	static function ( $res, $server, $request ) {
+		if ( defined( 'BK_FAST_REST_ON' ) && $res instanceof WP_REST_Response && 0 === strpos( $request->get_route(), '/bk/v1/' ) ) {
+			$res->header( 'X-Bk-Fast', '1' );
+		}
+		return $res;
+	},
+	10,
+	3
+);
 
 /**
  * ¿Puede usar el dashboard?
@@ -41,6 +54,7 @@ function bk_g_fields() {
 		'consecutivo' => '_wcdn_invoice_number',
 		'impreso'     => '_impreso_status',
 		'despachado'  => '_despachado_status',
+		'pago'        => '_bk_pago_confirmado',
 		'cedula'      => array( '_billing_id', 'billing_id', 'billing_cedula', '_billing_cedula', 'cedula', '_cedula', 'billing_document', '_billing_document', 'billing_nit', '_billing_nit', 'billing_dni', '_billing_dni' ),
 		'adjuntos'    => 'archivos_adjuntos',
 	);
@@ -136,6 +150,30 @@ const BK_G_TRUE = array( '1', 'yes', 'true', 'si', 'sí', 'on' );
  * ------------------------------------------------------------------------- */
 
 /**
+ * Total y número de pedidos pagados desde una fecha con UNA consulta (solo HPOS: tabla wc_orders).
+ * Sin HPOS devuelve null y se usa el recorrido normal.
+ *
+ * @param string[] $statuses Estados con prefijo wc-.
+ * @param int      $from     Timestamp.
+ * @return array{total:float,count:int}|null
+ */
+function bk_g_sum_orders( $statuses, $from ) {
+	global $wpdb;
+	if ( ! class_exists( \Automattic\WooCommerce\Utilities\OrderUtil::class ) || ! \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled() ) {
+		return null;
+	}
+	$table = $wpdb->prefix . 'wc_orders';
+	$ph    = implode( ',', array_fill( 0, count( $statuses ), '%s' ) );
+	$row   = $wpdb->get_row( // phpcs:ignore WordPress.DB
+		$wpdb->prepare(
+			"SELECT COUNT(*) AS c, COALESCE(SUM(total_amount),0) AS t FROM {$table} WHERE type = 'shop_order' AND status IN ({$ph}) AND date_created_gmt >= %s", // phpcs:ignore WordPress.DB
+			array_merge( $statuses, array( gmdate( 'Y-m-d H:i:s', $from ) ) )
+		)
+	);
+	return $row ? array( 'total' => (float) $row->t, 'count' => (int) $row->c ) : null;
+}
+
+/**
  * Ventas de hoy y del mes, pendientes y tallas por agotarse.
  *
  * @return WP_REST_Response
@@ -151,6 +189,10 @@ function bk_g_summary() {
 	$paid  = array_map( static fn( $s ) => 'wc-' . $s, wc_get_is_paid_statuses() );
 
 	$sum = static function ( $from ) use ( $paid ) {
+		$fast = bk_g_sum_orders( $paid, $from );
+		if ( $fast ) {
+			return array( 'total' => bk_g_money( $fast['total'] ), 'count' => $fast['count'] );
+		}
 		$total = 0.0;
 		$count = 0;
 		$page  = 1;
@@ -165,9 +207,10 @@ function bk_g_summary() {
 		return array( 'total' => bk_g_money( $total ), 'count' => $count );
 	};
 
+	// Conteos sin cargar los pedidos (antes: todos los IDs de cada estado).
 	$pending = array();
 	foreach ( array( 'processing', 'on-hold', 'pending' ) as $st ) {
-		$pending[ $st ] = count( wc_get_orders( array( 'status' => 'wc-' . $st, 'limit' => -1, 'return' => 'ids', 'type' => 'shop_order' ) ) );
+		$pending[ $st ] = (int) wc_get_orders( array( 'status' => 'wc-' . $st, 'limit' => 1, 'paginate' => true, 'return' => 'ids', 'type' => 'shop_order' ) )->total;
 	}
 
 	// Tallas con 1 o 2 unidades.
@@ -234,6 +277,7 @@ function bk_g_order_row( $o ) {
 		'payment'     => $o->get_payment_method_title(),
 		'printed'     => $f['impreso'] ? in_array( strtolower( (string) $o->get_meta( $f['impreso'] ) ), BK_G_TRUE, true ) : false,
 		'dispatched'  => $f['despachado'] ? in_array( strtolower( (string) $o->get_meta( $f['despachado'] ) ), BK_G_TRUE, true ) : null,
+		'paid_ok'     => $f['pago'] ? in_array( strtolower( (string) $o->get_meta( $f['pago'] ) ), BK_G_TRUE, true ) : false,
 		'consecutivo' => $f['consecutivo'] ? (string) $o->get_meta( $f['consecutivo'] ) : '',
 		'tracking'    => function_exists( 'bk_ship_get' ) ? bk_ship_get( $o ) : null,
 	);
@@ -263,7 +307,7 @@ function bk_g_orders( WP_REST_Request $r ) {
 		$args['date_created'] = sanitize_text_field( (string) $r['from'] ) . '...' . sanitize_text_field( (string) ( $r['to'] ? $r['to'] : gmdate( 'Y-m-d' ) ) );
 	}
 	// Filtros de checks (impreso / despachado): SQL indexado + post__in / post__not_in (nunca meta_query OR en HPOS).
-	foreach ( array( 'printed' => 'impreso', 'dispatched' => 'despachado' ) as $param => $field ) {
+	foreach ( array( 'printed' => 'impreso', 'dispatched' => 'despachado', 'paid_ok' => 'pago' ) as $param => $field ) {
 		if ( '' === (string) $r[ $param ] || ! $f[ $field ] ) {
 			continue;
 		}
@@ -455,6 +499,9 @@ function bk_g_order( WP_REST_Request $r ) {
 				'discount'    => (float) $o->get_discount_total() > 0 ? '−' . bk_g_money( $o->get_discount_total() ) : '',
 				'notes'       => $notes,
 				'attachments' => bk_g_attachments( $o ),
+				'files'       => bk_g_files( $o ),
+				'history'     => bk_g_history( $o ),
+				'print_url'   => bk_g_print_url( $o->get_id() ),
 				'origin'      => bk_g_origin( $o ),
 				'extra'       => bk_g_extra_meta( $o, $f ),
 				'fields'      => array(
@@ -489,12 +536,17 @@ function bk_g_order_update( WP_REST_Request $r ) {
 		$o->update_status( $status, sprintf( __( 'Cambiado desde Gestión de tienda por %s.', 'buckler-core' ), $user ) );
 	}
 	// Mismo formato que los snippets actuales: 'yes' / 'no'.
-	if ( null !== $r['printed'] && $f['impreso'] ) {
-		$o->update_meta_data( $f['impreso'], rest_sanitize_boolean( $r['printed'] ) ? 'yes' : 'no' );
-		$o->save();
-	}
-	if ( null !== $r['dispatched'] && $f['despachado'] ) {
-		$o->update_meta_data( $f['despachado'], rest_sanitize_boolean( $r['dispatched'] ) ? 'yes' : 'no' );
+	foreach ( array( 'printed' => 'impreso', 'dispatched' => 'despachado', 'paid_ok' => 'pago' ) as $param => $field ) {
+		if ( null === $r[ $param ] || ! $f[ $field ] ) {
+			continue;
+		}
+		$on  = rest_sanitize_boolean( $r[ $param ] );
+		$was = in_array( strtolower( (string) $o->get_meta( $f[ $field ] ) ), BK_G_TRUE, true );
+		if ( $on === $was ) {
+			continue;
+		}
+		$o->update_meta_data( $f[ $field ], $on ? 'yes' : 'no' );
+		bk_g_log( $o, $field, $on ? 'yes' : 'no' );
 		$o->save();
 	}
 	if ( $r['note'] ) {
@@ -701,6 +753,7 @@ function bk_g_settings_save( WP_REST_Request $r ) {
 			'consecutivo' => sanitize_text_field( (string) $r['consecutivo'] ),
 			'impreso'     => sanitize_text_field( (string) $r['impreso'] ),
 			'despachado'  => sanitize_text_field( (string) $r['despachado'] ),
+			'pago'        => sanitize_text_field( (string) ( $r['pago'] ?? bk_g_fields()['pago'] ) ),
 			'cedula'      => array_filter( array_map( 'trim', explode( ',', sanitize_text_field( (string) $r['cedula'] ) ) ) ),
 			'adjuntos'    => sanitize_text_field( (string) $r['adjuntos'] ),
 		),

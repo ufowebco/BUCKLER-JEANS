@@ -227,6 +227,7 @@
 			if (btn.dataset.sug) {
 				const s = JSON.parse(btn.dataset.sug);
 				cart = await api('cart/add-item', { method: 'POST', body: { id: s.id, quantity: 1, variation: s.variation } });
+				trackAdd(cart, s.id, 1);
 				say(`${t.added}: ${s.name}`);
 				fireJq('added_to_cart');
 			} else {
@@ -251,6 +252,15 @@
 			busy = false;
 		}
 	});
+
+	// dataLayer (Google Tag Manager): evento bk_add_to_cart con formato de comercio electrónico de GA4.
+	const trackAdd = (cart, id, qty) => {
+		const it = (cart?.items || []).find((i) => i.id === id);
+		if (!it || !window.bkTrack) return;
+		const minor = it.prices?.currency_minor_unit ?? 0;
+		const price = Number(it.prices?.price || 0) / 10 ** minor;
+		window.bkTrack('bk_add_to_cart', { ecommerce: { currency: it.prices?.currency_code || 'COP', value: price * qty, items: [{ item_id: it.sku || String(it.id), item_name: it.name, item_variant: (it.variation || []).map((v) => v.value).join(' '), price, quantity: qty }] } });
+	};
 
 	const fireJq = (ev) => { if (window.jQuery) window.jQuery(document.body).trigger(ev, [{}, '', window.jQuery()]); };
 
@@ -287,6 +297,7 @@
 			const cart = await api('cart/add-item', { method: 'POST', body: { id: productId, quantity: Number(fd.get('quantity')) || 1, variation } });
 			render(cart);
 			window.bkCartSynced = Date.now();
+			trackAdd(cart, productId, Number(fd.get('quantity')) || 1);
 			fireJq('added_to_cart');
 			say(t.added);
 			await open({ cart });

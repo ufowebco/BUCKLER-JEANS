@@ -32,29 +32,31 @@ const login = async (p, u, pw) => { await p.goto(B + '/wp-login.php?redirect_to=
   const st = await p.locator('.bk-g-pill').allTextContents();
   ok(st.length && st.every(s => /process|proceso/i.test(s)), 'filtro por estado: ' + [...new Set(st)].join());
   await p.selectOption('select[name="status"]', 'all'); await p.selectOption('select[name="printed"]', 'yes'); await p.waitForTimeout(1000);
-  const allChecked = await p.$$eval('[data-printed]', els => els.every(e => e.checked));
+  const allChecked = await p.$$eval('[data-flag="printed"]', els => els.every(e => e.checked));
   ok(allChecked, 'filtro "Impresos"');
   await p.selectOption('select[name="printed"]', ''); await p.waitForTimeout(900);
-  const cb = p.locator('[data-printed]').first(); const before = await cb.isChecked();
+  const cb = p.locator('[data-flag="printed"]').first(); const before = await cb.isChecked();
   await cb.click(); await p.waitForTimeout(800);
-  await p.reload(); await p.click('[data-tab="pedidos"]').catch(() => {}); await p.waitForSelector('[data-printed]');
-  ok(await p.locator('[data-printed]').first().isChecked() === !before, 'check "Impreso" se guarda');
+  await p.reload(); await p.click('[data-tab="pedidos"]').catch(() => {}); await p.waitForSelector('[data-flag="printed"]');
+  ok(await p.locator('[data-flag="printed"]').first().isChecked() === !before, 'check "Impreso" se guarda');
   // Consecutivo con prefijo (PEDIDO-2405) y despachado
   for (const q of ['PEDIDO-2405', '2405', '#2405']) {
     await p.fill('input[name="q"]', q); await p.waitForTimeout(1200);
-    const cons = await p.locator('.bk-g-orders tbody .c-cons').allTextContents();
-    ok(cons.length >= 1 && cons.every(c => /PEDIDO-2405/.test(c)), `búsqueda por consecutivo "${q}" → ${cons.length}`);
+    const nonce = await p.evaluate(() => bkG.nonce);
+    const cons = (await (await p.request.get(B + '/wp-json/bk/v1/gestion/orders?q=' + encodeURIComponent(q), { headers: { 'X-WP-Nonce': nonce } })).json()).orders.map(o => o.consecutivo);
+    const rows = await p.locator('.bk-g-orders tbody tr').count();
+    ok(rows >= 1 && rows === cons.length && cons.every(c => /PEDIDO-2405/.test(c)), `búsqueda por consecutivo "${q}" → ${rows}`);
   }
   await p.fill('input[name="q"]', ''); await p.waitForTimeout(900);
   ok((await p.textContent('.bk-g-orders thead')).includes('Despachado'), 'columna Despachado con la clave real por defecto');
   await p.selectOption('select[name="dispatched"]', 'yes'); await p.waitForTimeout(1000);
-  ok(await p.$$eval('[data-dispatched]', els => els.length > 0 && els.every(e => e.checked)), 'filtro "Despachados"');
+  ok(await p.$$eval('[data-flag="dispatched"]', els => els.length > 0 && els.every(e => e.checked)), 'filtro "Despachados"');
   await p.selectOption('select[name="dispatched"]', 'no'); await p.waitForTimeout(1000);
-  const dcb = p.locator('[data-dispatched]').first(); const did = await dcb.getAttribute('data-dispatched');
+  const dcb = p.locator('[data-flag="dispatched"]').first(); const did = await dcb.getAttribute('data-id');
   await dcb.click(); await p.waitForTimeout(900);
   ok(/despachado/.test(await p.textContent('#bk-g-toast')), 'check "Despachado" desde la lista');
   await p.selectOption('select[name="dispatched"]', 'yes'); await p.waitForTimeout(1000);
-  ok(await p.locator(`[data-dispatched="${did}"]`).count() === 1, 'el pedido marcado aparece en "Despachados"');
+  ok(await p.locator(`[data-flag="dispatched"][data-id="${did}"]`).count() === 1, 'el pedido marcado aparece en "Despachados"');
   await p.selectOption('select[name="dispatched"]', ''); await p.waitForTimeout(900);
   // Detalle
   await p.fill('input[name="q"]', '464'); await p.waitForTimeout(1200); await p.locator('[data-order="464"]').click(); await p.waitForSelector('#bk-g-osave');
@@ -95,7 +97,8 @@ const login = async (p, u, pw) => { await p.goto(B + '/wp-login.php?redirect_to=
   // (otras suites crean compras de prueba sin consecutivo).
   require('child_process').execSync(`php -r 'require "/tmp/claude-0/bk-local/site/wp-load.php"; $o = wc_get_orders(["limit"=>1,"orderby"=>"date","order"=>"DESC"])[0]; if (!$o->get_meta("_wcdn_invoice_number")) { $o->update_meta_data("_wcdn_invoice_number","PEDIDO-9999"); $o->save(); }'`);
   await a.goto(B + '/gestion-tienda/#pedidos'); await a.waitForSelector('.bk-g-orders');
-  ok((await a.textContent('.bk-g-orders thead')).includes('Consecutivo'), 'columna Consecutivo al configurarlo');
+  ok(!(await a.textContent('.bk-g-orders thead')).includes('Consecutivo'), 'sin columna Consecutivo (se ve en el detalle y la impresión)');
+  ok(await a.locator('[data-tab="ajustes"]').count() === 0 && await a.locator('a[href="#ajustes"]').count() === 1, 'Ajustes fuera del menú (enlace discreto para admin)');
   await a.fill('input[name="q"]', '2405'); await a.waitForTimeout(1200);
   ok(await a.locator('.bk-g-orders tbody tr').count() >= 1, 'búsqueda por consecutivo');
   // Móvil

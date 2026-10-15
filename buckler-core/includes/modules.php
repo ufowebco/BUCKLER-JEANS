@@ -90,6 +90,12 @@ function bk_modules() {
 			'replaces' => 'LiteSpeed Cache / capa Ufocache',
 			'woo'      => true,
 		),
+		'stats'     => array(
+			'label'    => 'Estadísticas de visitas (SEO y ADS)',
+			'desc'     => 'Cuenta visitas sin cookies ni datos personales (visitantes por día, semana y mes, páginas, origen, ciudad y dispositivo) y las muestra en Gestión de tienda → SEO y ADS. No cuenta robots ni al equipo.',
+			'replaces' => 'Contadores de visitas de otros plugins (Jetpack Stats)',
+			'woo'      => false,
+		),
 		'abandoned' => array(
 			'label'    => 'Carritos abandonados',
 			'desc'     => 'Captura el correo en el checkout (con autorización) y envía 3 recordatorios. Menú: WooCommerce → Carritos abandonados.',

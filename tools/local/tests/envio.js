@@ -78,18 +78,15 @@ const login = async (p, u, pw) => { await p.goto(B + '/wp-login.php?redirect_to=
   const view = await p.request.get(`${B}/wp-json/bk/v1/gestion/orders/${id}`, { headers: { 'X-WP-Nonce': nonce } });
   ok((await view.json()).tracking?.carrier === 'servientrega', 'API devuelve la guía');
 
-  // Admin: Ajustes → vista previa y correo de prueba
+  // Admin: Correos → vista previa y correo de prueba (antes en Ajustes)
   const a = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
   a.on('pageerror', e => errs.push(e.message));
-  await login(a, 'admin', 'admin'); await a.goto(B + '/gestion-tienda/#ajustes'); await a.waitForSelector('#bk-g-shiptest');
-  await a.selectOption('#bk-g-shiptest select[name="carrier"]', 'interrapidisimo');
-  await a.click('[data-ship-sample]'); await a.waitForSelector('#bk-g-preview:not([hidden]) .bk-g-pvframe'); await a.waitForTimeout(600);
-  ok(/Inter Rapid/.test(await a.frameLocator('.bk-g-pvframe').locator('body').textContent()), 'Ajustes: vista previa de ejemplo');
-  await a.keyboard.press('Escape');
-  ok(await a.locator('#bk-g-preview').isHidden(), 'Esc cierra la vista previa');
+  await login(a, 'admin', 'admin'); await a.goto(B + '/gestion-tienda/#correos'); await a.waitForSelector('[data-mail="bk:shipped"]');
+  await a.click('[data-mail="bk:shipped"]'); await a.waitForSelector('#bk-g-mtest'); await a.waitForTimeout(600);
+  ok(/enviado|camino/i.test(await a.frameLocator('.bk-g-mframe').locator('body').textContent()), 'Correos: vista previa del correo de guía');
   const b2 = mails();
-  await a.fill('#bk-g-shiptest input[name="to"]', 'pruebas@buckler.test');
-  await a.click('#bk-g-shiptest button[type="submit"]'); await a.waitForTimeout(1200);
+  await a.fill('#bk-g-mtest input[name="to"]', 'pruebas@buckler.test');
+  await a.click('#bk-g-mtest button[type="submit"]'); await a.waitForTimeout(1200);
   const test = newMails(b2);
   ok(test.length === 1 && /^\[Prueba\]/.test(test[0].subject) && test[0].to === 'pruebas@buckler.test', 'correo de prueba: ' + (test[0]?.subject || 'ninguno'));
   const deny = await p.request.post(`${B}/wp-json/bk/v1/gestion/shipment-sample`, { headers: { 'X-WP-Nonce': nonce }, data: { to: 'x@y.co' } });

@@ -138,6 +138,9 @@ function bk_ship_handle( WP_REST_Request $r ) {
 			'sent_by' => $user,
 		)
 	);
+	if ( function_exists( 'bk_g_log' ) ) {
+		bk_g_log( $o, 'guia', $number, array( 'carrier' => bk_carriers()[ $carrier ]['name'] ) );
+	}
 	$o->save();
 
 	$sent = bk_ship_mail( $to, $mail['subject'], $mail['html'] );
