@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.17.7 → `dist/buckler-core-0.17.7.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.17.8 → `dist/buckler-core-0.17.8.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -521,6 +521,21 @@ Versión actual 0.17.7 → `dist/buckler-core-0.17.7.zip` (`tools/build-plugin.s
   - Ayuda: sección "Paso a paso" (22 guías por tarea en `GUIDES`, gestion-more.js: productos, pedidos, descuentos,
     carritos/correos, contenido, problemas) + buscador sin tildes (`helpSearch`). Usuarios solo SEO no la ven.
   - Suite `ronda177.js` (30).
+- **0.17.8 (2026-10-15): acceso.** Con 0.17.7 instalada algunos usuarios seguían volviendo al inicio. En producción
+  `wp-login.php` responde 307 a un captcha del servidor (`recaptcha.cloud`, protección del hosting) y el cliente apagó
+  su URL de acceso personalizada ("ingreso"). `includes/gestion/login.php`:
+  - **/ingreso/** (`bk_login_slug()`, `bk_config('login_slug')`, filtro `bk_login_slug`, '' lo apaga): mismo formulario
+    que la gestión, en `parse_request` 0 sin regla de reescritura (`$wp->request`). `login_url` → /ingreso/ (wp-admin
+    sin sesión llega ahí con `redirect_to` y `reauth`; reauth borra la sesión para no dar vueltas). Destino
+    (`bk_ingreso_destination`): solo SEO → gestión #seo; gestor sin edit_posts → gestión; redirect_to válido; editores/
+    admin → wp-admin; clientas → Mi cuenta. El enlace de respaldo usa el wp-login.php real (`bk_wp_login_url`).
+  - Protección en /gestion-tienda/ e /ingreso/ (`bk_g_guard`, por ruta, al cargar el plugin): `wp_redirect` ajeno
+    (PHP_INT_MAX) con sesión y permiso → se pinta la gestión si WordPress ya cargó (wp_loaded o init ≥ 10); redirecciones
+    propias con `bk_g_go()` (bandera). `header()` directo → `header_register_callback` solo registra. Registro en la
+    opción `bk_g_redirect_log` (20; usuario, página, destino, archivo del plugin por backtrace, últimas acciones vía
+    'all' congeladas en shutdown) visible en Ajustes → Buckler Core (`do_action('bk_modules_page_after')`) con "Borrar
+    registro". La gestión también responde por ruta si se pierde la regla de reescritura.
+  - Fixtures: `bk_test_login_home` = wp_loaded | wp_loaded_header. Suite `ronda178.js` (17).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -565,7 +580,7 @@ Versión actual 0.17.7 → `dist/buckler-core-0.17.7.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 30 = 590 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 30, ronda 0.17.8 17 = 607 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

@@ -28,7 +28,7 @@ add_action( 'parse_request', 'bk_g_after_login', 1 );
  * @param WP $wp Petición.
  */
 function bk_g_early( $wp ) {
-	if ( ! empty( $wp->query_vars['bk_gestion'] ) ) {
+	if ( ! empty( $wp->query_vars['bk_gestion'] ) || BK_G_SLUG === $wp->request ) { // También si se perdió la regla de reescritura.
 		bk_g_render( true );
 	}
 }
@@ -45,8 +45,7 @@ function bk_g_after_login( $wp ) {
 	}
 	bk_g_next_cookie( false );
 	if ( is_user_logged_in() && bk_g_can_seo() ) {
-		wp_safe_redirect( bk_g_url(), 302 );
-		exit;
+		bk_g_go( bk_g_url() );
 	}
 }
 
@@ -73,7 +72,11 @@ function bk_g_next_cookie( $on ) {
  * @return string
  */
 function bk_g_keep_login_target( $location ) {
-	return empty( $GLOBALS['bk_g_signing_in'] ) ? $location : bk_g_url();
+	if ( empty( $GLOBALS['bk_g_signing_in'] ) ) {
+		return $location;
+	}
+	$GLOBALS['bk_g_own_redirect'] = true;
+	return bk_g_login_destination();
 }
 add_action( 'bk_modules_saved', 'bk_g_activate' );
 
@@ -181,7 +184,10 @@ function bk_g_handle_login() {
 	}
 	$GLOBALS['bk_g_signing_in'] = true;
 	add_filter( 'wp_redirect', 'bk_g_keep_login_target', PHP_INT_MAX );
-	bk_g_next_cookie( true );
+	$to_gestion = 'ingreso' !== ( $GLOBALS['bk_g_login_ctx'] ?? '' );
+	if ( $to_gestion ) {
+		bk_g_next_cookie( true );
+	}
 	$user = wp_signon(
 		array(
 			'user_login'    => sanitize_user( wp_unslash( (string) ( $_POST['log'] ?? '' ) ) ),
@@ -202,8 +208,11 @@ function bk_g_handle_login() {
 		return 'alt';
 	}
 	delete_transient( $key );
-	wp_safe_redirect( bk_g_url(), 303 );
-	exit;
+	$dest = bk_g_login_destination( $user );
+	if ( ! $to_gestion && bk_g_is_own_target( $dest ) ) {
+		bk_g_next_cookie( true ); // Desde /ingreso/ hacia la gestión: misma protección.
+	}
+	bk_g_go( $dest, 303 );
 }
 
 /**
@@ -216,8 +225,7 @@ function bk_g_handle_logout() {
 	if ( is_user_logged_in() && isset( $_GET['_wpnonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'bk_g_logout' ) ) {
 		wp_logout();
 	}
-	wp_safe_redirect( bk_g_url( array( 'adios' => 1 ) ), 303 );
-	exit;
+	bk_g_go( bk_g_url( array( 'adios' => 1 ) ), 303 );
 }
 
 /**
@@ -231,6 +239,7 @@ function bk_g_login_page( $error = '', $denied = false ) {
 	$logo  = (string) bk_config( 'logo_dark' );
 	$alt   = 'alt' === $error;
 	$bye   = ! empty( $_GET['adios'] ) && ! $error; // phpcs:ignore WordPress.Security.NonceVerification
+	$ingreso = 'ingreso' === ( $GLOBALS['bk_g_login_ctx'] ?? '' );
 	$login = isset( $_POST['log'] ) ? sanitize_user( wp_unslash( (string) $_POST['log'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 	status_header( $denied ? 403 : 200 );
 	?>
@@ -240,14 +249,14 @@ function bk_g_login_page( $error = '', $denied = false ) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title><?php esc_html_e( 'Entrar · Gestión de tienda · Buckler', 'buckler-core' ); ?></title>
+<title><?php echo esc_html( $ingreso ? __( 'Entrar · Buckler', 'buckler-core' ) : __( 'Entrar · Gestión de tienda · Buckler', 'buckler-core' ) ); ?></title>
 <link rel="stylesheet" href="<?php echo $ver( 'assets/css/gestion.css' ); // phpcs:ignore ?>">
 </head>
 <body class="bk-g bk-g-auth">
 <main class="bk-g-login" id="bk-g-main">
 	<div class="bk-g-login__brand">
 		<?php if ( $logo ) : ?><img src="<?php echo esc_url( home_url( $logo ) ); ?>" alt="<?php echo esc_attr( bk_config( 'brand' ) ); ?>" width="180" height="48"><?php endif; ?>
-		<p><?php esc_html_e( 'Gestión de tienda', 'buckler-core' ); ?></p>
+		<p><?php echo esc_html( $ingreso ? __( 'Acceso', 'buckler-core' ) : __( 'Gestión de tienda', 'buckler-core' ) ); ?></p>
 	</div>
 	<section class="bk-g-login__card" aria-labelledby="bk-g-login-t">
 		<?php if ( $denied ) : ?>
@@ -259,9 +268,9 @@ function bk_g_login_page( $error = '', $denied = false ) {
 			<?php if ( $bye ) : ?><p class="bk-g-login__ok" role="status"><?php esc_html_e( 'Cerraste sesión. ¡Hasta pronto!', 'buckler-core' ); ?></p><?php endif; ?>
 			<?php if ( $error && ! $alt ) : ?><p class="bk-g-login__err" role="alert"><?php echo esc_html( $error ); ?></p><?php endif; ?>
 			<?php if ( $alt ) : ?>
-				<p class="bk-g-login__err" role="alert"><?php esc_html_e( 'Tu sitio pide una verificación adicional para entrar.', 'buckler-core' ); ?> <a href="<?php echo esc_url( wp_login_url( bk_g_url() ) ); ?>"><?php esc_html_e( 'Entra aquí con el acceso de WordPress', 'buckler-core' ); ?></a>.</p>
+				<p class="bk-g-login__err" role="alert"><?php esc_html_e( 'Tu sitio pide una verificación adicional para entrar.', 'buckler-core' ); ?> <a href="<?php echo esc_url( bk_wp_login_url( $ingreso ? '' : bk_g_url() ) ); ?>"><?php esc_html_e( 'Entra aquí con el acceso de WordPress', 'buckler-core' ); ?></a>.</p>
 			<?php endif; ?>
-			<form method="post" action="<?php echo esc_url( bk_g_url() ); ?>" class="bk-g-login__form" novalidate>
+			<form method="post" action="<?php echo esc_url( $GLOBALS['bk_g_login_action'] ?? bk_g_url() ); ?>" class="bk-g-login__form" novalidate>
 				<?php wp_nonce_field( 'bk_g_login', '_bk_g_nonce' ); ?>
 				<input type="hidden" name="bk_g_login" value="1">
 				<label><span><?php esc_html_e( 'Usuario o correo', 'buckler-core' ); ?></span>
@@ -272,7 +281,7 @@ function bk_g_login_page( $error = '', $denied = false ) {
 				<label class="bk-g-switch"><input type="checkbox" name="rememberme" value="1" checked><span><?php esc_html_e( 'Mantener la sesión abierta en este equipo', 'buckler-core' ); ?></span></label>
 				<button type="submit" class="bk-g-btn is-block"><?php esc_html_e( 'Entrar', 'buckler-core' ); ?></button>
 			</form>
-			<p class="bk-g-login__links"><a href="<?php echo esc_url( wp_lostpassword_url( bk_g_url() ) ); ?>"><?php esc_html_e( '¿Olvidaste tu contraseña?', 'buckler-core' ); ?></a></p>
+			<p class="bk-g-login__links"><a href="<?php echo esc_url( wp_lostpassword_url( $ingreso ? bk_login_url() : bk_g_url() ) ); ?>"><?php esc_html_e( '¿Olvidaste tu contraseña?', 'buckler-core' ); ?></a></p>
 		<?php endif; ?>
 	</section>
 	<p class="bk-g-login__back"><a href="<?php echo esc_url( home_url( '/' ) ); ?>">← <?php esc_html_e( 'Volver a la tienda', 'buckler-core' ); ?></a></p>

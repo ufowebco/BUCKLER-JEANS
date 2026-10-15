@@ -199,6 +199,7 @@ function bk_modules_page() {
 				<?php submit_button( 'Vaciar caché de páginas', 'secondary', 'submit', false ); ?>
 			</form>
 		<?php endif; ?>
+		<?php do_action( 'bk_modules_page_after' ); ?>
 	</div>
 	<?php
 }

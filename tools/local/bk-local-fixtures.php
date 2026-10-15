@@ -216,3 +216,26 @@ add_action(
 	},
 	1
 );
+
+// Variante más temprana (antes de parse_request): bk_test_login_home = 'wp_loaded' (wp_safe_redirect al inicio a
+// cualquier usuario con sesión fuera de la portada y de wp-admin) o 'wp_loaded_header' (lo mismo con header()).
+add_action(
+	'wp_loaded',
+	static function () {
+		$mode = get_option( 'bk_test_login_home' );
+		if ( ! in_array( $mode, array( 'wp_loaded', 'wp_loaded_header' ), true ) || ! is_user_logged_in() || is_admin() || wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+			return;
+		}
+		$path = trim( (string) wp_parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' ); // phpcs:ignore
+		if ( '' === $path || 0 === strpos( $path, 'wp-' ) || 0 === strpos( $path, 'my-account' ) ) {
+			return;
+		}
+		if ( 'wp_loaded' === $mode ) {
+			wp_safe_redirect( home_url( '/' ) );
+			exit;
+		}
+		header( 'Location: ' . home_url( '/' ), true, 302 );
+		exit;
+	},
+	20
+);
