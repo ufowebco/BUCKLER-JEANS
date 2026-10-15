@@ -273,6 +273,20 @@ if ( bk_on( 'discounts' ) ) {
 	add_action( 'bk_home_after_lines', 'bk_disc_home_section' );
 }
 add_action( 'bk_disc_tick', 'bk_disc_flush' );
+add_action( 'woocommerce_before_single_product', 'bk_pdp_ensure_extras', 1 );
+
+/**
+ * En producción otro plugin (BodyCommerce) borra todo lo enganchado al resumen de la ficha y deja solo lo de
+ * WooCommerce. Justo antes de pintar la ficha se vuelven a poner el recuadro de descuentos y el aviso de ¡Sale!.
+ */
+function bk_pdp_ensure_extras() {
+	if ( bk_on( 'discounts' ) && false === has_action( 'woocommerce_single_product_summary', 'bk_disc_pdp_box' ) ) {
+		add_action( 'woocommerce_single_product_summary', 'bk_disc_pdp_box', 12 );
+	}
+	if ( function_exists( 'bk_sale_notice_pdp' ) && '' !== trim( (string) bk_config( 'sale_notice' ) ) && false === has_action( 'woocommerce_single_product_summary', 'bk_sale_notice_pdp' ) ) {
+		add_action( 'woocommerce_single_product_summary', 'bk_sale_notice_pdp', 13 );
+	}
+}
 
 /**
  * Precio / precio rebajado de un producto o talla en campaña (o fijado por el descuento por cantidad en el carrito).
@@ -589,7 +603,61 @@ function bk_disc_announcement( $config ) {
 		/* translators: 1: nombre, 2: porcentaje, 3: dónde */
 		array_unshift( $config['announcements'], sprintf( __( '−%2$s %% %3$s · %1$s', 'buckler-core' ), $c['name'], bk_disc_num( $c['pct'] ), $where ) );
 	}
+	// Descuento por cantidad vigente: también en la barra (después de la campaña).
+	foreach ( bk_disc_data()['qty'] as $r ) {
+		if ( ! bk_disc_live( $r ) || empty( $r['tiers'] ) ) {
+			continue;
+		}
+		$t = bk_disc_tiers_sorted( $r );
+		$t = array_values( array_filter( $t, static fn( $x ) => ! $c || (float) $x['pct'] > (float) $c['pct'] ) );
+		if ( ! $t ) {
+			continue;
+		}
+		$txt = (int) $t[0]['min'] > 1
+			/* translators: 1: prendas, 2: porcentaje */
+			? sprintf( __( 'Lleva %1$d+ prendas: −%2$s %%', 'buckler-core' ), (int) $t[0]['min'], bk_disc_num( $t[0]['pct'] ) )
+			/* translators: %s: porcentaje */
+			: sprintf( __( '−%s %% en tu compra', 'buckler-core' ), bk_disc_num( $t[0]['pct'] ) );
+		if ( count( $t ) > 1 ) {
+			$txt .= ' · ' . sprintf( __( 'hasta −%s %%', 'buckler-core' ), bk_disc_num( end( $t )['pct'] ) );
+		}
+		array_splice( $config['announcements'], $c ? 1 : 0, 0, array( $txt ) );
+		break;
+	}
 	return $config;
+}
+
+/**
+ * Línea corta para la tarjeta de producto: "Lleva 2+ y ahorra 10 % · hasta 15 %".
+ * Solo tramos que superan la campaña vigente (los descuentos no se suman). Vacío si no aplica.
+ *
+ * @param WC_Product $p    Producto.
+ * @param array|null $camp Campaña vigente para el producto.
+ * @return string
+ */
+function bk_disc_card_line( $p, $camp = null ) {
+	$best = null;
+	foreach ( bk_disc_qty_for( $p ) as $r ) {
+		$t = array_values( array_filter( bk_disc_tiers_sorted( $r ), static fn( $x ) => ! $camp || (float) $x['pct'] > (float) $camp['pct'] ) );
+		if ( $t && ( ! $best || (int) $t[0]['min'] < (int) $best[0]['min'] ) ) {
+			$best = $t;
+		}
+	}
+	if ( ! $best ) {
+		return '';
+	}
+	$first = $best[0];
+	$last  = end( $best );
+	$txt   = (int) $first['min'] > 1
+		/* translators: 1: prendas, 2: porcentaje */
+		? sprintf( __( 'Lleva %1$d+ y ahorra %2$s %%', 'buckler-core' ), (int) $first['min'], bk_disc_num( $first['pct'] ) )
+		/* translators: %s: porcentaje */
+		: sprintf( __( 'Ahorra %s %% en el carrito', 'buckler-core' ), bk_disc_num( $first['pct'] ) );
+	if ( count( $best ) > 1 ) {
+		/* translators: %s: porcentaje */
+		$txt .= ' · ' . sprintf( __( 'hasta %s %%', 'buckler-core' ), bk_disc_num( $last['pct'] ) );
+	}
+	return $txt;
 }
 
 /**

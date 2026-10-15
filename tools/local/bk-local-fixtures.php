@@ -158,3 +158,20 @@ add_action( 'wp_head', static function () { echo '<meta property="og:site_name" 
 
 // Como producción (PageSpeed 2026-10-15): algo encola el reproductor de WordPress (mediaelement + jQuery) en la tienda.
 add_action( 'wp_enqueue_scripts', static function () { wp_enqueue_style( 'wp-mediaelement' ); wp_enqueue_script( 'wp-mediaelement' ); }, 50 );
+
+// Como BodyCommerce en producción (hallazgo 2026-10-15): en la ficha borra TODO lo enganchado a
+// woocommerce_single_product_summary y vuelve a poner solo lo de WooCommerce. Lo que buckler-core registra al cargar
+// (recuadro de descuentos, aviso de ¡Sale!) desaparecía; lo de bk_pdp_hooks() (template_include) sobrevivía.
+add_action(
+	'template_redirect',
+	static function () {
+		if ( ! function_exists( 'is_product' ) || ! is_product() || get_option( 'bk_test_no_bodycommerce' ) ) {
+			return;
+		}
+		remove_all_actions( 'woocommerce_single_product_summary' );
+		foreach ( array( 'woocommerce_template_single_title' => 5, 'woocommerce_template_single_rating' => 10, 'woocommerce_template_single_price' => 10, 'woocommerce_template_single_excerpt' => 20, 'woocommerce_template_single_add_to_cart' => 30, 'woocommerce_template_single_meta' => 40, 'woocommerce_template_single_sharing' => 50 ) as $fn => $prio ) {
+			add_action( 'woocommerce_single_product_summary', $fn, $prio );
+		}
+	},
+	20
+);

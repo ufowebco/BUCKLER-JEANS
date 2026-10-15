@@ -322,6 +322,26 @@
 	color: var(--bk-mute);
 }
 
+/* Descuento por cantidad: píldora lima bajo el precio. */
+.bk-card__qty {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	align-self: flex-start;
+	margin-top: 4px;
+	padding: 3px 9px;
+	border-radius: 99px;
+	background: var(--bk-lime, #e4ec6a);
+	color: var(--bk-navy, #1a3955);
+	font-size: 12px;
+	font-weight: 800;
+	line-height: 1.3;
+}
+
+.bk-card__qty svg {
+	flex: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.bk-card__img,
 	.bk-card__sizes,

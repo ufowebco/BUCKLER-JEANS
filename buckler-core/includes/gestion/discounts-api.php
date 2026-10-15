@@ -196,7 +196,7 @@ function bk_gd_save( WP_REST_Request $r ) {
 			$prev = $t['pct'];
 		}
 		$rule['tiers'] = array_values( $tiers );
-		$rule['count'] = 'cart' === ( $in['count'] ?? 'product' ) ? 'cart' : 'product';
+		$rule['count'] = 'product' === ( $in['count'] ?? 'cart' ) ? 'product' : 'cart'; // Por defecto se combinan productos.
 	}
 
 	$all  = bk_disc_data( true );

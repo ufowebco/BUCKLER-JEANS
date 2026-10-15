@@ -128,7 +128,7 @@
 		const base = { id: '', name: '', active: true, start: fmtLocal(start), end: fmtLocal(end), scope: 'all', cats: [], products: [], products_info: [], exclude_sale: true };
 		return kind === 'campana'
 			? { ...base, pct: 20, badge: '', bar: true, home: true, featured: [], featured_info: [] }
-			: { ...base, name: 'Compra más y ahorra', tiers: [{ min: 1, pct: 10 }, { min: 2, pct: 20 }, { min: 4, pct: 30 }], count: 'product' };
+			: { ...base, name: 'Compra más y ahorra', tiers: [{ min: 2, pct: 10 }, { min: 3, pct: 15 }, { min: 4, pct: 20 }], count: 'cart' };
 	};
 
 	function paintList() {
@@ -137,7 +137,7 @@
 			return `<li class="bk-gd-item">
 				<div class="bk-gd-item__main"><b>${esc(r.name)}</b>
 					<span class="bk-gd-item__pct">${kind === 'campana' ? `−${pctTxt(r.pct)} %` : r.tier_labels.map((t) => `${esc(t.label)}: −${t.pct} %`).join(' · ')}</span>
-					<small>${esc(r.start_text)} → ${esc(r.end_text)} · ${esc(scopeTxt(r))}${r.exclude_sale ? ` · sin ${esc(D.saleCat || '¡Sale!')}` : ''}${kind === 'cantidad' ? ` · ${r.count === 'cart' ? 'suma todo el carrito' : 'por modelo'}` : ''}</small></div>
+					<small>${esc(r.start_text)} → ${esc(r.end_text)} · ${esc(scopeTxt(r))}${r.exclude_sale ? ` · sin ${esc(D.saleCat || '¡Sale!')}` : ''}${kind === 'cantidad' ? ` · ${r.count === 'product' ? 'solo del mismo modelo' : 'combinando productos'}` : ''}</small></div>
 				<span class="bk-g-pill ${cls}">${l}</span>
 				<div class="bk-gd-item__act">
 					<a class="bk-g-btn is-ghost is-small" href="#descuentos/${kind}/${r.id}">${C.icons.edit} Editar<span class="bk-g-sr">: ${esc(r.name)}</span></a>
@@ -184,8 +184,8 @@
 						<label class="bk-gp-field"><span>Nombre <b class="bk-gp-req" aria-hidden="true">*</b></span><input name="name" required maxlength="80" value="${esc(F.name)}" placeholder="${camp ? 'Ej.: Black Friday' : 'Ej.: Compra más y ahorra'}"><small>${camp ? 'Se ve en el anuncio de arriba, en el inicio y en la ficha.' : 'Se ve en la ficha y en el carrito.'}</small></label>
 						${camp ? `<label class="bk-gp-field"><span>Porcentaje de descuento <b class="bk-gp-req" aria-hidden="true">*</b></span><span class="bk-gd-pctin is-big"><input type="number" name="pct" min="1" max="90" step="0.5" inputmode="decimal" value="${esc(F.pct)}" required><i>%</i></span></label>` : `<fieldset class="bk-gp-field" data-field="tiers"><legend>Tramos <b class="bk-gp-req" aria-hidden="true">*</b></legend><div id="bk-gd-tiers">${tiersHtml()}</div></fieldset>
 							<fieldset class="bk-gp-field"><legend>Cómo se cuentan las prendas</legend>
-								<label class="bk-gp-line"><input type="radio" name="count" value="product" ${F.count !== 'cart' ? 'checked' : ''}><span><b>Del mismo modelo</b><small>Ej.: 2 jeans iguales en distintas tallas</small></span></label>
-								<label class="bk-gp-line"><input type="radio" name="count" value="cart" ${F.count === 'cart' ? 'checked' : ''}><span><b>Todas las prendas de la promoción</b><small>Suma lo que haya en el carrito</small></span></label></fieldset>`}
+								<label class="bk-gp-line"><input type="radio" name="count" value="cart" ${F.count !== 'product' ? 'checked' : ''}><span><b>Combinando productos (recomendado)</b><small>Suma todas las prendas de la promoción en el carrito. Ej.: 1 jean + 1 falda = 2 prendas</small></span></label>
+								<label class="bk-gp-line"><input type="radio" name="count" value="product" ${F.count === 'product' ? 'checked' : ''}><span><b>Solo del mismo modelo</b><small>Ej.: 2 jeans iguales en distintas tallas</small></span></label></fieldset>`}
 						<div class="bk-g-row2">
 							<label class="bk-gp-field"><span>Desde <b class="bk-gp-req" aria-hidden="true">*</b></span><input type="datetime-local" name="start" value="${esc(F.start)}" required></label>
 							<label class="bk-gp-field"><span>Hasta <b class="bk-gp-req" aria-hidden="true">*</b></span><input type="datetime-local" name="end" value="${esc(F.end)}" required></label>
@@ -228,7 +228,7 @@
 		if (F.kind === 'campana') {
 			F.pct = f.pct.value; F.badge = f.badge.value.trim(); F.bar = f.bar.checked; F.home = f.home.checked;
 		} else {
-			F.count = f.querySelector('[name="count"]:checked')?.value || 'product';
+			F.count = f.querySelector('[name="count"]:checked')?.value || 'cart';
 			readTiers();
 		}
 	};

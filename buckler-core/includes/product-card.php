@@ -147,6 +147,9 @@ function bk_product_card( $product, $args = array() ) {
 		$badges .= '<span class="bk-badge bk-badge--new">' . esc_html__( 'Nuevo', 'buckler-core' ) . '</span>';
 	}
 
+	// Descuento por cantidad (se calcula al pintar, como la campaña).
+	$qty_line = ( $in && function_exists( 'bk_disc_card_line' ) && bk_on( 'discounts' ) ) ? bk_disc_card_line( $product, $camp ) : '';
+
 	$sizes_vis = '';
 	$avail     = array();
 	foreach ( $d['sizes'] as $s ) {
@@ -182,6 +185,7 @@ function bk_product_card( $product, $args = array() ) {
 			<<?php echo esc_html( $heading ); ?> class="bk-card__title"><a class="bk-card__link" href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $name ); ?></a></<?php echo esc_html( $heading ); ?>>
 			<span class="bk-card__price"><?php echo wp_kses_post( $product->get_price_html() ); ?></span>
 			<?php echo $addi; // phpcs:ignore ?>
+			<?php if ( $qty_line ) : ?><span class="bk-card__qty"><?php echo bk_icon_svg( 'lucide:gift', 14 ); // phpcs:ignore ?><?php echo esc_html( $qty_line ); ?></span><?php endif; ?>
 			<?php if ( $avail ) : ?>
 				<?php /* translators: %s: tallas */ ?>
 				<span class="bk-sr-only"><?php echo esc_html( sprintf( __( 'Tallas disponibles: %s', 'buckler-core' ), implode( ', ', $avail ) ) ); ?></span>

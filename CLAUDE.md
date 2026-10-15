@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.17.2 → `dist/buckler-core-0.17.2.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.17.3 → `dist/buckler-core-0.17.3.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -461,6 +461,15 @@ Versión actual 0.17.2 → `dist/buckler-core-0.17.2.zip` (`tools/build-plugin.s
   correo válido de la fila. Al comprar, la conversión por correo se salta si el pedido no trae correo (evitaba marcar
   todas las filas sin correo). Gestión/wp-admin: nombre completo, cédula y ciudad/dirección; KPI "Carritos capturados".
   ronda171.js 29.
+- **0.17.3 — descuento por cantidad visible:** en producción (0.17.1, módulo discounts encendido) la ficha no mostraba
+  ni el recuadro de descuentos ni el aviso de ¡Sale!: **BodyCommerce borra todo lo enganchado a
+  `woocommerce_single_product_summary`** (en template_redirect o antes) y deja solo lo de Woo; lo de `bk_pdp_hooks()`
+  (template_include) sobrevivía. `bk_pdp_ensure_extras()` en `woocommerce_before_single_product` (1) los vuelve a
+  poner. Fixture local lo imita (template_redirect 20; `bk_test_no_bodycommerce` lo apaga). Tarjetas: píldora lima
+  `bk-card__qty` "Lleva 2+ y ahorra 10 % · hasta 15 %" (`bk_disc_card_line()`, solo tramos que superan la campaña; no en
+  ¡Sale!). Barra: "Lleva 2+ prendas: −10 % · hasta −15 %" tras la campaña. Por cantidad **combina productos por
+  defecto** (`count` 'cart' en formulario y API; "Solo del mismo modelo" queda como opción) y excluye ¡Sale!.
+  Suite `ronda172.js` (10).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -505,7 +514,7 @@ Versión actual 0.17.2 → `dist/buckler-core-0.17.2.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29 = 523 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3 10 = 533 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

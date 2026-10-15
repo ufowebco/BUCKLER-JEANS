@@ -7,7 +7,7 @@ Rutas asumidas: `BK_LOCAL=/tmp/claude-0/bk-local` (ajustar en los scripts si cam
 php tools/local/tests/seed-cards.php     # galerías, destacado, oferta, talla agotada
 php tools/local/tests/seed-shop.php      # ~60 productos con nombres/precios/categorías reales
 php tools/local/tests/seed-orders.php    # pedidos de ejemplo, usuaria "gestora" (rol Gestor de tienda)
-cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171; do NODE_PATH=$(npm root -g) node $t.js; done
+cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172; do NODE_PATH=$(npm root -g) node $t.js; done
 ```
 
 | Suite | Qué prueba | Comprobaciones |
@@ -26,6 +26,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `seo.js` | SEO propio: títulos y descripciones de tienda, líneas, prenda, ¡Sale!, Lo nuevo, búsqueda y ficha (≤70/≤155, og iguales), JSON-LD Product sin duplicar, errata del sitio, og:image del inicio, títulos manuales de SEOPress respetados | 17 |
 | `ronda17.js` | Rueda del mouse en tarjetas, buscador, San Andrés, 404 → inicio, acceso propio de la gestión y salir, Gestor_ADS solo SEO, alerta de etiquetas, Ayuda, Contenido (banners/guía/políticas/preguntas en formato ACF), Descuentos (campaña, por cantidad, ficha, carrito, pedido, pausa, formulario), ¡Sale! sin garantía, correo con el diseño de la marca, móvil | 60 |
 | `ronda171.js` | Correo de primero en el checkout, carrito abandonado al cerrar la página o cambiar de pestaña, solo con celular, correo dado de baja y datos extra (sin autorización: guardado sin correos), Descuentos con el módulo apagado (aviso, botón y encendido al guardar), etiquetas y precios tachados en ficha y tienda, precio sin "Price range", Ayuda con 16 capturas numeradas (índice, carga diferida, celular, usuario de SEO) | 29 |
+| `ronda172.js` | Descuento por cantidad: recuadro en la ficha aunque otro plugin borre los ganchos (simula BodyCommerce), aviso de ¡Sale!, píldora en tarjetas, barra, carrito combinando 2 productos distintos, formulario y API con "combinando" por defecto | 10 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).
 | `seguridad.js` | Nombres de usuario ocultos a visitantes: REST de usuarios 401, ?author 404, sin sitemap de usuarios, Store API pública, error de acceso genérico, editor con sesión intacto | 7 |
