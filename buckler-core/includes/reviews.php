@@ -199,8 +199,13 @@ function bk_reviews_block( $args = array() ) {
 						<?php echo bk_icon_svg( 'simple-icons:google', 18 ); // phpcs:ignore ?>
 						<strong><?php echo esc_html( number_format_i18n( $data['avg'], 1 ) ); ?></strong>
 						<?php echo bk_stars( $data['avg'], 18 ); // phpcs:ignore ?>
-						<?php /* translators: %s: número de reseñas */ ?>
-						<span><?php echo esc_html( sprintf( _n( '%s reseña en Google', '%s reseñas en Google', $data['total'], 'buckler-core' ), number_format_i18n( $data['total'] ) ) ); ?></span>
+						<?php if ( bk_config( 'reviews_show_total' ) && $data['total'] ) : ?>
+							<?php /* translators: %s: número de reseñas */ ?>
+							<span><?php echo esc_html( sprintf( _n( '%s reseña en Google', '%s reseñas en Google', $data['total'], 'buckler-core' ), number_format_i18n( $data['total'] ) ) ); ?></span>
+						<?php else : ?>
+							<?php // El total que guarda WP Social Ninja no se actualiza solo (decisión del cliente 2026-10-15): solo la calificación. ?>
+							<span><?php esc_html_e( 'en Google', 'buckler-core' ); ?></span>
+						<?php endif; ?>
 					</p>
 				<?php endif; ?>
 			</div>
@@ -214,13 +219,7 @@ function bk_reviews_block( $args = array() ) {
 					<li class="bk-review">
 						<div class="bk-review__head">
 							<span class="bk-review__avatar" aria-hidden="true"><?php echo esc_html( mb_strtoupper( mb_substr( $r['name'], 0, 1 ) ) ); ?></span>
-							<div>
-								<p class="bk-review__name"><?php echo esc_html( $r['name'] ); ?></p>
-								<?php if ( $r['time'] ) : ?>
-									<?php /* translators: %s: tiempo, p. ej. 2 meses */ ?>
-									<p class="bk-review__date"><?php echo esc_html( sprintf( __( 'Hace %s', 'buckler-core' ), human_time_diff( $r['time'] ) ) ); ?></p>
-								<?php endif; ?>
-							</div>
+							<p class="bk-review__name"><?php echo esc_html( $r['name'] ); ?></p>
 						</div>
 						<?php echo bk_stars( $r['rating'], 15 ); // phpcs:ignore ?>
 						<p class="bk-review__text"><?php echo esc_html( $r['text'] ); ?></p>

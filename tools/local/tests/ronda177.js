@@ -101,12 +101,17 @@ const contrast = (el) => {
   // 3. Reseñas: el total sale del perfil de Google que sincroniza WP Social Ninja (el de más reseñas) y se actualiza solo.
   const prod = '/product/jean-bota-campana-flare-dama-tiro-alto/';
   const info0 = php('echo json_encode(get_option("wpsr_reviews_google_business_info", null));');
-  php('update_option("wpsr_reviews_google_business_info", ["viejo"=>["total_rating"=>40,"average_rating"=>4.8],"actual"=>["total_rating"=>92,"average_rating"=>4.9]]);');
+  php('update_option("wpsr_reviews_google_business_info", ["viejo"=>["total_rating"=>40,"average_rating"=>4.8],"actual"=>["total_rating"=>92,"average_rating"=>4.9]]); update_option("bk_test_reviews_total", 1);');
   await anon.goto(B + prod);
   ok(/92 reseñas en Google/.test(await anon.textContent('body')), 'reseñas: toma el perfil con más reseñas (92) al guardar WP Social Ninja');
   php('update_option("wpsr_reviews_google_business_info", ["actual"=>["total_rating"=>95,"average_rating"=>4.9]]);');
   await anon.goto(B + prod);
   ok(/95 reseñas en Google/.test(await anon.textContent('body')), 'reseñas: nueva sincronización → el número cambia sin esperar');
+  php('delete_option("bk_test_reviews_total");');
+  await anon.goto(B + prod);
+  const score = (await anon.textContent('.bk-reviews__score')).replace(/\s+/g, ' ').trim();
+  ok(/4[,.]9 en Google$/.test(score) && !/reseñas/.test(score), `por defecto: solo calificación y estrellas "en Google", sin el total (${score})`);
+  ok(await anon.locator('.bk-review__date').count() === 0 && await anon.locator('.bk-review').count() > 0, 'las tarjetas de reseñas no muestran la fecha');
   php(info0 === 'null' ? 'delete_option("wpsr_reviews_google_business_info"); bk_google_reviews_flush();' : `update_option("wpsr_reviews_google_business_info", json_decode(base64_decode("${Buffer.from(info0).toString('base64')}"), true));`);
 
   // 4. Mi cuenta con el CSS del tema de producción: textos y botones legibles, también al pasar el mouse.

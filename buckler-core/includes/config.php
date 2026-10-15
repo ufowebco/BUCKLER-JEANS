@@ -33,6 +33,7 @@ function bk_config( $key = null ) {
 				'instagram'     => 'denimbluecolombia',
 				'maps_url'      => 'https://share.google/8loyXYXpFXVM6biHe',
 				'review_url'    => 'https://g.page/r/CRGTFeM2O9V5EAE/review',
+				'reviews_show_total' => false, // true: "78 reseñas en Google" (el total que guarda WP Social Ninja).
 				// IDs de las cuentas de pauta (entregados por el cliente 2026-10-15). SEO y ADS revisa que estén en el sitio.
 				'ads_ids'       => array(
 					'meta_pixel'      => '339783714479962',

@@ -239,3 +239,6 @@ add_action(
 	},
 	20
 );
+
+// Pruebas del total de reseñas ("92 reseñas en Google"): por defecto apagado (reviews_show_total).
+add_filter( 'bk_site_config', static fn( $c ) => get_option( 'bk_test_reviews_total' ) ? array_merge( $c, array( 'reviews_show_total' => true ) ) : $c );
