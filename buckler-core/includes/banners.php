@@ -203,7 +203,6 @@ function bk_shortcode_hero( $atts ) {
 					<?php endfor; ?>
 				</div>
 				<button type="button" class="bk-carousel__btn bk-carousel__next" aria-label="<?php esc_attr_e( 'Banner siguiente', 'buckler-core' ); ?>" aria-controls="<?php echo esc_attr( $id ); ?>"><?php echo bk_icon_svg( 'lucide:chevron-right' ); // phpcs:ignore ?></button>
-				<button type="button" class="bk-carousel__btn bk-carousel__toggle" aria-label="<?php esc_attr_e( 'Pausar banners', 'buckler-core' ); ?>"><?php echo bk_icon_svg( 'lucide:pause' ) . bk_icon_svg( 'lucide:play' ); // phpcs:ignore ?></button>
 			</div>
 		<?php endif; ?>
 	</section>

@@ -91,6 +91,9 @@ const login = async (p, u, pw) => { await p.goto(B + '/wp-login.php?redirect_to=
   ok((await a.textContent('.bk-g-card:nth-of-type(2)')).includes('_wcdn_invoice_number'), 'detector encuentra _wcdn_invoice_number');
   await a.locator('tr', { hasText: '_wcdn_invoice_number' }).locator('[data-use="consecutivo"]').click();
   await a.click('#bk-g-sf button'); await a.waitForTimeout(1000);
+  // La columna aparece si algún pedido de la página tiene consecutivo: se asegura en el más reciente
+  // (otras suites crean compras de prueba sin consecutivo).
+  require('child_process').execSync(`php -r 'require "/tmp/claude-0/bk-local/site/wp-load.php"; $o = wc_get_orders(["limit"=>1,"orderby"=>"date","order"=>"DESC"])[0]; if (!$o->get_meta("_wcdn_invoice_number")) { $o->update_meta_data("_wcdn_invoice_number","PEDIDO-9999"); $o->save(); }'`);
   await a.goto(B + '/gestion-tienda/#pedidos'); await a.waitForSelector('.bk-g-orders');
   ok((await a.textContent('.bk-g-orders thead')).includes('Consecutivo'), 'columna Consecutivo al configurarlo');
   await a.fill('input[name="q"]', '2405'); await a.waitForTimeout(1200);

@@ -57,3 +57,22 @@ if ( empty( $acf['linea_slim_pc'] ) ) {
 	}
 }
 echo "lineas: " . ( empty( $acf['linea_slim_pc'] ) ? 'no' : 'sí' ) . "\n";
+// Reseñas de Google de ejemplo con el esquema de WP Social Ninja (tabla {prefix}wpsr_reviews).
+global $wpdb;
+$t = $wpdb->prefix . 'wpsr_reviews';
+$wpdb->query( "CREATE TABLE IF NOT EXISTS `$t` ( id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, platform_name VARCHAR(255), source_id VARCHAR(255), reviewer_name VARCHAR(255), reviewer_url VARCHAR(255), reviewer_img TEXT, reviewer_text LONGTEXT, review_time TIMESTAMP NULL, rating INT, review_approved INT DEFAULT 1 )" );
+if ( ! (int) $wpdb->get_var( "SELECT COUNT(*) FROM `$t`" ) ) {
+	$rev = array(
+		array( 'Reseña Uno', 'Texto de prueba de una reseña positiva sobre la talla y la entrega.', 5 ),
+		array( 'Reseña Dos', 'Texto de prueba: el jean llegó rápido y la talla quedó perfecta.', 5 ),
+		array( 'Reseña Tres', 'Texto de prueba con una opinión de cuatro estrellas.', 4 ),
+		array( 'Reseña Cuatro', 'Texto de prueba que no debe mostrarse por tener 2 estrellas.', 2 ),
+		array( 'Reseña Cinco', 'Texto de prueba largo para comprobar el recorte de varias líneas en la tarjeta de reseña. Texto de prueba largo para comprobar el recorte de varias líneas en la tarjeta de reseña. Texto de prueba largo para comprobar el recorte.', 5 ),
+	);
+	foreach ( $rev as $i => $r ) {
+		$wpdb->insert( $t, array( 'platform_name' => 'google', 'reviewer_name' => $r[0], 'reviewer_text' => $r[1], 'rating' => $r[2], 'review_time' => gmdate( 'Y-m-d H:i:s', time() - ( $i + 1 ) * 20 * DAY_IN_SECONDS ), 'review_approved' => 1 ) );
+	}
+}
+delete_transient( 'bk_greviews_10' );
+delete_transient( 'bk_greviews_8' );
+echo 'reseñas: ' . (int) $wpdb->get_var( "SELECT COUNT(*) FROM `$t`" ) . "\n";

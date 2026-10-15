@@ -131,10 +131,10 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
 ## buckler-core (plugin propio)
 **Módulos (Ajustes → Buckler Core, `includes/modules.php`)**: todo APAGADO al instalar; `bk_on('clave')`;
 cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa clase). Claves: layout,
-clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned. `define('BK_MODULES_ALL', true)` enciende todo
+clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.11.1 → `dist/buckler-core-0.11.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.12.0 → `dist/buckler-core-0.12.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -229,6 +229,39 @@ Versión actual 0.11.1 → `dist/buckler-core-0.11.1.zip` (`tools/build-plugin.s
 - **0.11.1 (revisión en vivo de la 0.11.0, todo OK):** un snippet del tema añade `<span class="minus|plus">` a cada
   `.quantity` (jQuery, no accesible) → en el carrito se ocultan y quedan los `.bk-qty-btn` (simulado en los fixtures).
   Índice de búsqueda en producción: 99 productos, 40 KB, LiteSpeed lo sirve en caché (0,17 s). Miniaturas sin lazy.
+- **0.12.0 (ronda de 10 puntos, 2026-10-15):**
+  - Barra de anuncios **verde lima** (`bk-announce`): carrusel de 3 (≥1280 px) / 2 (≥700) / 1 anuncio, alineado a la
+    izquierda, avanza de a uno cada 4 s (pausa con cursor/foco, quieto con reduced-motion), clones aria-hidden para el
+    bucle; sellos `bk_config('badges')` a la derecha en escritorio y dentro de la rotación en móvil. Sin botón de pausa
+    (decisión del cliente; también se quitó del hero). Textos acortados para que quepan en 1/3.
+  - Ficha: sin pestañas ni comentarios (`bk_pdp_description`, `comments_open` falso en productos; la pestaña "Guía de
+    Tallas" venía de otro plugin), reseñas de Google debajo, fotos 2..n con `data-bk-src` (pages.js las carga al
+    acercarse; el lazy nativo bajaba todas en el carrusel horizontal) y póster del video diferido. Video: autoplay
+    silenciado en bucle al seleccionarlo, sin controles, clic/Enter/Espacio pausa, icono de play si está pausado.
+  - Botón desactivado: anulado el morado de Woo (`:is(.disabled,:disabled,[disabled]):hover`).
+  - Reseñas (`includes/reviews.php`, siempre cargado): lee `{prefix}wpsr_reviews` de WP Social Ninja (google,
+    aprobadas, ≥4★, transitorio `bk_greviews_N` 6 h) + promedio/total de la opción `wpsr_reviews_google_business_info`
+    si existe; respaldo: shortcode `[wp_social_ninja id="3143" platform="reviews"]` (`reviews_template`). **Esquema
+    supuesto, verificar en producción.** Shortcode `[bk_resenas]`. En ficha y carrito.
+  - Promo "Califícanos en Google y gana 10 %" (`review_promo` on/incentive/discount, `review_url` =
+    g.page/r/CRGTFeM2O9V5EAE/review): bloque de reseñas, gracias, Mi cuenta y anuncio de la barra. **Aviso dado al
+    cliente: Google prohíbe reseñas incentivadas**; `incentive => false` deja solo la invitación.
+  - Mi cuenta: acceso en 2 columnas (formulario + "En tu cuenta puedes", ayuda por WhatsApp); con sesión, plantillas
+    propias `templates/woocommerce/myaccount/{navigation,dashboard}.php` vía `wc_get_template` (solo ruta account):
+    usuaria + menú con iconos (sin Descargas, nombres claros; chips horizontales en móvil), último pedido con estado,
+    guía `_bk_tracking` y miniaturas, accesos rápidos, promo. Rejilla con columnas explícitas.
+  - Velocidad: `bk_pages_diet_route()` (filtro `bk_pages_diet_rules`): pasarelas/Addi solo en checkout, YayPricing
+    solo ficha/carrito/checkout, selectWoo y CSS general de Woo solo en carrito/checkout/cuenta, fuera photoswipe/
+    flexslider/zoom/wc-single-product/comment-reply/cart-fragments/zxcvbn (800 KB en Mi cuenta)/Google Fonts/
+    Divi/tema hijo, dashicons sin barra de admin.
+  - **Caché (módulo `cache`, hallazgo 2026-10-15: en producción ya no había caché de HTML — sin LiteSpeed Cache ni
+    Ufocache — y Facebook ×2 + otra cookie `database_validation` ponían Set-Cookie en cada página; TTFB ~2 s):**
+    `includes/page-cache.php`. document.php va entero en búfer; `bk_cache_headers()` al final: rutas home/shop/
+    product/faq/policy, GET, sin sesión/carrito/avisos → quita Set-Cookie, `X-LiteSpeed-Cache-Control: public,
+    max-age=36000`, `X-LiteSpeed-Tag: bk,bk_{ruta}`, `X-Bk-Cache: store`; resto `no-cache`. Purga `X-LiteSpeed-Purge: *`
+    en `bk_catalog_flushed` (nuevo action de bk_catalog_flush), save_post, ACF, módulos, menús, ajustes Woo; si no hay
+    respuesta HTTP (cron) queda `bk_cache_purge_pending` para la siguiente. Botón "Vaciar caché de páginas" en
+    Ajustes → Buckler Core. WordPress corta las peticiones HEAD antes de la plantilla (probar con GET).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -273,7 +306,7 @@ Versión actual 0.11.1 → `dist/buckler-core-0.11.1.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 61 = 275 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 82 = 296 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

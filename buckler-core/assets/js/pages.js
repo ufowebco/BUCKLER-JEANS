@@ -26,16 +26,50 @@
 			if (e.key === 'ArrowRight') { e.preventDefault(); go(current() + 1); }
 			if (e.key === 'ArrowLeft') { e.preventDefault(); go(current() - 1); }
 		});
+		// Fotos diferidas (data-bk-src): se cargan la actual y la siguiente; el póster del video, al acercarse.
+		const load = (k) => {
+			const sl = slides[k];
+			if (!sl) return;
+			sl.querySelectorAll('img[data-bk-src]').forEach((img) => {
+				if (img.dataset.bkSrcset) img.srcset = img.dataset.bkSrcset;
+				img.src = img.dataset.bkSrc;
+				img.removeAttribute('data-bk-src');
+			});
+			const v = sl.querySelector('video[data-poster]');
+			if (v) { v.poster = v.dataset.poster; v.removeAttribute('data-poster'); }
+		};
+		// Video: se reproduce solo (silenciado, en bucle, sin controles) al llegar a él; tocarlo lo pausa.
+		let userPaused = false;
+		const sync = (i) => {
+			load(i); load(i + 1);
+			slides.forEach((s, k) => {
+				const v = s.querySelector('video');
+				if (!v) return;
+				if (k === i && !reduce && !userPaused) v.play().catch(() => {});
+				else if (k !== i && !v.paused) v.pause();
+			});
+		};
+		$$('video', track).forEach((v) => {
+			const toggle = () => { if (v.paused) { userPaused = false; v.play().catch(() => {}); } else { userPaused = true; v.pause(); } };
+			v.addEventListener('click', toggle);
+			v.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
+			v.addEventListener('play', () => v.closest('.bk-pg__slide').classList.remove('is-paused'));
+			v.addEventListener('pause', () => v.closest('.bk-pg__slide').classList.add('is-paused'));
+		});
+		thumbs.forEach((b) => ['pointerenter', 'focus'].forEach((ev) => b.addEventListener(ev, () => load(Number(b.dataset.go)), { passive: true })));
 		let raf = 0;
+		let last = 0;
 		track.addEventListener('scroll', () => {
 			cancelAnimationFrame(raf);
 			raf = requestAnimationFrame(() => {
 				const i = current();
 				thumbs.forEach((b, k) => b.toggleAttribute('aria-current', k === i));
-				// El video solo suena/corre cuando está a la vista.
-				slides.forEach((s, k) => { const v = s.querySelector('video'); if (v && k !== i && !v.paused) v.pause(); });
+				if (i !== last) { last = i; sync(i); }
 			});
 		}, { passive: true });
+		// La segunda foto se adelanta cuando la página ya cargó (deslizar se siente inmediato).
+		const idle = window.requestIdleCallback || ((f) => setTimeout(f, 1200));
+		window.addEventListener('load', () => idle(() => load(1)), { once: true });
 	});
 
 	/* --- Tallas: el <select> de WooCommerce se muestra como botones (radiogroup) ---- */
@@ -176,7 +210,11 @@
 			if (refocus) {
 				const el = form.querySelector(`input[name="${refocus.name}"]`);
 				const target = el && (refocus.step ? el.closest('.quantity').querySelector(`.bk-qty-btn[data-step="${refocus.step}"]`) : el);
-				if (target && !target.disabled) target.focus();
+				if (target && !target.disabled) {
+					target.focus();
+					// WooCommerce puede mover el foco al aviso "Carrito actualizado": se reafirma.
+					setTimeout(() => { if (document.activeElement !== target && target.isConnected) target.focus(); }, 300);
+				}
 				refocus = null;
 			}
 		};

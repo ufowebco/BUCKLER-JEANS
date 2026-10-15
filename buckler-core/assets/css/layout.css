@@ -79,58 +79,113 @@
 
 /* Barra de anuncios */
 .bk-announce {
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	min-height: 36px;
-	padding: 0 44px;
-	background: var(--bk-navy);
-	color: #fff;
+	background: var(--bk-lime);
+	color: var(--bk-navy);
 	font-size: 13px;
-	font-weight: 600;
+	font-weight: 700;
 	letter-spacing: .01em;
 }
 
+.bk-announce__inner {
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	max-width: var(--bk-wrap);
+	min-height: 36px;
+	margin: 0 auto;
+	padding: 0 var(--bk-gutter);
+}
+
+/* Anuncios: carrusel de 3 en escritorio, 2 en tableta y 1 en el celular (--per lo lee layout.js). */
+.bk-announce__viewport {
+	--per: 1;
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+}
+
 .bk-announce__list {
-	display: grid;
-	text-align: center;
+	display: flex;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	transition: transform .6s var(--bk-ease, ease);
 }
 
 .bk-announce__item {
-	grid-area: 1 / 1;
-	opacity: 0;
-	visibility: hidden;
-	transition: opacity .4s ease, visibility .4s;
+	flex: 0 0 calc(100% / var(--per));
+	min-width: 0;
+	padding-right: 20px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
-.bk-announce__item.is-active {
-	opacity: 1;
-	visibility: visible;
+.bk-announce__item.is-badge {
+	display: flex;
+	align-items: center;
+	gap: 6px;
 }
 
-.bk-announce__toggle {
-	position: absolute;
-	right: 8px;
-	display: grid;
-	place-items: center;
-	width: 28px;
-	height: 28px;
-	padding: 0;
-	border: 0;
-	border-radius: 50%;
-	background: transparent;
-	color: var(--bk-lime);
-	cursor: pointer;
+.bk-announce__item a {
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 2px;
 }
 
-.bk-announce__toggle .bk-icon--lucide-play,
-.bk-announce__toggle.is-paused .bk-icon--lucide-pause {
+.bk-announce__item svg,
+.bk-announce__badges svg {
+	flex: none;
+}
+
+.bk-announce__badges {
 	display: none;
+	flex: none;
+	gap: 20px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
-.bk-announce__toggle.is-paused .bk-icon--lucide-play {
-	display: inline-block;
+.bk-announce__badges li {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	white-space: nowrap;
+}
+
+.bk-icon--flag-co-4x3 {
+	width: 20px;
+	height: 15px;
+	border-radius: 2px;
+	box-shadow: 0 0 0 1px rgb(26 57 85 / .2);
+}
+
+@media (min-width: 700px) {
+	.bk-announce__viewport {
+		--per: 2;
+	}
+}
+
+/* Escritorio: 3 anuncios a la vez y los sellos fijos a la derecha (fuera de la rotación). */
+@media (min-width: 1100px) {
+	.bk-announce {
+		font-size: 12.5px;
+	}
+
+	.bk-announce__item.is-badge {
+		display: none;
+	}
+
+	.bk-announce__badges {
+		display: flex;
+	}
+}
+
+@media (min-width: 1280px) {
+	.bk-announce__viewport {
+		--per: 3;
+	}
 }
 
 /* Barra principal */
@@ -985,7 +1040,7 @@ html.bk-sc-open .bk-fcart { visibility: hidden; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.bk-announce__item,
+	.bk-announce__list,
 	.bk-drawer__panel,
 	.bk-cart-link.is-bump .bk-cart-count,
 	.bk-mega__card {

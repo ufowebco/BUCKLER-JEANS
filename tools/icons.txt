@@ -37,3 +37,15 @@ lucide:pencil
 lucide:arrow-left
 lucide:copy
 lucide:external-link
+lucide:log-out
+lucide:layout-dashboard
+lucide:circle-help
+lucide:message-circle
+lucide:sparkles
+lucide:gift
+lucide:lock
+lucide:receipt
+lucide:rotate-ccw
+lucide:volume-x
+flag:co-4x3
+simple-icons:google

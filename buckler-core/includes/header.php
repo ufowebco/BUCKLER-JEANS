@@ -101,6 +101,19 @@ function bk_search_form( $id ) {
 }
 
 /**
+ * Un anuncio de la barra: texto o [texto, url]. La promoción de reseñas se añade sola (bk_review_promo_on()).
+ *
+ * @param string|array $m Anuncio.
+ * @return string
+ */
+function bk_announce_item( $m ) {
+	if ( is_array( $m ) ) {
+		return '<a href="' . esc_url( $m[1] ) . '"' . ( 0 === strpos( (string) $m[1], 'http' ) && false === strpos( (string) $m[1], (string) wp_parse_url( home_url(), PHP_URL_HOST ) ) ? ' target="_blank" rel="noopener"' : '' ) . '>' . esc_html( $m[0] ) . '</a>';
+	}
+	return esc_html( (string) $m );
+}
+
+/**
  * Shortcode [bk_header announcements="1" sticky="1"].
  *
  * @param array $atts Atributos.
@@ -123,6 +136,9 @@ function bk_shortcode_header( $atts ) {
 	$cart  = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : bk_url( '/carrito/' );
 	$acct  = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : bk_url( '/mi-cuenta/' );
 	$msgs  = (array) bk_config( 'announcements' );
+	if ( function_exists( 'bk_review_promo_on' ) && bk_review_promo_on() ) {
+		$msgs[] = array( bk_review_promo_incentive() ? sprintf( /* translators: %s: descuento */ __( 'Califica en Google y gana %s', 'buckler-core' ), ( (array) bk_config( 'review_promo' ) )['discount'] ?? '10 %' ) : __( 'Califícanos en Google', 'buckler-core' ), (string) bk_config( 'review_url' ) );
+	}
 	$logo  = bk_upload_img(
 		(string) bk_config( 'logo_dark' ),
 		(string) bk_config( 'brand' ),
@@ -141,15 +157,27 @@ function bk_shortcode_header( $atts ) {
 	?>
 	<div class="bk-header<?php echo $atts['sticky'] ? ' is-sticky' : ''; ?>" data-bk-header>
 		<?php if ( $atts['announcements'] && $msgs ) : ?>
-			<div class="bk-announce" aria-label="<?php esc_attr_e( 'Anuncios', 'buckler-core' ); ?>" role="region">
-				<ul class="bk-announce__list">
-					<?php foreach ( $msgs as $i => $m ) : ?>
-						<li class="bk-announce__item<?php echo 0 === $i ? ' is-active' : ''; ?>"><?php echo esc_html( $m ); ?></li>
-					<?php endforeach; ?>
-				</ul>
-				<?php if ( count( $msgs ) > 1 ) : ?>
-					<button type="button" class="bk-announce__toggle" aria-label="<?php esc_attr_e( 'Pausar anuncios', 'buckler-core' ); ?>" data-label-play="<?php esc_attr_e( 'Reanudar anuncios', 'buckler-core' ); ?>" data-label-pause="<?php esc_attr_e( 'Pausar anuncios', 'buckler-core' ); ?>"><?php echo bk_icon_svg( 'lucide:pause', 14 ) . bk_icon_svg( 'lucide:play', 14 ); // phpcs:ignore ?></button>
-				<?php endif; ?>
+			<?php $badges = (array) bk_config( 'badges' ); ?>
+			<div class="bk-announce" role="region" aria-label="<?php esc_attr_e( 'Anuncios', 'buckler-core' ); ?>">
+				<div class="bk-announce__inner">
+					<div class="bk-announce__viewport" data-bk-announce>
+						<ul class="bk-announce__list">
+							<?php foreach ( $msgs as $m ) : ?>
+								<li class="bk-announce__item"><?php echo bk_announce_item( $m ); // phpcs:ignore WordPress.Security.EscapeOutput ?></li>
+							<?php endforeach; ?>
+							<?php foreach ( $badges as $b ) : ?>
+								<li class="bk-announce__item is-badge"><?php echo bk_icon_svg( $b[0], 16 ) . esc_html( $b[1] ); // phpcs:ignore ?></li>
+							<?php endforeach; ?>
+						</ul>
+					</div>
+					<?php if ( $badges ) : ?>
+						<ul class="bk-announce__badges">
+							<?php foreach ( $badges as $b ) : ?>
+								<li><?php echo bk_icon_svg( $b[0], 16 ) . esc_html( $b[1] ); // phpcs:ignore ?></li>
+							<?php endforeach; ?>
+						</ul>
+					<?php endif; ?>
+				</div>
 			</div>
 		<?php endif; ?>
 

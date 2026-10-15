@@ -9,6 +9,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $bk_route = bk_pages_route();
+ob_start(); // Todo el documento en búfer: las cabeceras de caché se deciden al final (bk_cache_headers()).
 ob_start();
 wp_head();
 $bk_head = bk_pages_clean_head( (string) ob_get_clean() );
@@ -33,3 +34,8 @@ echo bk_pages_clean_head( (string) ob_get_clean() ); // phpcs:ignore WordPress.S
 ?>
 </body>
 </html>
+<?php
+if ( function_exists( 'bk_cache_headers' ) ) {
+	bk_cache_headers();
+}
+ob_end_flush();

@@ -12,35 +12,55 @@
 	const desktop = window.matchMedia('(min-width: 1100px)');
 	const root = document.documentElement;
 
-	/* --- Barra de anuncios: rota cada 5 s, se pausa con botón, hover o foco ---- */
-	const announce = header.querySelector('.bk-announce');
-	if (announce) {
-		const items = [...announce.querySelectorAll('.bk-announce__item')];
-		const toggle = announce.querySelector('.bk-announce__toggle');
+	/* --- Barra de anuncios: carrusel de --per anuncios (3 escritorio / 1 celular) -----
+	 * Avanza de a uno cada 4 s; se detiene con el cursor o el foco encima y no se mueve si la persona
+	 * pidió reducir el movimiento. Los clones del final (aria-hidden) permiten el bucle sin salto visible. */
+	const vp = header.querySelector('[data-bk-announce]');
+	if (vp) {
+		const list = vp.querySelector('.bk-announce__list');
+		const originals = [...list.children];
+		let per = 1;
+		let items = [];
 		let i = 0;
 		let timer = 0;
-		let paused = reduceMotion.matches;
-		let hover = false;
-		const show = (n) => {
-			items[i].classList.remove('is-active');
-			i = (n + items.length) % items.length;
-			items[i].classList.add('is-active');
+		let hold = false;
+		const visible = () => originals.filter((el) => getComputedStyle(el).display !== 'none');
+		const build = () => {
+			list.querySelectorAll('.is-clone').forEach((c) => c.remove());
+			per = parseInt(getComputedStyle(vp).getPropertyValue('--per'), 10) || 1;
+			items = visible();
+			items.slice(0, per).forEach((el) => {
+				const c = el.cloneNode(true);
+				c.classList.add('is-clone');
+				c.setAttribute('aria-hidden', 'true');
+				c.querySelectorAll('a').forEach((a) => a.setAttribute('tabindex', '-1'));
+				list.appendChild(c);
+			});
+			i = 0;
+			move(false);
+		};
+		const move = (anim) => {
+			list.style.transition = anim ? '' : 'none';
+			// La lista mide lo mismo que el visor: cada paso es 100 / per % de su ancho.
+			list.style.transform = `translateX(${-(100 / per) * i}%)`;
+		};
+		const step = () => {
+			if (hold || document.hidden || items.length <= per) return;
+			i += 1;
+			move(true);
+			if (i === items.length) {
+				setTimeout(() => { i = 0; move(false); }, 650);
+			}
 		};
 		const run = () => {
 			clearInterval(timer);
-			if (!paused && !hover && items.length > 1) timer = setInterval(() => show(i + 1), 5000);
+			if (!reduceMotion.matches) timer = setInterval(step, 4000);
 		};
-		const label = () => {
-			if (!toggle) return;
-			toggle.classList.toggle('is-paused', paused);
-			toggle.setAttribute('aria-label', paused ? toggle.dataset.labelPlay : toggle.dataset.labelPause);
-		};
-		toggle?.addEventListener('click', () => { paused = !paused; label(); run(); });
-		announce.addEventListener('mouseenter', () => { hover = true; run(); });
-		announce.addEventListener('mouseleave', () => { hover = false; run(); });
-		announce.addEventListener('focusin', () => { hover = true; run(); });
-		announce.addEventListener('focusout', () => { hover = false; run(); });
-		label();
+		['mouseenter', 'focusin'].forEach((ev) => vp.addEventListener(ev, () => { hold = true; }));
+		['mouseleave', 'focusout'].forEach((ev) => vp.addEventListener(ev, () => { hold = false; }));
+		let rt = 0;
+		window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(build, 150); }, { passive: true });
+		build();
 		run();
 	}
 

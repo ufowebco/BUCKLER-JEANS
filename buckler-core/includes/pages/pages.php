@@ -21,6 +21,8 @@ add_filter( 'template_include', 'bk_pages_template', 100000 );
 add_action( 'wp_enqueue_scripts', 'bk_pages_assets', 30 );
 add_action( 'wp_enqueue_scripts', 'bk_pages_diet', 9999 );
 add_action( 'wp_print_footer_scripts', 'bk_pages_diet', 1 );
+add_action( 'wp_enqueue_scripts', 'bk_pages_diet_route', 10000 );
+add_action( 'wp_print_footer_scripts', 'bk_pages_diet_route', 2 );
 add_action( 'wp_head', 'bk_pages_preload', 1 );
 
 /**
@@ -93,6 +95,10 @@ function bk_pages_template( $template ) {
 	if ( 'cart' === $route ) {
 		bk_cart_hooks();
 	}
+	if ( 'account' === $route ) {
+		add_filter( 'wc_get_template', 'bk_account_templates', 10, 2 );
+		add_filter( 'woocommerce_account_menu_items', 'bk_account_menu_items', 20 );
+	}
 	return BK_DIR . 'templates/pages/document.php';
 }
 
@@ -146,6 +152,54 @@ function bk_pages_diet() {
 }
 
 /**
+ * Dieta por ruta: cada página carga solo lo que usa. Reglas [patrón de handle o URL, rutas donde SÍ se carga].
+ * Pasarelas solo en el pago; formularios de país/dirección (selectWoo) en carrito, pago y cuenta; CSS general
+ * de WooCommerce solo donde hay formularios de Woo; galería de Woo (photoswipe/flexslider/zoom), fragmentos del
+ * carrito y fuentes de Google en ninguna (hay galería, carrito y fuente propios). Filtro: bk_pages_diet_rules.
+ */
+function bk_pages_diet_route() {
+	$route = bk_pages_route();
+	if ( ! $route ) {
+		return;
+	}
+	$forms = array( 'cart', 'checkout', 'account' );
+	$rules = (array) apply_filters(
+		'bk_pages_diet_rules',
+		array(
+			// Pasarelas de pago y Addi (la línea de cuotas de las tarjetas y la ficha es propia).
+			array( '#/plugins/(bold-pagos-en-linea|rapyd-payments-plugin-for-woocommerce|buy-now-pay-later-addi|wompi[^/]*)/#', array( 'checkout' ) ),
+			// Precios dinámicos: solo donde se compra.
+			array( '#/plugins/yaypricing-pro/#', array( 'product', 'cart', 'checkout' ) ),
+			// Formularios de dirección.
+			array( '#^(selectWoo|select2|wc-country-select|wc-address-i18n|wc-checkout|wc-custom-place-order-button)$#', $forms ),
+			array( '#^(woocommerce-general|woocommerce-layout|woocommerce-smallscreen)$#', $forms ),
+			array( '#^(jquery-blockui|wc-add-to-cart)$#', array( 'product', 'cart', 'checkout', 'account' ) ),
+			// Galería, pestañas y comentarios de Woo: la ficha tiene los suyos.
+			array( '#^(photoswipe|photoswipe-ui-default|photoswipe-default-skin|flexslider|zoom|wc-zoom|wc-flexslider|wc-photoswipe|wc-photoswipe-ui-default|wc-single-product|comment-reply)$#', array() ),
+			// Fragmentos del carrito (el contador usa la Store API) y medidor de contraseñas (zxcvbn, 800 KB).
+			array( '#^(wc-cart-fragments|wc-password-strength-meter|password-strength-meter|zxcvbn-async)$#', array() ),
+			// Fuentes de Google (la tienda usa Manrope local), Divi y el tema hijo (sus snippets PHP siguen activos).
+			array( '#fonts\.googleapis\.com|/themes/Divi/|/themes/buckler/#', array() ),
+		)
+	);
+	foreach ( array( wp_styles(), wp_scripts() ) as $deps ) {
+		foreach ( (array) $deps->queue as $handle ) {
+			$src = isset( $deps->registered[ $handle ] ) ? (string) $deps->registered[ $handle ]->src : '';
+			foreach ( $rules as $r ) {
+				if ( ( preg_match( $r[0], $handle ) || ( '' !== $src && preg_match( $r[0], $src ) ) ) && ! in_array( $route, (array) $r[1], true ) ) {
+					$deps->dequeue( $handle );
+					break;
+				}
+			}
+		}
+	}
+	// Dashicons solo con la barra de administración.
+	if ( ! is_admin_bar_showing() ) {
+		wp_dequeue_style( 'dashicons' );
+	}
+}
+
+/**
  * Quita del <head> los estilos en línea de Divi que no pasan por wp_enqueue (CSS crítico, personalizador).
  *
  * @param string $html Salida de wp_head().
@@ -182,7 +236,41 @@ function bk_pdp_hooks() {
 	remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
 	add_action( 'woocommerce_after_single_product_summary', 'bk_pdp_related', 20 );
 
-	add_filter( 'woocommerce_product_tabs', 'bk_pdp_tabs', 98 );
+	// Sin pestañas: solo la descripción (sin comentarios ni pestañas de otros plugins, como la guía de tallas,
+	// que ya está en el botón junto a las tallas) y, debajo, reseñas de Google.
+	remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10 );
+	add_action( 'woocommerce_after_single_product_summary', 'bk_pdp_description', 10 );
+	add_action( 'woocommerce_after_single_product_summary', 'bk_pdp_reviews', 15 );
+	add_filter( 'comments_open', 'bk_pdp_no_comments', 20, 2 );
+}
+
+/**
+ * Comentarios cerrados en la ficha (no se muestran ni se aceptan desde la página).
+ *
+ * @param bool $open    Abierto.
+ * @param int  $post_id Post.
+ * @return bool
+ */
+function bk_pdp_no_comments( $open, $post_id ) {
+	return 'product' === get_post_type( $post_id ) ? false : $open;
+}
+
+/**
+ * Descripción del producto (sin pestañas).
+ */
+function bk_pdp_description() {
+	$content = apply_filters( 'the_content', get_the_content() ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
+	if ( '' === trim( wp_strip_all_tags( (string) $content ) ) ) {
+		return;
+	}
+	echo '<section class="bk-pdp__desc" aria-labelledby="bk-desc-title"><h2 id="bk-desc-title" class="bk-section-title">' . esc_html__( 'Descripción', 'buckler-core' ) . '</h2><div class="bk-prose">' . $content . '</div></section>'; // phpcs:ignore WordPress.Security.EscapeOutput
+}
+
+/**
+ * Reseñas de Google y promoción en la ficha.
+ */
+function bk_pdp_reviews() {
+	echo bk_reviews_block( array( 'context' => 'pdp', 'limite' => 10 ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 }
 
 /**
@@ -332,6 +420,45 @@ function bk_pdp_crumbs() {
 }
 
 /* ---------------------------------------------------------------------------
+ * Mi cuenta
+ * ------------------------------------------------------------------------- */
+
+/**
+ * Plantillas propias del menú y del escritorio de Mi cuenta.
+ *
+ * @param string $located       Ruta.
+ * @param string $template_name Plantilla de Woo.
+ * @return string
+ */
+function bk_account_templates( $located, $template_name ) {
+	$own = array( 'myaccount/navigation.php', 'myaccount/dashboard.php' );
+	return in_array( $template_name, $own, true ) ? BK_DIR . 'templates/woocommerce/' . $template_name : $located;
+}
+
+/**
+ * Menú de la cuenta: sin "Descargas" (la tienda no vende archivos) y con nombres claros.
+ *
+ * @param array $items Enlaces.
+ * @return array
+ */
+function bk_account_menu_items( $items ) {
+	unset( $items['downloads'] );
+	$names = array(
+		'dashboard'       => __( 'Resumen', 'buckler-core' ),
+		'orders'          => __( 'Mis pedidos', 'buckler-core' ),
+		'edit-address'    => __( 'Direcciones', 'buckler-core' ),
+		'edit-account'    => __( 'Mis datos', 'buckler-core' ),
+		'customer-logout' => __( 'Cerrar sesión', 'buckler-core' ),
+	);
+	foreach ( $names as $k => $v ) {
+		if ( isset( $items[ $k ] ) ) {
+			$items[ $k ] = $v;
+		}
+	}
+	return $items;
+}
+
+/* ---------------------------------------------------------------------------
  * Carrito
  * ------------------------------------------------------------------------- */
 
@@ -344,6 +471,7 @@ function bk_cart_hooks() {
 	add_action( 'woocommerce_after_cart_table', 'bk_cart_continue' );
 	add_action( 'woocommerce_after_cart_totals', 'bk_cart_trust' );
 	add_action( 'woocommerce_after_cart', 'bk_cart_suggestions' );
+	add_action( 'woocommerce_after_cart', 'bk_cart_reviews', 20 );
 	add_action( 'woocommerce_cart_is_empty', 'bk_cart_empty_extra', 20 );
 }
 
@@ -439,6 +567,13 @@ function bk_cart_suggestions() {
 }
 
 /**
+ * Reseñas de Google y promoción bajo el carrito.
+ */
+function bk_cart_reviews() {
+	echo bk_reviews_block( array( 'context' => 'cart', 'limite' => 8 ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+}
+
+/**
  * Carrito vacío: accesos a las líneas y lo nuevo.
  */
 function bk_cart_empty_extra() {
@@ -452,6 +587,22 @@ function bk_cart_empty_extra() {
 		echo '<p class="bk-cart-empty-links">' . implode( '', $links ) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 	bk_cart_grid( bk_cart_suggest_ids( 4 ), __( 'Lo más nuevo', 'buckler-core' ) );
+}
+
+/**
+ * Imagen diferida de la galería: src/srcset pasan a data-bk-* (los carga pages.js) con <noscript> de respaldo.
+ *
+ * @param string $html <img> de wp_get_attachment_image().
+ * @return string
+ */
+function bk_pdp_defer_img( $html ) {
+	if ( ! $html ) {
+		return '';
+	}
+	$blank = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 2 3%22/%3E';
+	$lazy  = preg_replace( array( '/\s(src|srcset)="/', '/\sloading="lazy"/' ), array( ' data-bk-$1="', '' ), $html, -1 );
+	$lazy  = preg_replace( '/<img /', '<img src="' . $blank . '" ', (string) $lazy, 1 );
+	return $lazy . '<noscript>' . $html . '</noscript>';
 }
 
 /**
@@ -480,7 +631,7 @@ function bk_pdp_gallery() {
 			<?php foreach ( $ids as $i => $id ) : ?>
 				<figure class="bk-pg__slide" id="bk-pg-<?php echo (int) $i; ?>">
 					<?php
-					echo wp_get_attachment_image(
+					$bk_img = wp_get_attachment_image(
 						$id,
 						'woocommerce_single',
 						false,
@@ -491,12 +642,15 @@ function bk_pdp_gallery() {
 							'sizes'         => '(max-width: 900px) 100vw, 50vw',
 						)
 					);
+					// Fotos 2..n: se descargan solo cuando la persona se acerca a ellas (pages.js). El navegador
+					// trataría la carga diferida nativa como "cerca" en un carrusel horizontal y las bajaría todas.
+					echo $i ? bk_pdp_defer_img( $bk_img ) : $bk_img; // phpcs:ignore WordPress.Security.EscapeOutput
 					?>
 				</figure>
 			<?php endforeach; ?>
 			<?php if ( $video ) : ?>
 				<figure class="bk-pg__slide is-video" id="bk-pg-<?php echo count( $ids ); ?>">
-					<video muted playsinline loop controls preload="none" poster="<?php echo esc_url( $poster ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: producto */ __( 'Video de %s', 'buckler-core' ), $name ) ); ?>">
+					<video muted playsinline loop preload="none" data-poster="<?php echo esc_url( $poster ); ?>" tabindex="0" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: producto */ __( 'Video de %s. Se reproduce solo; toca para pausar.', 'buckler-core' ), $name ) ); ?>">
 						<source src="<?php echo esc_url( $video['url'] ); ?>" type="<?php echo esc_attr( $video['mime'] ); ?>">
 					</video>
 				</figure>
@@ -629,17 +783,6 @@ function bk_pdp_benefits() {
 		<li><?php echo bk_icon_svg( 'simple-icons:whatsapp', 20 ); // phpcs:ignore ?><span><a href="<?php echo esc_url( bk_whatsapp_url() ); ?>" target="_blank" rel="noopener"><?php esc_html_e( '¿Dudas con tu talla? Escríbenos por WhatsApp', 'buckler-core' ); ?></a></span></li>
 	</ul>
 	<?php
-}
-
-/**
- * Pestañas: descripción y reseñas (la "información adicional" solo repetía las tallas).
- *
- * @param array $tabs Pestañas.
- * @return array
- */
-function bk_pdp_tabs( $tabs ) {
-	unset( $tabs['additional_information'] );
-	return $tabs;
 }
 
 /**

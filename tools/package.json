@@ -5,5 +5,8 @@
   "devDependencies": {
     "@iconify-json/lucide": "1.2.137",
     "@iconify-json/simple-icons": "1.2.97"
+  },
+  "dependencies": {
+    "@iconify-json/flag": "^1.2.12"
   }
 }

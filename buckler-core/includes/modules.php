@@ -78,6 +78,12 @@ function bk_modules() {
 			'replaces' => 'Snippet "PALABRA - SKU POR REF"',
 			'woo'      => true,
 		),
+		'cache'     => array(
+			'label'    => 'Caché de páginas (LiteSpeed)',
+			'desc'     => 'Guarda en el servidor las páginas de buckler-core (inicio, tienda, ficha, FAQ y políticas) para visitantes sin sesión ni carrito: se entregan al instante. Quita las cookies que impedían la caché y la vacía sola al cambiar productos, stock, páginas o banners. Botón "Vaciar caché" abajo. Requiere Páginas limpias.',
+			'replaces' => 'LiteSpeed Cache / capa Ufocache',
+			'woo'      => true,
+		),
 		'abandoned' => array(
 			'label'    => 'Carritos abandonados',
 			'desc'     => 'Captura el correo en el checkout (con autorización) y envía 3 recordatorios. Menú: WooCommerce → Carritos abandonados.',
@@ -162,6 +168,13 @@ function bk_modules_page() {
 			</table>
 			<?php submit_button( 'Guardar módulos' ); ?>
 		</form>
+		<?php if ( bk_on( 'cache' ) ) : ?>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:8px">
+				<?php wp_nonce_field( 'bk_cache_purge' ); ?>
+				<input type="hidden" name="action" value="bk_cache_purge">
+				<?php submit_button( 'Vaciar caché de páginas', 'secondary', 'submit', false ); ?>
+			</form>
+		<?php endif; ?>
 	</div>
 	<?php
 }

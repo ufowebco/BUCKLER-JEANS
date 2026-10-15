@@ -89,6 +89,7 @@ function bk_catalog_flush( $product ) {
 	delete_transient( 'bk_card_' . $id );
 	wp_cache_set( 'bk_catalog_v', microtime( true ), 'bk' );
 	update_option( 'bk_catalog_v', (string) microtime( true ), false ); // Invalida el universo de la tienda.
+	do_action( 'bk_catalog_flushed', $id );
 }
 
 foreach ( array( 'woocommerce_update_product', 'woocommerce_update_product_variation', 'woocommerce_product_set_stock', 'woocommerce_variation_set_stock', 'woocommerce_product_set_stock_status', 'woocommerce_variation_set_stock_status', 'woocommerce_delete_product', 'woocommerce_trash_product' ) as $bk_hook ) {

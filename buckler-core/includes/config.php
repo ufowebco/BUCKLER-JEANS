@@ -32,7 +32,7 @@ function bk_config( $key = null ) {
 				'whatsapp_text' => 'Hola, acabo de visitar su sitio web y quisiera más información.',
 				'instagram'     => 'denimbluecolombia',
 				'maps_url'      => 'https://share.google/8loyXYXpFXVM6biHe',
-				'review_url'    => 'https://share.google/SLJE5jBd2NyT6HPgU',
+				'review_url'    => 'https://g.page/r/CRGTFeM2O9V5EAE/review',
 				'addi_url'      => 'https://preapproval.addi.com/?allySlug=addi-preapproval-pm',
 				'city'          => 'Medellín, Colombia',
 				'hours'         => array(
@@ -42,11 +42,25 @@ function bk_config( $key = null ) {
 				// Barra de anuncios (textos actuales del sitio).
 				'announcements' => array(
 					'Envíos gratis a todo el país',
-					'Paga con Addi en 3 cuotas con 0 % de interés',
+					'Paga con Addi: 3 cuotas sin interés',
 					'Paga con Wompi, Rapyd o Bold',
-					'Envíos a San Andrés Islas tienen costo adicional',
-					'Las prendas en descuento no tienen cambio',
+					'Envíos a San Andrés con costo adicional',
+					'Prendas en descuento sin cambio',
 				),
+				// Sellos a la derecha de la barra de anuncios (en el celular entran en la rotación).
+				'badges'        => array(
+					array( 'lucide:shopping-bag', '100 % tienda online' ),
+					array( 'flag:co-4x3', 'Producto 100 % colombiano' ),
+				),
+				// Promoción por calificar en Google (ver aviso de políticas de Google en el panel de ajustes).
+				// 'incentive' => false deja solo la invitación a calificar, sin descuento.
+				'review_promo'  => array(
+					'on'        => true,
+					'incentive' => true,
+					'discount'  => '10 %',
+				),
+				// Plantilla de reseñas de WP Social Ninja (respaldo si no se pueden leer las reseñas directamente).
+				'reviews_template' => 3143,
 				// Medios de pago: [archivo en uploads, texto alternativo].
 				'payments'      => array(
 					array( '/wp-content/uploads/2026/08/Medios-de-Pago-Denim-Blue-Buckler-1.webp', 'Addi' ),
@@ -142,10 +156,11 @@ function bk_upload_img( $path, $alt, $attrs = array() ) {
 /**
  * Enlace de WhatsApp con mensaje.
  *
+ * @param string $text Mensaje (vacío = el de la configuración).
  * @return string
  */
-function bk_whatsapp_url() {
-	return 'https://wa.me/' . rawurlencode( (string) bk_config( 'whatsapp' ) ) . '?text=' . rawurlencode( (string) bk_config( 'whatsapp_text' ) );
+function bk_whatsapp_url( $text = '' ) {
+	return 'https://wa.me/' . rawurlencode( (string) bk_config( 'whatsapp' ) ) . '?text=' . rawurlencode( '' !== $text ? $text : (string) bk_config( 'whatsapp_text' ) );
 }
 
 /**
