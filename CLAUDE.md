@@ -535,7 +535,7 @@ Versión actual 0.17.8 → `dist/buckler-core-0.17.8.zip` (`tools/build-plugin.s
     opción `bk_g_redirect_log` (20; usuario, página, destino, archivo del plugin por backtrace, últimas acciones vía
     'all' congeladas en shutdown) visible en Ajustes → Buckler Core (`do_action('bk_modules_page_after')`) con "Borrar
     registro". La gestión también responde por ruta si se pierde la regla de reescritura.
-  - Fixtures: `bk_test_login_home` = wp_loaded | wp_loaded_header. Suite `ronda178.js` (17).
+  - Fixtures: `bk_test_login_home` = wp_loaded | wp_loaded_header. Suite `ronda178.js` (18).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -580,7 +580,7 @@ Versión actual 0.17.8 → `dist/buckler-core-0.17.8.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 30, ronda 0.17.8 17 = 607 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 30, ronda 0.17.8 18 = 608 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

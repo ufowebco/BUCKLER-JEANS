@@ -30,7 +30,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `pedidos-nuevos.js` | Pedidos nuevos en la gestión: estado propio de otro plugin en la API rápida, sin caché, botón "Buscar pedidos nuevos", revisión automática a los 10 min, resumen recalculado, recarga | 10 |
 | `ronda176.js` | Tallas ordenadas en las tarjetas (también si están guardadas al revés), checkout sin Población ni Código postal (también tras elegir departamento), pedido sin esos campos, departamento en la gestión, aviso bajo el correo | 9 |
 | `ronda177.js` | Entrar a la gestión aunque otro plugin mande al inicio (3 formas, gestora y Gestor_ADS), fotos con EXIF derechas, girar fotos, total de reseñas del perfil de Google, Mi cuenta legible con el CSS del tema de producción (1440/390), Ayuda paso a paso y buscador | 30 |
-| `ronda178.js` | Acceso propio /ingreso/ (wp-admin sin sesión, destino por rol, contraseña mala), redirección ajena en wp_loaded evitada en la gestión (gestora, Gestor_ADS, admin), registro con el archivo del plugin y con header() directo, registro en Ajustes → Buckler Core | 17 |
+| `ronda178.js` | Acceso propio /ingreso/ (wp-admin sin sesión, destino por rol, contraseña mala), redirección ajena en wp_loaded evitada en la gestión (gestora, Gestor_ADS, admin), registro con el archivo del plugin y con header() directo, registro en Ajustes → Buckler Core | 18 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).
 | `seguridad.js` | Nombres de usuario ocultos a visitantes: REST de usuarios 401, ?author 404, sin sitemap de usuarios, Store API pública, error de acceso genérico, editor con sesión intacto | 7 |
