@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<title>Informe técnico · Mejoras para pauta digital · Buckler Jeans</title>
+<style>
+@font-face { font-family: Manrope; src: url("../../buckler-core/assets/fonts/manrope-latin-wght-normal.woff2") format("woff2"); font-weight: 200 800; }
+@font-face { font-family: Manrope; src: url("../../buckler-core/assets/fonts/manrope-latin-ext-wght-normal.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0100-024F; }
+@page { size: A4; margin: 16mm 15mm 18mm; }
+:root { --navy: #1a3955; --navy2: #122a40; --lime: #e4ec6a; --ink: #10202f; --mute: #5b6773; --line: #dfe4e9; --bg: #f3f5f7; --ok: #1f7a4d; --warn: #8a5300; --bad: #b3261e; }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font: 10.5pt/1.55 Manrope, "Segoe UI", Arial, sans-serif; color: var(--ink); }
+h1, h2, h3 { color: var(--navy); line-height: 1.2; margin: 0; }
+h2 { font-size: 17pt; margin: 0 0 4mm; padding-top: 2mm; break-after: avoid; }
+h3 { break-after: avoid; }
+.flow { margin-top: 9mm; }
+h3 { font-size: 11.5pt; margin: 5mm 0 2mm; }
+p { margin: 0 0 2.6mm; }
+ul { margin: 0 0 3mm; padding-left: 5mm; }
+li { margin: 0 0 1.4mm; }
+small, .mute { color: var(--mute); }
+code { font: 9pt/1.4 ui-monospace, Menlo, Consolas, monospace; background: #eef1f4; padding: .2mm 1.2mm; border-radius: 1mm; }
+section { break-inside: auto; }
+.page { break-before: page; }
+.avoid { break-inside: avoid; }
+
+/* Portada */
+.cover { height: 263mm; display: flex; flex-direction: column; justify-content: space-between; padding: 14mm 12mm; border-radius: 6mm; background: var(--navy); color: #fff; }
+.cover img { width: 46mm; filter: brightness(0) invert(1); }
+.cover h1 { color: #fff; font-size: 30pt; font-weight: 800; margin: 0 0 6mm; max-width: 150mm; }
+.cover .kicker { color: var(--lime); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; font-size: 10pt; margin-bottom: 4mm; }
+.cover .lead { font-size: 13pt; color: #d6dee6; max-width: 150mm; }
+.cover .meta { display: grid; grid-template-columns: repeat(3, auto); gap: 2mm 10mm; justify-content: start; font-size: 10pt; color: #c9d3dd; }
+.cover .meta b { display: block; color: #fff; }
+.cover .score-row { display: flex; gap: 5mm; }
+.cover .score { flex: 1; padding: 5mm; border-radius: 4mm; background: rgba(255,255,255,.08); }
+.cover .score b { display: block; font-size: 30pt; color: var(--lime); line-height: 1; }
+.cover .score span { font-size: 9pt; color: #d6dee6; }
+
+/* Bloques */
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; margin: 3mm 0 5mm; }
+.kpi { padding: 4mm; border-radius: 3mm; background: var(--bg); }
+.kpi b { display: block; font-size: 18pt; color: var(--navy); line-height: 1.1; }
+.kpi span { font-size: 8.5pt; color: var(--mute); }
+.kpi.good b { color: var(--ok); }
+.box { padding: 4mm 5mm; border-radius: 3mm; background: var(--bg); margin: 3mm 0 4mm; }
+.box.lime { background: #f6f8cf; }
+.box.warn { background: #fff6e0; border-left: 1.2mm solid #e0a400; }
+.box.red { background: #fdecea; border-left: 1.2mm solid var(--bad); }
+.box h3 { margin-top: 0; }
+table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9.5pt; }
+th, td { padding: 2mm 2.4mm; border-bottom: .3mm solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--navy); color: #fff; font-weight: 700; font-size: 8.8pt; }
+td.n, th.n { text-align: right; white-space: nowrap; }
+tr:nth-child(even) td { background: #fafbfc; }
+.pill { display: inline-block; padding: .4mm 2.4mm; border-radius: 9mm; font-size: 8.5pt; font-weight: 700; }
+.pill.ok { background: #e6f4ec; color: var(--ok); }
+.pill.warn { background: #fff4dc; color: var(--warn); }
+.pill.bad { background: #fdecea; color: var(--bad); }
+.pill.info { background: #e3eefb; color: var(--navy); }
+.score-big { font-weight: 800; color: var(--ok); }
+.score-mid { font-weight: 800; color: var(--warn); }
+.bars { display: grid; gap: 2mm; margin: 2mm 0 4mm; }
+.bar { display: grid; grid-template-columns: 38mm 1fr 14mm; gap: 3mm; align-items: center; font-size: 9pt; }
+.bar i { display: block; height: 4.2mm; border-radius: 1mm; background: var(--navy); }
+.bar i.before { background: #c9d0d7; }
+.bar b { text-align: right; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.step { display: grid; grid-template-columns: 8mm 1fr; gap: 3mm; margin-bottom: 3mm; }
+.step em { display: grid; place-items: center; width: 8mm; height: 8mm; border-radius: 50%; background: var(--navy); color: var(--lime); font-style: normal; font-weight: 800; }
+.foot { margin-top: 6mm; padding-top: 3mm; border-top: .3mm solid var(--line); font-size: 8.5pt; color: var(--mute); }
+.toc li { margin-bottom: 1mm; }
+</style>
+</head>
+<body>
+
+<!-- ===================== PORTADA ===================== -->
+<div class="cover">
+	<div>
+		<img src="../../buckler-core/assets/img/logo-email.png" alt="Buckler">
+	</div>
+	<div>
+		<p class="kicker">Informe técnico · Pauta digital</p>
+		<h1>Mejoras del sitio para campañas en Google y Meta</h1>
+		<p class="lead">Qué se hizo en buckler.com.co para que la pauta rinda más: velocidad, medición, catálogo para Google Shopping y Meta, páginas de destino y conversión. Incluye los puntajes actuales y los próximos pasos.</p>
+	</div>
+	<div class="score-row">
+		<div class="score"><b>99</b><span>PageSpeed escritorio<br>(antes 49)</span></div>
+		<div class="score"><b>94</b><span>Lighthouse móvil · inicio<br>y ficha de producto</span></div>
+		<div class="score"><b>100</b><span>SEO y buenas prácticas<br>(Lighthouse)</span></div>
+		<div class="score"><b>~25</b><span>peticiones por página<br>(antes 191)</span></div>
+	</div>
+	<div class="meta">
+		<div><b>Sitio</b>buckler.com.co</div>
+		<div><b>Fecha</b>15 de octubre de 2026</div>
+		<div><b>Preparado por</b>UFO Web · contacto@ufoweb.co</div>
+	</div>
+</div>
+
+<!-- ===================== 1. RESUMEN ===================== -->
+<section class="page">
+	<h2>1. Resumen ejecutivo</h2>
+	<p>El sitio pasó de ser una tienda lenta construida con decenas de plugins a una tienda propia, liviana y medible. Para la pauta esto significa tres cosas: <b>los anuncios llevan a páginas que cargan rápido</b> (mejor nivel de calidad y menor costo por clic), <b>Google y Meta reciben mejor información del catálogo</b> (precio, disponibilidad, REF, marca) y <b>la tienda puede medir y recuperar ventas</b> (eventos, origen de cada pedido, carritos abandonados).</p>
+	<div class="kpis">
+		<div class="kpi good"><b>49 → 99</b><span>PageSpeed escritorio (medido por la tienda en PageSpeed Insights)</span></div>
+		<div class="kpi good"><b>92</b><span>PageSpeed móvil (medido por la tienda, versión 0.14)</span></div>
+		<div class="kpi good"><b>191 → 23–33</b><span>Peticiones por página (inicio, tienda, ficha)</span></div>
+		<div class="kpi good"><b>~2 s → 0,2–0,3 s</b><span>Respuesta del servidor (caché de páginas)</span></div>
+	</div>
+	<h3>Lo más importante para la pauta</h3>
+	<ul>
+		<li><b>Velocidad:</b> 94 en celular y 99 en computador en inicio y fichas (Lighthouse, la misma herramienta que usa PageSpeed). La tienda en celular estaba en 77; la versión 0.17.0, lista para instalar, corrige su principal bloqueo.</li>
+		<li><b>Catálogo para Google y Meta:</b> cada ficha publica datos estructurados de producto (precio en COP, disponibilidad, REF, marca, fotos y envío gratis). Antes no existían en el sitio.</li>
+		<li><b>Medición:</b> Google Tag Manager y Google Analytics 4 activos y con carga diferida; 10 eventos propios para GTM (añadir al carrito, inicio de pago, búsqueda, WhatsApp…); origen de cada venta y contador de visitas propio en el panel <b>SEO y ADS</b>.</li>
+		<li><b>Páginas de destino:</b> líneas Slim y Curvy, prendas, ¡Sale!, Lo nuevo y campañas de descuento con fechas, cada una con título, descripción e imagen para redes.</li>
+		<li><b>Conversión:</b> carrito instantáneo, correos de carrito abandonado (3 recordatorios), descuentos por cantidad para subir el ticket promedio y correos con la marca.</li>
+	</ul>
+	<div class="box red avoid">
+		<h3>Para revisar antes de invertir más en Meta Ads</h3>
+		<p>Hoy (15 de octubre) el código público del sitio <b>no carga el píxel de Meta</b>. El 14 de octubre aparecía dos veces (Facebook for WooCommerce + plugin oficial del píxel). Puede estar configurado dentro de Google Tag Manager: desde el entorno de este informe no fue posible leer el contenedor. Se verifica en <b>Gestión de tienda → SEO y ADS → Etiquetas</b> (lee el contenedor desde el servidor) y en el Administrador de eventos de Meta. Sin píxel ni API de conversiones, Meta no sabe qué anuncios generan ventas.</p>
+	</div>
+
+</section>
+
+<!-- ===================== 2. VELOCIDAD ===================== -->
+<section class="page">
+	<h2>2. Velocidad y experiencia de la página de destino</h2>
+	<p>Google Ads califica la "experiencia en la página de destino" dentro del nivel de calidad: una página lenta sube el costo por clic y baja la posición del anuncio. En Meta, cada segundo de espera en el celular aumenta el abandono antes de que la página cargue (y antes de que el píxel registre la visita).</p>
+
+	<h3>Antes y después</h3>
+	<div class="bars avoid">
+		<div class="bar"><span>PageSpeed escritorio · antes</span><i class="before" style="width:49%"></i><b>49</b></div>
+		<div class="bar"><span>PageSpeed escritorio · ahora</span><i style="width:99%"></i><b>99</b></div>
+		<div class="bar"><span>PageSpeed móvil · ahora</span><i style="width:92%"></i><b>92</b></div>
+		<div class="bar"><span>Peticiones inicio · antes</span><i class="before" style="width:100%"></i><b>191</b></div>
+		<div class="bar"><span>Peticiones inicio · ahora</span><i style="width:12%"></i><b>23</b></div>
+	</div>
+	<table class="avoid">
+		<thead><tr><th>Indicador</th><th>Antes (14 oct)</th><th>Ahora</th></tr></thead>
+		<tbody>
+			<tr><td>PageSpeed escritorio (medido por la tienda)</td><td>49 · LCP 3,3 s · Speed Index 8,5 s · TBT 540 ms</td><td><span class="score-big">99</span></td></tr>
+			<tr><td>PageSpeed móvil (medido por la tienda)</td><td>—</td><td><span class="score-big">92</span></td></tr>
+			<tr><td>Peticiones por página</td><td>191 (153 scripts, 31 hojas de estilo)</td><td>23–33</td></tr>
+			<tr><td>Peso del HTML</td><td>370–540 KB</td><td>Documento propio sin Divi en la tienda</td></tr>
+			<tr><td>Respuesta del servidor</td><td>~2 s (sin caché de páginas)</td><td>0,2–0,3 s (caché LiteSpeed, verificada "hit")</td></tr>
+			<tr><td>Página oculta hasta cargar todo</td><td>Sí (un código del tema la ocultaba hasta 1,5 s)</td><td>No</td></tr>
+		</tbody>
+	</table>
+
+	<h3>Medición de hoy con Lighthouse 12 (sitio en producción, versión 0.16.1)</h3>
+	<table class="avoid">
+		<thead><tr><th>Página</th><th>Dispositivo</th><th class="n">Rendimiento</th><th class="n">LCP</th><th class="n">TBT</th><th class="n">CLS</th><th class="n">Peticiones</th><th class="n">Peso</th></tr></thead>
+		<tbody>
+			<tr><td>Inicio</td><td>Celular</td><td class="n score-big">94</td><td class="n">2,9 s</td><td class="n">0 ms</td><td class="n">0,001</td><td class="n">23</td><td class="n">590 KB</td></tr>
+			<tr><td>Inicio</td><td>Computador</td><td class="n score-big">99</td><td class="n">0,9 s</td><td class="n">0 ms</td><td class="n">0,009</td><td class="n">25</td><td class="n">778 KB</td></tr>
+			<tr><td>Ficha de producto</td><td>Celular</td><td class="n score-big">94</td><td class="n">2,8 s</td><td class="n">0 ms</td><td class="n">0</td><td class="n">27</td><td class="n">477 KB</td></tr>
+			<tr><td>Ficha de producto</td><td>Computador</td><td class="n score-big">99</td><td class="n">0,7 s</td><td class="n">0 ms</td><td class="n">0,011</td><td class="n">27</td><td class="n">477 KB</td></tr>
+			<tr><td>Tienda</td><td>Celular</td><td class="n score-mid">77</td><td class="n">4,6 s</td><td class="n">97 ms</td><td class="n">0</td><td class="n">31</td><td class="n">775 KB</td></tr>
+			<tr><td>Tienda</td><td>Computador</td><td class="n score-big">98</td><td class="n">0,9 s</td><td class="n">0 ms</td><td class="n">0</td><td class="n">33</td><td class="n">910 KB</td></tr>
+		</tbody>
+	</table>
+	<p class="mute">En todas las páginas: SEO 100, buenas prácticas 100 y accesibilidad 92–95. Mediana de 3 mediciones por página. Detalle del método en el anexo.</p>
+	<div class="box lime avoid">
+		<h3>Tienda en celular: corregido en la versión 0.17.0</h3>
+		<p>El análisis mostró que algo cargaba el reproductor de video de WordPress (mediaelement) en la tienda y, con él, jQuery: dos archivos que bloqueaban el dibujo de la página en el celular. La tienda usa video propio, así que la versión 0.17.0 los quita. En la prueba local la tienda queda sin jQuery ni reproductor. Al instalarla, conviene medir de nuevo en PageSpeed.</p>
+	</div>
+	<div class="box warn avoid">
+		<h3>GTmetrix: pendiente</h3>
+		<p>GTmetrix no es accesible desde el entorno donde se preparó este informe, y la API pública de PageSpeed tenía la cuota del día agotada. Para completar el informe: medir <code>https://buckler.com.co/</code>, <code>/tienda/</code> y una ficha en <b>gtmetrix.com</b> (servidor más cercano a Colombia) y en <b>pagespeed.web.dev</b>, y enviar las capturas. Los puntajes de PageSpeed de este informe (49 → 99 escritorio, 92 móvil) son los que la tienda midió en PageSpeed Insights durante el proyecto.</p>
+	</div>
+
+	<h3>Qué se hizo para lograrlo</h3>
+	<ul>
+		<li><b>Tienda propia:</b> inicio, tienda, fichas, carrito, checkout y cuenta se dibujan con código propio, sin los estilos y scripts de Divi, BodyCommerce, Divi Essential, Themify ni FiboSearch.</li>
+		<li><b>Etiquetas con carga diferida:</b> Google Tag Manager, Analytics, píxeles y AdsAgent se cargan con la primera interacción (mover, tocar, desplazar). La página aparece primero y los eventos se conservan.</li>
+		<li><b>Caché de páginas</b> en el servidor (LiteSpeed) para visitantes sin sesión ni carrito; se vacía sola al cambiar productos, stock o contenido.</li>
+		<li><b>Imágenes del tamaño correcto:</b> cada foto se entrega en la medida que la pantalla necesita (antes se descargaba 600×900 para mostrar 300 px), las fotos 2 a 5 de cada tarjeta solo se descargan al interactuar y los banners 2..n después de la primera interacción.</li>
+		<li><b>Un solo archivo CSS</b> por tipo de página, fuente Manrope local y sin jQuery donde no hace falta.</li>
+		<li><b>Pasarelas de pago</b> (Bold, Rapyd, Wompi, Addi) y sus scripts externos solo en el checkout.</li>
+	</ul>
+</section>
+
+<!-- ===================== 3. MEDICIÓN ===================== -->
+<section class="flow">
+	<h2>3. Medición: etiquetas, eventos y origen de las ventas</h2>
+	<h3>Etiquetas encontradas hoy en el código público</h3>
+	<table class="avoid">
+		<thead><tr><th>Etiqueta</th><th>ID</th><th>Estado</th><th>Comentario</th></tr></thead>
+		<tbody>
+			<tr><td>Google Tag Manager</td><td><code>GTM-NCDM5V29</code></td><td><span class="pill ok">Activa</span></td><td>En inicio, tienda y fichas. Carga diferida hasta la primera interacción.</td></tr>
+			<tr><td>Google Analytics 4</td><td><code>G-BR4MXPY7HS</code></td><td><span class="pill ok">Activa</span></td><td>Etiqueta gtag directa, con carga diferida.</td></tr>
+			<tr><td>Google Ads (conversiones)</td><td>—</td><td><span class="pill warn">Verificar</span></td><td>No está en el HTML; puede estar dentro de GTM. Confirmar la conversión "Compra" con su valor.</td></tr>
+			<tr><td>Píxel de Meta</td><td>—</td><td><span class="pill bad">No visible</span></td><td>No aparece en el HTML del 15-oct (el 14-oct estaba duplicado). Verificar GTM o la API de conversiones.</td></tr>
+			<tr><td>Catálogo Google (Google for WooCommerce)</td><td>—</td><td><span class="pill info">Instalado</span></td><td>Plugin presente; revisar estado del feed en Merchant Center.</td></tr>
+			<tr><td>Catálogo Meta (Facebook for WooCommerce)</td><td>—</td><td><span class="pill info">Revisar</span></td><td>Confirmar que sigue activo y sincronizando el catálogo.</td></tr>
+		</tbody>
+	</table>
+
+	<h3>Panel "SEO y ADS" (Gestión de tienda)</h3>
+	<p>Un panel nuevo, al que la agencia de pauta entra con su propio usuario (Gestor_ADS, solo ve esta sección), reúne la información que antes estaba repartida:</p>
+	<ul>
+		<li><b>Etiquetas Google y Meta:</b> lee el código público de inicio, tienda y una ficha y el contenedor de GTM. Detecta GTM, GA4, Google Ads y el píxel de Meta, avisa si alguno está duplicado y lista los eventos que envía cada uno.</li>
+		<li><b>¿Las compras llegan a Meta?</b> Compara los pedidos pagados de los últimos 30 días con los que tienen registrado el evento de compra de Meta.</li>
+		<li><b>Ventas por origen:</b> usa la atribución de WooCommerce (utm, gclid, fbclid) para mostrar cuántos pedidos y cuánto dinero trajo Google Ads, Google orgánico, Meta Ads, Facebook/Instagram, directo, etc.</li>
+		<li><b>Visitas propias, sin cookies:</b> visitantes del día, la semana y el mes, páginas más vistas, origen (Google Ads, Meta Ads, WhatsApp, IA…), campañas (<code>utm_campaign</code>), dispositivos y ciudades. No cuenta robots ni al equipo.</li>
+		<li><b>Alerta:</b> si falta una etiqueta, el panel prepara un correo a <b>contacto@ufoweb.co</b> con la lista. Las etiquetas nuevas se instalan con carga diferida para no hacer lenta la tienda.</li>
+	</ul>
+
+	<h3>Eventos para Google Tag Manager (dataLayer)</h3>
+	<p>La tienda envía estos eventos a <code>window.dataLayer</code>. En GTM se crean activadores de tipo "Evento personalizado" con cada nombre y se conectan a GA4, Google Ads y Meta. Tienen el prefijo <code>bk_</code> para no chocar con los de otros plugins.</p>
+	<table class="avoid">
+		<thead><tr><th>Evento</th><th>Cuándo se envía</th><th>Uso sugerido en pauta</th></tr></thead>
+		<tbody>
+			<tr><td><code>bk_add_to_cart</code></td><td>Añadir al carrito sin recargar (ficha o sugerido). Formato de comercio electrónico de GA4: REF, nombre, talla, precio y cantidad.</td><td>GA4 <code>add_to_cart</code>, Meta <code>AddToCart</code>, audiencias de remarketing</td></tr>
+			<tr><td><code>bk_begin_checkout</code></td><td>Clic en "Finalizar compra"</td><td>GA4 <code>begin_checkout</code>, Meta <code>InitiateCheckout</code></td></tr>
+			<tr><td><code>bk_select_item</code></td><td>Clic en una tarjeta de producto</td><td>Interés por producto</td></tr>
+			<tr><td><code>bk_search</code></td><td>Búsqueda en el encabezado (término)</td><td>Palabras clave reales de las clientas</td></tr>
+			<tr><td><code>bk_whatsapp_click</code></td><td>Clic en cualquier enlace de WhatsApp</td><td>Conversión secundaria (contacto)</td></tr>
+			<tr><td><code>bk_size_select</code> · <code>bk_size_guide_open</code></td><td>Elegir talla · abrir la guía de tallas</td><td>Micro-conversiones de intención</td></tr>
+			<tr><td><code>bk_other_line_click</code></td><td>"Ver este modelo en la otra línea" (Slim ↔ Curvy)</td><td>Interés cruzado entre líneas</td></tr>
+			<tr><td><code>bk_banner_click</code> · <code>bk_review_click</code></td><td>Clic en banners del inicio · en "Califícanos en Google"</td><td>Rendimiento de los banners</td></tr>
+		</tbody>
+	</table>
+	<p class="mute">El panel también lista selectores CSS estables (botón de compra, tarjetas, carrito, WhatsApp, checkout…) para activadores de clic en GTM, Meta o Hotjar.</p>
+</section>
+
+<!-- ===================== 4. CATÁLOGO Y SEO ===================== -->
+<section class="flow">
+	<h2>4. Catálogo y SEO para Google Shopping y Meta</h2>
+	<h3>Datos estructurados de producto</h3>
+	<p>Cada ficha publica un bloque <code>Product</code> (schema.org) con nombre, REF, marca (Buckler Jeans), fotos, precio en COP, disponibilidad, condición nueva y envío gratis a Colombia. Google lo usa para mostrar precio y "En stock" en los resultados y para validar el feed de Merchant Center; Meta lo usa al leer el catálogo. Hasta la versión 0.16.1 el sitio no lo publicaba (algo lo quitaba de la página, muy probablemente la configuración de SEOPress); ahora buckler-core lo agrega si falta, sin duplicarlo. No se incluyen estrellas: las reseñas de Google son de la tienda, no de cada producto, y Google no permite mezclarlas.</p>
+	<h3>Antes y después en SEO técnico</h3>
+	<table class="avoid">
+		<thead><tr><th>Punto</th><th>Antes</th><th>Ahora</th></tr></thead>
+		<tbody>
+			<tr><td>H1 por página</td><td>3 en el inicio, 2 en la ficha</td><td>1 en todas</td></tr>
+			<tr><td>Título de la ficha</td><td>"REF: 9912 - CHAQUETA DAMA - Buckler Jenas by Denimblue"</td><td>"Chaqueta dama · Línea Slim · REF 9912 | Buckler Jeans"</td></tr>
+			<tr><td>Título de la tienda</td><td>"Tienda -"</td><td>"Tienda de jeans y ropa en denim para mujer | Buckler Jeans" (0.17.0)</td></tr>
+			<tr><td>Descripciones</td><td>Faltaban o pasaban de 300 caracteres</td><td>Máx. 155 caracteres, con envío gratis y Addi cuando caben</td></tr>
+			<tr><td>Imagen al compartir (WhatsApp, Facebook)</td><td>Inicio sin imagen</td><td>Primer banner del inicio</td></tr>
+			<tr><td>Nombre del sitio</td><td>Errata "Jenas"</td><td>Corregido en lo que ven Google y redes (pendiente en Ajustes → Generales)</td></tr>
+			<tr><td>Migas de pan</td><td>No</td><td>En todas las páginas, con datos estructurados</td></tr>
+			<tr><td>Fotos sin texto alternativo</td><td>60–70 en el inicio</td><td>Texto automático con el nombre del producto; banners con su texto</td></tr>
+			<tr><td>Asistentes de IA</td><td>—</td><td><code>/llms.txt</code> con el catálogo; <code>/.well-known/</code> responde correctamente</td></tr>
+			<tr><td>Lighthouse SEO</td><td>—</td><td><span class="score-big">100</span> en inicio, tienda y ficha</td></tr>
+		</tbody>
+	</table>
+	<h3>Feeds de catálogo</h3>
+	<ul>
+		<li><b>Google:</b> plugin Google for WooCommerce instalado. Revisar en Merchant Center que no haya productos rechazados por precio o disponibilidad; ahora coinciden con los datos de la ficha.</li>
+		<li><b>Meta:</b> si Facebook for WooCommerce sigue activo, sincroniza el catálogo para anuncios dinámicos (Advantage+ de catálogo). Confirmarlo, dado lo observado con el píxel.</li>
+		<li><b>Mismo modelo en dos líneas:</b> 37 nombres se repiten entre Slim y Curvy. Los títulos ahora llevan la línea ("· Línea Curvy"), lo que evita títulos duplicados para Google y ayuda a separar audiencias por talla.</li>
+	</ul>
+</section>
+
+<!-- ===================== 5. PÁGINAS DE DESTINO ===================== -->
+<section class="flow">
+	<h2>5. Páginas de destino para campañas</h2>
+	<p>Cada campaña puede llevar a una página que muestre exactamente lo que el anuncio promete. Todas cargan rápido, tienen un solo H1, título y descripción propios, y los filtros no se indexan (evita contenido duplicado).</p>
+	<table class="avoid">
+		<thead><tr><th>Destino</th><th>URL de ejemplo</th><th>Para qué anuncio</th></tr></thead>
+		<tbody>
+			<tr><td>Línea Slim (6 a 12)</td><td><code>/linea-slim/</code></td><td>Audiencias de tallas regulares</td></tr>
+			<tr><td>Línea Curvy (14 a 24)</td><td><code>/linea-curvy/</code></td><td>Audiencias plus size</td></tr>
+			<tr><td>Prenda dentro de una línea</td><td><code>/linea-curvy/?prenda=jeans</code></td><td>Anuncio de jeans plus size</td></tr>
+			<tr><td>Prenda + talla</td><td><code>/linea-slim/?prenda=jeans&amp;talla=8</code></td><td>Remarketing por talla</td></tr>
+			<tr><td>¡Sale!</td><td><code>/sales/</code></td><td>Campañas de precio</td></tr>
+			<tr><td>Lo nuevo</td><td><code>/tienda/?nuevo=1</code></td><td>Lanzamientos</td></tr>
+			<tr><td>Todo lo que tiene descuento</td><td><code>/tienda/?oferta=1</code></td><td>Campañas de temporada (Black Friday)</td></tr>
+			<tr><td>Ficha de producto</td><td><code>/producto/…/</code></td><td>Shopping, catálogo dinámico de Meta</td></tr>
+		</tbody>
+	</table>
+	<div class="box avoid">
+		<h3>Campañas de descuento con fechas (nuevo en 0.17.0)</h3>
+		<p>Desde <b>Gestión de tienda → Descuentos</b> se programa, por ejemplo, "Black Friday: 20 % en toda la tienda (menos ¡Sale!) del 27 al 30 de noviembre". Mientras dura, el sitio muestra el precio tachado en tarjetas, ficha, carrito y checkout, una etiqueta en las tarjetas, un anuncio en la barra superior y una sección destacada en el inicio con cuenta regresiva. Al terminar se apaga sola y la caché se actualiza. También hay <b>descuentos por cantidad</b> ("1 prenda 10 %, desde 2 el 25 %, desde 4 el 30 %"): se muestran en la ficha y el carrito avisa cuántas prendas faltan para el siguiente tramo, útil para subir el ticket promedio. Los descuentos no se suman: a cada prenda se le aplica el mayor, y cada pedido guarda cuál se aplicó.</p>
+	</div>
+	<h3>Convención de UTM sugerida</h3>
+	<p>Para que el panel SEO y ADS y GA4 separen bien cada campaña:</p>
+	<table class="avoid">
+		<thead><tr><th>Parámetro</th><th>Google Ads</th><th>Meta Ads</th></tr></thead>
+		<tbody>
+			<tr><td><code>utm_source</code></td><td><code>google</code></td><td><code>facebook</code> o <code>instagram</code></td></tr>
+			<tr><td><code>utm_medium</code></td><td><code>cpc</code></td><td><code>paid</code></td></tr>
+			<tr><td><code>utm_campaign</code></td><td><code>curvy-jeans-oct26</code> (línea-prenda-mes)</td><td><code>blackfriday-26</code></td></tr>
+		</tbody>
+	</table>
+	<p class="mute">Google Ads agrega <code>gclid</code> automáticamente y Meta agrega <code>fbclid</code>: el panel los reconoce aunque falten los UTM.</p>
+</section>
+
+<!-- ===================== 6. CONVERSIÓN ===================== -->
+<section class="flow">
+	<h2>6. Conversión y recuperación de ventas</h2>
+	<div class="cols">
+		<div>
+			<h3>Compra más fácil</h3>
+			<ul>
+				<li>Tallas como botones accesibles (antes no funcionaban con teclado), con las agotadas tachadas.</li>
+				<li>Añadir al carrito sin recargar y carrito flotante que abre al instante, con sugerencias en la misma talla.</li>
+				<li>Cuotas con Addi visibles en tarjetas y ficha; envío gratis destacado.</li>
+				<li>"Ver este modelo en la otra línea" (Slim ↔ Curvy).</li>
+				<li>Reseñas reales de Google en ficha y carrito (78 reseñas, promedio 5,0).</li>
+				<li>Aviso claro en prendas de ¡Sale!: "no tiene garantía ni cambio" (ficha, carrito, checkout y pedido), menos reclamos y devoluciones.</li>
+				<li>Departamento "San Andrés" en el checkout (no se envía a Providencia).</li>
+			</ul>
+		</div>
+		<div>
+			<h3>Recuperación</h3>
+			<ul>
+				<li><b>Carritos abandonados:</b> si una clienta escribe su correo y no compra, recibe 3 recordatorios (2, 24 y 48 h) con un enlace que le devuelve el carrito en cualquier dispositivo. Si compra, se detienen; si el pago falla, se reanudan. Con autorización (Ley 1581) y opción de baja.</li>
+				<li><b>Correos de la marca:</b> los correos de WooCommerce (pedido recibido, en espera, completado, cancelado) llevan el mismo diseño, logo y botón de WhatsApp que los de carrito abandonado y guía de envío (0.17.0).</li>
+				<li><b>Guía de envío por correo</b> con la transportadora y el número, desde el panel.</li>
+			</ul>
+		</div>
+	</div>
+	<div class="box avoid">
+		<h3>Gestión de tienda (/gestion-tienda/)</h3>
+		<p>Un panel propio para el equipo, más rápido que wp-admin: pedidos (pago confirmado, impresión, historial, archivos), productos, descuentos, carritos, vista previa de correos, banners, guía de tallas, políticas, preguntas frecuentes, SEO y ADS y una sección de ayuda. Cada persona ve solo lo que necesita; la agencia de pauta (Gestor_ADS) ve solo SEO y ADS.</p>
+	</div>
+</section>
+
+<!-- ===================== 7. RECOMENDACIONES ===================== -->
+<section class="page">
+	<h2>7. Recomendaciones para mejores resultados</h2>
+	<p>En orden de impacto para la pauta:</p>
+	<div class="step avoid"><em>1</em><div><b>Confirmar el píxel de Meta y la API de conversiones.</b> Revisar en el Administrador de eventos que lleguen <i>PageView, ViewContent, AddToCart, InitiateCheckout y Purchase</i> con valor y moneda, y que no estén duplicados. Usar el panel SEO y ADS → Etiquetas → "¿Las compras llegan a Meta?".</div></div>
+	<div class="step avoid"><em>2</em><div><b>Instalar la versión 0.17.0</b> y medir de nuevo en PageSpeed y GTmetrix (tienda en celular, títulos de tienda, descuentos, correos de marca). Enviar las capturas para completar este informe.</div></div>
+	<div class="step avoid"><em>3</em><div><b>Configurar en GTM los eventos <code>bk_</code></b> (sección 3): sobre todo <code>bk_add_to_cart</code> y <code>bk_begin_checkout</code> hacia GA4, Google Ads y Meta, para optimizar campañas con señales intermedias y no solo con compras.</div></div>
+	<div class="step avoid"><em>4</em><div><b>Conversión de compra en Google Ads</b> con el valor del pedido (vía GA4 importado o etiqueta de conversión en la página de gracias) y conversiones mejoradas con el correo de la clienta.</div></div>
+	<div class="step avoid"><em>5</em><div><b>Merchant Center y catálogo de Meta:</b> revisar productos rechazados; separar campañas por línea (Slim / Curvy) con conjuntos de productos por categoría.</div></div>
+	<div class="step avoid"><em>6</em><div><b>Usar las páginas de destino específicas</b> (sección 5) y la convención de UTM, en lugar de enviar todo el tráfico al inicio.</div></div>
+	<div class="step avoid"><em>7</em><div><b>Campañas con fechas desde Descuentos</b> (Black Friday, temporada escolar, Navidad) y descuentos por cantidad para subir el ticket promedio; revisar que las reglas de YayPricing no se crucen.</div></div>
+	<div class="step avoid"><em>8</em><div><b>Corregir el nombre del sitio</b> en Ajustes → Generales ("Buckler Jeans by Denimblue") y completar el texto alternativo de los banners desde Gestión → Contenido.</div></div>
+	<div class="step avoid"><em>9</em><div><b>Activar las estadísticas propias</b> (módulo "Estadísticas de visitas") y la base de ciudades desde SEO y ADS, para cruzar visitas y ventas por ciudad con la segmentación de la pauta.</div></div>
+	<div class="foot">¿Falta alguna etiqueta o necesitas medir algo nuevo? Escríbenos a <b>contacto@ufoweb.co</b> con el ID (GTM-…, G-…, AW-…, ID del píxel) y qué debe medir.</div>
+</section>
+
+<!-- ===================== 8. ANEXO ===================== -->
+<section class="flow">
+	<h2>8. Anexo: cómo se midió</h2>
+	<ul>
+		<li><b>Lighthouse 12</b> (el motor de PageSpeed Insights), ejecutado el 15 de octubre de 2026 sobre el sitio en producción (versión 0.16.1 de buckler-core), con la configuración estándar de PageSpeed: celular (Moto G Power con red y CPU limitadas por simulación) y computador. Tres mediciones por página; se reporta la mediana. Índice de rendimiento del equipo de prueba: 1.900–2.200 (rango normal).</li>
+		<li>Páginas: <code>https://buckler.com.co/</code>, <code>/tienda/</code> y <code>/producto/chaqueta-dama-2/</code>.</li>
+		<li>La medición se hizo desde un servidor fuera de Colombia y a través de un proxy, por lo que el tiempo de respuesta del servidor (0,2–0,3 s) incluye esa distancia. Los scripts de Google y Meta no se cargan en la medición porque esperan la primera interacción, igual que en PageSpeed.</li>
+		<li><b>PageSpeed Insights</b> 49 → 99 (escritorio) y 92 (celular): mediciones hechas por la tienda en pagespeed.web.dev durante el proyecto (versiones 0.13 y 0.14).</li>
+		<li><b>Antes (14 de octubre):</b> revisión con Playwright del sitio público sin caché del navegador (191 peticiones en el inicio, 153 scripts, 31 hojas de estilo, HTML de 370–540 KB).</li>
+		<li><b>Etiquetas:</b> lectura del HTML público de inicio y ficha el 15 de octubre de 2026.</li>
+		<li><b>Pendiente:</b> GTmetrix (no accesible desde el entorno de este informe) y una nueva medición de PageSpeed después de instalar la versión 0.17.0.</li>
+	</ul>
+	<div class="foot">Buckler Jeans by Denim Blue · DENIM BLUE JEANS S.A.S. · Medellín, Colombia · Informe preparado por UFO Web (ufoweb.co) · 15 de octubre de 2026.</div>
+</section>
+
+</body>
+</html>
