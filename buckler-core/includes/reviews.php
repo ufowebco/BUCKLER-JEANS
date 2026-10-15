@@ -89,7 +89,7 @@ function bk_review_promo( $context = '' ) {
  * @return array{items:array,avg:float,total:int}|null Null si el plugin no tiene tabla o reseñas.
  */
 function bk_google_reviews( $limit = 12 ) {
-	$key  = 'bk_greviews_' . (int) $limit;
+	$key  = 'bk_greviews2_' . (int) $limit;
 	$data = get_transient( $key );
 	if ( is_array( $data ) ) {
 		return $data['items'] ? $data : null;
@@ -116,7 +116,7 @@ function bk_google_reviews( $limit = 12 ) {
 			foreach ( (array) $rows as $r ) {
 				$data['items'][] = array(
 					'name'   => wp_strip_all_tags( (string) $r['reviewer_name'] ),
-					'text'   => wp_strip_all_tags( (string) $r['reviewer_text'] ),
+					'text'   => bk_review_original_text( (string) $r['reviewer_text'] ),
 					'rating' => max( 1, min( 5, (int) $r['rating'] ) ),
 					'time'   => $r['t'] ? (int) strtotime( (string) $r['t'] ) : 0,
 				);
@@ -135,6 +135,23 @@ function bk_google_reviews( $limit = 12 ) {
 	}
 	set_transient( $key, $data, 6 * HOUR_IN_SECONDS );
 	return $data['items'] ? $data : null;
+}
+
+/**
+ * Texto original de la reseña, sin la traducción automática que Google añade:
+ * "Texto (Translated by Google) Translation" o "(Translated by Google) Translation (Original) Texto".
+ *
+ * @param string $text Texto guardado por el plugin.
+ * @return string
+ */
+function bk_review_original_text( $text ) {
+	$text = trim( wp_strip_all_tags( $text ) );
+	if ( preg_match( '/\(Original\)\s*(.+)$/su', $text, $m ) ) {
+		$text = $m[1];
+	} elseif ( preg_match( '/^(.*?)\s*\((Translated by Google|Traducido por Google)\)/su', $text, $m ) && '' !== trim( $m[1] ) ) {
+		$text = $m[1];
+	}
+	return trim( $text );
 }
 
 /**
