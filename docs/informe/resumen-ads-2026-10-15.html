@@ -1,14 +1,17 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><title>Buckler Jeans - Resumen para ADS</title>
 <style>
-  @page { size: Letter; margin: 2cm; }
-  body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; line-height: 1.45; color: #111; margin: 0; }
-  h1 { font-size: 16pt; margin: 0 0 4px; }
-  .fecha { color: #555; margin: 0 0 18px; }
-  h2 { font-size: 12pt; margin: 18px 0 6px; }
+  @page { size: Letter; margin: 1.8cm; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 10.5pt; line-height: 1.4; color: #111; margin: 0; }
+  h1 { font-size: 15pt; margin: 0 0 2px; }
+  .fecha { color: #555; margin: 0 0 14px; }
+  h2 { font-size: 11.5pt; margin: 16px 0 6px; }
   ul { margin: 0; padding-left: 20px; }
   li { margin: 2px 0; }
-  .nota { margin-top: 18px; font-size: 10pt; color: #444; }
+  table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+  th, td { text-align: left; border-bottom: 1px solid #ccc; padding: 4px 6px; vertical-align: top; }
+  th { background: #f2f2f2; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 9pt; }
 </style></head>
 <body>
 <h1>Buckler Jeans - Resumen para ADS</h1>
@@ -17,37 +20,66 @@
 <h2>Lo que ya tiene la página</h2>
 <ul>
   <li>Carga rápida: inicio y producto 94 en celular / 99 en computador; tienda 77 / 98 (Lighthouse).</li>
-  <li>Páginas listas para usar como destino de anuncios: Línea Slim, Línea Curvy, ¡Sale!, Lo nuevo y cada producto.</li>
+  <li>Páginas listas como destino de anuncios: Línea Slim, Línea Curvy, ¡Sale!, Lo nuevo y cada producto.</li>
   <li>Cada producto tiene título, descripción e imagen para Google y para compartir en redes.</li>
   <li>Descuentos por fechas y por cantidad visibles en la tienda, el producto y la barra superior.</li>
   <li>Carrito abandonado: recordatorios automáticos a las 2, 24 y 48 horas.</li>
   <li>Panel propio de visitas (Gestión → SEO y ADS): fuente, campaña (utm), ciudad y dispositivo.</li>
 </ul>
 
-<h2>Lo que se puede medir</h2>
+<h2>Etiquetas instaladas</h2>
 <ul>
-  <li>Google Tag Manager (GTM-NCDM5V29) y Google Analytics 4 (G-BR4MXPY7HS) instalados.</li>
-  <li>Eventos disponibles en GTM: añadir al carrito, inicio de pago, clic en producto, búsquedas, clic en WhatsApp,
-      elección de talla, guía de tallas, ver el modelo en la otra línea, clic en banners y clic en reseñas.</li>
-  <li>Visitas por campaña cuando el anuncio lleva utm_source / utm_campaign.</li>
-</ul>
-
-<h2>Lo que no se mide hoy</h2>
-<ul>
-  <li>Píxel de Meta: no aparece en la página. Sin él, Facebook/Instagram Ads no ven visitas ni compras.</li>
-  <li>Google Ads (conversiones AW-…): no aparece en la página; puede estar dentro de GTM, falta confirmarlo.</li>
-  <li>Los eventos de arriba llegan a GTM, pero hay que crear en GTM los activadores para enviarlos a GA4, Ads o Meta.</li>
-  <li>Quien entra y sale sin tocar nada no llega a Google ni a Meta (las etiquetas cargan con la primera interacción
-      para que la página sea rápida). El panel propio sí cuenta esas visitas.</li>
-  <li>TikTok y Pinterest: no instalados.</li>
+  <li>Google Tag Manager: GTM-NCDM5V29</li>
+  <li>Google Analytics 4: G-BR4MXPY7HS</li>
 </ul>
 
 <h2>Etiquetas que faltan</h2>
-<p>Enviarlas a <b>contacto@ufoweb.co</b> para volver a agregarlas:</p>
+<p style="margin:0 0 4px">No aparecen en la página. Enviarlas a <b>contacto@ufoweb.co</b> para volver a agregarlas:</p>
 <ul>
-  <li>ID del píxel de Meta (y token de la API de conversiones, si lo tienen).</li>
-  <li>ID de Google Ads (AW-…) y la etiqueta de la conversión de compra.</li>
-  <li>Acceso al contenedor de GTM (GTM-NCDM5V29) para crear los activadores.</li>
-  <li>Cualquier otra que usen (TikTok, Merchant Center, etc.) con su ID.</li>
+  <li>Píxel de Meta (Facebook / Instagram): ID del píxel.</li>
+  <li>Google Ads: ID de conversión (AW-…) y etiqueta de la conversión de compra.</li>
+  <li>Cualquier otra que usen (TikTok, Pinterest, Merchant Center…): su ID.</li>
+</ul>
+
+<h2>Eventos rastreables</h2>
+<p style="margin:0 0 4px">Se envían a Google Tag Manager con el nombre indicado.</p>
+<table>
+  <tr><th>Evento</th><th>Cuándo se dispara</th></tr>
+  <tr><td><code>bk_add_to_cart</code></td><td>Añade una prenda al carrito (con REF, nombre, talla y precio)</td></tr>
+  <tr><td><code>bk_begin_checkout</code></td><td>Clic en "Finalizar compra"</td></tr>
+  <tr><td><code>bk_select_item</code></td><td>Clic en una tarjeta de producto</td></tr>
+  <tr><td><code>bk_search</code></td><td>Búsqueda en el buscador</td></tr>
+  <tr><td><code>bk_whatsapp_click</code></td><td>Clic en WhatsApp</td></tr>
+  <tr><td><code>bk_size_select</code></td><td>Elige una talla en el producto</td></tr>
+  <tr><td><code>bk_size_guide_open</code></td><td>Abre la guía de tallas</td></tr>
+  <tr><td><code>bk_other_line_click</code></td><td>Clic en "Ver este modelo en la otra línea"</td></tr>
+  <tr><td><code>bk_banner_click</code></td><td>Clic en el banner principal o en los de Línea Slim / Curvy</td></tr>
+  <tr><td><code>bk_review_click</code></td><td>Clic en "Califícanos en Google"</td></tr>
+</table>
+
+<h2>Elementos rastreables (clic)</h2>
+<table>
+  <tr><th>Elemento</th><th>Selector</th></tr>
+  <tr><td>Botón "Añadir al carrito"</td><td><code>form.cart .single_add_to_cart_button</code></td></tr>
+  <tr><td>Botón de talla</td><td><code>.bk-sizes .bk-size</code></td></tr>
+  <tr><td>Guía de tallas</td><td><code>.bk-pdp__guide</code></td></tr>
+  <tr><td>Ver el modelo en la otra línea</td><td><code>.bk-pdp__twin</code></td></tr>
+  <tr><td>Tarjeta de producto</td><td><code>.bk-card__link</code></td></tr>
+  <tr><td>Icono del carrito / botón flotante</td><td><code>[data-bk-cart]</code> · <code>.bk-fcart</code></td></tr>
+  <tr><td>Carrito flotante: "Finalizar compra"</td><td><code>.bk-sc__btn--primary</code></td></tr>
+  <tr><td>Carrito flotante: añadir sugerido</td><td><code>.bk-sc__btn--add</code></td></tr>
+  <tr><td>Buscador</td><td><code>form.bk-search</code></td></tr>
+  <tr><td>Banner principal / banners de líneas</td><td><code>.bk-hero a</code> · <code>.bk-lineas a</code></td></tr>
+  <tr><td>Filtros de la tienda / "Ver más"</td><td><code>.bk-shop__filters</code> · <code>[data-bk-shop-more]</code></td></tr>
+  <tr><td>WhatsApp</td><td><code>a[href*="wa.me"]</code></td></tr>
+  <tr><td>Botón "Realizar el pedido"</td><td><code>#place_order</code></td></tr>
+  <tr><td>Página de gracias (compra hecha)</td><td><code>body.woocommerce-order-received</code></td></tr>
+</table>
+
+<h2>Lo que no se mide</h2>
+<ul>
+  <li>Visitas y compras en Meta y Google Ads, mientras no estén sus etiquetas.</li>
+  <li>Quien entra y sale sin tocar nada: las etiquetas cargan con la primera interacción para que la página sea rápida
+      (el panel propio sí cuenta esas visitas).</li>
 </ul>
 </body></html>
