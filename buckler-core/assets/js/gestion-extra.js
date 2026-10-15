@@ -243,7 +243,7 @@
 			${d.delayed ? '<p class="bk-g-note">Las etiquetas cargan <b>después de la primera interacción</b> (mover, tocar o desplazar): así la tienda carga rápido y los eventos se conservan. Las visitas que se van sin tocar nada no se envían a Google/Meta; el contador propio sí las cuenta.</p>' : ''}
 			<section class="bk-g-card"><h2>Etiquetas encontradas</h2>
 			<div class="bk-g-table-wrap"><table class="bk-g-table"><thead><tr><th>Etiqueta</th><th>ID</th><th>Estado</th><th>Detalle</th></tr></thead><tbody>
-			${d.tags.map((t) => `<tr><td><b>${esc(t.name)}</b></td><td>${t.ids.map((i) => `<code>${esc(i)}</code>`).join('<br>') || '—'}</td><td><span class="bk-g-pill ${stLabel[t.status][1]}">${stLabel[t.status][0]}</span></td><td>${esc(t.note)}</td></tr>`).join('')}
+			${d.tags.map((t) => `<tr><td><b>${esc(t.name)}</b></td><td>${t.ids.map((i) => `<code>${esc(i)}</code>`).join('<br>') || '—'}</td><td><span class="bk-g-pill ${stLabel[t.status][1]}">${stLabel[t.status][0]}</span></td><td>${esc(t.note)}${t.link ? ` <a href="${esc(t.link)}" target="_blank" rel="noopener">Abrir la cuenta ${C.icons.open || ''}</a>` : ''}</td></tr>`).join('')}
 			</tbody></table></div>${d.extra.length ? `<p class="bk-g-hint">Otras herramientas detectadas: ${d.extra.map(esc).join(', ')}.</p>` : ''}</section>
 			${Object.entries(d.gtm).map(([id, g]) => `<section class="bk-g-card"><h2>Contenedor ${esc(id)} (lo que hay dentro de GTM)</h2>
 				${g.ok ? `<div class="bk-g-grid2"><div><h3>Etiquetas configuradas</h3>${g.tags.length ? `<ul class="bk-g-ul">${g.tags.map((t) => `<li>${esc(t.type)} <b>×${t.count}</b></li>`).join('')}</ul>` : '<p class="bk-g-empty">Sin etiquetas reconocidas.</p>'}${g.extra.length ? `<p class="bk-g-hint">${g.extra.map(esc).join(' · ')}</p>` : ''}</div>

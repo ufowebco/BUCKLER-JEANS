@@ -112,6 +112,7 @@ function bk_gs_gtm( $id ) {
 			$tags[] = array( 'type' => $labels[ $fn ] ?? 'Plantilla de la comunidad (' . $fn . ')', 'count' => $n );
 		}
 	}
+	$px          = (string) ( ( (array) bk_config( 'ads_ids' ) )['meta_pixel'] ?? '' );
 	$html_pixels = array();
 	foreach ( array( 'fbq(' => 'Píxel de Meta dentro de GTM', 'ttq.' => 'TikTok dentro de GTM', 'clarity' => 'Microsoft Clarity dentro de GTM', 'hotjar' => 'Hotjar dentro de GTM' ) as $needle => $label ) {
 		if ( false !== strpos( $js, $needle ) ) {
@@ -127,6 +128,8 @@ function bk_gs_gtm( $id ) {
 		'events'   => array_values( array_filter( bk_gs_all( '/"vtp_eventName":"([A-Za-z0-9_]{2,40})"/', $js ) ) ),
 		'triggers' => array_values( array_filter( bk_gs_all( '/"arg1":"((?:bk_|gtm\.|purchase|add_to_cart|begin_checkout|view_item)[A-Za-z0-9_.]*)"/', $js ), static fn( $e ) => ! in_array( $e, array( 'gtm.js', 'gtm.dom', 'gtm.load', 'gtm.init', 'gtm.init_consent' ), true ) ) ),
 		'extra'    => $html_pixels,
+		'pixels'   => bk_gs_all( '/fbq\(\s*\\?[\'"]init\\?[\'"]\s*,\s*\\?[\'"]?(\d{10,20})/', $js ),
+		'has_px'   => '' !== $px && false !== strpos( $js, $px ),
 		'size_kb'  => (int) round( strlen( $js ) / 1024 ),
 	);
 }
@@ -316,12 +319,49 @@ function bk_gs_tags( WP_REST_Request $r ) {
 		'status' => $ads ? 'ok' : ( $gtm ? 'info' : 'missing' ),
 		'note'   => $ads ? 'Etiqueta de conversiones / remarketing presente.' : 'No está en el HTML: revisa el contenedor de GTM.',
 	);
+	$gtm_info = array();
+	foreach ( $gtm as $id ) {
+		$gtm_info[ $id ] = bk_gs_gtm( $id );
+	}
+	// Píxel de Meta: el de la cuenta (bk_config ads_ids.meta_pixel) en el HTML o dentro de GTM; duplicados u otros IDs.
+	$ids_cfg = (array) bk_config( 'ads_ids' );
+	$px      = (string) ( $ids_cfg['meta_pixel'] ?? '' );
+	$px_gtm  = (bool) array_filter( $gtm_info, static fn( $g ) => ! empty( $g['has_px'] ) );
+	$px_html = $px && in_array( $px, $pixels, true );
+	$others  = array_values( array_diff( $pixels, array( $px ) ) );
+	$dup     = $inits > count( $found ) || count( $fb_src ) > 1;
+	if ( ! $px ) {
+		$px_status = $pixels ? ( $dup ? 'warn' : 'ok' ) : 'missing';
+		$px_note   = $pixels ? ( count( $fb_src ) > 1 ? 'Lo cargan ' . implode( ' y ', $fb_src ) . ': el píxel está DUPLICADO (eventos dobles en Meta). Deja solo uno.' : 'Instalado' . ( $fb_src ? ' por ' . implode( ', ', $fb_src ) : '' ) . '.' ) : 'No se encontró en el HTML público.';
+	} elseif ( $px_html || $px_gtm ) {
+		$where     = trim( ( $px_html ? 'en el sitio' . ( $fb_src ? ' (' . implode( ', ', $fb_src ) . ')' : '' ) : '' ) . ( $px_html && $px_gtm ? ' y ' : '' ) . ( $px_gtm ? 'dentro de GTM' : '' ) );
+		$px_status = $dup || $others || ( $px_html && $px_gtm ) ? 'warn' : 'ok';
+		$px_note   = "El píxel de la cuenta ({$px}) está instalado {$where}." . ( $dup || ( $px_html && $px_gtm ) ? ' Se carga más de una vez: los eventos llegan dobles a Meta. Deja solo una instalación.' : '' ) . ( $others ? ' También se carga otro píxel (' . implode( ', ', $others ) . '): revisa si debe quitarse.' : '' );
+	} else {
+		$px_status = $pixels ? 'warn' : 'missing';
+		$px_note   = $pixels ? 'El sitio carga el píxel ' . implode( ', ', $pixels ) . ", pero el de la cuenta es {$px}: hay que cambiarlo." : "Falta el píxel de la cuenta ({$px}).";
+	}
 	$tags[] = array(
 		'name'   => 'Píxel de Meta (Facebook / Instagram)',
-		'ids'    => $pixels,
-		'status' => $pixels ? ( $inits > count( $found ) || count( $fb_src ) > 1 ? 'warn' : 'ok' ) : 'missing',
-		'note'   => $pixels ? ( count( $fb_src ) > 1 ? 'Lo cargan ' . implode( ' y ', $fb_src ) . ': el píxel está DUPLICADO (eventos dobles en Meta). Deja solo uno.' : 'Instalado' . ( $fb_src ? ' por ' . implode( ', ', $fb_src ) : '' ) . '.' ) : 'No se encontró en el HTML público.',
+		'ids'    => $px ? array_values( array_unique( array_merge( array( $px ), $pixels ) ) ) : $pixels,
+		'status' => $px_status,
+		'note'   => $px_note,
+		'link'   => $px ? 'https://business.facebook.com/events_manager2/list/pixel/' . rawurlencode( $px ) . '/overview' : '',
 	);
+	// Merchant Center: la cuenta + lo que necesita la tienda (datos de producto en la ficha y feed).
+	$mc = (string) ( $ids_cfg['merchant_center'] ?? '' );
+	if ( $mc ) {
+		$schema = (array) ( $seo['product']['schema'] ?? array() );
+		$has_ld = in_array( 'Product', $schema, true );
+		$feed   = class_exists( 'Automattic\WooCommerce\GoogleListingsAndAds\PluginFactory' ) || is_dir( WP_PLUGIN_DIR . '/google-listings-and-ads' );
+		$tags[] = array(
+			'name'   => 'Google Merchant Center',
+			'ids'    => array( $mc ),
+			'status' => $has_ld && $feed ? 'ok' : 'warn',
+			'note'   => ( $has_ld ? 'Las fichas tienen los datos de producto que lee Google (precio, stock, REF).' : 'La ficha revisada no tiene datos de producto (JSON-LD Product).' ) . ' ' . ( $feed ? 'Los productos se envían con Google for WooCommerce: revisa en Merchant Center que esté vinculado a esta cuenta.' : 'No se encontró Google for WooCommerce: los productos no se están enviando a Merchant Center.' ),
+			'link'   => 'https://merchants.google.com/mc/overview?a=' . rawurlencode( $mc ),
+		);
+	}
 	$tags[] = array(
 		'name'   => 'Verificación de dominio',
 		'ids'    => array_filter( array( preg_match( '#google-site-verification#i', $html ) ? 'Google Search Console' : '', preg_match( '#facebook-domain-verification#i', $html ) ? 'Meta' : '' ) ),
@@ -340,10 +380,6 @@ function bk_gs_tags( WP_REST_Request $r ) {
 	}
 	$llms = bk_gs_fetch( home_url( '/llms.txt' ) );
 
-	$gtm_info = array();
-	foreach ( $gtm as $id ) {
-		$gtm_info[ $id ] = bk_gs_gtm( $id );
-	}
 	$data = array(
 		'checked'  => wp_date( 'j M Y, g:i a' ),
 		'delayed'  => $delayed,
