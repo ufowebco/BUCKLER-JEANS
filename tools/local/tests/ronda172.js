@@ -51,6 +51,41 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
   const saved = await g.evaluate(async () => (await fetch(window.bkG.api + 'discounts', { method: 'POST', headers: { 'X-WP-Nonce': window.bkG.nonce, 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'qty', rule: { name: 'Sin count', tiers: [{ min: 2, pct: 10 }], start: '2026-01-01T00:00', end: '2027-01-01T00:00', active: false, scope: 'all' } }) })).json());
   ok(saved.qty.find((r) => r.name === 'Sin count')?.count === 'cart', 'la API también combina productos por defecto');
 
+  // Carrito abandonado siempre activo: sin casilla, aviso bajo el correo y correos programados.
+  execSync('php /tmp/claude-0/bk-local/t/run.php reset');
+  const c7 = await b.newContext(); const k = await c7.newPage();
+  await k.goto(`${B}/?add-to-cart=22&variation_id=23&attribute_pa_tallas-plus-size=14`); await k.goto(`${B}/checkout/`);
+  ok(await k.locator('#bk_ac_consent').count() === 0 && /te escribiremos a este correo/.test(await k.textContent('.bk-ac-notice')), 'checkout sin casilla: solo un aviso bajo el correo');
+  await k.fill('#billing_email', 'siempre@ejemplo.com'); await k.locator('#billing_email').blur(); await k.waitForTimeout(1600);
+  const rows7 = JSON.parse(execSync('php /tmp/claude-0/bk-local/t/run.php rows').toString());
+  const acts7 = JSON.parse(execSync('php /tmp/claude-0/bk-local/t/run.php actions').toString());
+  ok(rows7.length === 1 && +rows7[0].consent === 1 && acts7.length === 3, 'sin marcar nada: carrito guardado y 3 recordatorios programados');
+  await c7.close();
+  await g.goto('about:blank'); await g.goto(B + '/gestion-tienda/#carritos'); await g.waitForSelector('[data-carts-refresh]');
+  ok(/siempre activo/.test(await g.textContent('.bk-g-main')), 'Carritos: dice que está siempre activo');
+  const before = await g.locator('.bk-g-carts tbody tr').count();
+  execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; require "/tmp/claude-0/bk-local/site/wp-load.php"; global $wpdb; $wpdb->insert(bk_ac_table(), ["token"=>bin2hex(random_bytes(16)),"email"=>"nueva@ejemplo.com","first_name"=>"Nueva","cart"=>"[]","status"=>"active","consent"=>1,"created_at"=>gmdate("Y-m-d H:i:s"),"updated_at"=>gmdate("Y-m-d H:i:s")]);'`);
+  await g.click('[data-carts-refresh]'); await g.waitForTimeout(1500);
+  ok(await g.locator('.bk-g-carts tbody tr').count() === before + 1 && /Nueva/.test(await g.textContent('.bk-g-carts tbody tr:first-child')), 'botón "Actualizar listado": trae los carritos nuevos sin recargar la página');
+  execSync('php /tmp/claude-0/bk-local/t/run.php reset');
+
+  // Archivos del pedido (ACF archivos_adjuntos, subcampo "archivo" de tipo imagen).
+  const fields0 = php('echo json_encode(get_option("bk_gestion_fields", null));');
+  const img = php('echo wc_get_product(22)->get_image_id();').trim();
+  const oid = php('$o=wc_get_orders(["limit"=>1,"exclude"=>[464]]); echo $o[0]->get_id();').trim();
+  php(`update_option("bk_gestion_fields", ["adjuntos"=>""]); update_option("bk_test_acf_woo_order_${oid}_archivos_adjuntos", [["field_bk_adj_archivo"=>${img}]]);`);
+  const api = (path) => g.evaluate(async (pth) => (await fetch(window.bkG.api + pth, { headers: { 'X-WP-Nonce': window.bkG.nonce } })).json(), path);
+  const d464 = await api('orders/464');
+  ok(d464.files && d464.files.rows.length >= 1 && d464.files.rows[0].files[0].thumb, `ajustes con el campo vacío: igual se ven los archivos del pedido (${d464.files ? d464.files.rows.length : 'sin sección'})`);
+  const dAcf = await api('orders/' + oid);
+  ok(dAcf.files && dAcf.files.rows.length === 1 && Number(dAcf.files.rows[0].files[0].id) === Number(img), 'archivos que ACF guardó en la tabla de pedidos (HPOS) también se ven');
+  const list = await api('orders?q=464');
+  const r464 = (list.orders || list.items || []).find((o) => +o.id === 464);
+  ok(r464 && r464.nfiles >= 1, `lista de pedidos: cantidad de archivos (📎 ${r464 ? r464.nfiles : '?'})`);
+  await g.goto('about:blank'); await g.goto(B + '/gestion-tienda/#pedidos'); await g.waitForSelector('.bk-g-orders'); await g.fill('#bk-g-of [name=q]', '464'); await g.waitForTimeout(2500);
+  ok(await g.locator('.bk-g-nfiles').count() >= 1, 'lista de pedidos: se ve el 📎 en los pedidos con archivos');
+  php(`delete_option("bk_test_acf_woo_order_${oid}_archivos_adjuntos"); ${fields0.trim() === 'null' ? 'delete_option("bk_gestion_fields");' : `update_option("bk_gestion_fields", json_decode(base64_decode("${Buffer.from(fields0.trim()).toString('base64')}"), true));`}`);
+
   php(`delete_option("bk_discounts"); update_option("bk_modules", json_decode(base64_decode("${Buffer.from(modules).toString('base64')}"), true)); bk_disc_flush();`);
   ok(!errs.length, 'sin errores JS ' + errs.slice(0, 3).join(' | '));
   await b.close();

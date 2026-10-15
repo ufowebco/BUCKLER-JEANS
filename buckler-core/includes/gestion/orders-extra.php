@@ -198,9 +198,10 @@ function bk_g_files_routes() {
  * @return array|null
  */
 function bk_g_files_def() {
-	$name = (string) bk_g_fields()['adjuntos'];
-	if ( '' === $name ) {
-		return null;
+	$name = trim( (string) bk_g_fields()['adjuntos'] );
+	// Ajustes guardados vacíos o con un nombre que no existe en ACF: se usa el campo real de la tienda.
+	if ( '' === $name || ( function_exists( 'acf_get_field' ) && ! acf_get_field( $name ) && acf_get_field( 'archivos_adjuntos' ) ) ) {
+		$name = 'archivos_adjuntos';
 	}
 	$def = array( 'name' => $name, 'key' => '', 'label' => 'Archivos del pedido', 'subs' => array(), 'file_sub' => '', 'file_key' => '' );
 	if ( function_exists( 'acf_get_field' ) ) {
@@ -246,6 +247,25 @@ function bk_g_files_rows( $o, $def ) {
 	foreach ( $meta as $k => $v ) {
 		if ( preg_match( '/^' . preg_quote( $name, '/' ) . '_(\d+)_(.+)$/', $k, $m ) ) {
 			$rows[ (int) $m[1] ][ $m[2] ] = $v;
+		}
+	}
+	// Respaldo: preguntarle a ACF (sabe dónde guardó: tabla de pedidos HPOS "woo_order_ID" o la de posts).
+	if ( ! $rows && function_exists( 'get_field' ) ) {
+		$by_key = array();
+		foreach ( $def['subs'] as $sub => $sd ) {
+			$by_key[ $sd['key'] ] = $sub;
+		}
+		foreach ( array( 'woo_order_' . $o->get_id(), $o->get_id() ) as $pid ) {
+			$val = get_field( $name, $pid, false );
+			if ( ! is_array( $val ) || ! $val ) {
+				continue;
+			}
+			foreach ( array_values( $val ) as $i => $row ) {
+				foreach ( (array) $row as $k => $v ) {
+					$rows[ $i ][ $by_key[ $k ] ?? $k ] = $v;
+				}
+			}
+			break;
 		}
 	}
 	ksort( $rows );

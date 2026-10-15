@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.17.3 → `dist/buckler-core-0.17.3.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.17.4 → `dist/buckler-core-0.17.4.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -470,6 +470,19 @@ Versión actual 0.17.3 → `dist/buckler-core-0.17.3.zip` (`tools/build-plugin.s
   ¡Sale!). Barra: "Lleva 2+ prendas: −10 % · hasta −15 %" tras la campaña. Por cantidad **combina productos por
   defecto** (`count` 'cart' en formulario y API; "Solo del mismo modelo" queda como opción) y excluye ¡Sale!.
   Suite `ronda172.js` (10).
+- **0.17.4 (2026-10-15):**
+  - Decisión del cliente: **carrito abandonado siempre activo, sin casilla**, para cualquier usuaria → `bk_ac_settings()`
+    fuerza `consent_mode` 'notice' (aviso "te escribiremos a este correo… darte de baja" bajo el correo; captura con
+    consent = 1 → 3 correos). El modo casilla solo vuelve con el filtro `bk_ac_consent_mode` ('checkbox'); los fixtures
+    lo encienden con la opción `bk_test_ac_checkbox` (ac.js y ronda171.js). wp-admin ya no ofrece la casilla. Las bajas
+    (List-Unsubscribe) se siguen respetando.
+  - Gestión → Carritos: botón "Actualizar listado" (`data-carts-refresh`, `forget('abandoned')` + fetchFresh).
+  - Archivos del pedido (ACF `archivos_adjuntos`, subcampo `archivo` imagen; grupo "Archivos Pedidos" solo en
+    shop_order): si `bk_gestion_fields.adjuntos` quedó vacío o no existe en ACF se usa `archivos_adjuntos`; si no hay
+    filas en la meta del pedido se le pregunta a ACF (`get_field(name, 'woo_order_ID' | ID, false)`, claves de campo →
+    nombres). Lista de pedidos con 📎 N (`nfiles`, `bk_g_files_count()`). Fixtures: definición ACF del repeater y
+    `get_field('woo_order_*')` desde la opción `bk_test_acf_woo_order_{id}_{campo}`.
+  - ronda172.js 18.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -514,7 +527,7 @@ Versión actual 0.17.3 → `dist/buckler-core-0.17.3.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3 10 = 533 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18 = 541 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

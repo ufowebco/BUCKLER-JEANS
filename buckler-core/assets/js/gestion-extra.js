@@ -40,8 +40,8 @@
 		}
 		const k = d.kpi;
 		const s = d.settings;
-		main.innerHTML = `<h1 class="bk-g-h1">Carritos abandonados</h1>
-			<p class="bk-g-hint">${s.on ? 'Activo' : 'Correos pausados'} · recordatorios a las ${s.delays.map((h) => `${h} h`).join(', ')}${s.coupons.some((c) => c > 0) ? ` · cupones: ${s.coupons.map((c) => (c ? `${c} %` : '—')).join(' / ')}` : ' · sin cupón'} · autorización: ${s.consent === 'checkbox' ? 'casilla' : 'aviso'}${s.admin ? ` · <a href="${esc(s.admin)}" target="_blank" rel="noopener">Configurar</a>` : ''}</p>
+		main.innerHTML = `<div class="bk-g-h1row"><h1 class="bk-g-h1">Carritos abandonados</h1><button type="button" class="bk-g-btn is-ghost" data-carts-refresh>${C.icons.refresh || ''} Actualizar listado</button></div>
+			<p class="bk-g-hint">${s.on ? 'Activo' : 'Correos pausados'} · recordatorios a las ${s.delays.map((h) => `${h} h`).join(', ')}${s.coupons.some((c) => c > 0) ? ` · cupones: ${s.coupons.map((c) => (c ? `${c} %` : '—')).join(' / ')}` : ' · sin cupón'} · ${s.consent === 'checkbox' ? 'con casilla de autorización' : 'siempre activo (aviso bajo el correo)'}${s.admin ? ` · <a href="${esc(s.admin)}" target="_blank" rel="noopener">Configurar</a>` : ''}</p>
 			<div class="bk-g-kpis">
 				<div class="bk-g-kpi"><span>Carritos capturados</span><b>${num(k.captured)}</b><small>Últimos 30 días</small></div>
 				<div class="bk-g-kpi"><span>Pendientes</span><b>${num(k.pending)}</b><small>${esc(k.pending_total)} en carritos</small></div>
@@ -305,6 +305,15 @@
 		const t = e.target;
 		const m = t.closest('[data-mail]');
 		if (m && m.matches('button')) { showMail(m.dataset.mail); return; }
+		if (t.closest('[data-carts-refresh]')) {
+			await busy(t.closest('button'), async () => {
+				A.forget('abandoned');
+				const d = await A.fetchFresh(`abandoned?${A.qs(aState)}`);
+				paintCarts(d);
+				toast(`Listado actualizado · ${new Date().toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' })}`);
+			});
+			return;
+		}
 		if (t.closest('[data-tags-refresh]')) { await busy(t.closest('button'), () => seoTags(true)); return; }
 		const cp = t.closest('[data-copy]');
 		if (cp) {

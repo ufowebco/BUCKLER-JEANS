@@ -11,6 +11,7 @@ const iso = (d) => new Date(d.getTime() - 5 * 3600e3).toISOString().slice(0, 16)
 
 (async () => {
   run('reset');
+  php('update_option("bk_test_ac_checkbox", 1);');
   const modules = php('echo json_encode(get_option("bk_modules"));');
   php('delete_option("bk_discounts");');
   const b = await chromium.launch();
@@ -97,6 +98,7 @@ const iso = (d) => new Date(d.getTime() - 5 * 3600e3).toISOString().slice(0, 16)
   const first = await g.textContent('.bk-g-carts tbody tr:first-child');
   ok(/sin autorización/.test(first) && /Lina/.test(first) && /Medellín/.test(first), 'Carritos: se ve el carrito con nombre y ciudad, y que no recibe correos (sin autorización)');
 
+  php('delete_option("bk_test_ac_checkbox");');
   // --- 3. Descuentos con el módulo apagado ------------------------------------------------------------------
   php('update_option("bk_modules", array_values(array_diff(get_option("bk_modules"), ["discounts"])));');
   await g.goto('about:blank'); await g.goto(B + '/gestion-tienda/#descuentos'); await g.waitForSelector('.bk-g-h2row');

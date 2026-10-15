@@ -5,6 +5,7 @@ const php = (a) => execSync(`php /tmp/claude-0/bk-local/t/run.php ${a} 2>/dev/nu
 const ok = (c, m) => console.log((c ? 'OK   ' : 'FAIL ') + m);
 (async () => {
   php('reset');
+  require('child_process').execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; require "/tmp/claude-0/bk-local/site/wp-load.php"; update_option("bk_test_ac_checkbox", 1);'`);
   const b = await chromium.launch(); const errors = [];
   // --- Clienta en su celular: añade al carrito y escribe su correo ---
   const c1 = await b.newContext({ viewport: { width: 390, height: 844 } }); const p = await c1.newPage();
@@ -72,6 +73,7 @@ const ok = (c, m) => console.log((c ? 'OK   ' : 'FAIL ') + m);
   await r.goto(`${B}/cart/`); await r.click('a.remove'); await r.waitForTimeout(2500);
   rows = JSON.parse(php('rows'));
   ok(rows[0].status === 'emptied' && JSON.parse(php('actions')).length === 0, 'si vacía el carrito no se le escribe: ' + rows[0].status);
+  require('child_process').execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; require "/tmp/claude-0/bk-local/site/wp-load.php"; delete_option("bk_test_ac_checkbox");'`);
   ok(errors.length === 0, 'sin errores JS ' + errors.join(' | '));
   await b.close();
 })().catch(e => { console.error(e); process.exit(1); });

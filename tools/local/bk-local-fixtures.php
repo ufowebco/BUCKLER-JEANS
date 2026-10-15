@@ -26,6 +26,10 @@ function bk_local_acf_defs() {
 		'imagen_siluetas' => array( 'key' => 'field_bk_silu', 'name' => 'imagen_siluetas', 'label' => 'Imagen Siluetas', 'type' => 'image' ),
 		'texto_politica' => array( 'key' => 'field_bk_tpol', 'name' => 'texto_politica', 'label' => 'Texto Política', 'type' => 'wysiwyg' ),
 		'respuesta_pregunta_frecuente' => array( 'key' => 'field_bk_rpf', 'name' => 'respuesta_pregunta_frecuente', 'label' => 'Respuesta pregunta frecuente', 'type' => 'wysiwyg' ),
+		// Como en producción: grupo "Archivos Pedidos" en shop_order, repeater con el subcampo "archivo" (imagen).
+		'archivos_adjuntos' => array( 'key' => 'field_bk_adj', 'name' => 'archivos_adjuntos', 'label' => 'Archivos Adjuntos', 'type' => 'repeater', 'sub_fields' => array(
+			array( 'key' => 'field_bk_adj_archivo', 'name' => 'archivo', 'label' => 'Archivo', 'type' => 'image' ),
+		) ),
 	);
 }
 if ( ! function_exists( 'acf_get_field' ) ) {
@@ -52,6 +56,10 @@ if ( ! function_exists( 'get_field' ) ) {
 			}
 			$o = get_option( 'bk_local_acf', array() );
 			return $o[ $name ] ?? null;
+		}
+		// ACF con pedidos HPOS ("woo_order_ID"): en las pruebas, filas sin formato (claves de campo) en una opción.
+		if ( is_string( $where ) && 0 === strpos( $where, 'woo_order_' ) ) {
+			return get_option( 'bk_test_acf_' . $where . '_' . $name, null );
 		}
 		$id = is_numeric( $where ) ? (int) $where : get_the_ID();
 		return get_post_meta( $id, $name, true );
@@ -175,3 +183,6 @@ add_action(
 	},
 	20
 );
+
+// Pruebas del modo anterior (casilla de autorización): la opción bk_test_ac_checkbox lo vuelve a encender.
+add_filter( 'bk_ac_consent_mode', static fn( $m ) => get_option( 'bk_test_ac_checkbox' ) ? 'checkbox' : $m );

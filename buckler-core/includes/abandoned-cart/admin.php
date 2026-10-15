@@ -277,10 +277,9 @@ function bk_ac_admin_settings( $s ) {
 		<input type="hidden" name="action" value="bk_ac_save">
 		<table class="form-table" role="presentation">
 			<tr><th scope="row">Recordatorios</th><td><label><input type="checkbox" name="enabled" value="yes" <?php checked( $s['enabled'], 'yes' ); ?>> Activar los correos de carrito abandonado</label></td></tr>
-			<tr><th scope="row">Autorización (Ley 1581 de 2012)</th><td>
-				<label><input type="radio" name="consent_mode" value="checkbox" <?php checked( $s['consent_mode'], 'checkbox' ); ?>> Casilla de autorización bajo el correo (recomendado)</label><br>
-				<label><input type="radio" name="consent_mode" value="notice" <?php checked( $s['consent_mode'], 'notice' ); ?>> Solo aviso informativo (validar con tu asesor legal)</label>
-				<p><label for="bk-ac-ct">Texto de la casilla</label><br><input id="bk-ac-ct" type="text" class="large-text" name="consent_text" value="<?php echo esc_attr( $s['consent_text'] ); ?>"></p>
+			<tr><th scope="row">Autorización</th><td>
+				<p>Siempre activo para todas las clientas (sin casilla). Bajo el correo de Finalizar compra se muestra un aviso
+				informativo y cada correo trae el enlace para darse de baja.</p>
 			</td></tr>
 			<?php for ( $i = 0; $i < 3; $i++ ) : ?>
 			<tr><th scope="row"><?php echo esc_html( 'Correo ' . ( $i + 1 ) ); ?></th><td>
@@ -320,8 +319,8 @@ function bk_ac_admin_save() {
 		'bk_ac_settings',
 		array(
 			'enabled'      => isset( $p['enabled'] ) ? 'yes' : 'no',
-			'consent_mode' => in_array( $p['consent_mode'] ?? '', array( 'checkbox', 'notice' ), true ) ? $p['consent_mode'] : 'checkbox',
-			'consent_text' => sanitize_text_field( $p['consent_text'] ?? '' ),
+			'consent_mode' => 'notice',
+			'consent_text' => bk_ac_settings()['consent_text'],
 			'delays'       => array_column( $steps, 0 ),
 			'subjects'     => array_column( $steps, 1 ),
 			'coupon_pct'   => array_column( $steps, 2 ),

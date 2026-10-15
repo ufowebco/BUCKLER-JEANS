@@ -93,8 +93,9 @@ function bk_ac_extra( $row ) {
 function bk_ac_settings() {
 	$defaults = array(
 		'enabled'      => 'yes',
-		// Ley 1581 de 2012 (habeas data): "checkbox" pide autorización expresa; "notice" solo informa.
-		'consent_mode' => 'checkbox',
+		// Decisión del cliente (2026-10-15): sin casilla, siempre activo para todas → "notice" (aviso bajo el correo).
+		// "checkbox" (autorización expresa, Ley 1581) solo con el filtro bk_ac_consent_mode.
+		'consent_mode' => 'notice',
 		'consent_text' => 'Quiero que me escriban a este correo si mi compra queda sin terminar.',
 		'delays'       => array( 2, 24, 48 ), // Horas desde que se captura el carrito.
 		'subjects'     => array(
@@ -108,7 +109,10 @@ function bk_ac_settings() {
 		'retention'    => 60, // Días que se guardan los datos (minimización de datos personales).
 	);
 	$saved = (array) get_option( 'bk_ac_settings', array() );
-	return array_merge( $defaults, array_intersect_key( $saved, $defaults ) );
+	$s     = array_merge( $defaults, array_intersect_key( $saved, $defaults ) );
+	// El modo guardado antes ("checkbox") ya no aplica: siempre aviso, salvo que un filtro diga otra cosa.
+	$s['consent_mode'] = 'checkbox' === apply_filters( 'bk_ac_consent_mode', 'notice' ) ? 'checkbox' : 'notice';
+	return $s;
 }
 
 /**

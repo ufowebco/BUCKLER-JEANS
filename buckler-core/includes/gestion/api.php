@@ -307,6 +307,7 @@ function bk_g_order_row( $o ) {
 		'status'      => $o->get_status(),
 		'customer'    => trim( $o->get_billing_first_name() . ' ' . $o->get_billing_last_name() ),
 		'city'        => $o->get_billing_city(),
+		'nfiles'      => bk_g_files_count( $o ),
 		'total'       => bk_g_money( $o->get_total() ),
 		'items'       => (int) $o->get_item_count(),
 		'payment'     => $o->get_payment_method_title(),
@@ -445,6 +446,21 @@ function bk_g_extra_meta( $o, $f ) {
 		);
 	}
 	return $out;
+}
+
+/**
+ * Cuántas filas tiene el repeater de archivos (valor del propio campo; sin consultas extra).
+ *
+ * @param WC_Order $o Pedido.
+ * @return int
+ */
+function bk_g_files_count( $o ) {
+	$name = trim( (string) bk_g_fields()['adjuntos'] );
+	$n    = (int) $o->get_meta( $name ? $name : 'archivos_adjuntos' );
+	if ( ! $n && 'archivos_adjuntos' !== $name ) {
+		$n = (int) $o->get_meta( 'archivos_adjuntos' );
+	}
+	return max( 0, $n );
 }
 
 /**
