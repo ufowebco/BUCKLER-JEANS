@@ -18,6 +18,7 @@
 defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/speed.php';
+require_once __DIR__ . '/seo.php';
 
 add_filter( 'template_include', 'bk_pages_template', 100000 );
 add_action( 'wp_enqueue_scripts', 'bk_pages_assets', 30 );

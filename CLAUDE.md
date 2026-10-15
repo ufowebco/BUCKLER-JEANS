@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.16.0 → `dist/buckler-core-0.16.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.16.1 → `dist/buckler-core-0.16.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -373,6 +373,17 @@ Versión actual 0.16.0 → `dist/buckler-core-0.16.0.zip` (`tools/build-plugin.s
     bk_select_item, bk_search, bk_whatsapp_click, bk_size_select, bk_size_guide_open, bk_other_line_click,
     bk_review_click, bk_banner_click.
   - Suite `gestion16.js` (61). Servidor local con `PHP_CLI_SERVER_WORKERS=6` (la revisión de etiquetas se pide a sí misma).
+- **0.16.1 — SEO propio en las páginas limpias (`includes/pages/seo.php`, `bk_seo_apply()` en document.php antes de
+  optimizar):** hallazgos en producción (tabla SEO técnico): ficha SIN JSON-LD Product (SEOPress lo quita; en local Woo
+  sí lo genera), tienda "Tienda -" sin descripción, fichas "REF: 9912 - CHAQUETA DAMA - Buckler Jenas by Denimblue",
+  inicio sin og:image. Ahora: títulos "Nombre · Línea [· REF] | Buckler Jeans" (≤70) y descripciones ≤155 que terminan
+  limpias (`bk_seo_desc`: frase + "Envíos gratis… Addi" si cabe) para ficha, tienda, líneas (+ ?prenda), ¡Sale!, Lo
+  nuevo, categorías y búsqueda; og:title/og:description iguales; og:image del inicio = primer banner (full) o logo;
+  "Buckler Jenas" → "Buckler Jeans" en el head; JSON-LD Product propio solo si no hay otro (Offer u AggregateOffer COP,
+  disponibilidad, REF, marca, fotos, envío gratis CO; sin calificaciones: las reseñas de Google son de la tienda).
+  Respeta `_seopress_titles_title/_desc` escritos a mano (la descripción se recorta). Apagar: filtro `bk_seo_enabled`.
+  Fixtures simulan SEOPress (opción `bk_test_keep_wc_ld` para probar sin duplicar). Suite `seo.js` (17).
+  **Pendiente del cliente:** corregir "Jenas" en Ajustes → Generales → Título del sitio.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -417,7 +428,7 @@ Versión actual 0.16.0 → `dist/buckler-core-0.16.0.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61 = 416 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 17 = 433 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

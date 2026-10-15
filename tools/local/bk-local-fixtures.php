@@ -99,3 +99,22 @@ add_action( 'after_setup_theme', static function () { add_theme_support( 'wc-pro
 
 // Como un plugin de Divi en producción: imprime el visor PhotoSwipe de WooCommerce en todas las páginas.
 add_action( 'wp_footer', static function () { if ( function_exists( 'wc_get_template' ) ) { wc_get_template( 'single-product/photoswipe.php' ); } }, 5 );
+
+// Como SEOPress en producción (revisión 2026-10-15): quita el JSON-LD Product de WooCommerce, título de tienda
+// "Tienda -", títulos de producto "REF: … - NOMBRE - Buckler Jenas by Denimblue" y el inicio sin og:image.
+add_action( 'init', static function () { if ( ! get_option( 'bk_test_keep_wc_ld' ) && function_exists( 'WC' ) && WC()->structured_data ) { remove_action( 'wp_footer', array( WC()->structured_data, 'output_structured_data' ), 10 ); } }, 20 );
+add_filter(
+	'pre_get_document_title',
+	static function ( $t ) {
+		if ( function_exists( 'is_shop' ) && is_shop() ) {
+			return 'Tienda -';
+		}
+		if ( is_singular( 'product' ) ) {
+			$p = wc_get_product( get_queried_object_id() );
+			return 'REF: ' . $p->get_sku() . ' - ' . $p->get_name() . ' - Buckler Jenas by Denimblue';
+		}
+		return $t;
+	},
+	99
+);
+add_action( 'wp_head', static function () { echo '<meta property="og:site_name" content="Buckler Jenas by Denimblue">' . "\n" . '<meta property="og:title" content="SEOPress">' . "\n"; }, 1 );

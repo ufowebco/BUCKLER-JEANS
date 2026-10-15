@@ -35,7 +35,7 @@ echo bk_pages_clean_head( (string) ob_get_clean() ); // phpcs:ignore WordPress.S
 </body>
 </html>
 <?php
-$bk_html = bk_pages_optimize_html( (string) ob_get_clean(), $bk_route );
+$bk_html = bk_pages_optimize_html( bk_seo_apply( (string) ob_get_clean(), $bk_route ), $bk_route );
 if ( function_exists( 'bk_cache_headers' ) ) {
 	bk_cache_headers();
 }
