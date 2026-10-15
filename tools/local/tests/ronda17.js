@@ -66,7 +66,7 @@ const loginG = async (p, u, pw) => { await p.goto(B + '/gestion-tienda/'); await
 
   // --- 6. Ayuda ----------------------------------------------------------------------------------
   await g.goto(B + '/gestion-tienda/#ayuda'); await g.waitForSelector('.bk-g-help details');
-  ok(await g.locator('.bk-g-help details').count() >= 8 && /Descuento por cantidad/.test(await g.textContent('.bk-g-help')), 'Ayuda: explica cada módulo');
+  ok(await g.locator('.bk-g-help details').count() >= 8 && /descuento por cantidad/i.test(await g.textContent('.bk-g-help')), 'Ayuda: explica cada módulo');
 
   // --- 7. SEO y ADS: alerta de etiquetas faltantes ------------------------------------------------
   await g.goto(B + '/gestion-tienda/#seo'); await g.waitForSelector('.bk-g-alert');

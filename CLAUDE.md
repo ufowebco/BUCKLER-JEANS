@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.17.9 → `dist/buckler-core-0.17.9.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.0 → `dist/buckler-core-0.18.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -543,6 +543,22 @@ Versión actual 0.17.9 → `dist/buckler-core-0.17.9.zip` (`tools/build-plugin.s
   cédula (`bk_g_cedula_key`: la clave con valor o la primera de `bk_g_fields()['cedula']`) + envío (o "misma
   dirección"); solo en el pedido, nota + evento `cliente` en el historial; GET del pedido trae `edit` (valores +
   departamentos de Woo). Guía nueva en Ayuda. Suite `ronda179.js` (17).
+- **0.18.0 (2026-10-15):**
+  - **wp-admin y wp-login.php ocultos** (decisión del cliente: "si alguien pone wp-admin lleve al inicio"; login.php,
+    `bk_hide_login_on()`, opción `bk_hide_login` 'yes' por defecto, interruptor en Ajustes → Buckler Core, emergencia
+    `define('BK_HIDE_LOGIN', false)` o renombrar la carpeta): en `init` 0 sin sesión → 302 al inicio (no-cache).
+    Pasan: admin-ajax.php, admin-post.php, wp-login.php con `postpass`, y `rp`/`resetpass`/`confirmaction` con clave
+    (o cookie wp-resetpass). wp-admin con cookie logged_in válida pero sin la del escritorio → /ingreso/?reauth=1.
+    Sin `wp_redirect_admin_locations` (/login, /admin, /dashboard → 404 → inicio). `site_url`/`network_site_url` de
+    wp-login.php → /ingreso/ (salvo dentro de wp-login.php); /ingreso/?action=logout|lostpassword (→ Mi cuenta de
+    Woo)|rp (→ wp-login.php real con la clave). Registro → inicio. En producción wp-login.php además tiene el captcha
+    del hosting. Las pruebas entran por /ingreso/ (seguridad.js apaga el interruptor un momento). Suite `ronda180.js`.
+  - **Centro de ayuda**: `MODULES` en gestion-more.js (9 módulos, 24 tareas + "Conoce la pantalla" + preguntas), índice
+    lateral (chips en móvil), cada tarea con 1–2 capturas limpias y marcas en `assets/img/ayuda/marks.json` (% de la
+    imagen) pintadas como capas: pasar el cursor/foco por un paso ilumina su marca (y oscurece el resto) y al revés;
+    "Ampliar" en `<dialog>` con los pasos al lado; buscador sin tildes que abre los 3 primeros resultados.
+    `tools/local/help-shots.js` genera capturas sin marcas + marks.json (`ONLY=a,b` para regenerar algunas; `click`,
+    `waitFor`, `open` con selector), 37 imágenes ~1,3 MB, carga diferida.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -587,7 +603,7 @@ Versión actual 0.17.9 → `dist/buckler-core-0.17.9.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 30, ronda 0.17.8 18, ronda 0.17.9 17 = 625 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 30, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36 = 661 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

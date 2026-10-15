@@ -143,18 +143,19 @@ const contrast = (el) => {
 
   // 5. Ayuda: guías paso a paso por tarea y buscador.
   const h = await login('gestora', 'gestora');
-  await h.g.goto(B + '/gestion-tienda/#ayuda'); await h.g.waitForSelector('.bk-g-guide');
-  const titles = await h.g.locator('.bk-g-guide > summary').allTextContents();
-  ok(titles.length >= 23 && ['Subir un producto nuevo', 'Atender los pedidos del día', 'Crear una campaña', 'Crear un descuento por cantidad', 'Recuperar un carrito abandonado', 'Cambiar los banners del inicio', 'Una foto se ve acostada'].every((t) => titles.some((x) => x.startsWith(t))), `Ayuda: ${titles.length} guías paso a paso (productos, pedidos, descuentos, carritos, contenido, problemas)`);
+  await h.g.goto(B + '/gestion-tienda/#ayuda'); await h.g.waitForSelector('.bk-g-task');
+  const titles = await h.g.locator('.bk-g-task:not(.is-screen):not(.is-faq) .bk-g-task__t').allTextContents();
+  const faqs = await h.g.locator('.bk-g-task.is-faq .bk-g-task__t').allTextContents();
+  ok(titles.length >= 23 && ['Subir un producto nuevo', 'Atender los pedidos del día', 'Crear una campaña', 'Crear un descuento por cantidad', 'Recuperar un carrito', 'Cambiar los banners del inicio'].every((t) => titles.some((x) => x.startsWith(t))) && faqs.some((x) => /foto se ve acostada/.test(x)), `Ayuda: ${titles.length} guías paso a paso + preguntas (productos, pedidos, descuentos, carritos, contenido, problemas)`);
   await h.g.fill('#bk-g-hq', 'guia envio'); await h.g.waitForTimeout(200);
-  const vis = await h.g.locator('.bk-g-guide:not([hidden]) > summary').allTextContents();
-  ok(vis.some((t) => /pedidos del día/.test(t)) && await h.g.locator('.bk-g-guide[open]:not([hidden])').count() === vis.length && /resultado/.test(await h.g.textContent('#bk-g-hq-n')), `buscador sin tildes: "guia envio" → ${vis.length} guía(s) abiertas`);
+  const vis = await h.g.locator('.bk-g-task:not([hidden]) .bk-g-task__t').allTextContents();
+  ok(vis.some((t) => /guía de envío/.test(t)) && await h.g.locator('.bk-g-task[open]:not([hidden])').count() === Math.min(3, vis.length) && /resultado/.test(await h.g.textContent('#bk-g-hq-n')), `buscador sin tildes: "guia envio" → ${vis.length} resultado(s), abre los primeros`);
   await h.g.fill('#bk-g-hq', ''); await h.g.waitForTimeout(200);
-  ok(await h.g.locator('.bk-g-help > details[hidden]').count() === 0, 'buscador vacío: vuelve a mostrar todo');
+  ok(await h.g.locator('.bk-g-hmod[hidden], .bk-g-task[hidden]').count() === 0, 'buscador vacío: vuelve a mostrar todo');
   await h.ctx.close();
   const s = await login('Gestor_ADS', 'Clave#2026');
   await s.g.goto(B + '/gestion-tienda/#ayuda'); await s.g.waitForSelector('.bk-g-help');
-  ok(await s.g.locator('.bk-g-guide').count() === 0, 'usuario de SEO y ADS: no ve las guías de pedidos y productos');
+  ok(!/Atender los pedidos|Subir un producto/.test(await s.g.textContent('.bk-g-help')), 'usuario de SEO y ADS: no ve las guías de pedidos y productos');
   await s.ctx.close();
 
   ok(!errs.length, 'sin errores JS ' + errs.slice(0, 3).join(' | '));

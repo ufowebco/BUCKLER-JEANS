@@ -1,4 +1,5 @@
-// 0.18.0: wp-admin y wp-login.php ocultos (sin sesión → inicio); el acceso es /ingreso/. Lo interno sigue funcionando.
+// 0.18.0: wp-admin y wp-login.php ocultos (sin sesión → inicio; el acceso es /ingreso/, lo interno sigue funcionando)
+// y centro de ayuda con capturas por tarea y marcas que se iluminan con cada paso.
 const { chromium } = require('playwright');
 const { execSync } = require('child_process');
 const B = 'http://localhost:8899';
@@ -80,6 +81,35 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
   // 6. Entradas con contraseña (formulario de WordPress que va a wp-login.php?action=postpass).
   const pp = await anon.request.post(B + '/wp-login.php?action=postpass', { form: { post_password: 'x' }, headers: { Referer: B + '/' }, maxRedirects: 0 });
   ok(/wp-postpass_/.test(JSON.stringify(pp.headers())), 'páginas con contraseña siguen funcionando');
+
+  // 7. Centro de ayuda: cada tarea con su captura, marcas numeradas que se iluminan con el paso, ampliar.
+  const h = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
+  h.on('pageerror', (e) => errs.push(e.message));
+  await h.goto(B + '/gestion-tienda/'); await h.fill('[name=log]', 'gestora'); await h.fill('[name=pwd]', 'gestora');
+  await Promise.all([h.waitForNavigation(), h.click('.bk-g-login__form [type=submit]')]);
+  await h.goto(B + '/gestion-tienda/#ayuda'); await h.waitForSelector('.bk-g-task[open] .bk-g-shot img');
+  const info = await h.evaluate(() => ({ mods: document.querySelectorAll('.bk-g-hmod').length, nav: document.querySelectorAll('.bk-g-hside a').length, tasks: [...document.querySelectorAll('.bk-g-task:not(.is-faq)')].map((t) => ({ t: t.querySelector('.bk-g-task__t').textContent, shots: t.querySelectorAll('.bk-g-shot').length, marks: [...t.querySelectorAll('.bk-g-mk')].map((m) => +m.dataset.n), steps: t.querySelectorAll('.bk-g-hsteps li').length })) }));
+  const noShot = info.tasks.filter((t) => !t.shots || !t.marks.length);
+  const badN = info.tasks.filter((t) => t.marks.some((n) => n < 1 || n > t.steps));
+  ok(info.mods === 9 && info.nav === 9, `centro de ayuda: 9 módulos con índice lateral (${info.mods})`);
+  ok(!noShot.length, `cada tarea tiene su captura con marcas (${info.tasks.length} tareas) ${noShot.map((t) => t.t).join(' | ')}`);
+  ok(!badN.length, `cada número de la imagen corresponde a un paso de su lista ${badN.map((t) => t.t).join(' | ')}`);
+  const cover = info.tasks.reduce((a, t) => a + new Set(t.marks).size, 0) / info.tasks.reduce((a, t) => a + t.steps, 0);
+  ok(cover >= 0.85, `la mayoría de los pasos están señalados en la imagen (${Math.round(cover * 100)} %)`);
+  const li = h.locator('.bk-g-task[open] .bk-g-hsteps li[data-n="2"]');
+  await h.mouse.move(5, 5); const bb = await li.boundingBox(); await h.mouse.move(bb.x + 60, bb.y + 8); await h.waitForTimeout(300);
+  ok(await h.locator('.bk-g-task[open] .bk-g-mk.is-hot[data-n="2"]').count() === 1 && await h.locator('.bk-g-task[open] .is-hot').count() === 2, 'pasar el cursor por el paso 2 ilumina la marca 2 de la imagen (y nada más)');
+  const mk = await h.locator('.bk-g-task[open] .bk-g-mk[data-n="1"]').boundingBox(); await h.mouse.move(mk.x + mk.width / 2, mk.y + mk.height / 2); await h.waitForTimeout(300);
+  ok(await h.locator('.bk-g-task[open] li.is-hot[data-n="1"]').count() === 1, 'y al revés: la marca 1 ilumina el paso 1');
+  await h.click('.bk-g-task[open] [data-hzoom]');
+  ok(await h.locator('#bk-g-lightbox[open] .bk-g-mk').count() >= 3 && await h.locator('#bk-g-lightbox[open] .bk-g-hsteps li').count() >= 3, 'ampliar: imagen grande con sus marcas y los pasos al lado');
+  await h.keyboard.press('Escape'); await h.waitForTimeout(200);
+  ok(await h.locator('#bk-g-lightbox[open]').count() === 0, 'Esc cierra la imagen ampliada');
+  await h.fill('#bk-g-hq', 'girar foto'); await h.waitForTimeout(200);
+  ok(await h.locator('.bk-g-task[open]:not([hidden]) .bk-g-task__t', { hasText: 'Fotos' }).count() >= 1, 'buscar "girar foto" abre la guía de fotos');
+  await h.setViewportSize({ width: 390, height: 844 }); await h.fill('#bk-g-hq', ''); await h.waitForTimeout(300);
+  ok(await h.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'centro de ayuda en el celular sin desplazamiento horizontal');
+  await h.screenshot({ path: '/tmp/claude-0/bk-local/r180-ayuda-390.png' });
 
   ok(!errs.length, 'sin errores JS ' + errs.slice(0, 3).join(' | '));
   await b.close();

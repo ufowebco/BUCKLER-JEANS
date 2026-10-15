@@ -7,7 +7,7 @@ Rutas asumidas: `BK_LOCAL=/tmp/claude-0/bk-local` (ajustar en los scripts si cam
 php tools/local/tests/seed-cards.php     # galerías, destacado, oferta, talla agotada
 php tools/local/tests/seed-shop.php      # ~60 productos con nombres/precios/categorías reales
 php tools/local/tests/seed-orders.php    # pedidos de ejemplo, usuaria "gestora" (rol Gestor de tienda)
-cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179; do NODE_PATH=$(npm root -g) node $t.js; done
+cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180; do NODE_PATH=$(npm root -g) node $t.js; done
 ```
 
 | Suite | Qué prueba | Comprobaciones |
@@ -32,6 +32,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `ronda177.js` | Entrar a la gestión aunque otro plugin mande al inicio (3 formas, gestora y Gestor_ADS), fotos con EXIF derechas, girar fotos, total de reseñas del perfil de Google, Mi cuenta legible con el CSS del tema de producción (1440/390), Ayuda paso a paso y buscador | 30 |
 | `ronda178.js` | Acceso propio /ingreso/ (wp-admin sin sesión, destino por rol, contraseña mala), redirección ajena en wp_loaded evitada en la gestión (gestora, Gestor_ADS, admin), registro con el archivo del plugin y con header() directo, registro en Ajustes → Buckler Core | 18 |
 | `ronda179.js` | Favicon en acceso, gestión e impresión; editar datos de la clienta en el pedido (valores actuales, correo inválido, guardado, misma dirección / envío distinto, historial y nota, sin cambios, sin sesión, celular) | 17 |
+| `ronda180.js` | wp-admin/wp-login.php ocultos sin sesión (rutas, POST, sin caché), admin-ajax/admin-post/carrito intactos, /ingreso/ a wp-admin, salir, interruptor, contraseña olvidada y enlace con clave, páginas con contraseña; centro de ayuda (módulos, capturas por tarea, marcas ↔ pasos, ampliar, buscar, celular) | 36 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).
 | `seguridad.js` | Nombres de usuario ocultos a visitantes: REST de usuarios 401, ?author 404, sin sitemap de usuarios, Store API pública, error de acceso genérico, editor con sesión intacto | 7 |

@@ -384,295 +384,279 @@
 	}
 
 	/* ============================================================================
-	 * Ayuda
+	 * Ayuda (centro de ayuda)
 	 * ========================================================================== */
-	// Guía con capturas: cada figura lleva números sobre la pantalla y los mismos números en la lista de pasos.
-	// Las imágenes salen de tools/local/help-shots.js (assets/img/ayuda/*.webp, 1280 px).
-	const fig = (img, title, steps, h) => ({ img, title, steps, h });
-	// Guías paso a paso por tarea (lo que se hace a diario), antes de la explicación de cada pantalla.
-	const guide = (t, steps, tip = '') => ({ t, steps, tip });
-	const GUIDES = [
-		['Productos', [
-			guide('Subir un producto nuevo', [
-				'Ve a <b>Productos</b> y toca <b>Nuevo producto</b>.',
-				'Escribe el <b>Nombre</b> como se verá en la tienda (ej.: JEAN BOTA ANCHA DAMA – OXFORD – TIRO ALTO) y la <b>REF</b>. En Línea Curvy la REF termina en PLUS (816 PLUS).',
-				'Elige la <b>Línea</b> (Slim o Curvy) y la <b>Prenda</b> (jeans, faldas, chaquetas…).',
-				'En <b>Fotos y video</b> toca <b>Agregar fotos</b> y elige todas las fotos a la vez. La primera es la principal: ordénalas con las flechas. Si alguna quedó acostada, usa los botones de <b>girar</b> que tiene cada foto.',
-				'Si tienes video (MP4), toca <b>Agregar video</b>.',
-				'Escribe la <b>Descripción corta</b> (1 o 2 frases junto al precio) y la <b>Descripción completa</b> (tela, tiro, bota, recomendaciones de lavado).',
-				'Escribe el <b>Precio normal</b>. Deja vacío el <b>Precio rebajado</b> si no está en promoción.',
-				'En <b>Tallas y stock</b> marca las tallas que vendes y escribe cuántas unidades hay de cada una.',
-				'Si es lanzamiento, activa <b>Mostrar como Nuevo</b>.',
-				'Toca <b>Publicar</b> para que se vea de una vez, o <b>Guardar borrador</b> para terminarlo después.',
-			], 'Antes de publicar revisa que las fotos estén derechas y que cada talla tenga stock: una talla en 0 se muestra agotada.'),
-			guide('Crear el mismo modelo en la otra línea (Slim ↔ Curvy)', [
-				'Abre el producto ya creado (<b>Productos → Editar</b>).',
-				'En <b>Publicación</b> toca <b>Crear este modelo en Línea Curvy</b> (o Slim).',
-				'Se copian el nombre, la REF (con o sin PLUS), la prenda, el precio y la descripción. Sube las fotos de esa línea y escribe el stock de cada talla.',
-				'Toca <b>Publicar</b>. En la ficha de cada uno aparecerá el enlace "ver este modelo en la otra línea".',
+	// Cada tarea lleva una o más capturas limpias (tools/local/help-shots.js → assets/img/ayuda/*.webp) y sus marcas
+	// en assets/img/ayuda/marks.json ({captura: {h, marks: [{n, x, y, w, h}]}} en % de la imagen). Los números de las
+	// marcas son los números de los pasos: al pasar el cursor (o el foco) por un paso se ilumina su marca y al revés.
+	const task = (t, shots, steps, tip = '') => ({ t, shots, steps, tip });
+	const screen = (img, t, steps) => ({ img, t, steps });
+	const MODULES = [
+		{ k: 'pedidos', t: 'Pedidos', icon: 'orders', intro: 'Todos los pedidos de la tienda con búsqueda, filtros y las marcas de trabajo del día: pago confirmado, impreso y despachado.', tasks: [
+			task('Atender los pedidos del día', ['g-pedidos-dia'], [
+				'Toca <b>Buscar pedidos nuevos</b>. La lista también se revisa sola cada 10 minutos y los nuevos aparecen resaltados.',
+				'Cuando verifiques el pago (Wompi, Bold, Addi o transferencia), marca <b>Pago confirmado</b>.',
+				'Toca <b>Imprimir</b>: sale la hoja con la clienta, la dirección y las prendas con talla y REF. El pedido queda como <b>Impreso</b>.',
+				'Empaca con la hoja y, cuando salga a la transportadora, marca <b>Despachado</b>.',
+				'Toca el <b>número del pedido</b> para abrirlo y enviar la guía (siguiente tarea).',
+			], 'Con el filtro <b>Impresión → Sin imprimir</b> ves solo los que faltan.'),
+			task('Enviar la guía de envío', ['g-guia'], [
+				'Elige la <b>transportadora</b>.',
+				'Escribe el <b>número de guía</b>.',
+				'Deja marcada la casilla para que el pedido pase a <b>Completado</b>.',
+				'Toca <b>Ver correo antes de enviar</b>, revisa el correo y toca <b>Confirmar y enviar</b>.',
+			], 'La clienta recibe un correo con la guía y también la ve en Mi cuenta.'),
+			task('Buscar un pedido', ['g-buscar'], [
+				'Escribe el número (3846 o #3846), el consecutivo (PEDIDO-3841), la cédula, el nombre, el correo o el celular.',
+				'Acota con los filtros: estado, pago, impresión, despacho y fechas.',
 			]),
-			guide('Fotos: tamaño, orden y fotos acostadas', [
-				'Usa fotos <b>verticales</b> (2:3, por ejemplo 1200 × 1800) y todas del mismo tamaño. Se optimizan solas al subirlas (no hace falta reducirlas antes).',
-				'Las fotos del celular se enderezan solas. Si una quedó de lado, toca <b>Girar a la izquierda</b> o <b>Girar a la derecha</b> sobre la foto: se gira en el servidor y se actualiza en la tienda.',
-				'Para cambiar el orden usa las flechas; para quitar una foto, la papelera.',
-				'Toca <b>Guardar cambios</b> al terminar.',
-			], 'El giro se guarda al instante en la foto; el orden y las fotos quitadas se guardan con "Guardar cambios".'),
-			guide('Cambiar precio o poner un producto en ¡Sale!', [
-				'Rápido: en <b>Productos</b> toca <b>Tallas y precios</b> en el producto, cambia el precio de la talla y toca <b>Guardar</b> en esa fila.',
-				'Desde el producto: <b>Editar</b> → <b>Precio rebajado</b> → <b>Guardar cambios</b>.',
-				'Con precio rebajado el producto entra solo a <b>¡Sale!</b> y muestra el aviso "sin garantía ni cambio". Al borrar el precio rebajado sale de ¡Sale!.',
-			], 'Para una promoción por fechas en muchos productos usa mejor una campaña en Descuentos: no hay que tocar los precios y se apaga sola.'),
-			guide('Actualizar el stock o agotar una talla', [
-				'En <b>Productos</b> busca por nombre o REF.',
-				'Toca <b>Tallas y precios</b>, escribe las unidades de la talla y toca <b>Guardar</b> en esa fila.',
-				'Una talla en 0 se ve agotada (tachada en la ficha). Si ya no la vas a vender, desmárcala en <b>Editar → Tallas y stock</b>.',
-			], 'Las ventas descuentan el stock solas. En Resumen ves las tallas con 1 o 2 unidades para reponer a tiempo.'),
-			guide('Marcar o quitar "Nuevo"', [
-				'En <b>Productos</b> toca la <b>estrella</b> del producto, o en <b>Editar</b> activa <b>Mostrar como Nuevo</b>.',
-				'El producto lleva la etiqueta NUEVO y sale en "Lo nuevo" del inicio y del menú. Toca la estrella otra vez para quitarlo.',
-			]),
-			guide('Ocultar un producto sin borrarlo', [
-				'<b>Productos → Editar</b>.',
-				'En <b>Publicación → Estado</b> elige <b>Borrador (oculto)</b> y toca <b>Guardar cambios</b>.',
-			]),
-		]],
-		['Pedidos', [
-			guide('Atender los pedidos del día', [
-				'Abre <b>Pedidos</b>. La lista se revisa sola cada 10 minutos; para verlos ya, toca <b>Buscar pedidos nuevos</b>. Los nuevos aparecen resaltados.',
-				'Revisa que el pago llegó (Wompi, Bold, Addi o transferencia) y marca <b>Pago confirmado</b>.',
-				'Toca <b>Imprimir</b>: sale la hoja con la clienta, la dirección y los productos con talla y REF. El pedido queda como <b>Impreso</b>.',
-				'Empaca revisando la hoja y marca <b>Despachado</b> cuando sale a la transportadora.',
-				'Abre el pedido y en <b>Enviar guía de envío</b> elige la transportadora, escribe el número, toca <b>Ver correo antes de enviar</b> y luego <b>Confirmar y enviar</b>. Con la casilla marcada el pedido pasa a <b>Completado</b>.',
-			], 'Usa el filtro Impresión → Sin imprimir para ver solo los que faltan por imprimir.'),
-			guide('Buscar un pedido', [
-				'En <b>Pedidos</b> escribe en el buscador: número (3846 o #3846), consecutivo (PEDIDO-3841 o 3841), cédula, nombre, correo o celular.',
-				'Usa los filtros de estado, pago, impreso, despachado y fechas para acotar.',
-			]),
-			guide('Cambiar el estado de un pedido', [
-				'Abre el pedido (toca el número).',
-				'Elige el estado: <b>En espera</b> (esperando pago), <b>Procesando</b> (pagado, por despachar), <b>Completado</b> (enviado), <b>Cancelado</b> o <b>Reembolsado</b>.',
+			task('Cambiar el estado de un pedido', ['g-estado'], [
+				'Abre el pedido y elige el <b>Estado</b>: En espera (falta el pago), Procesando (pagado), Completado (enviado), Cancelado o Reembolsado.',
+				'Si hace falta, ajusta las marcas de pago, impreso y despachado.',
 				'Toca <b>Guardar estado</b>. Queda en el historial con tu nombre y la hora.',
-			], 'Al cancelar, las unidades vuelven al stock. La clienta recibe el correo de ese estado si está activo (míralos en Correos).'),
-			guide('Corregir los datos de la clienta (dirección, celular, cédula)', [
-				'Abre el pedido (toca el número).',
+			], 'Al cancelar, las unidades vuelven al stock. La clienta recibe el correo de ese estado si está activo (míralo en Correos).'),
+			task('Corregir los datos de la clienta', ['g-cliente'], [
 				'En <b>Clienta</b> toca <b>Editar datos</b>.',
-				'Corrige nombre, cédula, celular, correo, departamento, ciudad o dirección. Si el envío va a otra dirección, desmarca <b>Enviar a la misma dirección</b> y escribe los datos de envío.',
-				'Toca <b>Guardar datos</b>. El cambio queda en el historial y en las notas del pedido.',
-			], 'Se cambia solo en ese pedido, no en la cuenta de la clienta. Si ya imprimiste la hoja, vuelve a imprimirla.'),
-			guide('Adjuntar un comprobante o factura', [
-				'Abre el pedido y baja a <b>Archivos del pedido</b>.',
-				'Toca <b>Subir archivo</b> y elige el PDF o la foto (hasta 15 MB).',
-				'En la lista de pedidos se ve 📎 con la cantidad de archivos.',
+				'Corrige nombre, cédula, celular, correo, departamento, ciudad o dirección.',
+				'Si el envío va a otra dirección, desmarca <b>Enviar a la misma dirección</b> y escribe los datos de envío.',
+				'Toca <b>Guardar datos</b>. El cambio queda en el historial y en las notas.',
+			], 'Solo cambia ese pedido (no la cuenta de la clienta). Si ya lo imprimiste, vuelve a imprimirlo.'),
+			task('Adjuntar un comprobante o factura', ['g-archivos'], [
+				'Abre el pedido y baja hasta <b>Archivos del pedido</b>.',
+				'Toca <b>Subir archivo</b> y elige el PDF o la foto (hasta 15 MB). En la lista de pedidos se ve 📎 con la cantidad.',
 			]),
-			guide('Escribirle a la clienta', [
-				'En el detalle del pedido toca el <b>celular</b>: abre WhatsApp con su número.',
-				'O deja una <b>nota</b> y marca <b>Enviar a la clienta</b>: le llega por correo y queda en el pedido.',
+			task('Escribirle a la clienta', ['g-escribir', 'g-escribir-2'], [
+				'Toca <b>WhatsApp</b> junto al celular: se abre el chat con su número.',
+				'O escribe una nota en <b>Notas</b>…',
+				'…marca <b>Enviar a la clienta</b> para que le llegue por correo…',
+				'…y toca <b>Añadir nota</b>. Queda guardada en el pedido.',
 			]),
-		]],
-		['Descuentos', [
-			guide('Crear una campaña (ej.: 20 % en toda la tienda el fin de semana)', [
-				'Ve a <b>Descuentos</b> y toca <b>Nueva campaña</b>.',
-				'Escribe el <b>Nombre</b> (se ve en la barra de arriba y en las fichas, ej.: "Fin de semana Buckler").',
-				'Escribe el <b>Porcentaje</b> (20).',
-				'Elige <b>Desde</b> y <b>Hasta</b> (hora de Colombia). Empieza y termina sola.',
-				'En <b>A qué productos</b> elige <b>Toda la tienda</b> o categorías. Los productos de ¡Sale! quedan fuera.',
-				'Opcional: etiqueta en las tarjetas, anuncio en la barra verde y sección en el inicio con cuenta regresiva.',
-				'Deja marcado <b>Activo</b> y toca <b>Guardar</b>.',
-			], 'Para revisarla antes de que la vean las clientas, ponle una fecha de inicio futura.'),
-			guide('Crear un descuento por cantidad (ej.: 2 prendas −10 %, 3 o más −15 %)', [
-				'En <b>Descuentos</b> toca <b>Nuevo descuento por cantidad</b>.',
-				'Escribe el nombre y las fechas.',
-				'En los tramos escribe <b>Desde</b> cuántas prendas y el <b>Porcentaje</b>. Toca <b>Agregar tramo</b> para el siguiente (hasta 6).',
-				'En <b>Cómo se cuentan las prendas</b> deja <b>Combinando productos (recomendado)</b>: suma cualquier prenda del carrito. "Solo del mismo modelo" cuenta solo tallas del mismo producto.',
-				'Elige el alcance y toca <b>Guardar</b>.',
-			], 'Los descuentos no se suman: a cada prenda se le aplica el más alto. En el carrito la clienta ve cuántas prendas le faltan para el siguiente tramo.'),
-			guide('Pausar, cambiar o terminar un descuento', [
-				'En la lista de <b>Descuentos</b> usa <b>Pausar</b> (lo apaga sin borrarlo) y <b>Activar</b> para volver a encenderlo.',
-				'<b>Editar</b> cambia porcentaje, fechas o productos. <b>Borrar</b> lo elimina.',
-				'Si ves "Los descuentos están apagados en la tienda", toca <b>Encender descuentos</b>.',
-			]),
-		]],
-		['Clientas y carritos', [
-			guide('Recuperar un carrito abandonado', [
-				'Abre <b>Carritos</b> y toca <b>Actualizar listado</b>.',
-				'Los <b>Pendientes</b> reciben solos 3 recordatorios por correo (2, 24 y 48 horas) con un enlace que les devuelve el carrito.',
-				'Para un trato personal toca el <b>celular</b> de la clienta y escríbele por WhatsApp (tienes su nombre, lo que dejó y el total).',
-				'Si compra, el carrito pasa a <b>Recuperado</b> o <b>Compró</b>.',
-			]),
-			guide('Revisar cómo le llegan los correos', [
-				'Abre <b>Correos</b>, elige un <b>pedido de ejemplo</b> y el correo que quieres ver.',
-				'La vista previa no envía nada. "Enviar prueba" manda una copia con "[Prueba]" en el asunto.',
-			]),
-		]],
-		['Contenido de la tienda', [
-			guide('Cambiar los banners del inicio', [
-				'Abre <b>Contenido → Banners</b>.',
-				'En cada banner sube la imagen para <b>computador</b> (1920 × 1080) y para <b>celular</b> (1200 × 1200).',
-				'Escribe el <b>Enlace al tocar el banner</b> (ej.: la Línea Curvy) y el <b>Texto de la imagen (alt)</b>: describe lo que dice el banner, lo leen Google y los lectores de pantalla.',
-				'Ordénalos con las flechas y toca <b>Guardar banners</b>. El inicio se actualiza solo.',
-			], 'Si el banner tiene texto dentro de la imagen, escribe ese mismo texto en "Texto de la imagen".'),
-			guide('Editar una pregunta frecuente o una política', [
-				'Abre <b>Contenido → Preguntas frecuentes</b> (o <b>Políticas</b>).',
-				'Toca la pregunta, cambia el texto y toca <b>Guardar</b>. Para una nueva, toca <b>Nueva pregunta</b> (o <b>Nueva política</b>).',
-				'Desmarca <b>Publicada</b> para dejarla en borrador.',
-			]),
-		]],
-		['Si algo no funciona', [
-			guide('Hice un cambio y no lo veo en la tienda', [
-				'La tienda guarda las páginas para que carguen rápido y se actualizan solas al guardar.',
-				'Recarga con <b>Ctrl + F5</b> (en el celular, cierra y abre la pestaña) o espera un minuto.',
-			]),
-			guide('Al entrar me manda al inicio de la tienda', [
-				'Entra siempre por <b>buckler.com.co/gestion-tienda/</b> con tu usuario y contraseña.',
-				'Si ya iniciaste sesión, vuelve a abrir esa misma dirección: te lleva a la gestión.',
-				'Si sigue pasando, escribe a soporte indicando tu usuario y la página a la que te llevó.',
-			]),
-			guide('Una foto se ve acostada', [
-				'Abre el producto en <b>Productos → Editar</b>.',
-				'Toca <b>Girar a la derecha</b> o <b>Girar a la izquierda</b> sobre esa foto hasta que quede derecha. No hace falta guardar para el giro.',
-			]),
-		]],
-	];
-	const guidesHtml = () => GUIDES.map(([g, list]) => `<h3 class="bk-g-hgroup">${esc(g)}</h3>${list.map((x) => `<details class="bk-g-guide"><summary>${esc(x.t)}</summary><ol class="bk-g-hsteps">${x.steps.map((st) => `<li>${st}</li>`).join('')}</ol>${x.tip ? `<p class="bk-g-htip"><b>Consejo:</b> ${x.tip}</p>` : ''}</details>`).join('')}`).join('');
-	const HELP = [
-		['guias', 'Paso a paso', '<p>Guías cortas para lo que haces a diario. Toca una tarea para ver los pasos.</p>', [], true],
-		['seo', 'SEO y ADS', `
-			<p>Mide de dónde llegan las visitas y revisa que las etiquetas de Google y Meta estén bien puestas. Las visitas se cuentan sin cookies ni datos personales y no cuentan robots ni al equipo de la tienda.</p>`, [
-			fig('seo', 'Visitas', [
-				'<b>¿Falta una etiqueta?</b> Escribe a <a href="mailto:contacto@ufoweb.co">contacto@ufoweb.co</a> con el ID (GTM-…, G-…, AW-…, ID del píxel) y qué debe medir. No pegues códigos en el sitio.',
-				'<b>Pestañas:</b> Visitas, Etiquetas Google y Meta, y Clases y eventos rastreables.',
-				'<b>Visitantes</b> de hoy, de los últimos 7 y de los últimos 30 días, con sus páginas vistas.',
-				'<b>Periodo</b> del gráfico. Debajo: páginas más vistas, de dónde llegan (Google, Meta Ads, WhatsApp…), campañas (utm_campaign), ciudades y dispositivos.',
-			], 549),
-			fig('seo-etiquetas', 'Etiquetas Google y Meta', [
-				'<b>Etiquetas Google y Meta:</b> revisa el código público de la tienda (inicio, tienda y un producto) y el contenedor de Google Tag Manager.',
-				'<b>Revisar ahora:</b> úsalo después de cualquier cambio en GTM o en Meta (el resultado se guarda 6 horas).',
-				'<b>Resultado:</b> qué etiquetas hay, si alguna está duplicada y qué falta. "Clases y eventos rastreables" lista los eventos <code>bk_</code> (añadir al carrito, WhatsApp, búsqueda…) para crear activadores en GTM.',
-			], 847),
-		]],
-		['resumen', 'Resumen', '<p>Es la primera pantalla: cómo va la venta y qué hay por hacer hoy.</p>', [
-			fig('resumen', 'Resumen', [
-				'<b>Menú de secciones.</b> En pantallas medianas solo se ven los íconos: pasa el cursor para ver el nombre.',
-				'<b>Ventas pagadas</b> de hoy y del mes.',
-				'<b>Pedidos por atender:</b> por despachar, en espera y pendientes de pago. Toca uno para ver esos pedidos.',
-				'<b>Tallas por agotarse:</b> tallas con 1 o 2 unidades, para reponer a tiempo.',
-				'<b>Ver tienda</b> abre el sitio y <b>Salir</b> cierra la sesión (te deja en la pantalla de acceso).',
-			], 524),
-		]],
-		['pedidos', 'Pedidos', '<p>Todos los pedidos de la tienda, con búsqueda, filtros y las marcas de trabajo del día (pago confirmado, impreso y despachado).</p>', [
-			fig('pedidos', 'Lista de pedidos', [
-				'<b>Buscar</b> por número (#3846), consecutivo (PEDIDO-3841 o 3841), cédula, nombre, correo o celular. <b>Buscar pedidos nuevos</b> trae los que acaban de llegar (la lista también se revisa sola cada 10 minutos).',
+		], screens: [
+			screen('pedidos', 'La lista de pedidos', [
+				'<b>Buscar</b> por número, consecutivo, cédula, nombre, correo o celular.',
 				'<b>Filtros:</b> estado, pago confirmado, impreso, despachado y fechas.',
-				'<b>Número del pedido:</b> tócalo para abrir el detalle a la derecha.',
-				'<b>Pago confirmado, Impreso y Despachado:</b> se guardan al instante, sin botón de guardar.',
-				'<b>Imprimir:</b> hoja con la clienta, la dirección, los productos con talla y REF y casillas de empaque. Al imprimir, el pedido queda como "Impreso".',
-			], 500),
-			fig('pedido', 'Detalle del pedido', [
-				'<b>Estado del pedido</b> (en espera, procesando, completado…).',
-				'<b>Marcas</b> de pago confirmado, impreso y despachado.',
-				'<b>Guardar estado</b> e <b>Imprimir pedido</b>.',
-				'<b>Enviar guía de envío:</b> elige la transportadora, escribe el número y toca "Ver correo antes de enviar". La clienta recibe un correo con la guía y la ve en Mi cuenta. Si dejas la casilla marcada, el pedido pasa a Completado.',
-				'<b>Clienta:</b> cédula, consecutivo, celular con enlace a WhatsApp, correo y dirección.',
-			], 771),
-			fig('pedido-historial', 'Archivos, historial y notas', [
-				'<b>Archivos del pedido</b> (comprobantes, facturas): sube PDF o fotos y quítalos. Son los mismos de ACF "Archivos Pedidos".',
-				'<b>Historial:</b> cuándo se creó, se pagó, cambió de estado, se imprimió y se despachó, y quién lo hizo.',
-				'<b>Notas:</b> internas o para la clienta (marca "Enviar a la clienta" y le llega por correo).',
-			], 860),
-		]],
-		['productos', 'Productos', '<p>Precios, stock por talla, productos nuevos y fotos, sin entrar a WordPress.</p>', [
-			fig('productos', 'Lista de productos', [
-				'<b>Buscar</b> por nombre o REF y filtrar por línea o stock.',
-				'<b>Estrella:</b> marca el producto como <b>Nuevo</b> (etiqueta en la tarjeta y sección "Lo nuevo").',
-				'<b>Tallas y precios:</b> cambia el precio, el precio rebajado y el stock de cada talla sin abrir el producto.',
-				'<b>Editar</b> el producto completo.',
-				'<b>Nuevo producto.</b> Desde un producto también puedes "Crear en la otra línea" (copia el modelo a Slim o Curvy).',
-			], 440),
-			fig('producto-editar', 'Editar producto', [
-				'<b>Nombre y REF.</b> En Línea Curvy la REF termina en PLUS (816 PLUS).',
-				'<b>Prenda</b> (jeans, faldas…). "Todas las categorías" abre la lista completa.',
-				'<b>Mostrar como Nuevo.</b>',
-				'<b>Precio normal y rebajado.</b> Con precio rebajado el producto entra solo a ¡Sale! y muestra el aviso "no tiene garantía ni cambio".',
-				'<b>Tallas y stock:</b> marca las tallas que vendes y escribe las unidades. Una talla desmarcada deja de verse.',
-			], 860),
-			fig('producto-fotos', 'Fotos, descripción y publicación', [
-				'<b>Fotos y video:</b> la primera foto es la principal; ordénalas con las flechas y, si una quedó de lado, gírala con los botones de girar. Se optimizan y se enderezan solas al subirlas. El video (MP4) se ve en la galería de la ficha.',
-				'<b>Descripción</b> corta (junto al precio) y completa (negrita y listas).',
-				'<b>Publicación:</b> publicado o borrador, y el botón para guardar.',
-			], 860),
-		]],
-		['descuentos', 'Descuentos', `
-			<p>Los descuentos <b>no se suman</b>: a cada prenda se le aplica el más alto, sobre el precio normal. Se activan y se apagan solos en las fechas elegidas (hora de Colombia). Si en Descuentos ves el aviso "Los descuentos están apagados en la tienda", toca <b>Encender descuentos</b> (también se encienden solos al guardar un descuento activo).</p>`, [
-			fig('descuentos', 'Lista de descuentos', [
-				'<b>Nueva campaña:</b> un porcentaje a toda la tienda (o a categorías) entre dos fechas.',
-				'<b>Campaña</b> con su porcentaje, fechas, alcance y estado (Activa, Programada, Terminada o Pausada).',
-				'<b>Editar, Pausar/Activar y Borrar.</b>',
-				'<b>Descuento por cantidad:</b> tramos según cuántas prendas lleva la clienta.',
-			], 698),
-			fig('descuento-campana', 'Nueva campaña', [
-				'<b>Nombre</b>: se ve en el anuncio de arriba, en el inicio y en la ficha.',
-				'<b>Porcentaje</b> de descuento.',
-				'<b>Desde y hasta</b> (hora de Colombia).',
-				'<b>Activo:</b> desmárcalo para pausarla sin borrarla. Para probar sin que lo vean las clientas, usa una fecha futura.',
-				'<b>A qué productos:</b> toda la tienda o categorías, sin los productos de ¡Sale! (ya tienen su rebaja). Más abajo: etiqueta de las tarjetas, anuncio y productos destacados del inicio.',
-			], 744),
-			fig('descuento-cantidad', 'Descuento por cantidad', [
-				'<b>Tramos:</b> desde cuántas prendas y qué porcentaje (ej.: 2 prendas −20 %, 4 o más −30 %).',
-				'<b>Agregar tramo</b> (hasta 6).',
-				'<b>Vista previa</b> de cómo se verá en la ficha.',
-				'<b>Cómo se cuentan:</b> prendas del mismo modelo (en cualquier talla) o todas las del carrito.',
-			], 788),
-			fig('descuentos-tienda', 'Así lo ve la clienta', [
-				'<b>Anuncio</b> en la barra superior mientras dura la campaña.',
-				'<b>Precio tachado</b> y precio con descuento, también en las tarjetas de la tienda (con etiqueta).',
-				'<b>Recuadro</b> con la campaña y los tramos por cantidad. En el carrito se avisa cuántas prendas faltan para el siguiente tramo y cada pedido guarda qué descuento se aplicó.',
-			], 653),
-		]],
-		['carritos', 'Carritos abandonados', `
-			<p>Cuando una clienta escribe su correo <b>o su celular</b> en <b>Finalizar compra</b> y no termina, el carrito se guarda aquí con sus datos (nombre, cédula, ciudad y dirección si los escribió), también si cierra la página. Si marcó la autorización, recibe hasta 3 recordatorios (2, 24 y 48 h) con un enlace que le devuelve el carrito. Sin autorización, el carrito se ve aquí pero no se le escribe.</p>`, [
-			fig('carritos', 'Carritos abandonados', [
-				'<b>Indicadores</b> de los últimos 30 días: carritos capturados, pendientes, correos enviados y ventas recuperadas.',
-				'<b>Filtro</b> por estado.',
-				'<b>Clienta:</b> nombre, correo, celular (tócalo para escribirle por WhatsApp), cédula y ciudad.',
-				'<b>Estado:</b> Pendiente (recibe recordatorios), Pendiente · sin autorización (no recibe correos), Recuperado (compró desde el correo), Compró, Vació el carrito o Vencido.',
-			], 845),
-		]],
-		['correos', 'Correos', '<p>Mira cómo le llega cada correo a la clienta con un pedido real. La vista previa no envía nada.</p>', [
-			fig('correos', 'Correos', [
-				'<b>Pedido de ejemplo</b> para la vista previa.',
-				'<b>Correos a la clienta</b> (pedido en espera, en proceso, completado, cancelado, reembolsado, nota, guía de envío y carritos abandonados), con su estado Activo o Apagado.',
-				'<b>Para, asunto y remitente.</b>',
-				'<b>Vista previa</b> del correo. Debajo, "Enviar prueba" manda una copia con "[Prueba]" en el asunto.',
-			], 732),
-		]],
-		['contenido', 'Contenido', '<p>Lo que antes se cambiaba en WordPress: banners, guía de tallas, políticas y preguntas frecuentes. Se guarda en los mismos campos de ACF (se ve igual en wp-admin) y la tienda se actualiza sola.</p>', [
-			fig('contenido', 'Banners del inicio', [
-				'<b>Pestañas:</b> Banners, Guía de tallas, Políticas y Preguntas frecuentes.',
-				'<b>Banner:</b> imagen para computador (1920 × 1080) y para celular (1200 × 1200), enlace y "Texto de la imagen" (lo leen Google y los lectores de pantalla). Ordénalos con las flechas o bórralos.',
-				'<b>Subir</b> o cambiar la imagen.',
-			], 831),
-		]],
-		['general', 'Preguntas comunes', `
-			<p><b>Hice un cambio y no lo veo en la tienda:</b> la tienda guarda las páginas para que carguen rápido y se actualizan solas al guardar. Si no lo ves, recarga la página (Ctrl + F5) o espera un minuto.</p>
-			<p><b>Cerrar sesión:</b> "Salir" arriba a la derecha te deja en esta misma pantalla de acceso.</p>
-			<p><b>Soporte:</b> <a href="mailto:contacto@ufoweb.co">contacto@ufoweb.co</a>.</p>`, []],
+				'<b>Número del pedido:</b> abre el detalle a la derecha.',
+				'<b>Pago confirmado, Impreso y Despachado</b> se guardan al instante.',
+				'<b>Imprimir</b> la hoja del pedido (queda como "Impreso").',
+			]),
+			screen('pedido', 'El detalle del pedido', [
+				'<b>Estado</b> del pedido.', '<b>Marcas</b> de pago, impreso y despachado.', '<b>Guardar estado</b> e <b>Imprimir</b>.',
+				'<b>Guía de envío</b> con vista previa del correo.', '<b>Clienta:</b> cédula, celular con WhatsApp, correo y dirección (con "Editar datos").',
+			]),
+			screen('pedido-historial', 'Archivos, historial y notas', [
+				'<b>Archivos del pedido</b> (los mismos de ACF "Archivos Pedidos").', '<b>Historial:</b> qué pasó, cuándo y quién.', '<b>Notas</b> internas o para la clienta.',
+			]),
+		] },
+		{ k: 'productos', t: 'Productos', icon: 'prod', intro: 'Crea y edita productos, precios, stock por talla y fotos sin entrar a WordPress.', tasks: [
+			task('Subir un producto nuevo', ['g-prod-nuevo-1', 'g-prod-nuevo-2'], [
+				'En <b>Productos</b> toca <b>Nuevo producto</b> y escribe el <b>Nombre</b> como se verá en la tienda.',
+				'Escribe la <b>REF</b>. En Línea Curvy termina en PLUS (816 PLUS).',
+				'Elige la <b>Línea</b>: Slim (6 a 12) o Curvy (14 a 24).',
+				'Elige la <b>Prenda</b> (jeans, faldas, chaquetas…).',
+				'Si es lanzamiento, activa <b>Mostrar como Nuevo</b>.',
+				'Escribe el <b>Precio normal</b> (el rebajado solo si está en ¡Sale!).',
+				'En <b>Tallas y stock</b> marca las tallas y escribe las unidades de cada una.',
+				'Toca <b>Agregar fotos</b> y elige todas a la vez. La primera es la principal.',
+				'Escribe la <b>Descripción corta</b> (junto al precio) y la completa (tela, tiro, bota, cuidados).',
+				'Toca <b>Publicar</b>, o <b>Guardar borrador</b> para terminarlo después.',
+			], 'Usa fotos verticales del mismo tamaño. Se optimizan y se enderezan solas al subirlas.'),
+			task('Fotos: ordenar, girar y quitar', ['g-fotos'], [
+				'<b>Agregar fotos</b>: puedes elegir varias a la vez.',
+				'Con las <b>flechas</b> cambias el orden. La primera es la principal.',
+				'Si una quedó acostada, usa <b>Girar a la izquierda / derecha</b>: se gira al instante en la tienda.',
+				'La <b>papelera</b> quita la foto del producto.',
+				'Toca <b>Guardar cambios</b> para guardar el orden y las fotos quitadas.',
+			]),
+			task('Crear el mismo modelo en la otra línea', ['g-otra-linea', 'g-otra-linea-2'], [
+				'En el producto ya creado toca <b>Crear este modelo en Línea Curvy</b> (o Slim).',
+				'Se copia la base: nombre, REF (con o sin PLUS), prenda, precio y descripción.',
+				'Revisa el <b>nombre</b> y la <b>REF</b>.',
+				'Escribe el <b>stock</b> de cada talla, sube las fotos de esa línea y toca <b>Publicar</b>.',
+			], 'En la ficha de cada uno sale el enlace "ver este modelo en la otra línea".'),
+			task('Cambiar precio o poner en ¡Sale!', ['g-precio'], [
+				'En la lista toca <b>Tallas y precios</b>.',
+				'Cambia el <b>Precio normal</b> de la talla…',
+				'…o escribe el <b>Precio rebajado</b> para ponerla en ¡Sale! (vacío = sin rebaja).',
+				'Toca <b>Guardar</b> en esa fila.',
+			], 'Para una promoción por fechas en muchos productos usa una campaña en Descuentos: no hay que tocar precios y se apaga sola.'),
+			task('Actualizar el stock de una talla', ['g-stock'], [
+				'Busca el producto por nombre o REF.',
+				'Toca <b>Tallas y precios</b>.',
+				'Escribe las unidades en <b>Stock</b> (0 = agotada).',
+				'Toca <b>Guardar</b> en esa fila.',
+			], 'Las ventas descuentan el stock solas. En Resumen ves las tallas que se están agotando.'),
+			task('Marcar o quitar "Nuevo"', ['g-nuevo'], [
+				'Toca la <b>estrella</b>: el producto lleva la etiqueta NUEVO y sale en "Lo nuevo". Tócala otra vez para quitarlo.',
+			]),
+			task('Ocultar un producto sin borrarlo', ['g-ocultar'], [
+				'En <b>Editar</b> → <b>Estado</b> elige <b>Borrador (oculto)</b>.',
+				'Toca <b>Guardar cambios</b>.',
+			]),
+		], screens: [
+			screen('productos', 'La lista de productos', [
+				'<b>Buscar</b> por nombre o REF y filtrar.', '<b>Estrella</b> = Nuevo.', '<b>Tallas y precios</b> sin abrir el producto.', '<b>Editar</b> el producto completo.', '<b>Nuevo producto</b>.',
+			]),
+			screen('producto-editar', 'Editar producto', [
+				'<b>Nombre y REF.</b>', '<b>Prenda</b> (y "Todas las categorías").', '<b>Mostrar como Nuevo.</b>', '<b>Precio normal y rebajado.</b>', '<b>Tallas y stock.</b>',
+			]),
+		] },
+		{ k: 'descuentos', t: 'Descuentos', icon: 'percent', intro: 'Campañas por porcentaje y descuentos por cantidad que se encienden y se apagan solos en las fechas que elijas. No se suman: a cada prenda se le aplica el más alto.', tasks: [
+			task('Crear una campaña (ej.: 20 % el fin de semana)', ['g-camp-1', 'g-camp-2'], [
+				'En <b>Descuentos</b> toca <b>Nueva campaña</b>.',
+				'Escribe el <b>Nombre</b>: se ve en la barra de arriba y en las fichas.',
+				'Escribe el <b>Porcentaje</b>.',
+				'Elige <b>Desde</b> y <b>Hasta</b> (hora de Colombia).',
+				'En <b>A qué productos</b> elige toda la tienda o categorías (¡Sale! queda fuera).',
+				'Deja marcado <b>Activo</b> y toca <b>Guardar</b> al final del formulario.',
+			], 'Para revisarla antes de que la vean las clientas, ponle una fecha de inicio futura.'),
+			task('Crear un descuento por cantidad', ['g-cant-1', 'g-cant-2'], [
+				'Toca <b>Nuevo descuento por cantidad</b>.',
+				'Escribe el nombre y las fechas.',
+				'En los tramos pon desde cuántas prendas y el porcentaje (ej.: 2 prendas −10 %).',
+				'<b>Agregar tramo</b> para el siguiente (ej.: 3 o más −15 %).',
+				'En <b>Cómo se cuentan</b> deja "Combinando productos" (suma cualquier prenda) y toca <b>Guardar</b>.',
+			], 'En el carrito la clienta ve cuántas prendas le faltan para el siguiente tramo.'),
+			task('Pausar, editar o borrar un descuento', ['g-desc-lista'], [
+				'<b>Pausar</b> lo apaga sin borrarlo; <b>Activar</b> lo enciende otra vez.',
+				'<b>Editar</b> cambia porcentaje, fechas o productos.',
+				'La <b>papelera</b> lo borra.',
+			], 'Si ves "Los descuentos están apagados en la tienda", toca <b>Encender descuentos</b>.'),
+		], screens: [
+			screen('descuentos-tienda', 'Así lo ve la clienta', [
+				'<b>Anuncio</b> en la barra de arriba mientras dura la campaña.', '<b>Precio tachado</b> y precio con descuento.', '<b>Recuadro</b> con la campaña y los tramos por cantidad.',
+			]),
+		] },
+		{ k: 'carritos', t: 'Carritos abandonados', icon: 'cart', intro: 'Clientas que escribieron su correo o celular en Finalizar compra y no terminaron. Reciben hasta 3 recordatorios (2, 24 y 48 h) con un enlace que les devuelve el carrito.', tasks: [
+			task('Recuperar un carrito', ['g-carritos'], [
+				'Toca <b>Actualizar listado</b> para ver los más recientes.',
+				'Mira el <b>Estado</b>: Pendiente (recibe recordatorios), Recuperado (compró desde el correo), Compró, Vació el carrito o Vencido.',
+				'Toca el <b>celular</b> para escribirle por WhatsApp con su nombre y lo que dejó.',
+			]),
+		], screens: [
+			screen('carritos', 'La pantalla de carritos', [
+				'<b>Indicadores</b> de los últimos 30 días.', '<b>Filtro</b> por estado.', '<b>Clienta:</b> nombre, correo, celular, cédula y ciudad.', '<b>Estado</b> de cada carrito.',
+			]),
+		] },
+		{ k: 'correos', t: 'Correos', icon: 'mail', intro: 'Mira cómo le llega cada correo a la clienta con un pedido real. La vista previa no envía nada.', tasks: [
+			task('Revisar un correo antes de que llegue', ['g-correos', 'g-correos-2'], [
+				'Elige un <b>pedido de ejemplo</b>.',
+				'Elige el <b>correo</b> (pedido en proceso, completado, guía, carrito abandonado…).',
+				'Revisa la <b>vista previa</b>.',
+				'Para verlo en tu bandeja, escribe tu correo y toca <b>Enviar prueba</b> (llega con "[Prueba]").',
+			]),
+		], screens: [] },
+		{ k: 'contenido', t: 'Contenido', icon: 'layout', intro: 'Banners, guía de tallas, políticas y preguntas frecuentes. Se guarda en los mismos campos de ACF y la tienda se actualiza sola.', tasks: [
+			task('Cambiar los banners del inicio', ['g-banners', 'g-banners-2'], [
+				'Entra a <b>Contenido → Banners</b>.',
+				'Sube la imagen para <b>computador</b> (1920 × 1080).',
+				'Sube la imagen para <b>celular</b> (1200 × 1200).',
+				'Escribe el <b>Texto de la imagen</b>: lo que dice el banner (lo leen Google y los lectores de pantalla).',
+				'Escribe el <b>Enlace</b> al que lleva el banner.',
+				'Ordénalos con las flechas o quítalos con la papelera, y toca <b>Guardar banners</b> al final.',
+			], 'El primer banner es el que carga más rápido: úsalo para lo más importante.'),
+			task('Cambiar la guía de tallas', ['g-tallas', 'g-tallas-2'], [
+				'Entra a <b>Contenido → Guía de tallas</b>.',
+				'Toca <b>Cambiar</b> y sube la imagen nueva.',
+				'Escribe el texto de la imagen.',
+				'Toca <b>Guardar guía</b>.',
+			]),
+			task('Editar una pregunta frecuente', ['g-faq-1', 'g-faq-2'], [
+				'Entra a <b>Contenido → Preguntas frecuentes</b>.',
+				'Para una nueva toca <b>Nueva pregunta</b>…',
+				'…o toca <b>Editar</b> en la que quieras cambiar.',
+				'Escribe la <b>pregunta</b>.',
+				'Escribe la <b>respuesta</b> (negrita y listas con la barra).',
+				'Desmarca <b>Publicada</b> si quieres dejarla en borrador.',
+				'Toca <b>Guardar</b>.',
+			], 'Las políticas se editan igual en la pestaña Políticas.'),
+		], screens: [] },
+		{ k: 'seo', t: 'SEO y ADS', icon: 'chart', intro: 'De dónde llegan las visitas y si las etiquetas de Google y Meta están bien puestas. Las visitas se cuentan sin cookies y sin contar robots ni al equipo.', tasks: [
+			task('Revisar las visitas', ['seo'], [
+				'¿Falta una etiqueta? Escribe a <a href="mailto:contacto@ufoweb.co">contacto@ufoweb.co</a> con el ID y qué debe medir.',
+				'Pestañas: Visitas, Etiquetas Google y Meta, y Clases y eventos rastreables.',
+				'<b>Visitantes</b> de hoy, 7 y 30 días.',
+				'<b>Periodo</b> del gráfico. Debajo: páginas más vistas, de dónde llegan, campañas, ciudades y dispositivos.',
+			]),
+			task('Revisar las etiquetas de Google y Meta', ['seo-etiquetas'], [
+				'Abre <b>Etiquetas Google y Meta</b>.',
+				'Toca <b>Revisar ahora</b> después de un cambio en GTM o Meta.',
+				'Mira qué etiquetas hay, cuáles faltan y si alguna está duplicada.',
+			]),
+		], screens: [] },
+		{ k: 'resumen', t: 'Resumen', icon: 'home', intro: 'La primera pantalla: cómo va la venta y qué hay por hacer hoy.', tasks: [], screens: [
+			screen('resumen', 'El resumen', [
+				'<b>Menú</b> de secciones (en pantallas medianas, pasa el cursor para ver el nombre).', '<b>Ventas pagadas</b> de hoy y del mes.', '<b>Pedidos por atender</b>: toca uno para verlos.',
+				'<b>Tallas por agotarse</b> (1 o 2 unidades).', '<b>Ver tienda</b> y <b>Salir</b>.',
+			]),
+		] },
+		{ k: 'problemas', t: 'Si algo no funciona', icon: 'help', intro: 'Respuestas rápidas a lo que más se pregunta.', faq: [
+			['Hice un cambio y no lo veo en la tienda', 'La tienda guarda las páginas para que carguen rápido y se actualizan solas al guardar. Recarga con <b>Ctrl + F5</b> (en el celular cierra y abre la pestaña) o espera un minuto.'],
+			['¿Por dónde entro?', 'Siempre por <b>buckler.com.co/ingreso/</b> o <b>buckler.com.co/gestion-tienda/</b> con tu usuario y contraseña. Por seguridad, wp-admin lleva al inicio si no has iniciado sesión.'],
+			['Olvidé mi contraseña', 'En la pantalla de acceso toca <b>¿Olvidaste tu contraseña?</b> y escribe tu correo: te llega un enlace para crear una nueva.'],
+			['Una foto se ve acostada', 'Abre el producto y toca <b>Girar a la derecha</b> o <b>a la izquierda</b> sobre esa foto. El giro se guarda al instante.'],
+			['Un descuento no aparece', 'Revisa que esté <b>Activo</b>, que la fecha de inicio ya haya pasado y que el producto no esté en ¡Sale!. Si ves "Los descuentos están apagados", toca <b>Encender descuentos</b>.'],
+			['Soporte', 'Escribe a <a href="mailto:contacto@ufoweb.co">contacto@ufoweb.co</a> con una captura de pantalla de lo que ves.'],
+		] },
 	];
 
-	const figHtml = (f) => `<figure class="bk-g-hfig">
-			<a class="bk-g-hfig__img" href="${esc(C.helpImg + f.img)}.webp?v=${esc(C.ver)}" target="_blank" rel="noopener" aria-label="Ver la imagen completa: ${esc(f.title)}">
-				<img src="${esc(C.helpImg + f.img)}.webp?v=${esc(C.ver)}" width="1280" height="${f.h}" loading="lazy" decoding="async" alt="Captura de ${esc(f.title)} con los pasos numerados"></a>
-			<figcaption><h3>${esc(f.title)}</h3><ol class="bk-g-hsteps">${f.steps.map((s) => `<li>${s}</li>`).join('')}</ol></figcaption>
-		</figure>`;
+	let MARKS = null;
+	const loadMarks = async () => {
+		if (MARKS) return MARKS;
+		try { MARKS = await (await fetch(`${C.helpImg}marks.json?v=${encodeURIComponent(C.ver)}`)).json(); } catch { MARKS = {}; }
+		return MARKS;
+	};
+	const shotHtml = (name, title, i = 0) => {
+		const m = MARKS[name] || { h: 800, marks: [] };
+		const src = `${C.helpImg}${name}.webp?v=${encodeURIComponent(C.ver)}`;
+		return `<figure class="bk-g-shot">
+			<button type="button" class="bk-g-shot__zoom" data-hzoom aria-label="Ampliar la imagen${i ? ` ${i + 1}` : ''}: ${esc(title)}">
+				<span class="bk-g-shot__frame" style="aspect-ratio:1280 / ${m.h}"><img src="${esc(src)}" width="1280" height="${m.h}" loading="lazy" decoding="async" alt="Pantalla: ${esc(title)}">
+				${m.marks.map((k) => `<span class="bk-g-mk" data-n="${k.n}" style="left:${k.x}%;top:${k.y}%;width:${k.w}%;height:${k.h}%"><b class="${k.r ? 'is-r' : ''}">${k.n}</b></span>`).join('')}</span>
+				<span class="bk-g-shot__hint">${C.icons.search} Ampliar</span></button></figure>`;
+	};
+	const stepsHtml = (steps) => `<ol class="bk-g-hsteps">${steps.map((s, i) => `<li data-n="${i + 1}">${s}</li>`).join('')}</ol>`;
+	const taskHtml = (m, x, i) => `<details class="bk-g-task" id="ayuda-${m.k}-${i}">
+		<summary><span class="bk-g-task__n">${i + 1}</span><span class="bk-g-task__t">${esc(x.t)}</span><small>${x.steps.length} paso${x.steps.length === 1 ? '' : 's'}</small></summary>
+		<div class="bk-g-task__body">
+			<div class="bk-g-task__steps">${stepsHtml(x.steps)}${x.tip ? `<p class="bk-g-htip">${C.icons.info}<span>${x.tip}</span></p>` : ''}</div>
+			<div class="bk-g-task__shots">${x.shots.map((s, j) => shotHtml(s, x.t, j)).join('')}</div>
+		</div></details>`;
+	const screenHtml = (s) => `<details class="bk-g-task is-screen">
+		<summary><span class="bk-g-task__n">${C.icons.eye}</span><span class="bk-g-task__t">Conoce la pantalla: ${esc(s.t)}</span></summary>
+		<div class="bk-g-task__body"><div class="bk-g-task__steps">${stepsHtml(s.steps)}</div><div class="bk-g-task__shots">${shotHtml(s.img, s.t)}</div></div></details>`;
+	const moduleHtml = (m) => `<section class="bk-g-hmod" id="ayuda-${m.k}" aria-labelledby="ayuda-${m.k}-t">
+		<header class="bk-g-hmod__head"><span class="bk-g-hmod__ico">${C.icons[m.icon] || ''}</span><div><h2 id="ayuda-${m.k}-t">${esc(m.t)}</h2><p>${m.intro}</p></div></header>
+		${m.tasks?.length ? `<h3 class="bk-g-hgroup">Cómo hacerlo</h3>${m.tasks.map((x, i) => taskHtml(m, x, i)).join('')}` : ''}
+		${m.screens?.length ? `<h3 class="bk-g-hgroup">Conoce la pantalla</h3>${m.screens.map(screenHtml).join('')}` : ''}
+		${m.faq ? m.faq.map(([q, a]) => `<details class="bk-g-task is-faq"><summary><span class="bk-g-task__n">?</span><span class="bk-g-task__t">${esc(q)}</span></summary><div class="bk-g-task__body is-text"><p>${a}</p></div></details>`).join('') : ''}
+	</section>`;
 
-	function viewHelp() {
-		const items = C.scope === 'seo' ? HELP.filter(([k]) => k === 'seo' || k === 'general') : HELP;
-		main.innerHTML = `<h1 class="bk-g-h1">Ayuda</h1>
-			<p class="bk-g-hint">Empieza por <b>Paso a paso</b> para las tareas del día. Más abajo, cada pantalla explicada: los números de cada imagen corresponden a los pasos de su lista; toca la imagen para verla en grande.</p>
-			<label class="bk-g-hsearch"><span>Buscar en la ayuda</span><input type="search" id="bk-g-hq" placeholder="Ej.: descuento, foto, guía, imprimir" autocomplete="off"></label>
-			<p class="bk-g-hint" id="bk-g-hq-n" role="status" aria-live="polite"></p>
-			<nav class="bk-g-hnav" aria-label="Secciones de la ayuda">${items.map(([k, t]) => `<a href="#ayuda" data-help="${k}">${esc(t)}</a>`).join('')}</nav>
-			<div class="bk-g-help">${items.map(([k, t, body, figs = [], withGuides], i) => `<details class="bk-g-card" id="ayuda-${k}" ${i === 0 ? 'open' : ''}><summary><h2>${esc(t)}</h2></summary><div class="bk-g-help__body">${body}${withGuides ? guidesHtml() : ''}${figs.map(figHtml).join('')}</div></details>`).join('')}</div>`;
+	async function viewHelp() {
+		const mods = C.scope === 'seo' ? MODULES.filter((m) => m.k === 'seo' || m.k === 'problemas') : MODULES;
+		main.innerHTML = '<div class="bk-g-loading">Cargando ayuda…</div>';
+		await loadMarks();
+		const n = mods.reduce((a, m) => a + (m.tasks?.length || 0), 0);
+		main.innerHTML = `<div class="bk-g-hhero"><h1 class="bk-g-h1">Centro de ayuda</h1>
+				<p>${n} guías paso a paso con la pantalla real. Pasa el cursor por un paso para ver dónde está en la imagen; toca la imagen para ampliarla.</p>
+				<label class="bk-g-hsearch"><span class="bk-g-sr">Buscar en la ayuda</span>${C.icons.search}<input type="search" id="bk-g-hq" placeholder="¿Qué quieres hacer? Ej.: guía, descuento, foto, banner" autocomplete="off"></label>
+				<p class="bk-g-hint" id="bk-g-hq-n" role="status" aria-live="polite"></p></div>
+			<div class="bk-g-helpwrap">
+				<nav class="bk-g-hside" aria-label="Secciones de la ayuda"><ul>${mods.map((m) => `<li><a href="#ayuda" data-help="${m.k}">${C.icons[m.icon] || ''}<span>${esc(m.t)}</span>${m.tasks?.length ? `<small>${m.tasks.length}</small>` : ''}</a></li>`).join('')}</ul></nav>
+				<div class="bk-g-help">${mods.map(moduleHtml).join('')}</div>
+			</div>
+			<dialog class="bk-g-lightbox" id="bk-g-lightbox" aria-label="Imagen ampliada"><button type="button" class="bk-g-icon bk-g-lightbox__x" data-hclose aria-label="Cerrar">${C.icons.x}</button><div class="bk-g-lightbox__body"></div></dialog>`;
+		$('.bk-g-task')?.setAttribute('open', '');
 	}
+	// Paso ↔ marca: se iluminan juntos dentro de la misma tarea.
+	const hot = (el, on) => {
+		const box = el.closest('.bk-g-task, .bk-g-lightbox');
+		const n = el.dataset.n;
+		if (!box || !n) return;
+		box.querySelectorAll('.is-hot').forEach((x) => x.classList.remove('is-hot'));
+		if (on) box.querySelectorAll(`[data-n="${n}"]`).forEach((x) => x.classList.add('is-hot'));
+	};
+	['mouseover', 'focusin'].forEach((ev) => document.addEventListener(ev, (e) => { const el = e.target.closest?.('.bk-g-hsteps li[data-n], .bk-g-mk[data-n]'); if (el) hot(el, true); }));
+	['mouseout', 'focusout'].forEach((ev) => document.addEventListener(ev, (e) => { const el = e.target.closest?.('.bk-g-hsteps li[data-n], .bk-g-mk[data-n]'); if (el) hot(el, false); }));
 
 	/* ============================================================================
 	 * Eventos
@@ -689,9 +673,20 @@
 		if (hl) {
 			e.preventDefault();
 			const d = $(`#ayuda-${hl.dataset.help}`);
-			if (d) { d.open = true; d.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); d.querySelector('summary')?.focus({ preventScroll: true }); }
+			if (d) { d.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); d.querySelector('summary')?.focus({ preventScroll: true }); }
 			return;
 		}
+		// Ayuda: ampliar una captura (con sus marcas) y cerrar.
+		const zm = t.closest('[data-hzoom]');
+		if (zm) {
+			const dlg = $('#bk-g-lightbox');
+			const task = zm.closest('.bk-g-task');
+			task?.querySelectorAll('.is-hot').forEach((x) => x.classList.remove('is-hot'));
+			$('.bk-g-lightbox__body', dlg).innerHTML = `<div class="bk-g-lightbox__shot">${zm.querySelector('.bk-g-shot__frame').outerHTML}</div>${task ? `<div class="bk-g-lightbox__steps"><h2>${task.querySelector('.bk-g-task__t').innerHTML}</h2>${task.querySelector('.bk-g-hsteps').outerHTML}</div>` : ''}`;
+			dlg.showModal();
+			return;
+		}
+		if (t.closest('[data-hclose]') || t.matches?.('.bk-g-lightbox')) { $('#bk-g-lightbox')?.close(); return; }
 
 		// Descuentos.
 		const dm = t.closest('[data-dmodule]');
@@ -841,13 +836,12 @@
 	function helpSearch(q) {
 		const words = fold(q).split(/\s+/).filter((w) => w.length > 1);
 		let n = 0;
-		document.querySelectorAll('.bk-g-help > details').forEach((sec) => {
-			const parts = [...sec.querySelectorAll('.bk-g-guide, .bk-g-hfig')];
+		document.querySelectorAll('.bk-g-hmod').forEach((sec) => {
 			let any = false;
-			parts.forEach((el) => {
+			sec.querySelectorAll('.bk-g-task').forEach((el) => {
 				const hit = !words.length || words.every((w) => fold(el.textContent).includes(w));
 				el.hidden = !hit;
-				if (el.matches('details')) el.open = !!words.length && hit;
+				if (words.length) el.open = hit && n < 3; // Abre los primeros resultados.
 				if (hit && words.length) { any = true; n++; }
 			});
 			sec.querySelectorAll('.bk-g-hgroup').forEach((h) => {
@@ -856,7 +850,6 @@
 				h.hidden = !vis;
 			});
 			sec.hidden = !!words.length && !any;
-			if (words.length) sec.open = any;
 		});
 		const out = $('#bk-g-hq-n');
 		if (out) out.textContent = words.length ? (n ? `${n} resultado${n === 1 ? '' : 's'}` : 'Sin resultados. Prueba con otra palabra o escribe a contacto@ufoweb.co.') : '';

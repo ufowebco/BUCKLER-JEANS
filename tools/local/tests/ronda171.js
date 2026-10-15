@@ -128,16 +128,16 @@ const iso = (d) => new Date(d.getTime() - 5 * 3600e3).toISOString().slice(0, 16)
 
   // --- 5. Ayuda con capturas -----------------------------------------------------------------------------
   await g.goto('about:blank'); await g.goto(B + '/gestion-tienda/#ayuda'); await g.waitForSelector('.bk-g-help');
-  const figs = await g.evaluate(() => [...document.querySelectorAll('.bk-g-hfig')].map((f) => ({ src: f.querySelector('img').getAttribute('src'), steps: f.querySelectorAll('.bk-g-hsteps li').length, alt: f.querySelector('img').alt, lazy: f.querySelector('img').loading })));
-  ok(figs.length === 16 && figs.every((x) => x.steps >= 3 && x.alt && x.lazy === 'lazy'), `Ayuda: 16 capturas con pasos numerados, texto alternativo y carga diferida (${figs.length})`);
+  const figs = await g.evaluate(() => [...document.querySelectorAll('.bk-g-shot')].map((f) => ({ src: f.querySelector('img').getAttribute('src'), marks: f.querySelectorAll('.bk-g-mk').length, steps: f.closest('.bk-g-task').querySelectorAll('.bk-g-hsteps li').length, alt: f.querySelector('img').alt, lazy: f.querySelector('img').loading })));
+  ok(figs.length >= 35 && figs.every((x) => x.steps >= 1 && x.marks >= 1 && x.alt && x.lazy === 'lazy'), `Ayuda: ${figs.length} capturas con marcas numeradas, pasos, texto alternativo y carga diferida`);
   const bad = [];
-  for (const fg of figs) { const r = await g.request.get(new URL(fg.src, B).href); if (r.status() !== 200 || !/webp/.test(r.headers()['content-type'] || '')) bad.push(fg.src); }
+  for (const fg of [...new Set(figs.map((x) => x.src))]) { const r = await g.request.get(new URL(fg, B).href); if (r.status() !== 200 || !/webp/.test(r.headers()['content-type'] || '')) bad.push(fg); }
   ok(!bad.length, `todas las imágenes existen y son WebP ${bad.join(' ')}`);
   await g.click('[data-help="descuentos"]'); await g.waitForTimeout(800);
-  const dOpen = await g.evaluate(() => { const d = document.querySelector('#ayuda-descuentos'); const r = d.getBoundingClientRect(); return d.open && r.top < 300; });
-  ok(dOpen, 'índice de la ayuda: abre la sección y la lleva a la vista');
-  await g.evaluate(() => document.querySelector('#ayuda-descuentos img').scrollIntoView()); await g.waitForTimeout(800);
-  ok(await g.evaluate(() => { const i = document.querySelector('#ayuda-descuentos img'); return i.complete && i.naturalWidth === 1280; }), 'la captura se carga al llegar a ella');
+  const dOpen = await g.evaluate(() => { const d = document.querySelector('#ayuda-descuentos'); const r = d.getBoundingClientRect(); return r.top < 300 && r.top > -10; });
+  ok(dOpen, 'índice de la ayuda: lleva la sección a la vista');
+  await g.click('#ayuda-descuentos .bk-g-task summary'); await g.evaluate(() => document.querySelector('#ayuda-descuentos .bk-g-task[open] img').scrollIntoView()); await g.waitForTimeout(800);
+  ok(await g.evaluate(() => { const i = document.querySelector('#ayuda-descuentos .bk-g-task[open] img'); return i.complete && i.naturalWidth === 1280; }), 'la captura se carga al abrir la tarea');
   await g.screenshot({ path: '/tmp/claude-0/bk-local/g171-ayuda.png' });
   await g.setViewportSize({ width: 390, height: 844 }); await g.waitForTimeout(400);
   ok(await g.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Ayuda en el celular: sin desplazamiento horizontal');
@@ -148,7 +148,7 @@ const iso = (d) => new Date(d.getTime() - 5 * 3600e3).toISOString().slice(0, 16)
     await a.goto(B + '/gestion-tienda/'); await a.fill('[name=log]', 'Gestor_ADS'); await a.fill('[name=pwd]', 'Clave#2026');
     await Promise.all([a.waitForNavigation(), a.click('.bk-g-login__form [type=submit]')]);
     await a.goto(B + '/gestion-tienda/#ayuda'); await a.waitForSelector('.bk-g-help');
-    ok(await a.locator('.bk-g-help details').count() === 2 && await a.locator('.bk-g-hfig').count() === 2, 'usuario de SEO y ADS: solo su ayuda (2 capturas)');
+    ok(await a.locator('.bk-g-hmod').count() === 2 && await a.locator('.bk-g-shot').count() === 2, 'usuario de SEO y ADS: solo su ayuda (SEO y preguntas, 2 capturas)');
   }
 
   // --- Limpieza --------------------------------------------------------------------------------------
