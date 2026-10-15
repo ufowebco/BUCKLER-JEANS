@@ -80,3 +80,14 @@ add_action(
 		}
 	}
 );
+
+// Simula Divi en producción: mete recortes 16:9 (980×551) en el srcset de cualquier imagen.
+add_filter(
+	'wp_calculate_image_srcset',
+	static function ( $sources, $size_array, $image_src ) {
+		$sources[980] = array( 'url' => preg_replace( '/(-\d+x\d+)?\.(webp|jpe?g|png)$/', '-980x551.$2', $image_src ), 'descriptor' => 'w', 'value' => 980 );
+		return $sources;
+	},
+	10,
+	3
+);

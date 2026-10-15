@@ -71,26 +71,29 @@ function bk_plugin_folder_active( $folder ) {
 }
 
 /**
- * srcset con los tamaños ya generados que tienen la misma proporción que $size (p. ej. 400, 600, 768, 800 px
- * para fotos 2:3). Respaldo para cuando WordPress no lo genera (en producción algo lo quita en las fotos de
- * producto) y el navegador terminaría bajando siempre la versión grande.
+ * srcset con los tamaños ya generados que tienen la misma proporción que la imagen mostrada (p. ej. 400, 600, 768,
+ * 800 px para fotos 2:3). Respaldo para cuando WordPress no lo genera (en producción algo lo quita en las fotos de
+ * producto). La proporción se toma de la imagen que realmente se pinta (ancho/alto del <img>), nunca de un tamaño
+ * con nombre: en fotos editadas algunos tamaños son recortes de Divi (16:9) y se verían ampliados.
  *
- * @param int    $id   Adjunto.
- * @param string $size Tamaño base.
- * @param int    $max  Ancho máximo a incluir.
+ * @param int   $id    Adjunto.
+ * @param float $ratio Proporción ancho/alto de la imagen mostrada.
+ * @param int   $max   Ancho máximo a incluir.
  * @return string
  */
-function bk_ratio_srcset( $id, $size, $max = 1300 ) {
+function bk_ratio_srcset( $id, $ratio, $max = 1300 ) {
 	$meta = wp_get_attachment_metadata( $id );
-	$base = image_get_intermediate_size( $id, $size );
-	if ( empty( $meta['sizes'] ) || empty( $base['width'] ) || empty( $base['height'] ) ) {
+	if ( empty( $meta['sizes'] ) || $ratio <= 0 ) {
 		return '';
 	}
-	$ratio = $base['width'] / $base['height'];
 	$dir   = trailingslashit( dirname( (string) wp_get_attachment_url( $id ) ) );
 	$set   = array();
-	foreach ( $meta['sizes'] as $s ) {
-		if ( empty( $s['width'] ) || empty( $s['height'] ) || $s['width'] > $max || $s['width'] < 200 ) {
+	$sizes = $meta['sizes'];
+	if ( ! empty( $meta['width'] ) && ! empty( $meta['file'] ) ) {
+		$sizes['full'] = array( 'width' => $meta['width'], 'height' => $meta['height'], 'file' => wp_basename( $meta['file'] ) );
+	}
+	foreach ( $sizes as $s ) {
+		if ( empty( $s['width'] ) || empty( $s['height'] ) || empty( $s['file'] ) || $s['width'] > $max || $s['width'] < 200 ) {
 			continue;
 		}
 		if ( abs( $s['width'] / $s['height'] - $ratio ) < 0.02 ) {
@@ -102,19 +105,44 @@ function bk_ratio_srcset( $id, $size, $max = 1300 ) {
 }
 
 /**
- * Añade srcset/sizes a un <img> que no los trae.
+ * Pone a un <img> un srcset propio con la misma proporción que su ancho/alto, reemplazando el que traiga: en
+ * producción Divi mete en el srcset sus recortes 16:9 (980×551, 480×270) y el navegador los elegía para fotos
+ * verticales, que se veían ampliadas. Si no hay al menos dos tamaños válidos, se deja solo el src.
  *
  * @param string $html  <img>.
  * @param int    $id    Adjunto.
- * @param string $size  Tamaño base.
+ * @param string $size  Tamaño base (sin uso; se mantiene por compatibilidad).
  * @param string $sizes Atributo sizes.
  * @return string
  */
 function bk_img_add_srcset( $html, $id, $size, $sizes ) {
-	if ( ! $html || false !== strpos( $html, ' srcset=' ) ) {
+	unset( $size );
+	if ( ! $html ) {
 		return $html;
 	}
-	$set = bk_ratio_srcset( $id, $size );
+	if ( ! preg_match( '/\swidth="(\d+)"/', $html, $w ) || ! preg_match( '/\sheight="(\d+)"/', $html, $h ) || ! (int) $h[1] ) {
+		return $html;
+	}
+	$ratio = (int) $w[1] / (int) $h[1];
+	$set   = bk_ratio_srcset( $id, $ratio );
+	// Del srcset original se conservan solo los tamaños con la misma proporción (el nombre trae -ANCHOxALTO).
+	$keep = array();
+	if ( preg_match( '/\ssrcset="([^"]*)"/', $html, $orig ) ) {
+		foreach ( explode( ',', $orig[1] ) as $cand ) {
+			$cand = trim( $cand );
+			if ( preg_match( '/-(\d+)x(\d+)\.[a-z0-9]+\s+(\d+)w$/i', $cand, $d ) && (int) $d[2] && abs( (int) $d[1] / (int) $d[2] - $ratio ) < 0.02 ) {
+				$keep[ (int) $d[3] ] = $cand;
+			}
+		}
+	}
+	foreach ( $set ? explode( ', ', $set ) : array() as $cand ) {
+		if ( preg_match( '/\s(\d+)w$/', $cand, $d ) ) {
+			$keep[ (int) $d[1] ] = $cand;
+		}
+	}
+	ksort( $keep );
+	$set  = count( $keep ) > 1 ? implode( ', ', $keep ) : '';
+	$html = preg_replace( '/\ssrcset="[^"]*"/', '', $html );
 	if ( ! $set ) {
 		return $html;
 	}

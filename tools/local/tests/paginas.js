@@ -132,6 +132,8 @@ const OUT = '/tmp/claude-0/bk-local';
     ok(!vid.controls && vid.plays >= 1 && vid.poster, 'video: se reproduce solo al seleccionarlo, sin controles ' + JSON.stringify(vid));
     await p.click('.bk-pg__thumb[data-go="0"]'); await p.waitForTimeout(800);
   }
+  const bad = await p.evaluate(() => [...document.querySelectorAll('.bk-pg__slide img, .bk-card__img')].map((i) => i.getAttribute('srcset') || i.getAttribute('data-bk-srcset') || '').filter((x) => /980x551/.test(x)).length);
+  ok(bad === 0, 'fotos de producto sin los recortes 16:9 de Divi en el srcset (no se ven ampliadas)');
   const dis = await p.evaluate(() => getComputedStyle(document.querySelector('.single_add_to_cart_button')).backgroundColor);
   ok(dis === 'rgb(26, 57, 85)', 'botón de compra: azul de marca (sin morado) ' + dis);
   const twin = await p.locator('.bk-pdp__twin').count();

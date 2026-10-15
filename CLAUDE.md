@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.14.0 → `dist/buckler-core-0.14.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.14.1 → `dist/buckler-core-0.14.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -287,6 +287,10 @@ Versión actual 0.14.0 → `dist/buckler-core-0.14.0.zip` (`tools/build-plugin.s
   - Local: `tools/local/router.php` para `php -S` (imita el .htaccess: /llms.txt y 404 pasan por WP; estáticos que
     faltan → 404). Arranque: `php -S localhost:8899 -t site /home/user/BUCKLER-JEANS/tools/local/router.php`.
     Fixtures simulan el soft 404.
+- **0.14.1:** fotos de ficha "ampliadas" (p. ej. /producto/chaqueta-dama/): **Divi mete en el srcset sus recortes
+  16:9** (`et-pb-image--responsive--*`, 980×551 / 480×270) y el navegador los elegía para fotos 2:3. `bk_img_add_srcset()`
+  ahora SIEMPRE reemplaza el srcset: proporción tomada del width/height del `<img>`, solo tamaños de esa proporción
+  (metadatos + los del srcset original con -AnchoxAlto que coincidan + full). Fixture local simula el srcset de Divi.
   - Promo "Califícanos en Google y gana 10 %" (`review_promo` on/incentive/discount, `review_url` =
     g.page/r/CRGTFeM2O9V5EAE/review): bloque de reseñas, gracias, Mi cuenta y anuncio de la barra. **Aviso dado al
     cliente: Google prohíbe reseñas incentivadas**; `incentive => false` deja solo la invitación.
@@ -350,7 +354,7 @@ Versión actual 0.14.0 → `dist/buckler-core-0.14.0.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 99 = 313 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 100 = 314 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
