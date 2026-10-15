@@ -1005,12 +1005,13 @@ html.bk-drawer-open {
 	width: 60px;
 	height: 60px;
 	border-radius: 50%;
-	background: var(--bk-navy);
-	color: #fff !important;
-	box-shadow: 0 10px 24px -8px rgba(16, 32, 47, .55);
-	transition: transform .2s var(--bk-ease);
+	border: 1px solid rgba(26, 57, 85, .08);
+	background: #fff;
+	color: var(--bk-navy) !important;
+	box-shadow: 0 8px 24px rgba(16, 32, 47, .22), 0 2px 6px rgba(16, 32, 47, .12);
+	transition: transform .2s var(--bk-ease), background .2s;
 }
-.bk-fcart:hover { transform: scale(1.06); }
+.bk-fcart:hover { transform: scale(1.06); background: var(--bk-lime); }
 .bk-fcart .bk-cart-count {
 	position: absolute;
 	top: -2px;
@@ -1020,8 +1021,8 @@ html.bk-drawer-open {
 	padding: 0 6px;
 	border: 2px solid #fff;
 	border-radius: 99px;
-	background: var(--bk-lime);
-	color: var(--bk-navy);
+	background: var(--bk-navy);
+	color: var(--bk-lime);
 	font-size: 12px;
 	font-weight: 800;
 	line-height: 18px;

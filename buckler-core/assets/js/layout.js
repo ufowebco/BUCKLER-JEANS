@@ -300,6 +300,7 @@
 			})
 			.then((cart) => {
 				if (!cart) return;
+				window.bkCartSnapshot?.(cart); // El carrito flotante abre al instante con esta lectura.
 				render(cart.items_count || 0);
 				if (bump && cartLink) {
 					cartLink.classList.remove('is-bump');

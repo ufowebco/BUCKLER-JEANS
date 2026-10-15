@@ -475,8 +475,8 @@ function bk_cart_hooks() {
 	remove_action( 'woocommerce_cart_collaterals', 'woocommerce_cross_sell_display' );
 	add_action( 'woocommerce_after_cart_table', 'bk_cart_continue' );
 	add_action( 'woocommerce_after_cart_totals', 'bk_cart_trust' );
-	add_action( 'woocommerce_after_cart', 'bk_cart_suggestions' );
-	add_action( 'woocommerce_after_cart', 'bk_cart_reviews', 20 );
+	// "Combínalo con" y reseñas van FUERA del bloque de WooCommerce (ver templates/pages/cart.php): dentro, el
+	// resumen fijo (sticky) bajaba por encima de ellos.
 	add_action( 'woocommerce_cart_is_empty', 'bk_cart_empty_extra', 20 );
 }
 

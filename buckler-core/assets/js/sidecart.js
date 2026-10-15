@@ -60,6 +60,24 @@
 		return `${c.currency_prefix ?? ''}${grouped}${dec ? (c.currency_decimal_separator ?? ',') + dec : ''}${c.currency_suffix ?? ''}`;
 	};
 
+	/* --- Copia local del carrito: el panel abre al instante y se actualiza por detrás ----
+	 * El servidor tarda ~3 s por petición. Se guarda solo lo que pinta el panel (productos, totales,
+	 * cantidad) en sessionStorage (se borra al cerrar la pestaña). Sin la cookie de carrito = vacío seguro. */
+	const KEY = 'bk_cart_snap';
+	const hasCookie = () => /(?:^|;\s*)woocommerce_items_in_cart=1/.test(document.cookie);
+	const slim = (c) => (c ? { items: c.items || [], items_count: c.items_count || 0, totals: c.totals || {} } : null);
+	const snapshot = (cart) => {
+		const sn = slim(cart);
+		window.bkCartData = sn;
+		try { sessionStorage.setItem(KEY, JSON.stringify(sn)); } catch (e) { /* Modo privado. */ }
+	};
+	const cached = () => {
+		if (!hasCookie()) return { items: [], items_count: 0, totals: {} };
+		if (window.bkCartData) return window.bkCartData;
+		try { return JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) { return null; }
+	};
+	window.bkCartSnapshot = snapshot; // El contador del header comparte su lectura del carrito.
+
 	/* --- Abrir / cerrar -------------------------------------------------------- */
 	const focusables = () => [...panel.querySelectorAll('a[href], button:not([disabled]), input, select')].filter((el) => el.offsetParent !== null);
 
@@ -79,8 +97,11 @@
 		} else if (opts.cart) {
 			render(opts.cart);
 		} else {
-			body.setAttribute('aria-busy', 'true');
-			try { render(await api('cart')); } catch (e) { renderError(); }
+			const snap = cached();
+			if (snap) render(snap); // Al instante con la última copia conocida.
+			if (!hasCookie()) return; // Sin carrito: nada que consultar.
+			if (!snap) body.setAttribute('aria-busy', 'true');
+			try { render(await api('cart')); } catch (e) { if (!snap) renderError(); }
 		}
 	};
 
@@ -109,6 +130,7 @@
 	};
 
 	const render = (cart) => {
+		if (cart && cart.items) snapshot(cart);
 		body.setAttribute('aria-busy', 'false');
 		const n = cart.items_count || 0;
 		countEl.textContent = n ? `(${n})` : '';
@@ -172,8 +194,15 @@
 		const box = body.querySelector('[data-bk-sc-suggest]');
 		if (!box) return;
 		try {
-			const res = await fetch(cfg.suggest, { credentials: 'same-origin', headers: { Accept: 'application/json' } });
-			const data = await res.json();
+			// Las sugerencias dependen de lo que hay en el carrito: se reutilizan mientras no cambie.
+			const sig = (window.bkCartData?.items || []).map((i) => `${i.id}x${i.quantity}`).join(',');
+			let data = null;
+			try { const c = JSON.parse(sessionStorage.getItem('bk_sug') || 'null'); if (c && c.sig === sig) data = c.data; } catch (e) { data = null; }
+			if (!data) {
+				const res = await fetch(cfg.suggest, { credentials: 'same-origin', headers: { Accept: 'application/json' } });
+				data = await res.json();
+				try { sessionStorage.setItem('bk_sug', JSON.stringify({ sig, data })); } catch (e) { /* Modo privado. */ }
+			}
 			if (!data.items?.length) return;
 			box.innerHTML = `<h3 class="bk-sc__stitle">${esc(t.suggest)} ${esc(data.size)}</h3>
 				<ul class="bk-sc__srow">${data.items.map((s) => `<li class="bk-sc__sug">

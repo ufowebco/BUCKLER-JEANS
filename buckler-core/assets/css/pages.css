@@ -622,3 +622,9 @@ body.bk-doc .woocommerce-variation-price .price { font-size: 22px; }
 	.bk-promo__actions { grid-column: 1 / -1; }
 	.bk-promo__actions .bk-btn { flex: 1 1 160px; }
 }
+
+/* El footer siempre llega al borde inferior (páginas cortas en pantallas altas) y, al estirar la página en el
+   celular, lo que asoma debajo es azul como el footer y no blanco. */
+html:has(body.bk-doc) { background: var(--bk-navy); }
+body.bk-doc { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; background: var(--bk-paper, #fff); }
+body.bk-doc > .bk-main { flex: 1 0 auto; }
