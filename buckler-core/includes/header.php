@@ -101,6 +101,27 @@ function bk_search_form( $id ) {
 }
 
 /**
+ * Tarjeta "Califícanos en Google" del menú (escritorio y móvil). Vacía si la promoción está apagada.
+ *
+ * @param string $class Clases.
+ * @return string
+ */
+function bk_review_menu_card( $class ) {
+	if ( ! function_exists( 'bk_review_promo_on' ) || ! bk_review_promo_on() ) {
+		return '';
+	}
+	$p   = (array) bk_config( 'review_promo' );
+	$sub = bk_review_promo_incentive()
+		/* translators: %s: descuento */
+		? sprintf( __( 'Gana %s de descuento en tu próxima compra', 'buckler-core' ), $p['discount'] ?? '10 %' )
+		: __( 'Tu opinión nos ayuda a crecer', 'buckler-core' );
+	return '<a class="' . esc_attr( $class ) . '" href="' . esc_url( (string) bk_config( 'review_url' ) ) . '" target="_blank" rel="noopener">'
+		. bk_icon_svg( 'simple-icons:google', 18 )
+		. '<strong>' . esc_html__( 'Califícanos en Google', 'buckler-core' ) . '</strong>'
+		. '<span>' . esc_html( $sub ) . '<span class="bk-sr-only"> ' . esc_html__( '(abre en una pestaña nueva)', 'buckler-core' ) . '</span></span></a>';
+}
+
+/**
  * Un anuncio de la barra: texto o [texto, url]. La promoción de reseñas se añade sola (bk_review_promo_on()).
  *
  * @param string|array $m Anuncio.
@@ -201,6 +222,7 @@ function bk_shortcode_header( $atts ) {
 											<div class="bk-mega__col bk-mega__col--feat">
 												<a class="bk-mega__card" href="<?php echo esc_url( bk_url( '/tienda/' ) ); ?>"><strong><?php esc_html_e( 'Toda la tienda', 'buckler-core' ); ?></strong><span><?php esc_html_e( 'Jeans y prendas en denim, tallas 6 a 24', 'buckler-core' ); ?></span></a>
 												<a class="bk-mega__card is-sale" href="<?php echo esc_url( bk_url( (string) bk_config( 'sale_page' ) ) ); ?>"><strong><?php esc_html_e( '¡Sale!', 'buckler-core' ); ?></strong><span><?php esc_html_e( 'Prendas con descuento', 'buckler-core' ); ?></span></a>
+												<?php echo bk_review_menu_card( 'bk-mega__card is-review' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 											</div>
 										</div>
 									</div>
@@ -260,6 +282,7 @@ function bk_shortcode_header( $atts ) {
 						<li><a class="bk-drawer__link" href="<?php echo esc_url( bk_url( '/tienda/' ) ); ?>"><?php esc_html_e( 'Toda la tienda', 'buckler-core' ); ?></a></li>
 					</ul>
 				</nav>
+				<?php echo bk_review_menu_card( 'bk-drawer__promo' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 				<ul class="bk-drawer__foot">
 					<li><a href="<?php echo esc_url( $acct ); ?>"><?php echo bk_icon_svg( 'lucide:user', 20 ); // phpcs:ignore ?><?php esc_html_e( 'Mi cuenta', 'buckler-core' ); ?></a></li>
 					<li><a href="<?php echo esc_url( bk_whatsapp_url() ); ?>" target="_blank" rel="noopener"><?php echo bk_icon_svg( 'simple-icons:whatsapp', 20 ); // phpcs:ignore ?><?php esc_html_e( 'Escríbenos por WhatsApp', 'buckler-core' ); ?><span class="bk-sr-only"> <?php esc_html_e( '(abre en una pestaña nueva)', 'buckler-core' ); ?></span></a></li>

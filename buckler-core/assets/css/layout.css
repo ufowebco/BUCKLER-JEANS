@@ -585,6 +585,26 @@
 	color: #fde3e0;
 }
 
+.bk-mega__card.is-review {
+	grid-template-columns: auto 1fr;
+	column-gap: 10px;
+	align-items: center;
+	background: var(--bk-lime);
+}
+
+.bk-mega__card.is-review svg {
+	grid-row: span 2;
+	color: var(--bk-navy);
+}
+
+.bk-mega__card.is-review strong {
+	color: var(--bk-navy);
+}
+
+.bk-mega__card.is-review span {
+	color: var(--bk-navy);
+}
+
 .bk-mega__card:hover {
 	transform: translateY(-2px);
 }
@@ -1054,4 +1074,30 @@ html.bk-sc-open .bk-fcart { visibility: hidden; }
 	.bk-sr__price del {
 		display: none;
 	}
+}
+
+/* Menú móvil: promoción de reseñas */
+.bk-drawer__promo {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	column-gap: 12px;
+	align-items: center;
+	margin: 8px 16px 0;
+	padding: 14px 16px;
+	border-radius: var(--bk-radius);
+	background: var(--bk-lime);
+	color: var(--bk-navy) !important;
+	text-decoration: none;
+}
+
+.bk-drawer__promo svg {
+	grid-row: span 2;
+}
+
+.bk-drawer__promo strong {
+	font-size: 15px;
+}
+
+.bk-drawer__promo > span {
+	font-size: 13px;
 }

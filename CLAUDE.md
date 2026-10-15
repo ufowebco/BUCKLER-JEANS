@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.13.1 → `dist/buckler-core-0.13.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.13.2 → `dist/buckler-core-0.13.2.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -266,6 +266,8 @@ Versión actual 0.13.1 → `dist/buckler-core-0.13.1.zip` (`tools/build-plugin.s
   carrito. Footer pegado al fondo (body flex + `html:has(body.bk-doc)` navy: sin franja blanca en páginas cortas ni al
   estirar en el celular). Carrito: "Combínalo con" y reseñas fuera del bloque `.woocommerce` (el resumen sticky
   bajaba sobre ellos).
+- **0.13.2:** tarjeta lima "Califícanos en Google · Gana 10 %" bajo ¡Sale! en el menú Tienda y en el menú móvil
+  (`bk_review_menu_card()`, se oculta si la promo está apagada). Caché verificada en producción: `X-Litespeed-Cache: hit`, 0,13 s.
   - Promo "Califícanos en Google y gana 10 %" (`review_promo` on/incentive/discount, `review_url` =
     g.page/r/CRGTFeM2O9V5EAE/review): bloque de reseñas, gracias, Mi cuenta y anuncio de la barra. **Aviso dado al
     cliente: Google prohíbe reseñas incentivadas**; `incentive => false` deja solo la invitación.
