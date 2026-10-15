@@ -26,6 +26,93 @@ add_action( 'wp_print_footer_scripts', 'bk_pages_diet', 1 );
 add_action( 'wp_enqueue_scripts', 'bk_pages_diet_route', 10000 );
 add_action( 'wp_print_footer_scripts', 'bk_pages_diet_route', 2 );
 add_action( 'wp_head', 'bk_pages_preload', 1 );
+add_filter( 'wp_redirect', 'bk_pages_no_soft404', 999 );
+add_action( 'template_redirect', 'bk_pages_llms_txt', 0 );
+
+/**
+ * 404 real: el sitio redirigía toda dirección inexistente a la portada (con 200). Eso confunde a Google y a los
+ * agentes de IA (p. ej. /.well-known/ai-catalog.json devolvía la portada como "JSON inválido"). Si una dirección
+ * no existe y algo intenta mandarla al inicio, se responde 404 con la página "No encontramos esta página".
+ * Las redirecciones a otras direcciones (p. ej. la adivinanza de WordPress o las de categorías) no se tocan.
+ *
+ * @param string $location Destino.
+ * @return string
+ */
+function bk_pages_no_soft404( $location ) {
+	if ( is_admin() || ! is_404() || '404' !== bk_pages_route() ) {
+		return $location;
+	}
+	$to = untrailingslashit( (string) strtok( (string) $location, '?#' ) );
+	if ( untrailingslashit( home_url() ) !== $to && untrailingslashit( home_url( '/' ) ) !== $to ) {
+		return $location;
+	}
+	status_header( 404 );
+	nocache_headers();
+	include BK_DIR . 'templates/pages/document.php';
+	exit;
+}
+
+/**
+ * /llms.txt: resumen de la tienda en Markdown para asistentes y agentes de IA (estándar llms.txt).
+ * Solo si no existe un archivo llms.txt real en la raíz (ese lo sirve el servidor directamente).
+ */
+function bk_pages_llms_txt() {
+	$path = (string) wp_parse_url( isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '', PHP_URL_PATH ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	if ( '/llms.txt' !== $path ) {
+		return;
+	}
+	status_header( 200 );
+	header( 'Content-Type: text/markdown; charset=utf-8' );
+	header( 'X-Robots-Tag: noindex' );
+	echo bk_llms_txt(); // phpcs:ignore WordPress.Security.EscapeOutput -- texto plano.
+	exit;
+}
+
+/**
+ * Contenido de /llms.txt (datos de bk_config(), páginas y categorías reales).
+ *
+ * @return string
+ */
+function bk_llms_txt() {
+	$lines = (array) bk_config( 'lines' );
+	$out   = '# ' . bk_config( 'brand' ) . "\n\n";
+	$out  .= '> Tienda online de jeans y prendas en denim para mujer, hechas en ' . bk_config( 'city' ) . '. Dos líneas: ';
+	$parts = array();
+	foreach ( $lines as $l ) {
+		$parts[] = $l['label'] . ' (' . ( $l['sizes'] ?? '' ) . ')';
+	}
+	$out .= implode( ' y ', $parts ) . ". Envíos a toda Colombia.\n\n";
+	$out .= "## Tienda\n\n";
+	$out .= '- [Toda la tienda](' . wc_get_page_permalink( 'shop' ) . "): catálogo completo con filtros por línea, prenda, talla y precio\n";
+	$out .= '- [Lo nuevo](' . bk_new_url() . "): últimos lanzamientos\n";
+	foreach ( $lines as $slug => $l ) {
+		if ( empty( $l['page'] ) ) {
+			continue;
+		}
+		$out .= '- [' . $l['label'] . '](' . bk_url( $l['page'] ) . '): ' . ( $l['sizes'] ?? '' ) . "\n";
+		foreach ( bk_child_cats( $slug ) as $c ) {
+			$out .= '  - [' . $c['name'] . ' · ' . $l['label'] . '](' . $c['url'] . ")\n";
+		}
+	}
+	if ( bk_config( 'sale_page' ) ) {
+		$out .= '- [¡Sale!](' . bk_url( (string) bk_config( 'sale_page' ) ) . "): prendas con descuento\n";
+	}
+	$out .= "\n## Ayuda\n\n";
+	if ( bk_config( 'faq_page' ) ) {
+		$out .= '- [Preguntas frecuentes](' . bk_url( (string) bk_config( 'faq_page' ) ) . "): envíos, pagos, tallas y cambios\n";
+	}
+	foreach ( function_exists( 'bk_policies' ) ? bk_policies() : array() as $p ) {
+		$out .= '- [' . $p['title'] . '](' . $p['url'] . ")\n";
+	}
+	$out .= '- [Mi cuenta](' . wc_get_page_permalink( 'myaccount' ) . "): pedidos y guía de envío\n";
+	$out .= "\n## Contacto\n\n";
+	$out .= '- WhatsApp: ' . bk_whatsapp_display() . ' (' . bk_whatsapp_url() . ")\n";
+	foreach ( (array) bk_config( 'hours' ) as $h ) {
+		$out .= '- Horario: ' . $h[0] . ', ' . $h[1] . "\n";
+	}
+	$out .= '- Medios de pago: ' . implode( ', ', wp_list_pluck( (array) bk_config( 'payments' ), 1 ) ) . "\n";
+	return (string) apply_filters( 'bk_llms_txt', $out );
+}
 
 /**
  * Precarga de la fuente propia (evita el salto de texto al cargar).
@@ -94,6 +181,8 @@ function bk_pages_template( $template ) {
 	// Emojis de WordPress: script y estilos que estas páginas no usan.
 	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 	remove_action( 'wp_print_styles', 'print_emoji_styles' );
+	// Visor PhotoSwipe de WooCommerce: su HTML quedaba al final de la página sin estilos (franja bajo el footer).
+	remove_action( 'wp_footer', 'woocommerce_photoswipe' );
 	if ( 'product' === $route ) {
 		bk_pdp_hooks();
 	}

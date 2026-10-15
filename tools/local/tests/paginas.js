@@ -54,6 +54,16 @@ const OUT = '/tmp/claude-0/bk-local';
   ok(await sp.evaluate(() => !!window.bkGtmRan && Array.isArray(window.dataLayer)), 'al mover el mouse se carga Google Tag Manager');
   const srcset = await sp.evaluate(() => { const i = document.querySelector('.bk-card__img'); return i && (i.getAttribute('srcset') || '').split(',').length; });
   ok(srcset >= 2, `tarjetas con srcset (${srcset} tamaños)`);
+  const r13 = await sp.evaluate(() => ({ css: [...document.querySelectorAll('link[rel=stylesheet]')].map((l) => l.href).filter((h) => /buckler-core\/assets\/css|bk-cache/.test(h)), pswp: !!document.querySelector('.pswp'), hero: [...document.querySelectorAll('.bk-carousel__slide img')].slice(1).every((i) => i.hasAttribute('data-bk-src') || i.closest('noscript')), menu: [...document.querySelectorAll('.bk-mega__col')].map((c) => [...c.querySelectorAll('ul a')].map((a) => a.textContent.trim()).filter((t) => !/^Ver todo/.test(t))) }));
+  ok(r13.css.length === 1 && /bk-cache\/bk-/.test(r13.css[0]), 'un solo archivo CSS de buckler-core ' + r13.css.join(' '));
+  ok(!r13.pswp, 'sin el HTML de PhotoSwipe al final (franja bajo el footer)');
+  ok(r13.hero, 'banners 2..n no se descargan al cargar la página');
+  const lines2 = r13.menu.slice(0, 2).map((c) => c.slice(1).map((t) => t.replace(/^Sets /, 'Set ')));
+  ok(lines2.length === 2 && JSON.stringify(lines2[0]) === JSON.stringify(lines2[1]), 'menú: las dos líneas con el mismo orden de prendas ' + JSON.stringify(lines2));
+  const nf = await sp.goto(B + '/.well-known/ai-catalog.json');
+  ok(nf.status() === 404 && /No encontramos/.test(await sp.locator('h1').innerText()), 'dirección inexistente: 404 real con página propia (no redirige a la portada)');
+  const llms = await sp.goto(B + '/llms.txt');
+  ok(llms.status() === 200 && /^# Buckler Jeans/.test(await llms.text()), 'llms.txt para asistentes de IA');
   await sp.close();
   // Ronda 0.11: líneas en una fila, menú Tienda visible, carrito flotante, buscador en vivo
   const ln = await p.evaluate(() => [...document.querySelectorAll('.bk-lineas > *')].map((e) => { const r = e.getBoundingClientRect(); return { t: Math.round(r.top), w: Math.round(r.width) }; }));

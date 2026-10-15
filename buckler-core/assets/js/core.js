@@ -209,8 +209,18 @@
 			dots.forEach((d, n) => (n === i ? d.setAttribute('aria-current', 'true') : d.removeAttribute('aria-current')));
 		};
 
+		// Banners diferidos (data-bk-src/srcset): se cargan antes de mostrarlos.
+		const load = (n) => {
+			const sl = slides[(n + slides.length) % slides.length];
+			sl?.querySelectorAll('[data-bk-srcset], [data-bk-src]').forEach((m) => {
+				if (m.dataset.bkSrcset) { m.srcset = m.dataset.bkSrcset; m.removeAttribute('data-bk-srcset'); }
+				if (m.dataset.bkSrc) { m.src = m.dataset.bkSrc; m.removeAttribute('data-bk-src'); }
+			});
+		};
 		const go = (i) => {
 			const n = (i + slides.length) % slides.length;
+			load(n);
+			load(n + 1);
 			track.scrollTo({ left: n * track.clientWidth, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
 			setState(n);
 		};
@@ -225,6 +235,7 @@
 		const arm = () => {
 			if (armed) return;
 			armed = true;
+			load(1); // El siguiente banner se descarga mientras se ve el primero.
 			['pointermove', 'pointerdown', 'keydown', 'scroll', 'touchstart', 'wheel'].forEach((e) => window.removeEventListener(e, arm));
 			start();
 		};
@@ -256,6 +267,7 @@
 			cancelAnimationFrame(raf);
 			raf = requestAnimationFrame(() => {
 				const n = Math.round(track.scrollLeft / track.clientWidth);
+				load(n); load(n + 1);
 				if (n !== index && slides[n]) setState(n);
 			});
 		}, { passive: true });

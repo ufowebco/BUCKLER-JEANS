@@ -61,6 +61,10 @@ function bk_config( $key = null ) {
 				),
 				// Plantilla de reseñas de WP Social Ninja (respaldo si no se pueden leer las reseñas directamente).
 				'reviews_template' => 3143,
+				// Orden de las prendas en menús, footer y filtros (claves de bk_prenda_key()); las que no estén aquí
+				// van antes de 'linea-basic', que siempre va de última (es la menos importante).
+				'prenda_order'  => array( 'jeans', 'pantalones', 'prendas-cortas', 'faldas', 'set-y-overol', 'chaquetas-y-chalecos' ),
+				'prenda_last'   => array( 'linea-basic' ),
 				// Medios de pago: [archivo en uploads, texto alternativo].
 				'payments'      => array(
 					array( '/wp-content/uploads/2026/08/Medios-de-Pago-Denim-Blue-Buckler-1.webp', 'Addi' ),
@@ -180,10 +184,10 @@ function bk_whatsapp_display() {
  * @return array<int,array{name:string,url:string}>
  */
 function bk_child_cats( $parent_slug ) {
-	$cache = get_transient( 'bk_cats2_' . $parent_slug );
+	$cache = get_transient( 'bk_cats3_' . $parent_slug );
 	if ( ! is_array( $cache ) ) {
 		$cache = bk_child_cats_raw( $parent_slug );
-		set_transient( 'bk_cats2_' . $parent_slug, $cache, DAY_IN_SECONDS );
+		set_transient( 'bk_cats3_' . $parent_slug, $cache, DAY_IN_SECONDS );
 	}
 	$page = (string) ( bk_config( 'lines' )[ $parent_slug ]['page'] ?? '' );
 	$mode = 'filters' === bk_config( 'category_links' ) && $page ? 'filters' : 'archive';
@@ -244,8 +248,34 @@ function bk_child_cats_raw( $parent_slug ) {
 				'key'  => bk_prenda_key( $t->name ),
 			);
 		}
+		usort( $out, static fn( $a, $b ) => bk_prenda_rank( $a['key'] ) <=> bk_prenda_rank( $b['key'] ) ?: strnatcasecmp( $a['name'], $b['name'] ) );
 	}
 	return $out;
+}
+
+/**
+ * Posición de una prenda en el orden de bk_config( 'prenda_order' ) (las de 'prenda_last' al final).
+ *
+ * @param string $key Clave de prenda (bk_prenda_key()).
+ * @return int
+ */
+function bk_prenda_rank( $key ) {
+	$i = array_search( $key, (array) bk_config( 'prenda_order' ), true );
+	if ( false !== $i ) {
+		return (int) $i;
+	}
+	return in_array( $key, (array) bk_config( 'prenda_last' ), true ) ? 1000 : 500;
+}
+
+/**
+ * Ordena un mapa clave de prenda → etiqueta con bk_prenda_rank().
+ *
+ * @param array<string,string> $prendas Prendas.
+ * @return array<string,string>
+ */
+function bk_order_prendas( $prendas ) {
+	uksort( $prendas, static fn( $a, $b ) => bk_prenda_rank( (string) $a ) <=> bk_prenda_rank( (string) $b ) ?: strnatcasecmp( (string) $a, (string) $b ) );
+	return $prendas;
 }
 
 add_action( 'created_product_cat', 'bk_flush_menu_cache' );
@@ -258,7 +288,7 @@ add_action( 'woocommerce_update_product', 'bk_flush_menu_cache' );
  */
 function bk_flush_menu_cache() {
 	foreach ( array_keys( (array) bk_config( 'lines' ) ) as $slug ) {
-		delete_transient( 'bk_cats2_' . $slug );
+		delete_transient( 'bk_cats3_' . $slug );
 	}
 }
 

@@ -156,3 +156,60 @@ function bk_pages_maybe_drop_jquery( $html, $route ) {
 function bk_delay_loader() {
 	return '<script id="bk-delay">(()=>{const E=["pointerdown","pointermove","keydown","touchstart","scroll","wheel"];let go=0;const run=async()=>{if(go)return;go=1;E.forEach(e=>removeEventListener(e,run,{passive:!0}));for(const o of document.querySelectorAll(\'script[type="text/bk-delay"]\')){await new Promise(r=>{const n=document.createElement("script");for(const a of o.attributes)if(a.name!=="type"&&a.name!=="data-bk-src")n.setAttribute(a.name,a.value);if(o.dataset.bkSrc){n.src=o.dataset.bkSrc;n.onload=n.onerror=r}else{n.text=o.textContent}o.replaceWith(n);if(!o.dataset.bkSrc)r()})}};E.forEach(e=>addEventListener(e,run,{passive:!0}))})();</script>';
 }
+
+add_action( 'wp_enqueue_scripts', 'bk_pages_bundle_css', 10005 );
+
+/**
+ * Une los CSS de buckler-core de la página en un solo archivo (uploads/bk-cache/), para que el celular haga una
+ * petición que bloquea el pintado en vez de cinco o seis. El nombre lleva un hash de los archivos y sus fechas,
+ * así cada versión nueva genera su propio paquete. Si uploads no admite escritura, se dejan los archivos sueltos.
+ */
+function bk_pages_bundle_css() {
+	if ( ! bk_pages_route() || ! apply_filters( 'bk_bundle_css', true ) ) {
+		return;
+	}
+	$styles = wp_styles();
+	$base   = BK_URL . 'assets/css/';
+	$parts  = array();
+	foreach ( (array) $styles->queue as $handle ) {
+		$src = isset( $styles->registered[ $handle ] ) ? (string) $styles->registered[ $handle ]->src : '';
+		if ( 0 !== strpos( $src, $base ) || ! empty( $styles->registered[ $handle ]->extra['after'] ) ) {
+			continue;
+		}
+		$file = BK_DIR . 'assets/css/' . basename( (string) wp_parse_url( $src, PHP_URL_PATH ) );
+		if ( is_readable( $file ) ) {
+			$parts[ $handle ] = $file;
+		}
+	}
+	// Orden de dependencias: core primero, después el resto en el orden de la cola.
+	if ( count( $parts ) < 2 ) {
+		return;
+	}
+	$sig = '';
+	foreach ( $parts as $h => $f ) {
+		$sig .= $h . filemtime( $f ) . filesize( $f );
+	}
+	$name = 'bk-' . substr( md5( $sig . BK_VERSION ), 0, 12 ) . '.css';
+	$up   = wp_upload_dir( null, false );
+	$dir  = trailingslashit( $up['basedir'] ) . 'bk-cache';
+	$path = $dir . '/' . $name;
+	if ( ! is_file( $path ) ) {
+		if ( ! wp_mkdir_p( $dir ) || ! wp_is_writable( $dir ) ) {
+			return;
+		}
+		$css = '';
+		foreach ( $parts as $h => $f ) {
+			// Rutas relativas (fuentes) → absolutas, porque el paquete vive en otra carpeta.
+			$css .= "/* {$h} */\n" . preg_replace( '#url\(\s*([\'"]?)\.\./#', 'url($1' . BK_URL . 'assets/', (string) file_get_contents( $f ) ) . "\n"; // phpcs:ignore WordPress.WP.AlternativeFunctions
+		}
+		$tmp = $path . '.' . wp_generate_password( 6, false ) . '.tmp';
+		if ( false === file_put_contents( $tmp, $css ) || ! rename( $tmp, $path ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions
+			@unlink( $tmp ); // phpcs:ignore
+			return;
+		}
+	}
+	foreach ( array_keys( $parts ) as $h ) {
+		wp_dequeue_style( $h );
+	}
+	wp_enqueue_style( 'bk-bundle', trailingslashit( $up['baseurl'] ) . 'bk-cache/' . $name, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- el hash va en el nombre.
+}

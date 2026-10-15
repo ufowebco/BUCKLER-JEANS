@@ -69,3 +69,14 @@ add_action(
 	},
 	20
 );
+
+// Simula el snippet de producción que manda toda dirección inexistente a la portada (soft 404).
+add_action(
+	'template_redirect',
+	static function () {
+		if ( is_404() ) {
+			wp_redirect( home_url(), 301 ); // phpcs:ignore WordPress.Security.SafeRedirect
+			exit;
+		}
+	}
+);

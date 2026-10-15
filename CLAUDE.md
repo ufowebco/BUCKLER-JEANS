@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.13.2 → `dist/buckler-core-0.13.2.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.14.0 → `dist/buckler-core-0.14.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -268,6 +268,25 @@ Versión actual 0.13.2 → `dist/buckler-core-0.13.2.zip` (`tools/build-plugin.s
   bajaba sobre ellos).
 - **0.13.2:** tarjeta lima "Califícanos en Google · Gana 10 %" bajo ¡Sale! en el menú Tienda y en el menú móvil
   (`bk_review_menu_card()`, se oculta si la promo está apagada). Caché verificada en producción: `X-Litespeed-Cache: hit`, 0,13 s.
+- **0.14.0 (PageSpeed móvil 92, escritorio 99; navegación agéntica 3/4; CrUX de 28 días aún con TTFB 2,7 s de antes
+  de la caché):**
+  - Franja bajo el footer = HTML de PhotoSwipe (`div.pswp`) sin su CSS → `remove_action('wp_footer','woocommerce_photoswipe')`.
+  - Orden fijo de prendas en menú, footer, filtros y llms.txt: `prenda_order` (jeans, pantalones, prendas-cortas,
+    faldas, set-y-overol, chaquetas-y-chalecos) y `prenda_last` (linea-basic); `bk_prenda_rank()`, `bk_order_prendas()`.
+    Caché de menús renombrada `bk_cats3_*`.
+  - Agéntica: `ard-schema` fallaba porque `/.well-known/ai-catalog.json` redirigía a la portada (soft 404 del sitio,
+    `X-Redirect-By: WordPress`). `bk_pages_no_soft404()` (filtro `wp_redirect` 999): si es 404 y el destino es la
+    portada → 404 real con la plantilla propia. `/llms.txt` generado (`bk_llms_txt()`, filtro `bk_llms_txt`).
+  - Velocidad móvil: CSS de buckler-core en un solo archivo por combinación (`bk_pages_bundle_css()`,
+    `uploads/bk-cache/bk-{hash}.css`, url(../fonts) → absolutas; filtro `bk_bundle_css`); banners 2..n diferidos
+    (`bk_defer_media()`, core.js los carga al armar/rotar).
+  - Caché: venta que no agota talla → solo `X-LiteSpeed-Purge: tag=bk_p{padre}` (flag por el filtro
+    `woocommerce_update_product_stock_query`); agotar/reponer talla, ediciones, altas/bajas → `*`. Fichas etiquetadas
+    `bk_p{id}`. Tras `*` se programa `bk_cache_warm` (+45 s): inicio, tienda, Lo nuevo, líneas, ¡Sale!, FAQ y 16
+    productos recientes (≤50 s, UA móvil).
+  - Local: `tools/local/router.php` para `php -S` (imita el .htaccess: /llms.txt y 404 pasan por WP; estáticos que
+    faltan → 404). Arranque: `php -S localhost:8899 -t site /home/user/BUCKLER-JEANS/tools/local/router.php`.
+    Fixtures simulan el soft 404.
   - Promo "Califícanos en Google y gana 10 %" (`review_promo` on/incentive/discount, `review_url` =
     g.page/r/CRGTFeM2O9V5EAE/review): bloque de reseñas, gracias, Mi cuenta y anuncio de la barra. **Aviso dado al
     cliente: Google prohíbe reseñas incentivadas**; `incentive => false` deja solo la invitación.
@@ -331,7 +350,7 @@ Versión actual 0.13.2 → `dist/buckler-core-0.13.2.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 93 = 307 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 99 = 313 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

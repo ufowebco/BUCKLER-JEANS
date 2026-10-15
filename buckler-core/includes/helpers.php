@@ -121,3 +121,19 @@ function bk_img_add_srcset( $html, $id, $size, $sizes ) {
 	$html = preg_replace( '/\ssizes="[^"]*"/', '', $html );
 	return preg_replace( '/<img /', '<img srcset="' . esc_attr( $set ) . '" sizes="' . esc_attr( $sizes ) . '" ', $html, 1 );
 }
+
+/**
+ * Difiere un <picture>/<img>: src y srcset pasan a data-bk-src / data-bk-srcset (los carga el JS cuando hace
+ * falta), con <noscript> de respaldo. Evita que el navegador baje imágenes de carruseles que no se ven.
+ *
+ * @param string $html HTML con <img> y opcionalmente <source>.
+ * @return string
+ */
+function bk_defer_media( $html ) {
+	if ( ! $html || false !== strpos( $html, 'data-bk-src' ) ) {
+		return $html;
+	}
+	$blank = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22/%3E';
+	$out   = preg_replace( array( '/(<(?:img|source)\b[^>]*?)\ssrcset="/i', '/(<img\b[^>]*?)\ssrc="/i', '/\sloading="lazy"/i' ), array( '$1 data-bk-srcset="', '$1 src="' . $blank . '" data-bk-src="', '' ), $html );
+	return $out . '<noscript>' . $html . '</noscript>';
+}

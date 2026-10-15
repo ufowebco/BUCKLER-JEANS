@@ -185,6 +185,10 @@ function bk_shortcode_hero( $atts ) {
 				/* translators: %d: número de banner */
 				$alt     = bk_image_alt( $s['pc'], $s['link'] ? sprintf( __( 'Ver promoción %d', 'buckler-core' ), $i + 1 ) : '' );
 				$picture = bk_picture( $s['pc'], $s['mo'], 0 === $i, $s['link'] ? '' : $alt );
+				if ( $i > 0 ) {
+					// Banners 2..n: se descargan cuando el carrusel va a mostrarlos (core.js), no al cargar la página.
+					$picture = bk_defer_media( $picture );
+				}
 				?>
 				<div class="bk-carousel__slide" role="group" aria-roledescription="diapositiva" aria-label="<?php echo esc_attr( $pos ); ?>" <?php echo 0 === $i ? '' : 'aria-hidden="true"'; ?>>
 					<?php if ( $s['link'] ) : ?>

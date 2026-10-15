@@ -394,6 +394,7 @@ function bk_shop_shortcode( $atts ) {
 	);
 	$ctx     = bk_shop_context( $atts );
 	$u       = bk_shop_universe( $ctx );
+	$u['prendas'] = bk_order_prendas( (array) $u['prendas'] );
 	$buckets = bk_shop_price_buckets();
 	$lines   = (array) bk_config( 'lines' );
 
