@@ -453,6 +453,12 @@
 				'Elige el estado: <b>En espera</b> (esperando pago), <b>Procesando</b> (pagado, por despachar), <b>Completado</b> (enviado), <b>Cancelado</b> o <b>Reembolsado</b>.',
 				'Toca <b>Guardar estado</b>. Queda en el historial con tu nombre y la hora.',
 			], 'Al cancelar, las unidades vuelven al stock. La clienta recibe el correo de ese estado si está activo (míralos en Correos).'),
+			guide('Corregir los datos de la clienta (dirección, celular, cédula)', [
+				'Abre el pedido (toca el número).',
+				'En <b>Clienta</b> toca <b>Editar datos</b>.',
+				'Corrige nombre, cédula, celular, correo, departamento, ciudad o dirección. Si el envío va a otra dirección, desmarca <b>Enviar a la misma dirección</b> y escribe los datos de envío.',
+				'Toca <b>Guardar datos</b>. El cambio queda en el historial y en las notas del pedido.',
+			], 'Se cambia solo en ese pedido, no en la cuenta de la clienta. Si ya imprimiste la hoja, vuelve a imprimirla.'),
 			guide('Adjuntar un comprobante o factura', [
 				'Abre el pedido y baja a <b>Archivos del pedido</b>.',
 				'Toca <b>Subir archivo</b> y elige el PDF o la foto (hasta 15 MB).',

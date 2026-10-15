@@ -315,6 +315,35 @@
 	// Historial: cuándo se creó, pagó, cambió de estado, se imprimió, despachó, envió la guía…
 	const historyHtml = (o) => o.history?.length ? `<section><h3>Historial del pedido</h3><ol class="bk-g-hist">${[...o.history].reverse().map((h) => `<li class="is-${esc(h.type)}"><b>${esc(h.label)}</b><small>${esc(h.date)}${h.by ? ` · ${esc(h.by)}` : ''}</small></li>`).join('')}</ol></section>` : '';
 
+	// Editar los datos de la clienta en este pedido (facturación y envío + cédula).
+	const custField = (g, k, label, v, extra = '') => `<label><span>${esc(label)}</span><input name="${g}.${k}" value="${esc(v || '')}" ${extra}></label>`;
+	const custState = (g, v, states) => `<label><span>Departamento</span>${Object.keys(states).length ? `<select name="${g}.state"><option value="">Elige…</option>${Object.entries(states).map(([k, n]) => `<option value="${esc(k)}" ${v === k ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select>` : `<input name="${g}.state" value="${esc(v || '')}">`}</label>`;
+	const custAddr = (g, d, states) => `${custState(g, d.state, states)}${custField(g, 'city', 'Ciudad', d.city, 'autocomplete="off"')}
+		<label class="is-wide"><span>Dirección</span><input name="${g}.address_1" value="${esc(d.address_1 || '')}" autocomplete="off"></label>
+		<label class="is-wide"><span>Apto, torre, barrio</span><input name="${g}.address_2" value="${esc(d.address_2 || '')}" autocomplete="off"></label>`;
+	const custFormHtml = (o) => {
+		if (!o.edit) return '';
+		const e = o.edit; const b = e.billing; const sh = e.shipping;
+		return `<form id="bk-g-custform" class="bk-g-custform" data-id="${o.id}" hidden novalidate>
+			<div class="bk-g-custgrid">
+				${custField('billing', 'first_name', 'Nombre', b.first_name, 'required autocomplete="off"')}
+				${custField('billing', 'last_name', 'Apellidos', b.last_name, 'autocomplete="off"')}
+				${e.has_ced ? `<label><span>Cédula</span><input name="cedula" value="${esc(e.cedula)}" inputmode="numeric" autocomplete="off"></label>` : ''}
+				${custField('billing', 'phone', 'Celular', b.phone, 'type="tel" inputmode="tel" autocomplete="off"')}
+				<label class="is-wide"><span>Correo</span><input name="billing.email" type="email" value="${esc(b.email || '')}" autocomplete="off"></label>
+				${custAddr('billing', b, e.states)}
+			</div>
+			<label class="bk-g-switch"><input type="checkbox" name="same" ${e.same ? 'checked' : ''}><span>Enviar a la misma dirección</span></label>
+			<fieldset class="bk-g-custship" ${e.same ? 'hidden' : ''}><legend>Datos de envío</legend><div class="bk-g-custgrid">
+				${custField('shipping', 'first_name', 'Nombre', sh.first_name)}${custField('shipping', 'last_name', 'Apellidos', sh.last_name)}
+				${custField('shipping', 'phone', 'Celular', sh.phone, 'type="tel" inputmode="tel"')}
+				${custAddr('shipping', sh, e.states)}</div></fieldset>
+			<p class="bk-g-formerr" role="alert" hidden></p>
+			<p class="bk-g-hint">Se cambia solo en este pedido (no en la cuenta de la clienta) y queda en el historial.</p>
+			<div class="bk-g-dactions"><button type="submit" class="bk-g-btn">${C.icons.check} Guardar datos</button><button type="button" class="bk-g-btn is-ghost" data-cust-cancel>Cancelar</button></div>
+		</form>`;
+	};
+
 	const orderHtml = (o) => `
 		<header class="bk-g-dhead"><div><h2 id="bk-g-dtitle">Pedido #${esc(o.number)}</h2><small>${esc(o.date)}${o.consecutivo ? ` · Consecutivo ${esc(o.consecutivo)}` : ''}</small></div>
 			<button type="button" class="bk-g-icon" data-close aria-label="Cerrar">${C.icons.x}</button></header>
@@ -328,7 +357,8 @@
 			<div class="bk-g-dactions"><button type="button" class="bk-g-btn" id="bk-g-osave" data-id="${o.id}">Guardar estado</button>
 				<button type="button" class="bk-g-btn is-ghost" data-print="${o.id}">${C.icons.print} Imprimir pedido</button></div>
 			${shipHtml(o)}
-			<section><h3>Clienta</h3><p><b>${esc(o.customer)}</b>${o.fields?.cedula || o.cedula ? `<br>Cédula: ${esc(o.cedula || '—')}` : ''}${o.fields?.consecutivo ? `<br>Consecutivo: ${esc(o.consecutivo || '—')}` : ''}${o.origin ? `<br><small>Origen de la venta: ${esc(o.origin)}</small>` : ''}<br>
+			<section class="bk-g-cust"><div class="bk-g-cust__head"><h3>Clienta</h3>${o.edit ? `<button type="button" class="bk-g-btn is-ghost is-small" data-cust-edit aria-expanded="false" aria-controls="bk-g-custform">${C.icons.edit} Editar datos</button>` : ''}</div>
+				${custFormHtml(o)}<p class="bk-g-cust__view"><b>${esc(o.customer)}</b>${o.fields?.cedula || o.cedula ? `<br>Cédula: ${esc(o.cedula || '—')}` : ''}${o.fields?.consecutivo ? `<br>Consecutivo: ${esc(o.consecutivo || '—')}` : ''}${o.origin ? `<br><small>Origen de la venta: ${esc(o.origin)}</small>` : ''}<br>
 				${o.phone ? `<a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> · <a href="https://wa.me/57${esc(String(o.phone).replace(/\D/g, '').replace(/^57/, ''))}" target="_blank" rel="noopener">WhatsApp</a><br>` : ''}
 				<a href="mailto:${esc(o.email)}">${esc(o.email)}</a><br>${esc(o.address)}</p>
 				${o.note ? `<p class="bk-g-note"><b>Nota de la clienta:</b> ${esc(o.note)}</p>` : ''}</section>
@@ -554,6 +584,17 @@
 			return;
 		}
 
+		const ce = t.closest('[data-cust-edit], [data-cust-cancel]');
+		if (ce) {
+			const f = $('#bk-g-custform'); const btn = $('[data-cust-edit]');
+			const open = ce.matches('[data-cust-edit]') ? f.hidden : false;
+			if (!open) f.reset();
+			f.hidden = !open; $('.bk-g-cust__view').hidden = open;
+			btn.setAttribute('aria-expanded', String(open));
+			if (open) f.querySelector('input')?.focus(); else btn.focus();
+			return;
+		}
+
 		const save = t.closest('#bk-g-osave');
 		if (save) {
 			await busy(save, async () => {
@@ -674,8 +715,35 @@
 		} catch (err) { cb.checked = !cb.checked; toast(err.message, 'err'); } finally { cb.disabled = false; }
 	});
 
+	document.addEventListener('change', (e) => {
+		if (e.target.name === 'same' && e.target.closest('#bk-g-custform')) $('.bk-g-custship').hidden = e.target.checked;
+	});
+
 	document.addEventListener('submit', async (e) => {
 		const form = e.target;
+		if (form.id === 'bk-g-custform') {
+			e.preventDefault();
+			const err = $('.bk-g-formerr', form);
+			const body = { billing: {}, shipping: {}, same: form.same.checked };
+			[...form.elements].forEach((el) => {
+				const m = /^(billing|shipping)\.(\w+)$/.exec(el.name || '');
+				if (m) body[m[1]][m[2]] = el.value.trim();
+			});
+			if (form.cedula) body.cedula = form.cedula.value.trim();
+			err.hidden = true;
+			const bad = !body.billing.first_name ? ['billing.first_name', 'Escribe el nombre de la clienta.']
+				: (body.billing.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.billing.email)) ? ['billing.email', 'El correo no es válido.'] : null;
+			if (bad) { err.textContent = bad[1]; err.hidden = false; form.elements[bad[0]].focus(); return; }
+			await busy(form.querySelector('[type="submit"]'), async () => {
+				try {
+					const o = await api(`orders/${form.dataset.id}/customer`, { method: 'POST', body });
+					setOrder(o);
+					toast(o.changed?.length ? 'Datos de la clienta guardados' : 'No había cambios');
+					loadOrders();
+				} catch (er) { err.textContent = er.message; err.hidden = false; }
+			});
+			return;
+		}
 		if (form.id === 'bk-g-onote') {
 			e.preventDefault();
 			const text = $('#bk-g-notetext').value.trim();

@@ -126,6 +126,7 @@ function bk_g_routes() {
 			array( 'methods' => 'POST', 'callback' => 'bk_g_order_update', 'permission_callback' => $perm ),
 		)
 	);
+	register_rest_route( $ns, '/gestion/orders/(?P<id>\d+)/customer', array( 'methods' => 'POST', 'callback' => 'bk_g_order_customer', 'permission_callback' => $perm ) );
 	register_rest_route( $ns, '/gestion/products', array( 'methods' => 'GET', 'callback' => 'bk_g_products', 'permission_callback' => $perm ) );
 	register_rest_route(
 		$ns,
@@ -609,9 +610,151 @@ function bk_g_order( WP_REST_Request $r ) {
 					'cedula'      => (bool) $f['cedula'],
 				),
 				'edit_url'    => $o->get_edit_order_url(),
+				'edit'        => bk_g_customer_data( $o, $f ),
 			)
 		)
 	);
+}
+
+/**
+ * Campos editables de la clienta en el pedido (facturación y envío).
+ *
+ * @return array<string,array<string,string>> grupo => campo => etiqueta.
+ */
+function bk_g_customer_fields() {
+	return array(
+		'billing'  => array(
+			'first_name' => 'Nombre',
+			'last_name'  => 'Apellidos',
+			'email'      => 'Correo',
+			'phone'      => 'Celular',
+			'state'      => 'Departamento',
+			'city'       => 'Ciudad',
+			'address_1'  => 'Dirección',
+			'address_2'  => 'Apto, torre, barrio',
+		),
+		'shipping' => array(
+			'first_name' => 'Nombre (envío)',
+			'last_name'  => 'Apellidos (envío)',
+			'phone'      => 'Celular (envío)',
+			'state'      => 'Departamento (envío)',
+			'city'       => 'Ciudad (envío)',
+			'address_1'  => 'Dirección (envío)',
+			'address_2'  => 'Apto, torre, barrio (envío)',
+		),
+	);
+}
+
+/**
+ * Clave de la cédula en este pedido (la que ya tiene valor, o la primera configurada).
+ *
+ * @param WC_Order $o Pedido.
+ * @param array    $f bk_g_fields().
+ * @return string
+ */
+function bk_g_cedula_key( $o, $f ) {
+	foreach ( (array) $f['cedula'] as $key ) {
+		if ( '' !== (string) $o->get_meta( $key ) ) {
+			return $key;
+		}
+	}
+	return (string) ( $f['cedula'][0] ?? '' );
+}
+
+/**
+ * Valores actuales para el formulario de edición.
+ *
+ * @param WC_Order $o Pedido.
+ * @param array    $f bk_g_fields().
+ * @return array
+ */
+function bk_g_customer_data( $o, $f ) {
+	$out = array( 'billing' => array(), 'shipping' => array() );
+	foreach ( bk_g_customer_fields() as $group => $fields ) {
+		foreach ( array_keys( $fields ) as $k ) {
+			$m                   = "get_{$group}_{$k}";
+			$out[ $group ][ $k ] = is_callable( array( $o, $m ) ) ? (string) $o->$m() : '';
+		}
+	}
+	$key           = bk_g_cedula_key( $o, $f );
+	$out['cedula'] = $key ? (string) $o->get_meta( $key ) : '';
+	$out['has_ced'] = (bool) $key;
+	$ship          = array_filter( $out['shipping'] );
+	$out['same']   = ! $ship || ( $out['shipping']['address_1'] === $out['billing']['address_1'] && $out['shipping']['city'] === $out['billing']['city'] && $out['shipping']['state'] === $out['billing']['state'] );
+	$country       = $o->get_billing_country() ? $o->get_billing_country() : 'CO';
+	$states        = function_exists( 'WC' ) && WC()->countries ? WC()->countries->get_states( $country ) : array();
+	$out['states'] = is_array( $states ) ? $states : array();
+	return $out;
+}
+
+/**
+ * Guarda los datos de la clienta en el pedido (no cambia su cuenta ni otros pedidos).
+ *
+ * @param WP_REST_Request $r Petición: billing{}, shipping{}, same, cedula.
+ * @return WP_REST_Response|WP_Error
+ */
+function bk_g_order_customer( WP_REST_Request $r ) {
+	$o = wc_get_order( (int) $r['id'] );
+	if ( ! $o || 'shop_order' !== $o->get_type() ) {
+		return new WP_Error( 'bk_not_found', 'Pedido no encontrado.', array( 'status' => 404 ) );
+	}
+	$f       = bk_g_fields();
+	$labels  = bk_g_customer_fields();
+	$in      = array(
+		'billing'  => (array) $r['billing'],
+		'shipping' => rest_sanitize_boolean( $r['same'] ) ? (array) $r['billing'] : (array) $r['shipping'],
+	);
+	$email   = isset( $in['billing']['email'] ) ? sanitize_email( (string) $in['billing']['email'] ) : $o->get_billing_email();
+	if ( isset( $in['billing']['email'] ) && '' !== trim( (string) $in['billing']['email'] ) && ! is_email( $email ) ) {
+		return new WP_Error( 'bk_bad_email', 'El correo no es válido.', array( 'status' => 400 ) );
+	}
+	if ( isset( $in['billing']['first_name'] ) && '' === trim( (string) $in['billing']['first_name'] ) ) {
+		return new WP_Error( 'bk_bad_name', 'Escribe el nombre de la clienta.', array( 'status' => 400 ) );
+	}
+	$changed = array();
+	foreach ( $labels as $group => $fields ) {
+		foreach ( $fields as $k => $label ) {
+			if ( ! array_key_exists( $k, $in[ $group ] ) || ( 'shipping' === $group && 'email' === $k ) ) {
+				continue;
+			}
+			$val = 'email' === $k ? $email : sanitize_text_field( (string) $in[ $group ][ $k ] );
+			if ( 'phone' === $k ) {
+				$val = wc_sanitize_phone_number( $val );
+			}
+			$get = "get_{$group}_{$k}";
+			$set = "set_{$group}_{$k}";
+			if ( ! is_callable( array( $o, $set ) ) || (string) $o->$get() === $val ) {
+				continue;
+			}
+			$o->$set( $val );
+			$changed[] = $label;
+		}
+	}
+	if ( null !== $r['cedula'] ) {
+		$key = bk_g_cedula_key( $o, $f );
+		$ced = sanitize_text_field( (string) $r['cedula'] );
+		if ( $key && (string) $o->get_meta( $key ) !== $ced ) {
+			$o->update_meta_data( $key, $ced );
+			$changed[] = 'Cédula';
+		}
+	}
+	if ( $changed ) {
+		$shown = array_values( array_unique( array_map( static fn( $l ) => trim( preg_replace( '/\s*\(envío\)$/u', '', $l ) ), $changed ) ) );
+		/* translators: 1: campos, 2: usuario */
+		$o->add_order_note( sprintf( __( 'Datos de la clienta editados desde Gestión de tienda (%1$s) por %2$s.', 'buckler-core' ), implode( ', ', $changed ), wp_get_current_user()->display_name ), false, true );
+		if ( function_exists( 'bk_g_log' ) ) {
+			bk_g_log( $o, 'cliente', implode( ', ', $shown ) );
+		}
+		$o->save();
+		delete_transient( 'bk_g_summary' );
+	}
+	$res = bk_g_order( $r );
+	if ( $res instanceof WP_REST_Response ) {
+		$d            = $res->get_data();
+		$d['changed'] = $changed;
+		$res->set_data( $d );
+	}
+	return $res;
 }
 
 /**

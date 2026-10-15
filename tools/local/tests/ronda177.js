@@ -145,7 +145,7 @@ const contrast = (el) => {
   const h = await login('gestora', 'gestora');
   await h.g.goto(B + '/gestion-tienda/#ayuda'); await h.g.waitForSelector('.bk-g-guide');
   const titles = await h.g.locator('.bk-g-guide > summary').allTextContents();
-  ok(titles.length >= 20 && ['Subir un producto nuevo', 'Atender los pedidos del día', 'Crear una campaña', 'Crear un descuento por cantidad', 'Recuperar un carrito abandonado', 'Cambiar los banners del inicio', 'Una foto se ve acostada'].every((t) => titles.some((x) => x.startsWith(t))), `Ayuda: ${titles.length} guías paso a paso (productos, pedidos, descuentos, carritos, contenido, problemas)`);
+  ok(titles.length >= 23 && ['Subir un producto nuevo', 'Atender los pedidos del día', 'Crear una campaña', 'Crear un descuento por cantidad', 'Recuperar un carrito abandonado', 'Cambiar los banners del inicio', 'Una foto se ve acostada'].every((t) => titles.some((x) => x.startsWith(t))), `Ayuda: ${titles.length} guías paso a paso (productos, pedidos, descuentos, carritos, contenido, problemas)`);
   await h.g.fill('#bk-g-hq', 'guia envio'); await h.g.waitForTimeout(200);
   const vis = await h.g.locator('.bk-g-guide:not([hidden]) > summary').allTextContents();
   ok(vis.some((t) => /pedidos del día/.test(t)) && await h.g.locator('.bk-g-guide[open]:not([hidden])').count() === vis.length && /resultado/.test(await h.g.textContent('#bk-g-hq-n')), `buscador sin tildes: "guia envio" → ${vis.length} guía(s) abiertas`);

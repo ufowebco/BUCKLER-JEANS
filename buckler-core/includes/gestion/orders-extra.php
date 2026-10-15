@@ -155,6 +155,8 @@ function bk_g_history( $o ) {
 			$label = 'Guía de envío enviada: ' . trim( ( $e['carrier'] ?? '' ) . ' ' . $val );
 		} elseif ( 'archivo' === $ev ) {
 			$label = $val;
+		} elseif ( 'cliente' === $ev ) {
+			$label = 'Datos de la clienta editados: ' . $val;
 		} else {
 			continue;
 		}
@@ -515,6 +517,7 @@ function bk_g_print_render( $ids ) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title><?php echo esc_html( 1 === count( $orders ) ? 'Pedido #' . $orders[0]->get_order_number() : count( $orders ) . ' pedidos' ); ?> · Buckler</title>
+<?php if ( function_exists( 'bk_g_favicon' ) ) { bk_g_favicon(); } ?>
 <style>
 	@page{size:auto;margin:12mm}
 	*{box-sizing:border-box}

@@ -963,3 +963,17 @@ code { padding: 1px 5px; border-radius: 4px; background: #eef1f4; font-size: .9e
 .bk-g-help .bk-g-guide > summary { justify-content: flex-start; }
 .bk-g-help .bk-g-guide > summary::after, .bk-g-help .bk-g-guide[open] > summary::after { content: none; }
 .bk-g-help .bk-g-guide > summary::before { width: 9px; height: 9px; margin: 0 4px 0 2px; color: var(--g-navy); }
+
+/* Editar datos de la clienta (detalle del pedido). */
+.bk-g-cust__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.bk-g-cust__head h3 { margin: 0; }
+.bk-g-custform { display: grid; gap: 12px; margin-top: 12px; }
+.bk-g-custgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; }
+.bk-g-custgrid label { display: grid; gap: 4px; font-size: 13px; font-weight: 700; }
+.bk-g-custgrid .is-wide { grid-column: 1 / -1; }
+.bk-g-custgrid input, .bk-g-custgrid select { min-height: 42px; padding: 0 12px; border: 1px solid var(--g-line); border-radius: 10px; background: #fff; font: inherit; font-weight: 400; }
+.bk-g-custgrid input:focus-visible, .bk-g-custgrid select:focus-visible { outline: 3px solid var(--g-navy); outline-offset: 1px; }
+.bk-g-custship { margin: 0; padding: 12px; border: 1px solid var(--g-line); border-radius: 12px; }
+.bk-g-custship legend { padding: 0 6px; font-weight: 800; }
+.bk-g-custform [hidden], .bk-g-cust [hidden] { display: none; }
+@media (max-width: 520px) { .bk-g-custgrid { grid-template-columns: minmax(0, 1fr); } }

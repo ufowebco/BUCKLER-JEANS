@@ -143,6 +143,20 @@ add_filter(
 );
 
 /**
+ * Favicon del sitio (Apariencia → Personalizar → Identidad del sitio) en la gestión, el acceso y la impresión.
+ */
+function bk_g_favicon() {
+	$icons = array( 32 => 'icon', 192 => 'icon', 180 => 'apple-touch-icon' );
+	foreach ( $icons as $size => $rel ) {
+		$url = get_site_icon_url( $size );
+		if ( ! $url ) {
+			return;
+		}
+		printf( '<link rel="%s" href="%s"%s>' . "\n", esc_attr( $rel ), esc_url( $url ), 'icon' === $rel ? ' sizes="' . (int) $size . 'x' . (int) $size . '"' : '' );
+	}
+}
+
+/**
  * URL de la gestión.
  *
  * @param array $args Parámetros.
@@ -250,6 +264,7 @@ function bk_g_login_page( $error = '', $denied = false ) {
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title><?php echo esc_html( $ingreso ? __( 'Entrar · Buckler', 'buckler-core' ) : __( 'Entrar · Gestión de tienda · Buckler', 'buckler-core' ) ); ?></title>
+<?php bk_g_favicon(); ?>
 <link rel="stylesheet" href="<?php echo $ver( 'assets/css/gestion.css' ); // phpcs:ignore ?>">
 </head>
 <body class="bk-g bk-g-auth">
@@ -409,6 +424,7 @@ function bk_g_render( $early = false ) {
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title><?php esc_html_e( 'Gestión de tienda · Buckler', 'buckler-core' ); ?></title>
+<?php bk_g_favicon(); ?>
 <link rel="stylesheet" href="<?php echo $ver( 'assets/css/gestion.css' ); // phpcs:ignore ?>">
 </head>
 <body class="bk-g">
