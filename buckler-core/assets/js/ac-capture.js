@@ -65,7 +65,9 @@
 			p.className = 'bk-ac-notice';
 			p.textContent = cfg.notice;
 			p.style.cssText = 'margin:6px 0 0;font-size:.8125rem;color:#5b6773;';
-			(el.closest('.form-row, .wc-block-components-text-input') || el).insertAdjacentElement('afterend', p);
+			// Dentro del campo del correo: Woo reordena las filas del formulario y un párrafo suelto quedaba arriba.
+			const row = el.closest('.form-row, .wc-block-components-text-input');
+			if (row) row.appendChild(p); else el.insertAdjacentElement('afterend', p);
 		};
 		place();
 		document.body.addEventListener('updated_checkout', place);

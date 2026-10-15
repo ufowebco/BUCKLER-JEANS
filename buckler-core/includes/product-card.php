@@ -152,7 +152,7 @@ function bk_product_card( $product, $args = array() ) {
 
 	$sizes_vis = '';
 	$avail     = array();
-	foreach ( $d['sizes'] as $s ) {
+	foreach ( bk_sort_sizes( (array) $d['sizes'] ) as $s ) { // Ordenadas también si la tarjeta venía de caché.
 		$sizes_vis .= '<span class="' . ( $s['in'] ? '' : 'is-off' ) . '">' . esc_html( $s['label'] ) . '</span>';
 		if ( $s['in'] ) {
 			$avail[] = $s['label'];

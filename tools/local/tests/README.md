@@ -7,7 +7,7 @@ Rutas asumidas: `BK_LOCAL=/tmp/claude-0/bk-local` (ajustar en los scripts si cam
 php tools/local/tests/seed-cards.php     # galerías, destacado, oferta, talla agotada
 php tools/local/tests/seed-shop.php      # ~60 productos con nombres/precios/categorías reales
 php tools/local/tests/seed-orders.php    # pedidos de ejemplo, usuaria "gestora" (rol Gestor de tienda)
-cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos; do NODE_PATH=$(npm root -g) node $t.js; done
+cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176; do NODE_PATH=$(npm root -g) node $t.js; done
 ```
 
 | Suite | Qué prueba | Comprobaciones |
@@ -28,6 +28,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `ronda171.js` | Correo de primero en el checkout, carrito abandonado al cerrar la página o cambiar de pestaña, solo con celular, correo dado de baja y datos extra (sin autorización: guardado sin correos), Descuentos con el módulo apagado (aviso, botón y encendido al guardar), etiquetas y precios tachados en ficha y tienda, precio sin "Price range", Ayuda con 16 capturas numeradas (índice, carga diferida, celular, usuario de SEO) | 29 |
 | `ronda172.js` | Descuento por cantidad: recuadro en la ficha aunque otro plugin borre los ganchos (simula BodyCommerce), aviso de ¡Sale!, píldora en tarjetas, barra, carrito combinando 2 productos distintos, formulario y API con "combinando" por defecto, carrito abandonado sin casilla (siempre activo), botón Actualizar listado, archivos ACF del pedido (ajuste vacío, HPOS, 📎 en la lista) | 18 |
 | `pedidos-nuevos.js` | Pedidos nuevos en la gestión: estado propio de otro plugin en la API rápida, sin caché, botón "Buscar pedidos nuevos", revisión automática a los 10 min, resumen recalculado, recarga | 10 |
+| `ronda176.js` | Tallas ordenadas en las tarjetas (también si están guardadas al revés), checkout sin Población ni Código postal (también tras elegir departamento), pedido sin esos campos, departamento en la gestión, aviso bajo el correo | 9 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).
 | `seguridad.js` | Nombres de usuario ocultos a visitantes: REST de usuarios 401, ?author 404, sin sitemap de usuarios, Store API pública, error de acceso genérico, editor con sesión intacto | 7 |

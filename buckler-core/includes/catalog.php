@@ -36,7 +36,7 @@ function bk_product_sizes( $product ) {
 	if ( ! $product || ! $product->is_type( 'variable' ) ) {
 		return array();
 	}
-	$key   = 'bk_sizes_' . $product->get_id();
+	$key   = 'bk_sizes2_' . $product->get_id(); // 2: ya ordenadas (6, 8, 10, 12 / 14 … 24).
 	$sizes = get_transient( $key );
 	if ( is_array( $sizes ) ) {
 		return $sizes;
@@ -70,6 +70,7 @@ function bk_product_sizes( $product ) {
 			);
 		}
 	}
+	$sizes = bk_sort_sizes( $sizes );
 	set_transient( $key, $sizes, 12 * HOUR_IN_SECONDS );
 	return $sizes;
 }
@@ -85,7 +86,7 @@ function bk_catalog_flush( $product ) {
 		return;
 	}
 	$id = $product->get_parent_id() ? $product->get_parent_id() : $product->get_id();
-	delete_transient( 'bk_sizes_' . $id );
+	delete_transient( 'bk_sizes2_' . $id );
 	delete_transient( 'bk_card_' . $id );
 	wp_cache_set( 'bk_catalog_v', microtime( true ), 'bk' );
 	update_option( 'bk_catalog_v', (string) microtime( true ), false ); // Invalida el universo de la tienda.
@@ -96,3 +97,24 @@ foreach ( array( 'woocommerce_update_product', 'woocommerce_update_product_varia
 	add_action( $bk_hook, 'bk_catalog_flush' );
 }
 unset( $bk_hook );
+
+/**
+ * Ordena tallas de menor a mayor (6, 8, 10, 12 / 14 … 24). Las que no son números (S, M, Única) van al final.
+ *
+ * @param array $sizes Lista con 'label'.
+ * @return array
+ */
+function bk_sort_sizes( $sizes ) {
+	usort(
+		$sizes,
+		static function ( $a, $b ) {
+			$na = is_numeric( $a['label'] ?? '' );
+			$nb = is_numeric( $b['label'] ?? '' );
+			if ( $na && $nb ) {
+				return (float) $a['label'] <=> (float) $b['label'];
+			}
+			return $na === $nb ? strnatcasecmp( (string) ( $a['label'] ?? '' ), (string) ( $b['label'] ?? '' ) ) : ( $na ? -1 : 1 );
+		}
+	);
+	return $sizes;
+}

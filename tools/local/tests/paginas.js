@@ -203,7 +203,7 @@ const OUT = '/tmp/claude-0/bk-local';
   ok(d.h1.length === 1 && d.divi === 0, 'checkout clásico en documento propio');
   ok(await p.locator('.bk-crumbs li').count() === 3, 'checkout: migas Inicio / Carrito / Finalizar compra');
   await p.fill('#billing_first_name', 'Prueba'); await p.fill('#billing_last_name', 'Páginas');
-  await p.fill('#billing_address_1', 'Calle 1 # 2-3'); await p.fill('#billing_city', 'Medellín');
+  await p.fill('#billing_address_1', 'Calle 1 # 2-3'); if (await p.locator('#billing_city').count()) await p.fill('#billing_city', 'Medellín');
   await p.fill('#billing_phone', '3001234567'); await p.fill('#billing_email', 'paginas@ejemplo.com');
   const st = p.locator('#billing_state'); if (await st.count()) await st.selectOption({ index: 1 }).catch(() => {});
   await p.waitForTimeout(1500);

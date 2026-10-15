@@ -42,7 +42,7 @@ const ok = (c, m) => console.log((c ? 'OK   ' : 'FAIL ') + m);
   ok((await d.textContent('.woocommerce-checkout-review-order-table')).includes('FLARE'), 'carrito restaurado en otro dispositivo');
   ok(await d.inputValue('#billing_email') === 'laura.g@ejemplo.com', 'correo prellenado');
   // --- Compra (pago contra entrega de prueba) ---
-  await d.fill('#billing_last_name', 'Gómez'); await d.fill('#billing_address_1', 'Cra 43A # 1-50'); await d.fill('#billing_city', 'Medellín');
+  await d.fill('#billing_last_name', 'Gómez'); await d.fill('#billing_address_1', 'Cra 43A # 1-50'); if (await d.locator('#billing_city').count()) await d.fill('#billing_city', 'Medellín');
   await d.fill('#billing_phone', '3000000000');
   await d.evaluate(() => { const s = document.querySelector('#billing_state'); s.value = s.tagName === 'SELECT' ? [...s.options].find(o => /Antioquia/.test(o.text)).value : 'Antioquia'; s.dispatchEvent(new Event('change', { bubbles: true })); });
   await d.click('#place_order'); await d.waitForURL(/order-received/, { timeout: 30000 }).catch(() => {});

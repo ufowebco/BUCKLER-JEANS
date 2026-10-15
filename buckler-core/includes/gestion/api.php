@@ -317,7 +317,7 @@ function bk_g_order_row( $o ) {
 		'date'        => $o->get_date_created() ? $o->get_date_created()->date_i18n( 'j M Y, g:i a' ) : '',
 		'status'      => $o->get_status(),
 		'customer'    => trim( $o->get_billing_first_name() . ' ' . $o->get_billing_last_name() ),
-		'city'        => $o->get_billing_city(),
+		'city'        => bk_g_order_place( $o ),
 		'nfiles'      => bk_g_files_count( $o ),
 		'total'       => bk_g_money( $o->get_total() ),
 		'items'       => (int) $o->get_item_count(),
@@ -457,6 +457,22 @@ function bk_g_extra_meta( $o, $f ) {
 		);
 	}
 	return $out;
+}
+
+/**
+ * Ciudad del pedido o, si no la hay (el checkout ya no la pide), el departamento.
+ *
+ * @param WC_Order $o Pedido.
+ * @return string
+ */
+function bk_g_order_place( $o ) {
+	$city = trim( (string) $o->get_billing_city() );
+	if ( '' !== $city ) {
+		return $city;
+	}
+	$st     = (string) $o->get_billing_state();
+	$states = WC()->countries ? (array) WC()->countries->get_states( $o->get_billing_country() ? $o->get_billing_country() : 'CO' ) : array();
+	return html_entity_decode( (string) ( $states[ $st ] ?? $st ), ENT_QUOTES, 'UTF-8' );
 }
 
 /**

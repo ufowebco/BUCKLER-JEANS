@@ -147,7 +147,7 @@ const loginG = async (p, u, pw) => { await p.goto(B + '/gestion-tienda/'); await
   ok(/Agrega 2 prendas más y obtén el 30 %/.test(await p.textContent('.bk-disc-hint')), 'carrito: "agrega 2 prendas más y obtén el 30 %"');
   ok(/Sin garantía ni cambio/.test(cart), 'carrito: la prenda de ¡Sale! dice "sin garantía ni cambio"');
   await p.goto(B + '/checkout/'); await p.waitForSelector('form.checkout');
-  await p.fill('#billing_first_name', 'Prueba'); await p.fill('#billing_last_name', 'Ronda17'); await p.fill('#billing_address_1', 'Calle 1 # 2-3'); await p.fill('#billing_city', 'Medellín'); await p.fill('#billing_phone', '3001234567'); await p.fill('#billing_email', 'ronda17@ejemplo.com');
+  await p.fill('#billing_first_name', 'Prueba'); await p.fill('#billing_last_name', 'Ronda17'); await p.fill('#billing_address_1', 'Calle 1 # 2-3'); if (await p.locator('#billing_city').count()) await p.fill('#billing_city', 'Medellín'); await p.fill('#billing_phone', '3001234567'); await p.fill('#billing_email', 'ronda17@ejemplo.com');
   await p.locator('#billing_state').selectOption('CO-SAP').catch(() => {}); await p.waitForTimeout(1500);
   ok(/prendas en descuento/.test(await p.textContent('#order_review')), 'checkout: aviso antes de pagar');
   const consent = p.locator('#bk_ac_consent'); if (await consent.count()) await consent.check().catch(() => {});

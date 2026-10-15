@@ -184,7 +184,7 @@ function bk_gs_orders_check() {
 		$src[ $lab ]          = ( $src[ $lab ] ?? array( 'orders' => 0, 'total' => 0.0 ) );
 		$src[ $lab ]['orders']++;
 		$src[ $lab ]['total'] += (float) $o->get_total();
-		$c                     = trim( ucwords( mb_strtolower( (string) $o->get_billing_city() ) ) );
+		$c                     = trim( ucwords( mb_strtolower( function_exists( 'bk_g_order_place' ) ? bk_g_order_place( $o ) : (string) $o->get_billing_city() ) ) );
 		if ( '' !== $c ) {
 			$cities[ $c ] = ( $cities[ $c ] ?? 0 ) + 1;
 		}

@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.17.5 → `dist/buckler-core-0.17.5.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.17.6 → `dist/buckler-core-0.17.6.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -491,6 +491,14 @@ Versión actual 0.17.5 → `dist/buckler-core-0.17.5.zip` (`tools/build-plugin.s
   (`bk_g_summary`, 5 min) se borra en `woocommerce_new_order` / cambio de estado. Pedidos: botón "Buscar pedidos
   nuevos" + "Actualizado hh:mm", revisión automática cada 10 min (solo con la pestaña visible; al volver si pasaron
   10 min), filas nuevas resaltadas y aviso "N pedidos nuevos". Suite `pedidos-nuevos.js` (10, usa `clock` de Playwright).
+- **0.17.6 (2026-10-15):** tallas de las tarjetas (al pasar el mouse) en orden: `bk_sort_sizes()` (numéricas de
+  menor a mayor, texto al final) en `bk_product_sizes()` (transitorio renombrado `bk_sizes2_{id}`) y al pintar la
+  tarjeta (por si viene de la caché `bk_card_*`). Checkout sin "Población" ni "Código postal" (decisión del cliente):
+  se quitan de facturación y envío (`woocommerce_checkout_fields` 30) y del locale CO (hidden, no requeridos) para que
+  address-i18n.js no los vuelva a mostrar; filtro `bk_checkout_hidden_fields`. La gestión muestra el departamento si
+  no hay ciudad (`bk_g_order_place()`, lista de pedidos y ciudades de compra). Aviso del carrito abandonado dentro de
+  `#billing_email_field` (Woo reordena filas y quedaba arriba). Pruebas que llenaban ciudad/código postal: solo si el
+  campo existe. Suite `ronda176.js` (9).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -535,7 +543,7 @@ Versión actual 0.17.5 → `dist/buckler-core-0.17.5.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10 = 551 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9 = 560 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

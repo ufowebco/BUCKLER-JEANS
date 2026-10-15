@@ -82,3 +82,35 @@ add_filter(
 	},
 	20
 );
+
+/**
+ * Checkout (decisión del cliente 2026-10-15): sin "Población" (ciudad) ni "Código postal"; en Colombia el envío se
+ * hace con departamento + dirección. Se quitan del formulario (facturación y envío) y del idioma de direcciones de
+ * Colombia, para que el script de Woo no los vuelva a mostrar ni exigir al cambiar de país.
+ * Volver a mostrarlos: add_filter( 'bk_checkout_hidden_fields', '__return_empty_array' ).
+ */
+function bk_checkout_hidden_fields() {
+	return (array) apply_filters( 'bk_checkout_hidden_fields', array( 'city', 'postcode' ) );
+}
+
+add_filter(
+	'woocommerce_checkout_fields',
+	static function ( $fields ) {
+		foreach ( bk_checkout_hidden_fields() as $f ) {
+			unset( $fields['billing'][ 'billing_' . $f ], $fields['shipping'][ 'shipping_' . $f ] );
+		}
+		return $fields;
+	},
+	30
+);
+
+add_filter(
+	'woocommerce_get_country_locale',
+	static function ( $locale ) {
+		foreach ( bk_checkout_hidden_fields() as $f ) {
+			$locale['CO'][ $f ] = array_merge( (array) ( $locale['CO'][ $f ] ?? array() ), array( 'required' => false, 'hidden' => true ) );
+		}
+		return $locale;
+	},
+	30
+);
