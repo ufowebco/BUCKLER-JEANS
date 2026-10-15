@@ -75,10 +75,12 @@ add_action(
 	'template_redirect',
 	static function () {
 		if ( is_404() ) {
-			wp_redirect( home_url(), 301 ); // phpcs:ignore WordPress.Security.SafeRedirect
+			// Como en producción: header() directo (sin wp_redirect ni X-Redirect-By), después de la cabecera Link.
+			header( 'Location: ' . home_url(), true, 301 );
 			exit;
 		}
-	}
+	},
+	20
 );
 
 // Simula Divi en producción: mete recortes 16:9 (980×551) en el srcset de cualquier imagen.

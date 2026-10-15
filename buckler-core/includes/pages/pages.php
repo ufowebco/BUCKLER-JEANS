@@ -27,6 +27,9 @@ add_action( 'wp_enqueue_scripts', 'bk_pages_diet_route', 10000 );
 add_action( 'wp_print_footer_scripts', 'bk_pages_diet_route', 2 );
 add_action( 'wp_head', 'bk_pages_preload', 1 );
 add_filter( 'wp_redirect', 'bk_pages_no_soft404', 999 );
+// Prioridad 10 en template_redirect: después de las redirecciones de WordPress (slug antiguo, URL canónica) y
+// antes del código del sitio que manda a la portada con header() (va después de la cabecera Link de la REST, 11).
+add_action( 'template_redirect', 'bk_pages_render_404', 10 );
 add_action( 'template_redirect', 'bk_pages_llms_txt', 0 );
 
 /**
@@ -45,6 +48,19 @@ function bk_pages_no_soft404( $location ) {
 	$to = untrailingslashit( (string) strtok( (string) $location, '?#' ) );
 	if ( untrailingslashit( home_url() ) !== $to && untrailingslashit( home_url( '/' ) ) !== $to ) {
 		return $location;
+	}
+	status_header( 404 );
+	nocache_headers();
+	include BK_DIR . 'templates/pages/document.php';
+	exit;
+}
+
+/**
+ * Pinta la página 404 propia (con estado 404) y termina, antes de que otro código redirija a la portada.
+ */
+function bk_pages_render_404() {
+	if ( ! is_404() || '404' !== bk_pages_route() ) {
+		return;
 	}
 	status_header( 404 );
 	nocache_headers();

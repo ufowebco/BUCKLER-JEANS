@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.14.2 → `dist/buckler-core-0.14.2.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.14.3 → `dist/buckler-core-0.14.3.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -296,6 +296,10 @@ Versión actual 0.14.2 → `dist/buckler-core-0.14.2.zip` (`tools/build-plugin.s
   `wp_enqueue_scripts`, después de template_include). Ahora: `remove_action` en la dieta por ruta +
   `bk_strip_element()` lo quita del HTML final + CSS `body.bk-doc .pswp{display:none}` de respaldo. Fixtures: tema
   con lightbox y un "plugin" que lo imprime en wp_footer (reproduce las 24 coincidencias de producción).
+- **0.14.3:** el soft 404 de producción NO usa wp_redirect (sin X-Redirect-By, `header('Location: '.home_url())`
+  directo, después de la cabecera Link de la REST → template_redirect ≥ 11), así que el filtro no bastaba.
+  `bk_pages_render_404()` en `template_redirect` prioridad 10 (después de wp_old_slug_redirect/redirect_canonical,
+  antes de ese código) pinta la 404 propia con estado 404 y termina. Fixture local imita el header() directo.
   - Promo "Califícanos en Google y gana 10 %" (`review_promo` on/incentive/discount, `review_url` =
     g.page/r/CRGTFeM2O9V5EAE/review): bloque de reseñas, gracias, Mi cuenta y anuncio de la barra. **Aviso dado al
     cliente: Google prohíbe reseñas incentivadas**; `incentive => false` deja solo la invitación.
