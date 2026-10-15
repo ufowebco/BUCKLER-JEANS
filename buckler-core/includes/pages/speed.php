@@ -115,6 +115,7 @@ function bk_pages_optimize_html( $html, $route ) {
 		},
 		$html
 	);
+	$html = bk_strip_element( (string) $html, '#<div\b[^>]*\bclass=(["\'])pswp\1[^>]*>#i' ); // Visor PhotoSwipe (franja bajo el footer).
 	$html = bk_pages_maybe_drop_jquery( (string) $html, $route );
 	if ( $delayed ) {
 		$html = str_replace( '</body>', bk_delay_loader() . "\n</body>", (string) $html );
@@ -212,4 +213,28 @@ function bk_pages_bundle_css() {
 		wp_dequeue_style( $h );
 	}
 	wp_enqueue_style( 'bk-bundle', trailingslashit( $up['baseurl'] ) . 'bk-cache/' . $name, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- el hash va en el nombre.
+}
+
+/**
+ * Quita un elemento <div> completo (con sus <div> internos) a partir de su etiqueta de apertura.
+ *
+ * @param string $html  Documento.
+ * @param string $open  Expresión regular de la etiqueta de apertura.
+ * @return string
+ */
+function bk_strip_element( $html, $open ) {
+	while ( preg_match( $open, $html, $m, PREG_OFFSET_CAPTURE ) ) {
+		$start = $m[0][1];
+		$pos   = $start + strlen( $m[0][0] );
+		$depth = 1;
+		while ( $depth > 0 && preg_match( '#<(/?)div\b[^>]*>#i', $html, $t, PREG_OFFSET_CAPTURE, $pos ) ) {
+			$depth += '/' === $t[1][0] ? -1 : 1;
+			$pos    = $t[0][1] + strlen( $t[0][0] );
+		}
+		if ( $depth > 0 ) {
+			break; // HTML mal formado: no se toca.
+		}
+		$html = substr( $html, 0, $start ) . substr( $html, $pos );
+	}
+	return $html;
 }

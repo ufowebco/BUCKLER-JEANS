@@ -91,3 +91,9 @@ add_filter(
 	10,
 	3
 );
+
+// Como Divi en producción: el tema declara la galería con lightbox (WooCommerce imprime el HTML de PhotoSwipe).
+add_action( 'after_setup_theme', static function () { add_theme_support( 'wc-product-gallery-lightbox' ); add_theme_support( 'wc-product-gallery-zoom' ); add_theme_support( 'wc-product-gallery-slider' ); }, 99 );
+
+// Como un plugin de Divi en producción: imprime el visor PhotoSwipe de WooCommerce en todas las páginas.
+add_action( 'wp_footer', static function () { if ( function_exists( 'wc_get_template' ) ) { wc_get_template( 'single-product/photoswipe.php' ); } }, 5 );

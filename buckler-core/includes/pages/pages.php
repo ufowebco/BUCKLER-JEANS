@@ -287,6 +287,9 @@ function bk_pages_diet_route() {
 			}
 		}
 	}
+	// WooCommerce engancha el HTML del visor PhotoSwipe al cargar sus scripts (después de template_include); sin su
+	// CSS quedaba como una franja al final de la página.
+	remove_action( 'wp_footer', 'woocommerce_photoswipe' );
 	// Dashicons solo con la barra de administración.
 	if ( ! is_admin_bar_showing() ) {
 		wp_dequeue_style( 'dashicons' );

@@ -628,3 +628,6 @@ body.bk-doc .woocommerce-variation-price .price { font-size: 22px; }
 html:has(body.bk-doc) { background: var(--bk-navy); }
 body.bk-doc { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; background: var(--bk-paper, #fff); }
 body.bk-doc > .bk-main { flex: 1 0 auto; }
+
+/* Visor PhotoSwipe que otros plugins imprimen sin su CSS (respaldo: el HTML ya se quita en speed.php). */
+body.bk-doc .pswp { display: none !important; }
