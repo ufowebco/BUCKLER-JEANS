@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.17.0 → `dist/buckler-core-0.17.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.17.1 → `dist/buckler-core-0.17.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -432,6 +432,27 @@ Versión actual 0.17.0 → `dist/buckler-core-0.17.0.zip` (`tools/build-plugin.s
     99 escritorio, ficha 94 / 99, tienda 77 / 98; SEO 100, buenas prácticas 100, accesibilidad 92–95; 23–33 peticiones.
     API de PageSpeed: cuota pública agotada (429); GTmetrix no accesible desde aquí.
   - Suite `ronda17.js` (60). paginas.js: la comprobación de banners diferidos ahora se mide antes de interactuar.
+- **0.17.1 — ronda de 4 puntos (2026-10-15):**
+  - Descuentos "no se ven": en producción el módulo `discounts` (y `emails`) estaba **apagado** (clases del body).
+    Gestión → Descuentos muestra aviso + botón "Encender descuentos" (`POST gestion/discounts/module`,
+    `bk_gd_enable_module()`: añade a `bk_modules`, dispara `bk_modules_saved` → purga) y guardar/activar una regla
+    activa lo enciende sola. `module` de la respuesta lee la opción (bk_on() guarda en memoria). Anuncio de la barra:
+    porcentaje primero ("−20 % en toda la tienda · Nombre"; la barra corta con "…").
+  - Carrito abandonado no se guardaba: la casilla Ley 1581 venía desmarcada y sin ella no se enviaba nada. Ahora se
+    guarda SIEMPRE con correo válido (`consent` 0/1) pero **solo con autorización se programan/envían correos**
+    (`bk_ac_schedule` sale si `consent` = 0; quitar la casilla cancela). ac-capture.js: guarda al escribir (1,2 s),
+    al salir del campo y al cerrar/cambiar de pestaña (`pagehide`/`visibilitychange` → `sendBeacon`). Gestión y
+    wp-admin muestran "sin autorización (no recibe correos)".
+  - Checkout: `billing_email` prioridad 1 (ancho completo) y la casilla de autorización prioridad 2
+    (`woocommerce_checkout_fields` 20 en woo-tweaks.php; filtro `bk_checkout_email_first`).
+  - Ayuda con 16 capturas numeradas (`assets/img/ayuda/*.webp`, 1280 px, ~650 KB) generadas con
+    `tools/local/help-shots.js` (datos de ejemplo que restaura al terminar; traduce en el DOM los textos que en local
+    salen en inglés). En `gestion-more.js` cada sección tiene figuras `fig(img, título, pasos, alto)`: los números de la
+    imagen = la lista de pasos. Índice de secciones arriba. `bkG.helpImg` + `bkG.ver`.
+  - Arreglos vistos en las capturas: precio "desde–hasta" de Productos mostraba "Price range…" (texto de lectores de
+    pantalla de Woo, se quita en la API); casilla "Marcar como Completado" de la guía ocupaba media fila; anillo de foco
+    en `.bk-g-main` al cambiar de sección.
+  - Suite `ronda171.js` (25).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -476,7 +497,7 @@ Versión actual 0.17.0 → `dist/buckler-core-0.17.0.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60 = 494 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 25 = 519 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

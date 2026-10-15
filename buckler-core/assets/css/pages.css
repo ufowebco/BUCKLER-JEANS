@@ -657,3 +657,7 @@ body.bk-doc .pswp { display: none !important; }
 	.bk-disc-home__head { grid-template-columns: auto minmax(0, 1fr); }
 	.bk-disc-home__head .bk-btn { grid-column: 1 / -1; justify-content: center; }
 }
+/* Casilla de autorización de carritos abandonados (bajo el correo): texto normal, alineado con la casilla. */
+.bk-doc .woocommerce form .form-row.bk-ac-consent { margin-top: -6px; }
+.bk-doc .woocommerce form .form-row.bk-ac-consent label { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; font-size: 13px; color: #4a5560; }
+.bk-doc .woocommerce form .form-row.bk-ac-consent input[type="checkbox"] { flex: none; margin: 0; }

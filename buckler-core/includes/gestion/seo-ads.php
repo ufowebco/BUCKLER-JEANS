@@ -518,7 +518,8 @@ function bk_gs_abandoned( WP_REST_Request $r ) {
 			'emails'  => (int) $row->emails_sent,
 			'clicked' => (bool) $row->clicked_at,
 			'status'  => $row->status,
-			'label'   => $labels[ $row->status ] ?? $row->status,
+			'label'   => ( 'active' === $row->status && ! (int) $row->consent ) ? 'Pendiente · sin autorización (no recibe correos)' : ( $labels[ $row->status ] ?? $row->status ),
+			'consent' => (bool) (int) $row->consent,
 			'order'   => (int) $row->order_id,
 		);
 	}

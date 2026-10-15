@@ -31,6 +31,7 @@ function bk_gd_routes() {
 			array( 'methods' => 'POST', 'callback' => 'bk_gd_save', 'permission_callback' => 'bk_g_can' ),
 		)
 	);
+	register_rest_route( $ns, '/gestion/discounts/module', array( 'methods' => 'POST', 'callback' => 'bk_gd_module', 'permission_callback' => 'bk_g_can' ) );
 	register_rest_route( $ns, '/gestion/discounts/delete', array( 'methods' => 'POST', 'callback' => 'bk_gd_delete', 'permission_callback' => 'bk_g_can' ) );
 	register_rest_route( $ns, '/gestion/discounts/products', array( 'methods' => 'GET', 'callback' => 'bk_gd_products', 'permission_callback' => 'bk_g_can' ) );
 }
@@ -77,7 +78,7 @@ function bk_gd_list() {
 	$sale = get_term_by( 'slug', (string) bk_config( 'sale_cat' ), 'product_cat' );
 	return rest_ensure_response(
 		array(
-			'module'    => bk_on( 'discounts' ),
+			'module'    => bk_on( 'discounts' ) || in_array( 'discounts', (array) get_option( 'bk_modules', array() ), true ), // bk_on() guarda en memoria el valor del inicio de la petición.
 			'campaigns' => array_map( 'bk_gd_view', $d['campaigns'] ),
 			'qty'       => array_map( 'bk_gd_view', $d['qty'] ),
 			'cats'      => function_exists( 'bk_gp_cat_tree' ) ? bk_gp_cat_tree() : array(),
@@ -212,6 +213,9 @@ function bk_gd_save( WP_REST_Request $r ) {
 	}
 	$all[ $type ] = array_values( $list );
 	update_option( BK_DISC_OPTION, $all, true );
+	if ( $rule['active'] ) {
+		bk_gd_enable_module(); // Quien crea un descuento activo quiere verlo en la tienda.
+	}
 	bk_gd_after_change();
 	$res = bk_gd_list();
 	$res->data['saved'] = $rule['id'];
@@ -240,6 +244,44 @@ function bk_gd_after_change() {
 	bk_disc_data( true );
 	bk_disc_schedule();
 	bk_disc_flush();
+}
+
+/**
+ * Enciende el módulo "Descuentos" (si estaba apagado los precios no cambian en la tienda).
+ *
+ * @return bool true si se encendió ahora.
+ */
+function bk_gd_enable_module() {
+	if ( bk_on( 'discounts' ) || in_array( 'discounts', (array) get_option( 'bk_modules', array() ), true ) ) {
+		return false;
+	}
+	$on   = (array) get_option( 'bk_modules', array() );
+	$on[] = 'discounts';
+	$on   = array_values( array_unique( array_intersect( array_keys( bk_modules() ), $on ) ) );
+	update_option( 'bk_modules', $on );
+	bk_g_log_module( 'discounts' );
+	do_action( 'bk_modules_saved', $on ); // Mismos efectos que guardar en Ajustes → Buckler Core (purga la caché).
+	return true;
+}
+
+/**
+ * Deja constancia de quién encendió el módulo desde la gestión.
+ *
+ * @param string $key Módulo.
+ */
+function bk_g_log_module( $key ) {
+	update_option( 'bk_module_enabled_by_' . $key, array( 'by' => wp_get_current_user()->display_name, 't' => time() ), false );
+}
+
+/**
+ * POST gestion/discounts/module: botón "Encender descuentos".
+ *
+ * @return WP_REST_Response
+ */
+function bk_gd_module() {
+	bk_gd_enable_module();
+	bk_gd_after_change();
+	return rest_ensure_response( array( 'module' => true ) );
 }
 
 /**

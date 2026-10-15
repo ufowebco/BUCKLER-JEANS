@@ -57,3 +57,28 @@ add_filter(
 	},
 	99
 );
+
+/**
+ * Checkout: el correo va de primero (lo primero que se pide es lo que permite recuperar la compra)
+ * y la casilla de autorización de carritos abandonados justo debajo. Prioridad 20: después de otros
+ * plugins/snippets que reordenan campos. address-i18n.js de Woo reordena por data-priority, así que se
+ * mantiene también al cambiar de país. Desactivar: add_filter( 'bk_checkout_email_first', '__return_false' ).
+ */
+add_filter(
+	'woocommerce_checkout_fields',
+	static function ( $fields ) {
+		if ( ! isset( $fields['billing']['billing_email'] ) || ! apply_filters( 'bk_checkout_email_first', true ) ) {
+			return $fields;
+		}
+		$fields['billing']['billing_email']['priority'] = 1;
+		$fields['billing']['billing_email']['class']    = array_values( array_diff( (array) ( $fields['billing']['billing_email']['class'] ?? array() ), array( 'form-row-first', 'form-row-last' ) ) );
+		if ( ! in_array( 'form-row-wide', $fields['billing']['billing_email']['class'], true ) ) {
+			$fields['billing']['billing_email']['class'][] = 'form-row-wide';
+		}
+		if ( isset( $fields['billing']['bk_ac_consent'] ) ) {
+			$fields['billing']['bk_ac_consent']['priority'] = 2;
+		}
+		return $fields;
+	},
+	20
+);

@@ -280,6 +280,8 @@ function bk_g_render() {
 		'scope'    => $seo_only ? 'seo' : 'all',
 		'site'     => home_url( '/' ),
 		'printUrl' => esc_url_raw( home_url( '/' . BK_G_SLUG . '/' ) ) . '?imprimir=',
+		'helpImg'  => esc_url_raw( BK_URL . 'assets/img/ayuda/' ),
+		'ver'      => BK_VERSION,
 		'js'       => array(
 			'product' => html_entity_decode( $ver( 'assets/js/gestion-product.js' ) ),
 			'extra'   => html_entity_decode( $ver( 'assets/js/gestion-extra.js' ) ),

@@ -141,16 +141,7 @@ function bk_ac_ajax_capture() {
 		wp_send_json_success( array( 'saved' => false ) );
 	}
 
-	// Quitó la autorización: se borran sus datos y no se envía nada.
-	if ( ! $consent ) {
-		if ( $row && 'active' === $row->status ) {
-			bk_ac_unschedule( (int) $row->id );
-			bk_ac_delete( (int) $row->id );
-			WC()->session->set( 'bk_ac_token', null );
-		}
-		wp_send_json_success( array( 'saved' => false ) );
-	}
-
+	// Sin autorización el carrito se guarda igual (la tienda lo ve en Carritos), pero NUNCA recibe correos.
 	$snap = bk_ac_cart_snapshot();
 	$data = array(
 		'email'      => $email,
@@ -159,19 +150,21 @@ function bk_ac_ajax_capture() {
 		'cart'       => wp_json_encode( $snap['items'] ),
 		'cart_total' => $snap['total'],
 		'currency'   => get_woocommerce_currency(),
-		'consent'    => 1,
+		'consent'    => $consent ? 1 : 0,
 		'user_id'    => get_current_user_id(),
 	);
 
 	if ( $row && in_array( $row->status, array( 'active', 'emptied' ), true ) ) {
-		$email_changed = strtolower( $row->email ) !== strtolower( $email );
+		$email_changed  = strtolower( $row->email ) !== strtolower( $email );
 		$data['status'] = 'active';
 		bk_ac_update( (int) $row->id, $data );
-		if ( $email_changed || 'emptied' === $row->status ) {
+		if ( ! $consent ) {
+			bk_ac_unschedule( (int) $row->id );
+		} elseif ( $email_changed || 'emptied' === $row->status || ! (int) $row->consent ) {
 			bk_ac_unschedule( (int) $row->id );
 			bk_ac_schedule( (int) $row->id, (int) $row->emails_sent + 1 );
 		}
-		wp_send_json_success( array( 'saved' => true ) );
+		wp_send_json_success( array( 'saved' => true, 'consent' => $consent ) );
 	}
 
 	global $wpdb;
@@ -194,9 +187,11 @@ function bk_ac_ajax_capture() {
 	if ( $id ) {
 		WC()->session->set( 'bk_ac_token', $token );
 		WC()->session->set( 'bk_ac_hash', md5( $data['cart'] ) );
-		bk_ac_schedule( $id, 1 );
+		if ( $consent ) {
+			bk_ac_schedule( $id, 1 );
+		}
 	}
-	wp_send_json_success( array( 'saved' => (bool) $id ) );
+	wp_send_json_success( array( 'saved' => (bool) $id, 'consent' => $consent ) );
 }
 
 /**

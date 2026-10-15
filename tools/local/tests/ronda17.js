@@ -121,7 +121,7 @@ const loginG = async (p, u, pw) => { await p.goto(B + '/gestion-tienda/'); await
   ok(php('echo count(as_get_scheduled_actions(["hook"=>"bk_disc_tick","status"=>"pending"]));') >= 3, 'cambios de precio programados al inicio y fin de cada regla');
 
   await p.goto(B + '/');
-  ok(/Black Friday: −20 %/.test(await p.textContent('.bk-announce')) && await p.locator('.bk-disc-home .bk-card').count() >= 1, 'inicio: anuncio arriba y sección destacada de la campaña');
+  ok(/−20 % en toda la tienda · Black Friday/.test(await p.textContent('.bk-announce')) && await p.locator('.bk-disc-home .bk-card').count() >= 1, 'inicio: anuncio arriba y sección destacada de la campaña');
   await p.goto(B + '/product/jean-prueba-dama-recto-tiro-alto/');
   const price = (await p.textContent('.summary .price')).replace(/\s+/g, ' ');
   ok(/\$129\.900/.test(price) && /\$103\.920/.test(price), 'ficha: precio tachado $129.900 → $103.920 (−20 %)');

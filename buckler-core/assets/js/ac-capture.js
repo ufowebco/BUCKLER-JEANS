@@ -1,6 +1,7 @@
 /**
  * Captura del correo en el checkout para recordatorios de carrito abandonado.
- * Envía al salir del campo (o al marcar la autorización) y solo si el correo es válido.
+ * Guarda el carrito en cuanto hay un correo válido (al escribir, al salir del campo y al cerrar o
+ * cambiar de pestaña con sendBeacon). Sin la autorización se guarda para la tienda, pero no se envían correos.
  * Funciona con el checkout clásico (Divi / shortcode) y con el de bloques.
  */
 (() => {
@@ -16,32 +17,42 @@
 
 	let last = '';
 	let timer = 0;
-	let consentTouched = false; // Solo se borra el carrito si la clienta DESMARCA la casilla a propósito.
 
-	const send = () => {
+	const payload = () => {
 		const email = (emailEl()?.value || '').trim();
+		if (!valid(email)) return null;
 		const consent = cfg.mode === 'notice' || !!consentEl()?.checked;
-		const key = `${email}|${consent}`;
-		if (key === last || (!valid(email) && consent)) return;
-		if (!consent && !consentTouched) return; // Sin autorización no se envía nada.
-		last = key;
-
-		const body = new URLSearchParams({
+		const data = {
 			nonce: cfg.nonce,
 			email,
 			consent: consent ? '1' : '',
 			first_name: ($('#billing_first_name')?.value || '').trim(),
 			phone: ($('#billing_phone')?.value || '').trim(),
-		});
-		fetch(cfg.url, { method: 'POST', credentials: 'same-origin', body, keepalive: true }).catch(() => { last = ''; });
+		};
+		const key = JSON.stringify(data);
+		if (key === last) return null;
+		last = key;
+		return new URLSearchParams(data);
 	};
-	const queue = () => { clearTimeout(timer); timer = setTimeout(send, 400); };
+	const send = () => {
+		clearTimeout(timer);
+		const body = payload();
+		if (body) fetch(cfg.url, { method: 'POST', credentials: 'same-origin', body, keepalive: true }).catch(() => { last = ''; });
+	};
+	// Al cerrar la pestaña o salir: el navegador entrega el beacon aunque la página ya no exista.
+	const flush = () => {
+		clearTimeout(timer);
+		const body = payload();
+		if (body && !(navigator.sendBeacon && navigator.sendBeacon(cfg.url, body))) send();
+	};
+	const queue = (ms = 400) => { clearTimeout(timer); timer = setTimeout(send, ms); };
+	const watched = (el) => el && (el === emailEl() || el === consentEl() || el.id === 'billing_first_name' || el.id === 'billing_phone');
 
-	document.addEventListener('change', (e) => {
-		if (e.target === consentEl()) consentTouched = true;
-		if (e.target === emailEl() || e.target === consentEl() || e.target.id === 'billing_first_name' || e.target.id === 'billing_phone') queue();
-	});
-	document.addEventListener('focusout', (e) => { if (e.target === emailEl()) queue(); });
+	document.addEventListener('input', (e) => { if (watched(e.target)) queue(1200); });
+	document.addEventListener('change', (e) => { if (watched(e.target)) queue(); });
+	document.addEventListener('focusout', (e) => { if (watched(e.target)) queue(); });
+	document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+	window.addEventListener('pagehide', flush);
 
 	// Modo "notice": aviso informativo bajo el correo (sin casilla).
 	if (cfg.mode === 'notice' && cfg.notice) {

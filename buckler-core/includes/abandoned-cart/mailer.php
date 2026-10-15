@@ -21,7 +21,7 @@ function bk_ac_schedule( $id, $from_step = 1, $from_now = false ) {
 	}
 	$delays = array_map( 'floatval', bk_ac_settings()['delays'] );
 	$row    = bk_ac_get( $id );
-	if ( ! $row ) {
+	if ( ! $row || ! (int) $row->consent ) { // Sin autorización nunca se programan correos.
 		return;
 	}
 	$base = $from_now ? time() : strtotime( $row->created_at . ' UTC' );

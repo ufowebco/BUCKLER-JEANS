@@ -17,10 +17,11 @@ const ok = (c, m) => console.log((c ? 'OK   ' : 'FAIL ') + m);
   await p.fill('#billing_first_name', 'Laura');
   await p.fill('#billing_email', 'laura@ejemplo.com');
   await p.locator('#billing_email').blur(); await p.waitForTimeout(1200);
-  ok(php('rows') === '[]', 'sin autorización NO se guarda nada');
+  let r0 = JSON.parse(php('rows'));
+  ok(r0.length === 1 && +r0[0].consent === 0 && JSON.parse(php('actions')).length === 0, 'sin autorización se guarda para la tienda, pero sin correos programados');
   await p.check('#bk_ac_consent'); await p.waitForTimeout(1500);
   let rows = JSON.parse(php('rows'));
-  ok(rows.length === 1 && rows[0].email === 'laura@ejemplo.com' && rows[0].first_name === 'Laura', 'con autorización se guarda el carrito: ' + JSON.stringify(rows[0]));
+  ok(rows.length === 1 && +rows[0].consent === 1 && rows[0].email === 'laura@ejemplo.com' && rows[0].first_name === 'Laura', 'con autorización se guarda el carrito: ' + JSON.stringify(rows[0]));
   const acts = JSON.parse(php('actions'));
   ok(acts.length === 3, 'se programan 3 correos: ' + JSON.stringify(acts));
   // Cambia el correo: no se duplica

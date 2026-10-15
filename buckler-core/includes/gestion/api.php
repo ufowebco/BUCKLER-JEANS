@@ -632,7 +632,7 @@ function bk_g_products( WP_REST_Request $r ) {
 			'sku'      => $p->get_sku(),
 			'status'   => $p->get_status(),
 			'image'    => (string) wp_get_attachment_image_url( $p->get_image_id(), 'thumbnail' ),
-			'price'    => wp_strip_all_tags( html_entity_decode( $p->get_price_html(), ENT_QUOTES, 'UTF-8' ) ),
+			'price'    => wp_strip_all_tags( html_entity_decode( preg_replace( '#<span class="screen-reader-text">.*?</span>#s', '', $p->get_price_html() ), ENT_QUOTES, 'UTF-8' ) ), // Sin "Rango de precios…" (solo para lectores de pantalla).
 			'stock'    => $p->get_stock_status(),
 			'featured' => $p->is_featured(),
 			'line'     => $line ? $line['label'] : '',

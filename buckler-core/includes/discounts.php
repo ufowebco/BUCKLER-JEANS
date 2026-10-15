@@ -584,10 +584,10 @@ function bk_disc_pdp_box() {
 function bk_disc_announcement( $config ) {
 	$c = bk_disc_live_campaign();
 	if ( $c && ( ! isset( $c['bar'] ) || $c['bar'] ) ) {
-		// Corto: la barra muestra 3 anuncios a la vez en escritorio (la fecha va en la ficha y en el inicio).
+		// Corto y con el porcentaje primero: la barra muestra 3 anuncios a la vez y corta con "…" (la fecha va en la ficha y en el inicio).
 		$where = 'all' === ( $c['scope'] ?? 'all' ) ? __( 'en toda la tienda', 'buckler-core' ) : __( 'en prendas seleccionadas', 'buckler-core' );
 		/* translators: 1: nombre, 2: porcentaje, 3: dónde */
-		array_unshift( $config['announcements'], sprintf( __( '%1$s: −%2$s %% %3$s', 'buckler-core' ), $c['name'], bk_disc_num( $c['pct'] ), $where ) );
+		array_unshift( $config['announcements'], sprintf( __( '−%2$s %% %3$s · %1$s', 'buckler-core' ), $c['name'], bk_disc_num( $c['pct'] ), $where ) );
 	}
 	return $config;
 }

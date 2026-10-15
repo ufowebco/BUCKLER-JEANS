@@ -212,6 +212,7 @@ function bk_ac_admin_list() {
 				<td><?php echo wp_kses_post( wc_price( (float) $r->cart_total ) ); ?></td>
 				<td><?php echo esc_html( (int) $r->emails_sent . ' de 3' ); ?><?php echo $r->clicked_at ? '<br><small>Abrió el enlace</small>' : ''; ?></td>
 				<td><span class="pill" style="color:<?php echo esc_attr( $l[1] ); ?>;background:<?php echo esc_attr( $l[2] ); ?>"><?php echo esc_html( $l[0] ); ?></span>
+					<?php if ( 'active' === $r->status && ! (int) $r->consent ) : ?><br><small>Sin autorización: no recibe correos</small><?php endif; ?>
 					<?php if ( $r->order_id ) : ?><br><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-orders&action=edit&id=' . (int) $r->order_id ) ); ?>">Pedido #<?php echo (int) $r->order_id; ?></a><?php endif; ?>
 				</td>
 				<td>

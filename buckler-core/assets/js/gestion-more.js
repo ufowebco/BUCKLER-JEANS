@@ -146,7 +146,7 @@
 				</div></li>`;
 		};
 		main.innerHTML = `<h1 class="bk-g-h1">Descuentos</h1>
-			${D.module ? '' : '<p class="bk-g-note"><b>El módulo "Descuentos" está apagado:</b> puedes preparar las reglas, pero no se aplican en la tienda hasta encenderlo en wp-admin → Ajustes → Buckler Core.</p>'}
+			${D.module ? '' : `<div class="bk-g-alert is-warn" role="status"><p><b>Los descuentos están apagados en la tienda.</b> Puedes preparar las reglas, pero los precios no cambian hasta encenderlos. Al guardar o activar un descuento se encienden solos.</p><button type="button" class="bk-g-btn" data-dmodule>${C.icons.percent || ''} Encender descuentos</button></div>`}
 			${D.yaypricing ? '<p class="bk-g-note">YayPricing también está activo: revisa que sus reglas no se crucen con estas (podrían dar dos descuentos).</p>' : ''}
 			<p class="bk-g-hint">Los descuentos no se suman: a cada prenda se le aplica el mayor, sobre el precio normal. Se activan y se apagan solos en las fechas elegidas (hora de Colombia).</p>
 			<section class="bk-g-card"><div class="bk-g-h2row"><h2>Campañas por porcentaje</h2><a class="bk-g-btn" href="#descuentos/campana/nuevo">${C.icons.plus} Nueva campaña</a></div>
@@ -249,7 +249,7 @@
 				D = await api('discounts', { method: 'POST', body });
 				dirty = false;
 				A.forget('');
-				toast('Descuento guardado');
+				toast(D.module ? 'Descuento guardado' : 'Descuento guardado (pausado)');
 				location.hash = '#descuentos';
 			} catch (e) { showErr(f, e); }
 		});
@@ -386,47 +386,144 @@
 	/* ============================================================================
 	 * Ayuda
 	 * ========================================================================== */
+	// Guía con capturas: cada figura lleva números sobre la pantalla y los mismos números en la lista de pasos.
+	// Las imágenes salen de tools/local/help-shots.js (assets/img/ayuda/*.webp, 1280 px).
+	const fig = (img, title, steps, h) => ({ img, title, steps, h });
 	const HELP = [
 		['seo', 'SEO y ADS', `
-			<p><b>Visitas:</b> visitantes de hoy, 7 y 30 días, páginas más vistas, de dónde llegan (Google, Meta Ads, WhatsApp…), campañas (utm_campaign), ciudades y dispositivos. Se cuentan sin cookies ni datos personales y no cuentan robots ni al equipo de la tienda.</p>
-			<p><b>Etiquetas Google y Meta:</b> revisa el código público de la tienda (inicio, tienda y un producto) y el contenedor de Google Tag Manager. Dice qué etiquetas hay (GTM, Google Analytics 4, Google Ads, píxel de Meta), si alguna está duplicada y cuántas compras de los últimos 30 días llegaron a Meta. Toca "Revisar ahora" después de cualquier cambio en GTM.</p>
-			<p><b>SEO técnico:</b> título, descripción, un solo H1, datos estructurados de producto, mapa del sitio, robots.txt y llms.txt.</p>
-			<p><b>Clases y eventos rastreables:</b> selectores CSS estables y eventos <code>bk_</code> de dataLayer (añadir al carrito, WhatsApp, búsqueda…) para crear activadores en Google Tag Manager, Meta o Hotjar.</p>
-			<p><b>¿Falta una etiqueta?</b> Envíala a <a href="mailto:contacto@ufoweb.co">contacto@ufoweb.co</a> con el ID (GTM-…, G-…, AW-…, ID del píxel) y qué debe medir.</p>`],
-		['resumen', 'Resumen', `<p>Ventas pagadas de hoy y del mes, pedidos por despachar, en espera y pendientes de pago, y tallas con 1 o 2 unidades. Toca un indicador para ver esos pedidos.</p>`],
-		['pedidos', 'Pedidos', `
-			<p><b>Buscar:</b> por número (#3846), consecutivo (PEDIDO-3841 o 3841), cédula, nombre, correo o celular. Filtra por estado, pago confirmado, impreso, despachado y fechas.</p>
-			<p><b>Checks de la lista:</b> "Pago confirmado" (cuando verificas el pago), "Impreso" y "Despachado". Se guardan al instante.</p>
-			<p><b>Imprimir:</b> el botón al final de cada fila imprime una hoja con la clienta, la dirección, los productos con talla y REF, los totales y casillas de empaque. Al imprimir, el pedido queda marcado como "Impreso".</p>
-			<p><b>Detalle:</b> toca el número del pedido. Cambia el estado, envía la guía de envío (la clienta recibe un correo con la transportadora y el número), añade notas y revisa el <b>historial</b>: cuándo se creó, se pagó, cambió de estado, se imprimió, se despachó y quién lo hizo.</p>
-			<p><b>Archivos del pedido:</b> los mismos de ACF "Archivos Pedidos" (comprobantes, facturas). Puedes subir PDF o fotos y quitarlos.</p>`],
-		['productos', 'Productos', `
-			<p><b>Tallas y precios:</b> cambia precio, precio rebajado y stock de cada talla sin abrir el producto.</p>
-			<p><b>Estrella:</b> marca el producto como <b>Nuevo</b> (etiqueta y sección "Lo nuevo").</p>
-			<p><b>Nuevo producto / Editar:</b> nombre, REF, línea, prenda, todas las categorías, fotos (la primera es la principal), video, descripción y tallas con stock. "Crear en la otra línea" copia el modelo a Slim o Curvy.</p>
-			<p>Con precio rebajado, el producto entra solo a <b>¡Sale!</b> y muestra el aviso "no tiene garantía ni cambio".</p>`],
+			<p>Mide de dónde llegan las visitas y revisa que las etiquetas de Google y Meta estén bien puestas. Las visitas se cuentan sin cookies ni datos personales y no cuentan robots ni al equipo de la tienda.</p>`, [
+			fig('seo', 'Visitas', [
+				'<b>¿Falta una etiqueta?</b> Escribe a <a href="mailto:contacto@ufoweb.co">contacto@ufoweb.co</a> con el ID (GTM-…, G-…, AW-…, ID del píxel) y qué debe medir. No pegues códigos en el sitio.',
+				'<b>Pestañas:</b> Visitas, Etiquetas Google y Meta, y Clases y eventos rastreables.',
+				'<b>Visitantes</b> de hoy, de los últimos 7 y de los últimos 30 días, con sus páginas vistas.',
+				'<b>Periodo</b> del gráfico. Debajo: páginas más vistas, de dónde llegan (Google, Meta Ads, WhatsApp…), campañas (utm_campaign), ciudades y dispositivos.',
+			], 549),
+			fig('seo-etiquetas', 'Etiquetas Google y Meta', [
+				'<b>Etiquetas Google y Meta:</b> revisa el código público de la tienda (inicio, tienda y un producto) y el contenedor de Google Tag Manager.',
+				'<b>Revisar ahora:</b> úsalo después de cualquier cambio en GTM o en Meta (el resultado se guarda 6 horas).',
+				'<b>Resultado:</b> qué etiquetas hay, si alguna está duplicada y qué falta. "Clases y eventos rastreables" lista los eventos <code>bk_</code> (añadir al carrito, WhatsApp, búsqueda…) para crear activadores en GTM.',
+			], 847),
+		]],
+		['resumen', 'Resumen', '<p>Es la primera pantalla: cómo va la venta y qué hay por hacer hoy.</p>', [
+			fig('resumen', 'Resumen', [
+				'<b>Menú de secciones.</b> En pantallas medianas solo se ven los íconos: pasa el cursor para ver el nombre.',
+				'<b>Ventas pagadas</b> de hoy y del mes.',
+				'<b>Pedidos por atender:</b> por despachar, en espera y pendientes de pago. Toca uno para ver esos pedidos.',
+				'<b>Tallas por agotarse:</b> tallas con 1 o 2 unidades, para reponer a tiempo.',
+				'<b>Ver tienda</b> abre el sitio y <b>Salir</b> cierra la sesión (te deja en la pantalla de acceso).',
+			], 524),
+		]],
+		['pedidos', 'Pedidos', '<p>Todos los pedidos de la tienda, con búsqueda, filtros y las marcas de trabajo del día (pago confirmado, impreso y despachado).</p>', [
+			fig('pedidos', 'Lista de pedidos', [
+				'<b>Buscar</b> por número (#3846), consecutivo (PEDIDO-3841 o 3841), cédula, nombre, correo o celular.',
+				'<b>Filtros:</b> estado, pago confirmado, impreso, despachado y fechas.',
+				'<b>Número del pedido:</b> tócalo para abrir el detalle a la derecha.',
+				'<b>Pago confirmado, Impreso y Despachado:</b> se guardan al instante, sin botón de guardar.',
+				'<b>Imprimir:</b> hoja con la clienta, la dirección, los productos con talla y REF y casillas de empaque. Al imprimir, el pedido queda como "Impreso".',
+			], 500),
+			fig('pedido', 'Detalle del pedido', [
+				'<b>Estado del pedido</b> (en espera, procesando, completado…).',
+				'<b>Marcas</b> de pago confirmado, impreso y despachado.',
+				'<b>Guardar estado</b> e <b>Imprimir pedido</b>.',
+				'<b>Enviar guía de envío:</b> elige la transportadora, escribe el número y toca "Ver correo antes de enviar". La clienta recibe un correo con la guía y la ve en Mi cuenta. Si dejas la casilla marcada, el pedido pasa a Completado.',
+				'<b>Clienta:</b> cédula, consecutivo, celular con enlace a WhatsApp, correo y dirección.',
+			], 771),
+			fig('pedido-historial', 'Archivos, historial y notas', [
+				'<b>Archivos del pedido</b> (comprobantes, facturas): sube PDF o fotos y quítalos. Son los mismos de ACF "Archivos Pedidos".',
+				'<b>Historial:</b> cuándo se creó, se pagó, cambió de estado, se imprimió y se despachó, y quién lo hizo.',
+				'<b>Notas:</b> internas o para la clienta (marca "Enviar a la clienta" y le llega por correo).',
+			], 860),
+		]],
+		['productos', 'Productos', '<p>Precios, stock por talla, productos nuevos y fotos, sin entrar a WordPress.</p>', [
+			fig('productos', 'Lista de productos', [
+				'<b>Buscar</b> por nombre o REF y filtrar por línea o stock.',
+				'<b>Estrella:</b> marca el producto como <b>Nuevo</b> (etiqueta en la tarjeta y sección "Lo nuevo").',
+				'<b>Tallas y precios:</b> cambia el precio, el precio rebajado y el stock de cada talla sin abrir el producto.',
+				'<b>Editar</b> el producto completo.',
+				'<b>Nuevo producto.</b> Desde un producto también puedes "Crear en la otra línea" (copia el modelo a Slim o Curvy).',
+			], 440),
+			fig('producto-editar', 'Editar producto', [
+				'<b>Nombre y REF.</b> En Línea Curvy la REF termina en PLUS (816 PLUS).',
+				'<b>Prenda</b> (jeans, faldas…). "Todas las categorías" abre la lista completa.',
+				'<b>Mostrar como Nuevo.</b>',
+				'<b>Precio normal y rebajado.</b> Con precio rebajado el producto entra solo a ¡Sale! y muestra el aviso "no tiene garantía ni cambio".',
+				'<b>Tallas y stock:</b> marca las tallas que vendes y escribe las unidades. Una talla desmarcada deja de verse.',
+			], 860),
+			fig('producto-fotos', 'Fotos, descripción y publicación', [
+				'<b>Fotos y video:</b> la primera foto es la principal; ordénalas con las flechas. Se optimizan solas al subirlas. El video (MP4) se ve en la galería de la ficha.',
+				'<b>Descripción</b> corta (junto al precio) y completa (negrita y listas).',
+				'<b>Publicación:</b> publicado o borrador, y el botón para guardar.',
+			], 860),
+		]],
 		['descuentos', 'Descuentos', `
-			<p><b>Campaña por porcentaje:</b> un % a toda la tienda (o a categorías) entre dos fechas, sin tocar los productos de ¡Sale!. Muestra el precio tachado, la etiqueta en las tarjetas, un anuncio arriba y una sección en el inicio con cuenta regresiva. Se apaga sola al terminar.</p>
-			<p><b>Descuento por cantidad:</b> tramos como "1 prenda 10 %, desde 2 el 20 %, desde 4 el 30 %". Elige si se cuentan las prendas del mismo modelo o todas las del carrito. Se muestra en la ficha y el carrito avisa cuántas prendas faltan para el siguiente tramo.</p>
-			<p><b>No se suman:</b> a cada prenda se le aplica el descuento más alto. Cada pedido guarda qué descuento se aplicó.</p>
-			<p>Para probar sin que lo vean las clientas, crea la campaña con fecha futura o pausada.</p>`],
-		['carritos', 'Carritos abandonados', `<p>Cuando una clienta escribe su correo en el checkout y no compra, recibe hasta 3 recordatorios (2, 24 y 48 h) con un enlace que le devuelve el carrito. Si compra o el pago se confirma, los correos se detienen; si el pago falla, se reanudan. Aquí ves los carritos, los correos enviados y las ventas recuperadas.</p>`],
-		['correos', 'Correos', `<p>Vista previa de cada correo que recibe la clienta (pedido en espera, procesando, completado, cancelado, reembolsado, nota, guía de envío y carritos abandonados) con un pedido real. "Enviar prueba" manda una copia con "[Prueba]" en el asunto. La vista previa no envía nada.</p>`],
-		['contenido', 'Contenido', `
-			<p><b>Banners:</b> las imágenes del inicio (computador y celular), su orden, el enlace y el texto de la imagen. También las imágenes de Línea Slim y Línea Curvy.</p>
-			<p><b>Guía de tallas:</b> las imágenes que se abren en la ficha.</p>
-			<p><b>Políticas y Preguntas frecuentes:</b> crear, editar, ordenar y publicar. Lo que guardas aquí se ve igual en wp-admin (son los mismos campos de ACF).</p>`],
+			<p>Los descuentos <b>no se suman</b>: a cada prenda se le aplica el más alto, sobre el precio normal. Se activan y se apagan solos en las fechas elegidas (hora de Colombia). Si en Descuentos ves el aviso "Los descuentos están apagados en la tienda", toca <b>Encender descuentos</b> (también se encienden solos al guardar un descuento activo).</p>`, [
+			fig('descuentos', 'Lista de descuentos', [
+				'<b>Nueva campaña:</b> un porcentaje a toda la tienda (o a categorías) entre dos fechas.',
+				'<b>Campaña</b> con su porcentaje, fechas, alcance y estado (Activa, Programada, Terminada o Pausada).',
+				'<b>Editar, Pausar/Activar y Borrar.</b>',
+				'<b>Descuento por cantidad:</b> tramos según cuántas prendas lleva la clienta.',
+			], 698),
+			fig('descuento-campana', 'Nueva campaña', [
+				'<b>Nombre</b>: se ve en el anuncio de arriba, en el inicio y en la ficha.',
+				'<b>Porcentaje</b> de descuento.',
+				'<b>Desde y hasta</b> (hora de Colombia).',
+				'<b>Activo:</b> desmárcalo para pausarla sin borrarla. Para probar sin que lo vean las clientas, usa una fecha futura.',
+				'<b>A qué productos:</b> toda la tienda o categorías, sin los productos de ¡Sale! (ya tienen su rebaja). Más abajo: etiqueta de las tarjetas, anuncio y productos destacados del inicio.',
+			], 744),
+			fig('descuento-cantidad', 'Descuento por cantidad', [
+				'<b>Tramos:</b> desde cuántas prendas y qué porcentaje (ej.: 2 prendas −20 %, 4 o más −30 %).',
+				'<b>Agregar tramo</b> (hasta 6).',
+				'<b>Vista previa</b> de cómo se verá en la ficha.',
+				'<b>Cómo se cuentan:</b> prendas del mismo modelo (en cualquier talla) o todas las del carrito.',
+			], 788),
+			fig('descuentos-tienda', 'Así lo ve la clienta', [
+				'<b>Anuncio</b> en la barra superior mientras dura la campaña.',
+				'<b>Precio tachado</b> y precio con descuento, también en las tarjetas de la tienda (con etiqueta).',
+				'<b>Recuadro</b> con la campaña y los tramos por cantidad. En el carrito se avisa cuántas prendas faltan para el siguiente tramo y cada pedido guarda qué descuento se aplicó.',
+			], 653),
+		]],
+		['carritos', 'Carritos abandonados', `
+			<p>Cuando una clienta escribe su correo en <b>Finalizar compra</b> y no termina, el carrito se guarda aquí (también si cierra la página). Si marcó la autorización, recibe hasta 3 recordatorios (2, 24 y 48 h) con un enlace que le devuelve el carrito. Sin autorización, el carrito se ve aquí pero no se le escribe.</p>`, [
+			fig('carritos', 'Carritos abandonados', [
+				'<b>Indicadores</b> de los últimos 30 días: carritos con correo, pendientes, correos enviados y ventas recuperadas.',
+				'<b>Filtro</b> por estado.',
+				'<b>Clienta:</b> nombre, correo y celular (puedes escribirle por WhatsApp).',
+				'<b>Estado:</b> Pendiente (recibe recordatorios), Pendiente · sin autorización (no recibe correos), Recuperado (compró desde el correo), Compró, Vació el carrito o Vencido.',
+			], 845),
+		]],
+		['correos', 'Correos', '<p>Mira cómo le llega cada correo a la clienta con un pedido real. La vista previa no envía nada.</p>', [
+			fig('correos', 'Correos', [
+				'<b>Pedido de ejemplo</b> para la vista previa.',
+				'<b>Correos a la clienta</b> (pedido en espera, en proceso, completado, cancelado, reembolsado, nota, guía de envío y carritos abandonados), con su estado Activo o Apagado.',
+				'<b>Para, asunto y remitente.</b>',
+				'<b>Vista previa</b> del correo. Debajo, "Enviar prueba" manda una copia con "[Prueba]" en el asunto.',
+			], 732),
+		]],
+		['contenido', 'Contenido', '<p>Lo que antes se cambiaba en WordPress: banners, guía de tallas, políticas y preguntas frecuentes. Se guarda en los mismos campos de ACF (se ve igual en wp-admin) y la tienda se actualiza sola.</p>', [
+			fig('contenido', 'Banners del inicio', [
+				'<b>Pestañas:</b> Banners, Guía de tallas, Políticas y Preguntas frecuentes.',
+				'<b>Banner:</b> imagen para computador (1920 × 1080) y para celular (1200 × 1200), enlace y "Texto de la imagen" (lo leen Google y los lectores de pantalla). Ordénalos con las flechas o bórralos.',
+				'<b>Subir</b> o cambiar la imagen.',
+			], 831),
+		]],
 		['general', 'Preguntas comunes', `
 			<p><b>Hice un cambio y no lo veo en la tienda:</b> la tienda guarda las páginas para que carguen rápido y se actualizan solas al guardar. Si no lo ves, recarga la página (Ctrl + F5) o espera un minuto.</p>
 			<p><b>Cerrar sesión:</b> "Salir" arriba a la derecha te deja en esta misma pantalla de acceso.</p>
-			<p><b>Soporte:</b> <a href="mailto:contacto@ufoweb.co">contacto@ufoweb.co</a>.</p>`],
+			<p><b>Soporte:</b> <a href="mailto:contacto@ufoweb.co">contacto@ufoweb.co</a>.</p>`, []],
 	];
+
+	const figHtml = (f) => `<figure class="bk-g-hfig">
+			<a class="bk-g-hfig__img" href="${esc(C.helpImg + f.img)}.webp?v=${esc(C.ver)}" target="_blank" rel="noopener" aria-label="Ver la imagen completa: ${esc(f.title)}">
+				<img src="${esc(C.helpImg + f.img)}.webp?v=${esc(C.ver)}" width="1280" height="${f.h}" loading="lazy" decoding="async" alt="Captura de ${esc(f.title)} con los pasos numerados"></a>
+			<figcaption><h3>${esc(f.title)}</h3><ol class="bk-g-hsteps">${f.steps.map((s) => `<li>${s}</li>`).join('')}</ol></figcaption>
+		</figure>`;
 
 	function viewHelp() {
 		const items = C.scope === 'seo' ? HELP.filter(([k]) => k === 'seo' || k === 'general') : HELP;
 		main.innerHTML = `<h1 class="bk-g-h1">Ayuda</h1>
-			<p class="bk-g-hint">Cómo funciona cada sección de la gestión de la tienda.</p>
-			<div class="bk-g-help">${items.map(([k, t, body], i) => `<details class="bk-g-card" id="ayuda-${k}" ${i === 0 ? 'open' : ''}><summary><h2>${esc(t)}</h2></summary><div class="bk-g-help__body">${body}</div></details>`).join('')}</div>`;
+			<p class="bk-g-hint">Cómo funciona cada sección. Los números de cada imagen corresponden a los pasos de su lista; toca la imagen para verla en grande.</p>
+			<nav class="bk-g-hnav" aria-label="Secciones de la ayuda">${items.map(([k, t]) => `<a href="#ayuda" data-help="${k}">${esc(t)}</a>`).join('')}</nav>
+			<div class="bk-g-help">${items.map(([k, t, body, figs = []], i) => `<details class="bk-g-card" id="ayuda-${k}" ${i === 0 ? 'open' : ''}><summary><h2>${esc(t)}</h2></summary><div class="bk-g-help__body">${body}${figs.map(figHtml).join('')}</div></details>`).join('')}</div>`;
 	}
 
 	/* ============================================================================
@@ -439,7 +536,23 @@
 		if (link && dirty && ($('#bk-gd') || $('#bk-gcp') || $('#bk-gcb') || $('#bk-gcg')) && !window.confirm('Tienes cambios sin guardar. ¿Salir sin guardar?')) { e.preventDefault(); return; }
 		if (link) dirty = false;
 
+		// Ayuda: índice de secciones.
+		const hl = t.closest('[data-help]');
+		if (hl) {
+			e.preventDefault();
+			const d = $(`#ayuda-${hl.dataset.help}`);
+			if (d) { d.open = true; d.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); d.querySelector('summary')?.focus({ preventScroll: true }); }
+			return;
+		}
+
 		// Descuentos.
+		const dm = t.closest('[data-dmodule]');
+		if (dm) {
+			await busy(dm, async () => {
+				try { await api('discounts/module', { method: 'POST', body: {} }); D = await api('discounts'); A.forget(''); toast('Descuentos encendidos: ya se ven en la tienda'); paintList(); } catch (e) { toast(e.message, 'err'); }
+			});
+			return;
+		}
 		const tg = t.closest('[data-dtoggle]');
 		if (tg) {
 			const [kind, id] = tg.dataset.dtoggle.split(':');
