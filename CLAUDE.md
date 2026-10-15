@@ -424,7 +424,14 @@ Versión actual 0.17.0 → `dist/buckler-core-0.17.0.zip` (`tools/build-plugin.s
     email-footer.php (templates/woocommerce/emails, misma línea que carrito abandonado: barra navy, logo PNG, título,
     ayuda por WhatsApp, pie navy) + colores de Woo forzados (pre_option_woocommerce_email_*) + CSS
     (`woocommerce_email_styles`). No aplica a correos del editor por bloques de Woo.
-  - Suite `ronda17.js` (59). paginas.js: la comprobación de banners diferidos ahora se mide antes de interactuar.
+  - SEO: un título "a mano" de SEOPress que sale roto (en producción la tienda tenía "%%post_title%% %%sep%%" →
+    "Tienda -") se reemplaza igual (menos de 15 caracteres, termina en separador o trae %%).
+  - Velocidad tienda (Lighthouse móvil 77, LCP 4,6 s): algo encolaba el reproductor `mediaelement` de WordPress (que
+    arrastra jQuery) → dieta: mediaelement solo en policy/faq; la tienda queda sin jQuery. Fixture lo simula.
+  - Mediciones Lighthouse 12 sobre producción (0.16.1, mediana de 3, desde este entorno con proxy): inicio 94 móvil /
+    99 escritorio, ficha 94 / 99, tienda 77 / 98; SEO 100, buenas prácticas 100, accesibilidad 92–95; 23–33 peticiones.
+    API de PageSpeed: cuota pública agotada (429); GTmetrix no accesible desde aquí.
+  - Suite `ronda17.js` (60). paginas.js: la comprobación de banners diferidos ahora se mide antes de interactuar.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -469,7 +476,7 @@ Versión actual 0.17.0 → `dist/buckler-core-0.17.0.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 17, ronda 0.17 59 = 492 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60 = 494 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

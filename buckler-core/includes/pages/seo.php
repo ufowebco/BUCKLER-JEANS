@@ -351,7 +351,10 @@ function bk_seo_apply( $html, $route ) {
 	// Errata del nombre del sitio ("Buckler Jenas") en títulos y og:site_name mientras se corrige en Ajustes → Generales.
 	$head = str_replace( array( 'Buckler Jenas', 'Buckler jenas' ), 'Buckler Jeans', $head );
 
-	if ( $m['title'] && ! $m['keep_title'] ) {
+	// Un título "a mano" de SEOPress que sale roto (p. ej. "Tienda -": variables vacías) no se respeta.
+	$current = preg_match( '#<title\b[^>]*>(.*?)</title>#is', $head, $tm ) ? trim( html_entity_decode( wp_strip_all_tags( $tm[1] ), ENT_QUOTES, 'UTF-8' ) ) : '';
+	$broken  = mb_strlen( $current ) < 15 || (bool) preg_match( '/[-|–·:]\s*$|%%/u', $current );
+	if ( $m['title'] && ( ! $m['keep_title'] || $broken ) ) {
 		$t    = esc_html( $m['title'] );
 		$head = preg_match( '#<title\b[^>]*>.*?</title>#is', $head )
 			? (string) preg_replace_callback( '#<title\b[^>]*>.*?</title>#is', static fn() => '<title>' . $t . '</title>', $head, 1 )

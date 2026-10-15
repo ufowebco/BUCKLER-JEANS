@@ -42,6 +42,11 @@ const B = 'http://localhost:8899';
   const id = execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; require "/tmp/claude-0/bk-local/site/wp-load.php"; $id=url_to_postid("${purl}"); update_post_meta($id,"_seopress_titles_title","Título a mano"); echo $id;'`).toString().trim();
   h = await head(new URL(purl).pathname);
   ok(!/· Línea/.test(h.title), 'título escrito a mano en SEOPress se respeta: "' + h.title + '"');
+  // Título "a mano" que sale roto ("Tienda -" en producción): se reemplaza igual.
+  const shopId = execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; require "/tmp/claude-0/bk-local/site/wp-load.php"; $s=wc_get_page_id("shop"); update_post_meta($s,"_seopress_titles_title","%%post_title%% %%sep%%"); echo $s;'`).toString().trim();
+  h = await head('/shop/');
+  ok(/^Tienda de jeans/.test(h.title), 'título manual roto ("Tienda -") se reemplaza: "' + h.title + '"');
+  execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; require "/tmp/claude-0/bk-local/site/wp-load.php"; delete_post_meta(${shopId},"_seopress_titles_title");'`);
   execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; require "/tmp/claude-0/bk-local/site/wp-load.php"; delete_post_meta(${id},"_seopress_titles_title");'`);
   await b.close();
 })().catch(e => { console.error(e); process.exit(1); });

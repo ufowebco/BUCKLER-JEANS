@@ -30,6 +30,9 @@ const loginG = async (p, u, pw) => { await p.goto(B + '/gestion-tienda/'); await
   const tr = await p.evaluate(() => { const t = document.querySelector('.bk-card__track'); return { oy: getComputedStyle(t).overflowY, sh: t.scrollHeight, ch: t.clientHeight }; });
   ok(y1 > y0 + 200 && tr.oy === 'hidden', `rueda del mouse sobre la foto baja la página (${y0} → ${y1}, overflow-y ${tr.oy})`);
 
+  const assets = await p.evaluate(() => ({ me: [...document.querySelectorAll('link[rel=stylesheet],script[src]')].some((e) => /mediaelement/.test(e.href || e.src)), jq: !!window.jQuery }));
+  ok(!assets.me && !assets.jq, 'tienda sin el reproductor mediaelement ni jQuery (bloqueaban la carga en el celular)');
+
   // --- 2. Buscador: el campo no dibuja su propio recuadro; el anillo va en la píldora ---------------
   const inp = p.locator('.bk-header .bk-search input[type="search"]').first();
   await inp.click(); await inp.type('jean', { delay: 40 }); await p.waitForTimeout(600);

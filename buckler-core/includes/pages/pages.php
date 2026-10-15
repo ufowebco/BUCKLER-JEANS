@@ -306,6 +306,9 @@ function bk_pages_diet_route() {
 			array( '#^(photoswipe|photoswipe-ui-default|photoswipe-default-skin|flexslider|zoom|wc-zoom|wc-flexslider|wc-photoswipe|wc-photoswipe-ui-default|wc-single-product|comment-reply)$#', array() ),
 			// Fragmentos del carrito (el contador usa la Store API) y medidor de contraseñas (zxcvbn, 800 KB).
 			array( '#^(wc-cart-fragments|wc-password-strength-meter|password-strength-meter|zxcvbn-async)$#', array() ),
+			// Reproductor de WordPress (mediaelement, depende de jQuery): algo lo encolaba en la tienda y bloqueaba la carga
+			// en el celular (PageSpeed 2026-10-15). Los videos de la tienda son <video> nativos; se deja solo en textos.
+			array( '#^(mediaelement|mediaelement-core|mediaelement-migrate|mediaelement-vimeo|wp-mediaelement|wp-playlist)$#', array( 'policy', 'faq' ) ),
 			// Fuentes de Google (la tienda usa Manrope local), Divi y el tema hijo (sus snippets PHP siguen activos).
 			array( '#fonts\.googleapis\.com|/themes/Divi/|/themes/buckler/#', array() ),
 		)

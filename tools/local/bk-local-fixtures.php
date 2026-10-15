@@ -155,3 +155,6 @@ add_filter(
 	99
 );
 add_action( 'wp_head', static function () { echo '<meta property="og:site_name" content="Buckler Jenas by Denimblue">' . "\n" . '<meta property="og:title" content="SEOPress">' . "\n"; }, 1 );
+
+// Como producción (PageSpeed 2026-10-15): algo encola el reproductor de WordPress (mediaelement + jQuery) en la tienda.
+add_action( 'wp_enqueue_scripts', static function () { wp_enqueue_style( 'wp-mediaelement' ); wp_enqueue_script( 'wp-mediaelement' ); }, 50 );
