@@ -114,7 +114,7 @@ const contrast = (el) => {
     const c = await b.newContext({ viewport: { width: vw, height: 900 } });
     const p = await c.newPage();
     p.on('pageerror', (e) => errs.push(e.message));
-    await p.goto(B + '/my-account/'); await p.fill('#username', 'clienta'); await p.fill('#password', 'Clave#2026');
+    await p.goto(B + '/my-account/'); await p.fill('#username', 'clienta'); await p.fill('#password', 'Clienta#2026');
     await Promise.all([p.waitForNavigation(), p.click('[name=login]')]);
     const bad2 = [];
     for (const path of ['', 'orders/']) {

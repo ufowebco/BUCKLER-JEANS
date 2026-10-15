@@ -95,9 +95,11 @@
 			<div class="bk-gp-imgbar">
 				<button type="button" class="bk-g-icon" data-img-move="${i}" data-dir="-1" ${i === 0 ? 'disabled' : ''} aria-label="Mover la foto ${i + 1} antes">${C.icons.left}</button>
 				<button type="button" class="bk-g-icon" data-img-move="${i}" data-dir="1" ${i === st.images.length - 1 ? 'disabled' : ''} aria-label="Mover la foto ${i + 1} después">${C.icons.right}</button>
+				<button type="button" class="bk-g-icon is-danger" data-img-del="${i}" aria-label="Quitar la foto ${i + 1}">${C.icons.trash}</button>
+			</div>
+			<div class="bk-gp-imgrot">
 				<button type="button" class="bk-g-icon" data-img-rot="${i}" data-dir="left" aria-label="Girar la foto ${i + 1} a la izquierda" title="Girar a la izquierda">${C.icons.rotl || '⟲'}</button>
 				<button type="button" class="bk-g-icon" data-img-rot="${i}" data-dir="right" aria-label="Girar la foto ${i + 1} a la derecha" title="Girar a la derecha">${C.icons.rotr || '⟳'}</button>
-				<button type="button" class="bk-g-icon is-danger" data-img-del="${i}" aria-label="Quitar la foto ${i + 1}">${C.icons.trash}</button>
 			</div></li>`).join('')}
 		${Array.from({ length: st.uploading }, () => '<li class="bk-gp-img is-loading"><span>Subiendo…</span></li>').join('')}
 		<li class="bk-gp-add"><label class="bk-gp-drop" data-drop>

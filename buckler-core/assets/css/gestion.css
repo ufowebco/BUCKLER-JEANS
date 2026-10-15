@@ -650,8 +650,10 @@ code { font-size: 13px; background: #f1f4f6; padding: 2px 6px; border-radius: 4p
 .bk-gp-img.is-loading { display: grid; place-items: center; color: var(--g-mute); font-size: 13px; font-weight: 700; animation: bk-gp-pulse 1.2s ease-in-out infinite; }
 @keyframes bk-gp-pulse { 50% { opacity: .55; } }
 .bk-gp-main { position: absolute; top: 6px; left: 6px; padding: 2px 8px; border-radius: 99px; background: var(--g-lime); color: var(--g-navy); font-size: 11.5px; font-weight: 800; }
-.bk-gp-imgbar { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; gap: 4px; padding: 6px; background: linear-gradient(transparent, rgba(16, 32, 47, .65)); }
-.bk-gp-imgbar .bk-g-icon { width: 34px; height: 34px; background: #fff; }
+.bk-gp-imgbar { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; gap: 4px; padding: 6px 4px; background: linear-gradient(transparent, rgba(16, 32, 47, .65)); }
+.bk-gp-imgbar .bk-g-icon, .bk-gp-imgrot .bk-g-icon { width: 32px; height: 32px; background: #fff; }
+.bk-gp-imgrot { position: absolute; top: 6px; right: 6px; display: flex; flex-direction: column; gap: 4px; }
+.bk-gp-imgrot .bk-g-icon { box-shadow: 0 1px 4px rgba(16, 32, 47, .25); }
 .bk-gp-imgbar .bk-g-icon:disabled { opacity: .4; }
 .bk-gp-imgbar .is-danger { color: var(--g-bad); }
 .bk-gp-add { aspect-ratio: 3 / 4; }
