@@ -368,6 +368,14 @@ function bk_g_redirect_log_box() {
 	?>
 	<h2 style="margin-top:32px">Acceso a la gestión</h2>
 	<p>Acceso propio: <a href="<?php echo esc_url( bk_login_url() ); ?>"><code><?php echo esc_html( bk_login_url() ); ?></code></a> (también es el destino de "iniciar sesión" de WordPress). La gestión: <a href="<?php echo esc_url( bk_g_url() ); ?>"><code><?php echo esc_html( bk_g_url() ); ?></code></a>.</p>
+	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<?php wp_nonce_field( 'bk_hide_login_save' ); ?>
+		<input type="hidden" name="action" value="bk_hide_login_save">
+		<label><input type="checkbox" name="bk_hide_login" value="1" <?php checked( 'no' !== get_option( 'bk_hide_login', 'yes' ) ); ?> <?php disabled( defined( 'BK_HIDE_LOGIN' ) && ! BK_HIDE_LOGIN ); ?>> <strong>Ocultar wp-admin y wp-login.php</strong>: quien no tenga sesión iniciada y entre ahí va al inicio. Para entrar se usa <code><?php echo esc_html( bk_login_url() ); ?></code>.</label>
+		<?php if ( defined( 'BK_HIDE_LOGIN' ) && ! BK_HIDE_LOGIN ) : ?><p class="description">Apagado desde wp-config.php (<code>BK_HIDE_LOGIN</code>).</p><?php endif; ?>
+		<p class="description">Emergencia (si nadie puede entrar): en wp-config.php agrega <code>define( 'BK_HIDE_LOGIN', false );</code> o renombra la carpeta <code>wp-content/plugins/buckler-core</code> por FTP o cPanel.</p>
+		<?php submit_button( 'Guardar acceso', 'secondary', 'submit', false ); ?>
+	</form>
 	<h3>Redirecciones de otros plugins en la gestión</h3>
 	<?php if ( ! $log ) : ?>
 		<p class="description">Sin registros: ningún otro plugin ha intentado sacar a alguien de la gestión o del acceso.</p>
@@ -406,5 +414,128 @@ function bk_g_redirect_log_clear() {
 	}
 	delete_option( 'bk_g_redirect_log' );
 	wp_safe_redirect( admin_url( 'options-general.php?page=bk-modules&bk_msg=' . rawurlencode( 'Registro borrado.' ) ) );
+	exit;
+}
+
+/* ============================================================================
+ * Ocultar wp-admin y wp-login.php (decisión del cliente 2026-10-15): sin sesión → inicio. El acceso es /ingreso/.
+ * Interruptor en Ajustes → Buckler Core (opción bk_hide_login, encendido por defecto). Emergencia: en wp-config.php
+ * define( 'BK_HIDE_LOGIN', false ); o renombrar la carpeta del plugin por FTP/cPanel.
+ * ========================================================================== */
+
+/**
+ * ¿Está activo?
+ *
+ * @return bool
+ */
+function bk_hide_login_on() {
+	if ( defined( 'BK_HIDE_LOGIN' ) && ! BK_HIDE_LOGIN ) {
+		return false;
+	}
+	return bk_login_slug() && 'no' !== get_option( 'bk_hide_login', 'yes' ) && (bool) apply_filters( 'bk_hide_login', true );
+}
+
+if ( bk_hide_login_on() ) {
+	add_action( 'init', 'bk_hide_login_gate', 0 );
+	remove_action( 'template_redirect', 'wp_redirect_admin_locations', 1000 ); // /admin, /login, /dashboard → wp-admin.
+	add_filter( 'site_url', 'bk_hide_login_site_url', 20, 2 );
+	add_filter( 'network_site_url', 'bk_hide_login_site_url', 20, 2 );
+	add_filter( 'register_url', static fn() => home_url( '/' ) );
+}
+
+/**
+ * Enlaces a wp-login.php (salir, recuperar contraseña de WordPress…) → /ingreso/ con los mismos parámetros.
+ *
+ * @param string $url  URL.
+ * @param string $path Ruta pedida.
+ * @return string
+ */
+function bk_hide_login_site_url( $url, $path ) {
+	if ( ! empty( $GLOBALS['bk_wp_login_url'] ) || false === strpos( (string) $path, 'wp-login.php' ) || 'wp-login.php' === basename( bk_g_request_path() ) ) { // Dentro de wp-login.php (restablecer contraseña) sus formularios siguen ahí.
+		return $url;
+	}
+	$query = (string) wp_parse_url( $url, PHP_URL_QUERY );
+	return bk_login_url() . ( $query ? '?' . $query : '' );
+}
+
+/**
+ * Sin sesión: wp-admin y wp-login.php llevan al inicio. Se dejan pasar admin-ajax.php y admin-post.php (carrito,
+ * filtros, pasarelas y formularios de la tienda) y los enlaces con clave de wp-login.php (restablecer contraseña,
+ * confirmar solicitudes de privacidad) y la contraseña de entradas protegidas.
+ */
+function bk_hide_login_gate() {
+	if ( wp_doing_ajax() || wp_doing_cron() || ( defined( 'WP_CLI' ) && WP_CLI ) || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+		return;
+	}
+	$path  = bk_g_request_path();
+	$login = 'wp-login.php' === basename( $path );
+	$admin = 0 === strpos( $path . '/', 'wp-admin/' );
+	if ( ! $login && ! $admin ) {
+		return;
+	}
+	if ( $admin && in_array( basename( $path ), array( 'admin-ajax.php', 'admin-post.php' ), true ) ) {
+		return;
+	}
+	if ( is_user_logged_in() ) {
+		return; // Con sesión todo funciona igual (salir, perfil, reautenticación…).
+	}
+	$action = isset( $_REQUEST['action'] ) ? sanitize_key( wp_unslash( $_REQUEST['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+	if ( $login ) {
+		if ( 'postpass' === $action || ( in_array( $action, array( 'rp', 'resetpass', 'confirmaction' ), true ) && ( ! empty( $_REQUEST['key'] ) || ! empty( $_COOKIE[ 'wp-resetpass-' . COOKIEHASH ] ) ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return;
+		}
+	}
+	// En wp-admin: si la cookie de sesión del sitio es válida pero la del escritorio no, /ingreso/ vuelve a pedir la
+	// contraseña (sin esto quedaría dando vueltas entre wp-admin y el inicio).
+	if ( $admin && defined( 'LOGGED_IN_COOKIE' ) && ! empty( $_COOKIE[ LOGGED_IN_COOKIE ] ) && wp_validate_auth_cookie( wp_unslash( $_COOKIE[ LOGGED_IN_COOKIE ] ), 'logged_in' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		bk_g_go( add_query_arg( 'reauth', '1', bk_login_url( admin_url() ) ) );
+	}
+	nocache_headers();
+	bk_g_go( home_url( '/' ) );
+}
+
+/**
+ * /ingreso/?action=logout (el enlace "Salir" de WordPress ahora apunta aquí).
+ */
+add_action(
+	'parse_request',
+	static function ( $wp ) {
+		$action = isset( $_GET['action'] ) ? sanitize_key( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! bk_login_slug() || bk_login_slug() !== $wp->request || ! $action ) {
+			return;
+		}
+		if ( in_array( $action, array( 'lostpassword', 'retrievepassword' ), true ) ) {
+			bk_g_go( wp_lostpassword_url() ); // Con WooCommerce: Mi cuenta → ¿Olvidaste tu contraseña?
+		}
+		if ( in_array( $action, array( 'rp', 'resetpass', 'confirmaction' ), true ) ) {
+			// Enlaces con clave de los correos de WordPress: el formulario real (wp-login.php los deja pasar con clave).
+			$GLOBALS['bk_wp_login_url'] = true;
+			$to                         = add_query_arg( array_map( 'rawurlencode', wp_unslash( $_GET ) ), site_url( 'wp-login.php', 'login' ) ); // phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput
+			unset( $GLOBALS['bk_wp_login_url'] );
+			bk_g_go( $to );
+		}
+		if ( 'logout' !== $action ) {
+			return;
+		}
+		if ( is_user_logged_in() && isset( $_GET['_wpnonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'log-out' ) ) {
+			wp_logout();
+		}
+		$to = isset( $_GET['redirect_to'] ) ? wp_validate_redirect( wp_unslash( (string) $_GET['redirect_to'] ), home_url( '/' ) ) : home_url( '/' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		bk_g_go( $to );
+	},
+	-1
+);
+
+add_action( 'admin_post_bk_hide_login_save', 'bk_hide_login_save' );
+
+/**
+ * Guarda el interruptor.
+ */
+function bk_hide_login_save() {
+	if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'bk_hide_login_save' ) ) {
+		wp_die( 'Sin permiso.' );
+	}
+	update_option( 'bk_hide_login', empty( $_POST['bk_hide_login'] ) ? 'no' : 'yes', false );
+	wp_safe_redirect( admin_url( 'options-general.php?page=bk-modules&bk_msg=' . rawurlencode( 'Acceso guardado.' ) ) );
 	exit;
 }

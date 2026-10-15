@@ -3,7 +3,7 @@ const { chromium } = require('playwright');
 const ok = (c, m) => { console.log((c ? 'OK   ' : 'FAIL ') + m); if (!c) process.exitCode = 1; };
 const B = 'http://localhost:8899';
 const OUT = '/tmp/claude-0/bk-local';
-const login = async (p, u, pw = 'Clave#2026') => { await p.goto(B + '/wp-login.php'); await p.fill('#user_login', u); await p.fill('#user_pass', pw); await Promise.all([p.waitForNavigation(), p.click('#wp-submit')]); };
+const login = async (p, u, pw = 'Clave#2026') => { await p.goto(B + '/ingreso/'); await p.fill('[name=log]', u); await p.fill('[name=pwd]', pw); await Promise.all([p.waitForNavigation(), p.click('.bk-g-login__form [type=submit]')]); };
 const tool = (q = '') => B + '/wp-admin/tools.php?page=bk-admin-menu' + q;
 const menuIds = (p) => p.evaluate(() => [...document.querySelectorAll('#adminmenu > li')].map((li) => li.classList.contains('bk-am-logo') ? 'LOGO' : li.classList.contains('bk-am-head') ? 'H:' + li.textContent.trim() : li.classList.contains('wp-menu-separator') ? 'SEP' : (li.querySelector('a') || {}).getAttribute?.('href') || ''));
 

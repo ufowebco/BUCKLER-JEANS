@@ -283,7 +283,7 @@ function bk_g_login_page( $error = '', $denied = false ) {
 			<?php if ( $bye ) : ?><p class="bk-g-login__ok" role="status"><?php esc_html_e( 'Cerraste sesión. ¡Hasta pronto!', 'buckler-core' ); ?></p><?php endif; ?>
 			<?php if ( $error && ! $alt ) : ?><p class="bk-g-login__err" role="alert"><?php echo esc_html( $error ); ?></p><?php endif; ?>
 			<?php if ( $alt ) : ?>
-				<p class="bk-g-login__err" role="alert"><?php esc_html_e( 'Tu sitio pide una verificación adicional para entrar.', 'buckler-core' ); ?> <a href="<?php echo esc_url( bk_wp_login_url( $ingreso ? '' : bk_g_url() ) ); ?>"><?php esc_html_e( 'Entra aquí con el acceso de WordPress', 'buckler-core' ); ?></a>.</p>
+				<p class="bk-g-login__err" role="alert"><?php esc_html_e( 'Tu sitio pide una verificación adicional para entrar.', 'buckler-core' ); ?><?php if ( function_exists( 'bk_hide_login_on' ) && bk_hide_login_on() ) : ?> <?php esc_html_e( 'Escríbele al administrador del sitio.', 'buckler-core' ); ?></p><?php else : ?> <a href="<?php echo esc_url( bk_wp_login_url( $ingreso ? '' : bk_g_url() ) ); ?>"><?php esc_html_e( 'Entra aquí con el acceso de WordPress', 'buckler-core' ); ?></a>.</p><?php endif; ?>
 			<?php endif; ?>
 			<form method="post" action="<?php echo esc_url( $GLOBALS['bk_g_login_action'] ?? bk_g_url() ); ?>" class="bk-g-login__form" novalidate>
 				<?php wp_nonce_field( 'bk_g_login', '_bk_g_nonce' ); ?>

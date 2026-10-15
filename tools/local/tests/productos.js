@@ -7,7 +7,7 @@ const B = 'http://localhost:8899';
 const FX = '/tmp/claude-0/bk-local/fixtures';
 const OUT = '/tmp/claude-0/bk-local';
 const db = (sku) => JSON.parse(execFileSync('php', [`${__dirname}/inspect-product.php`, sku]).toString());
-const login = async (p, u, pw) => { await p.goto(B + '/wp-login.php?redirect_to=' + encodeURIComponent(B + '/gestion-tienda/')); await p.fill('#user_login', u); await p.fill('#user_pass', pw); await Promise.all([p.waitForNavigation(), p.click('#wp-submit')]); };
+const login = async (p, u, pw) => { await p.goto(B + '/ingreso/?redirect_to=' + encodeURIComponent(B + '/gestion-tienda/')); await p.fill('[name=log]', u); await p.fill('[name=pwd]', pw); await Promise.all([p.waitForNavigation(), p.click('.bk-g-login__form [type=submit]')]); };
 const toastText = (p) => p.textContent('#bk-g-toast');
 
 (async () => {

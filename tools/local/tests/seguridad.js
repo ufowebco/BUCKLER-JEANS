@@ -2,7 +2,11 @@
 const { chromium } = require('playwright');
 const ok = (c, m) => { console.log((c ? 'OK   ' : 'FAIL ') + m); if (!c) process.exitCode = 1; };
 const B = 'http://localhost:8899';
+const { execSync } = require('child_process');
+// Estas comprobaciones usan wp-login.php: se apaga un momento "Ocultar wp-admin" (ronda180.js lo prueba encendido).
+const hide = (v) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; require "/tmp/claude-0/bk-local/site/wp-load.php"; update_option("bk_hide_login", "${v}");'`);
 (async () => {
+  hide('no');
   const b = await chromium.launch(); const anon = await b.newContext();
   for (const u of ['/wp-json/wp/v2/users', '/wp-json/wp/v2/users/1']) ok((await anon.request.get(B + u)).status() === 401, `sin sesión: ${u} → 401`);
   const au = await anon.request.get(B + '/?author=1', { maxRedirects: 0 });
@@ -17,4 +21,5 @@ const B = 'http://localhost:8899';
   const r = await p.evaluate(async () => { const h = { 'X-WP-Nonce': wpApiSettings.nonce }; return [(await fetch('/wp-json/wp/v2/users/me', { headers: h })).status, (await fetch('/wp-json/wp/v2/users?who=authors', { headers: h })).status]; });
   ok(r[0] === 200 && r[1] === 200, 'con sesión: el editor sigue leyendo usuarios ' + JSON.stringify(r));
   await b.close();
-})().catch((e) => { console.error(e); process.exit(1); });
+  hide('yes');
+})().catch((e) => { hide('yes'); console.error(e); process.exit(1); });

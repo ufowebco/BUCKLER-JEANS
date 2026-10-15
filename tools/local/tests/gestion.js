@@ -1,7 +1,7 @@
 const { chromium } = require('playwright');
 const ok = (c, m) => console.log((c ? 'OK   ' : 'FAIL ') + m);
 const B = 'http://localhost:8899';
-const login = async (p, u, pw) => { await p.goto(B + '/wp-login.php?redirect_to=' + encodeURIComponent(B + '/gestion-tienda/')); await p.fill('#user_login', u); await p.fill('#user_pass', pw); await Promise.all([p.waitForNavigation(), p.click('#wp-submit')]); };
+const login = async (p, u, pw) => { await p.goto(B + '/ingreso/?redirect_to=' + encodeURIComponent(B + '/gestion-tienda/')); await p.fill('[name=log]', u); await p.fill('[name=pwd]', pw); await Promise.all([p.waitForNavigation(), p.click('.bk-g-login__form [type=submit]')]); };
 (async () => {
   const b = await chromium.launch(); const errs = [];
   // Sin sesión

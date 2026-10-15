@@ -11,7 +11,7 @@ const MAILS = '/tmp/claude-0/bk-local/site/wp-content/uploads/bk-mails';
 const mails = () => fs.existsSync(MAILS) ? fs.readdirSync(MAILS).filter(f => f.endsWith('.json')) : [];
 const newMails = (before) => mails().filter(f => !before.includes(f)).map(f => ({ f, ...JSON.parse(fs.readFileSync(`${MAILS}/${f}`, 'utf8')) }));
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
-const login = async (p, u, pw) => { await p.goto(B + '/wp-login.php?redirect_to=' + encodeURIComponent(B + '/gestion-tienda/')); await p.fill('#user_login', u); await p.fill('#user_pass', pw); await Promise.all([p.waitForNavigation(), p.click('#wp-submit')]); };
+const login = async (p, u, pw) => { await p.goto(B + '/ingreso/?redirect_to=' + encodeURIComponent(B + '/gestion-tienda/')); await p.fill('[name=log]', u); await p.fill('[name=pwd]', pw); await Promise.all([p.waitForNavigation(), p.click('.bk-g-login__form [type=submit]')]); };
 
 (async () => {
   const b = await chromium.launch({ args: ['--disable-blink-features=AutomationControlled'] });

@@ -57,4 +57,7 @@ ln -sfn "$REPO/tools/local/theme-bk-classic" "$SITE/wp-content/themes/bk-classic
 FRESH=$($M -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='bk' AND table_name='wp_options'")
 php "$REPO/tools/local/install.php" "$SITE" "$([ "$FRESH" = "0" ] && echo fresh)"
 [ "$FRESH" = "0" ] && php "$REPO/tools/local/install.php" "$SITE" # 2.ª pasada: ya con plugins cargados
+# Logo de producción (bk_config logo_dark) para la pantalla de acceso: en local, el del correo.
+mkdir -p "$SITE/wp-content/uploads/2026/05"
+[ -f "$SITE/wp-content/uploads/2026/05/Logo-Buckler-Denim-Blue-1.webp" ] || python3 -c "from PIL import Image; Image.open('$REPO/buckler-core/assets/img/logo-email.png').convert('RGBA').save('$SITE/wp-content/uploads/2026/05/Logo-Buckler-Denim-Blue-1.webp','WEBP')"
 echo "Listo: php -S localhost:8899 -t $SITE"
