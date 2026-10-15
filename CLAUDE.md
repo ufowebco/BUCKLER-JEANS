@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.15.0 → `dist/buckler-core-0.15.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.15.1 → `dist/buckler-core-0.15.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -310,7 +310,10 @@ Versión actual 0.15.0 → `dist/buckler-core-0.15.0.zip` (`tools/build-plugin.s
   Restricción IA/buckler-core por ID (usuarios `sebas_ufoweb` = ID 1 visto en la REST pública; `sebas_ufoweb.co` no
   aparece en la REST pública porque no publica: se verifica en el servidor) → 403 en URL y acciones; páginas por
   carpeta de plugin (reflexión + realpath, sirve con enlaces simbólicos). `BK_AM_SAFE_MODE` para recuperar acceso.
-  Hallazgo de seguridad: `/wp-json/wp/v2/users` es público (expone nombres de usuario) — pendiente de decidir.
+  Hallazgo de seguridad: `/wp-json/wp/v2/users` era público (exponía nombres de usuario).
+- **0.15.1 — `includes/security.php` (siempre activo; desactivar con `add_filter('bk_hide_users','__return_false')`):**
+  sin sesión → REST `/wp/v2/users*` 401 (con sesión igual: editor de bloques, MCP con usuario), `/?author=N` y archivos
+  de autor 404, sin sitemap de usuarios, oEmbed sin autor, error de acceso genérico. Suite `seguridad.js` (8).
   Suite `adminmenu.js` (34) + `seed-adminmenu.php` (usuarios y plugin de IA simulado en local).
   - Promo "Califícanos en Google y gana 10 %" (`review_promo` on/incentive/discount, `review_url` =
     g.page/r/CRGTFeM2O9V5EAE/review): bloque de reseñas, gracias, Mi cuenta y anuncio de la barra. **Aviso dado al
@@ -375,7 +378,7 @@ Versión actual 0.15.0 → `dist/buckler-core-0.15.0.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34 = 348 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 8 = 356 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
