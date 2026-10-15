@@ -313,7 +313,7 @@ Versión actual 0.15.1 → `dist/buckler-core-0.15.1.zip` (`tools/build-plugin.s
   Hallazgo de seguridad: `/wp-json/wp/v2/users` era público (exponía nombres de usuario).
 - **0.15.1 — `includes/security.php` (siempre activo; desactivar con `add_filter('bk_hide_users','__return_false')`):**
   sin sesión → REST `/wp/v2/users*` 401 (con sesión igual: editor de bloques, MCP con usuario), `/?author=N` y archivos
-  de autor 404, sin sitemap de usuarios, oEmbed sin autor, error de acceso genérico. Suite `seguridad.js` (8).
+  de autor 404, sin sitemap de usuarios, oEmbed sin autor, error de acceso genérico. Suite `seguridad.js` (7).
   Suite `adminmenu.js` (34) + `seed-adminmenu.php` (usuarios y plugin de IA simulado en local).
   - Promo "Califícanos en Google y gana 10 %" (`review_promo` on/incentive/discount, `review_url` =
     g.page/r/CRGTFeM2O9V5EAE/review): bloque de reseñas, gracias, Mi cuenta y anuncio de la barra. **Aviso dado al
@@ -378,7 +378,7 @@ Versión actual 0.15.1 → `dist/buckler-core-0.15.1.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 8 = 356 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 35, envío 28, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7 = 355 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
