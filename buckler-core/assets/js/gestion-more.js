@@ -389,7 +389,147 @@
 	// Guía con capturas: cada figura lleva números sobre la pantalla y los mismos números en la lista de pasos.
 	// Las imágenes salen de tools/local/help-shots.js (assets/img/ayuda/*.webp, 1280 px).
 	const fig = (img, title, steps, h) => ({ img, title, steps, h });
+	// Guías paso a paso por tarea (lo que se hace a diario), antes de la explicación de cada pantalla.
+	const guide = (t, steps, tip = '') => ({ t, steps, tip });
+	const GUIDES = [
+		['Productos', [
+			guide('Subir un producto nuevo', [
+				'Ve a <b>Productos</b> y toca <b>Nuevo producto</b>.',
+				'Escribe el <b>Nombre</b> como se verá en la tienda (ej.: JEAN BOTA ANCHA DAMA – OXFORD – TIRO ALTO) y la <b>REF</b>. En Línea Curvy la REF termina en PLUS (816 PLUS).',
+				'Elige la <b>Línea</b> (Slim o Curvy) y la <b>Prenda</b> (jeans, faldas, chaquetas…).',
+				'En <b>Fotos y video</b> toca <b>Agregar fotos</b> y elige todas las fotos a la vez. La primera es la principal: ordénalas con las flechas. Si alguna quedó acostada, usa los botones de <b>girar</b> que tiene cada foto.',
+				'Si tienes video (MP4), toca <b>Agregar video</b>.',
+				'Escribe la <b>Descripción corta</b> (1 o 2 frases junto al precio) y la <b>Descripción completa</b> (tela, tiro, bota, recomendaciones de lavado).',
+				'Escribe el <b>Precio normal</b>. Deja vacío el <b>Precio rebajado</b> si no está en promoción.',
+				'En <b>Tallas y stock</b> marca las tallas que vendes y escribe cuántas unidades hay de cada una.',
+				'Si es lanzamiento, activa <b>Mostrar como Nuevo</b>.',
+				'Toca <b>Publicar</b> para que se vea de una vez, o <b>Guardar borrador</b> para terminarlo después.',
+			], 'Antes de publicar revisa que las fotos estén derechas y que cada talla tenga stock: una talla en 0 se muestra agotada.'),
+			guide('Crear el mismo modelo en la otra línea (Slim ↔ Curvy)', [
+				'Abre el producto ya creado (<b>Productos → Editar</b>).',
+				'En <b>Publicación</b> toca <b>Crear este modelo en Línea Curvy</b> (o Slim).',
+				'Se copian el nombre, la REF (con o sin PLUS), la prenda, el precio y la descripción. Sube las fotos de esa línea y escribe el stock de cada talla.',
+				'Toca <b>Publicar</b>. En la ficha de cada uno aparecerá el enlace "ver este modelo en la otra línea".',
+			]),
+			guide('Fotos: tamaño, orden y fotos acostadas', [
+				'Usa fotos <b>verticales</b> (2:3, por ejemplo 1200 × 1800) y todas del mismo tamaño. Se optimizan solas al subirlas (no hace falta reducirlas antes).',
+				'Las fotos del celular se enderezan solas. Si una quedó de lado, toca <b>Girar a la izquierda</b> o <b>Girar a la derecha</b> sobre la foto: se gira en el servidor y se actualiza en la tienda.',
+				'Para cambiar el orden usa las flechas; para quitar una foto, la papelera.',
+				'Toca <b>Guardar cambios</b> al terminar.',
+			], 'El giro se guarda al instante en la foto; el orden y las fotos quitadas se guardan con "Guardar cambios".'),
+			guide('Cambiar precio o poner un producto en ¡Sale!', [
+				'Rápido: en <b>Productos</b> toca <b>Tallas y precios</b> en el producto, cambia el precio de la talla y toca <b>Guardar</b> en esa fila.',
+				'Desde el producto: <b>Editar</b> → <b>Precio rebajado</b> → <b>Guardar cambios</b>.',
+				'Con precio rebajado el producto entra solo a <b>¡Sale!</b> y muestra el aviso "sin garantía ni cambio". Al borrar el precio rebajado sale de ¡Sale!.',
+			], 'Para una promoción por fechas en muchos productos usa mejor una campaña en Descuentos: no hay que tocar los precios y se apaga sola.'),
+			guide('Actualizar el stock o agotar una talla', [
+				'En <b>Productos</b> busca por nombre o REF.',
+				'Toca <b>Tallas y precios</b>, escribe las unidades de la talla y toca <b>Guardar</b> en esa fila.',
+				'Una talla en 0 se ve agotada (tachada en la ficha). Si ya no la vas a vender, desmárcala en <b>Editar → Tallas y stock</b>.',
+			], 'Las ventas descuentan el stock solas. En Resumen ves las tallas con 1 o 2 unidades para reponer a tiempo.'),
+			guide('Marcar o quitar "Nuevo"', [
+				'En <b>Productos</b> toca la <b>estrella</b> del producto, o en <b>Editar</b> activa <b>Mostrar como Nuevo</b>.',
+				'El producto lleva la etiqueta NUEVO y sale en "Lo nuevo" del inicio y del menú. Toca la estrella otra vez para quitarlo.',
+			]),
+			guide('Ocultar un producto sin borrarlo', [
+				'<b>Productos → Editar</b>.',
+				'En <b>Publicación → Estado</b> elige <b>Borrador (oculto)</b> y toca <b>Guardar cambios</b>.',
+			]),
+		]],
+		['Pedidos', [
+			guide('Atender los pedidos del día', [
+				'Abre <b>Pedidos</b>. La lista se revisa sola cada 10 minutos; para verlos ya, toca <b>Buscar pedidos nuevos</b>. Los nuevos aparecen resaltados.',
+				'Revisa que el pago llegó (Wompi, Bold, Addi o transferencia) y marca <b>Pago confirmado</b>.',
+				'Toca <b>Imprimir</b>: sale la hoja con la clienta, la dirección y los productos con talla y REF. El pedido queda como <b>Impreso</b>.',
+				'Empaca revisando la hoja y marca <b>Despachado</b> cuando sale a la transportadora.',
+				'Abre el pedido y en <b>Enviar guía de envío</b> elige la transportadora, escribe el número, toca <b>Ver correo antes de enviar</b> y luego <b>Confirmar y enviar</b>. Con la casilla marcada el pedido pasa a <b>Completado</b>.',
+			], 'Usa el filtro Impresión → Sin imprimir para ver solo los que faltan por imprimir.'),
+			guide('Buscar un pedido', [
+				'En <b>Pedidos</b> escribe en el buscador: número (3846 o #3846), consecutivo (PEDIDO-3841 o 3841), cédula, nombre, correo o celular.',
+				'Usa los filtros de estado, pago, impreso, despachado y fechas para acotar.',
+			]),
+			guide('Cambiar el estado de un pedido', [
+				'Abre el pedido (toca el número).',
+				'Elige el estado: <b>En espera</b> (esperando pago), <b>Procesando</b> (pagado, por despachar), <b>Completado</b> (enviado), <b>Cancelado</b> o <b>Reembolsado</b>.',
+				'Toca <b>Guardar estado</b>. Queda en el historial con tu nombre y la hora.',
+			], 'Al cancelar, las unidades vuelven al stock. La clienta recibe el correo de ese estado si está activo (míralos en Correos).'),
+			guide('Adjuntar un comprobante o factura', [
+				'Abre el pedido y baja a <b>Archivos del pedido</b>.',
+				'Toca <b>Subir archivo</b> y elige el PDF o la foto (hasta 15 MB).',
+				'En la lista de pedidos se ve 📎 con la cantidad de archivos.',
+			]),
+			guide('Escribirle a la clienta', [
+				'En el detalle del pedido toca el <b>celular</b>: abre WhatsApp con su número.',
+				'O deja una <b>nota</b> y marca <b>Enviar a la clienta</b>: le llega por correo y queda en el pedido.',
+			]),
+		]],
+		['Descuentos', [
+			guide('Crear una campaña (ej.: 20 % en toda la tienda el fin de semana)', [
+				'Ve a <b>Descuentos</b> y toca <b>Nueva campaña</b>.',
+				'Escribe el <b>Nombre</b> (se ve en la barra de arriba y en las fichas, ej.: "Fin de semana Buckler").',
+				'Escribe el <b>Porcentaje</b> (20).',
+				'Elige <b>Desde</b> y <b>Hasta</b> (hora de Colombia). Empieza y termina sola.',
+				'En <b>A qué productos</b> elige <b>Toda la tienda</b> o categorías. Los productos de ¡Sale! quedan fuera.',
+				'Opcional: etiqueta en las tarjetas, anuncio en la barra verde y sección en el inicio con cuenta regresiva.',
+				'Deja marcado <b>Activo</b> y toca <b>Guardar</b>.',
+			], 'Para revisarla antes de que la vean las clientas, ponle una fecha de inicio futura.'),
+			guide('Crear un descuento por cantidad (ej.: 2 prendas −10 %, 3 o más −15 %)', [
+				'En <b>Descuentos</b> toca <b>Nuevo descuento por cantidad</b>.',
+				'Escribe el nombre y las fechas.',
+				'En los tramos escribe <b>Desde</b> cuántas prendas y el <b>Porcentaje</b>. Toca <b>Agregar tramo</b> para el siguiente (hasta 6).',
+				'En <b>Cómo se cuentan las prendas</b> deja <b>Combinando productos (recomendado)</b>: suma cualquier prenda del carrito. "Solo del mismo modelo" cuenta solo tallas del mismo producto.',
+				'Elige el alcance y toca <b>Guardar</b>.',
+			], 'Los descuentos no se suman: a cada prenda se le aplica el más alto. En el carrito la clienta ve cuántas prendas le faltan para el siguiente tramo.'),
+			guide('Pausar, cambiar o terminar un descuento', [
+				'En la lista de <b>Descuentos</b> usa <b>Pausar</b> (lo apaga sin borrarlo) y <b>Activar</b> para volver a encenderlo.',
+				'<b>Editar</b> cambia porcentaje, fechas o productos. <b>Borrar</b> lo elimina.',
+				'Si ves "Los descuentos están apagados en la tienda", toca <b>Encender descuentos</b>.',
+			]),
+		]],
+		['Clientas y carritos', [
+			guide('Recuperar un carrito abandonado', [
+				'Abre <b>Carritos</b> y toca <b>Actualizar listado</b>.',
+				'Los <b>Pendientes</b> reciben solos 3 recordatorios por correo (2, 24 y 48 horas) con un enlace que les devuelve el carrito.',
+				'Para un trato personal toca el <b>celular</b> de la clienta y escríbele por WhatsApp (tienes su nombre, lo que dejó y el total).',
+				'Si compra, el carrito pasa a <b>Recuperado</b> o <b>Compró</b>.',
+			]),
+			guide('Revisar cómo le llegan los correos', [
+				'Abre <b>Correos</b>, elige un <b>pedido de ejemplo</b> y el correo que quieres ver.',
+				'La vista previa no envía nada. "Enviar prueba" manda una copia con "[Prueba]" en el asunto.',
+			]),
+		]],
+		['Contenido de la tienda', [
+			guide('Cambiar los banners del inicio', [
+				'Abre <b>Contenido → Banners</b>.',
+				'En cada banner sube la imagen para <b>computador</b> (1920 × 1080) y para <b>celular</b> (1200 × 1200).',
+				'Escribe el <b>Enlace al tocar el banner</b> (ej.: la Línea Curvy) y el <b>Texto de la imagen (alt)</b>: describe lo que dice el banner, lo leen Google y los lectores de pantalla.',
+				'Ordénalos con las flechas y toca <b>Guardar banners</b>. El inicio se actualiza solo.',
+			], 'Si el banner tiene texto dentro de la imagen, escribe ese mismo texto en "Texto de la imagen".'),
+			guide('Editar una pregunta frecuente o una política', [
+				'Abre <b>Contenido → Preguntas frecuentes</b> (o <b>Políticas</b>).',
+				'Toca la pregunta, cambia el texto y toca <b>Guardar</b>. Para una nueva, toca <b>Nueva pregunta</b> (o <b>Nueva política</b>).',
+				'Desmarca <b>Publicada</b> para dejarla en borrador.',
+			]),
+		]],
+		['Si algo no funciona', [
+			guide('Hice un cambio y no lo veo en la tienda', [
+				'La tienda guarda las páginas para que carguen rápido y se actualizan solas al guardar.',
+				'Recarga con <b>Ctrl + F5</b> (en el celular, cierra y abre la pestaña) o espera un minuto.',
+			]),
+			guide('Al entrar me manda al inicio de la tienda', [
+				'Entra siempre por <b>buckler.com.co/gestion-tienda/</b> con tu usuario y contraseña.',
+				'Si ya iniciaste sesión, vuelve a abrir esa misma dirección: te lleva a la gestión.',
+				'Si sigue pasando, escribe a soporte indicando tu usuario y la página a la que te llevó.',
+			]),
+			guide('Una foto se ve acostada', [
+				'Abre el producto en <b>Productos → Editar</b>.',
+				'Toca <b>Girar a la derecha</b> o <b>Girar a la izquierda</b> sobre esa foto hasta que quede derecha. No hace falta guardar para el giro.',
+			]),
+		]],
+	];
+	const guidesHtml = () => GUIDES.map(([g, list]) => `<h3 class="bk-g-hgroup">${esc(g)}</h3>${list.map((x) => `<details class="bk-g-guide"><summary>${esc(x.t)}</summary><ol class="bk-g-hsteps">${x.steps.map((st) => `<li>${st}</li>`).join('')}</ol>${x.tip ? `<p class="bk-g-htip"><b>Consejo:</b> ${x.tip}</p>` : ''}</details>`).join('')}`).join('');
 	const HELP = [
+		['guias', 'Paso a paso', '<p>Guías cortas para lo que haces a diario. Toca una tarea para ver los pasos.</p>', [], true],
 		['seo', 'SEO y ADS', `
 			<p>Mide de dónde llegan las visitas y revisa que las etiquetas de Google y Meta estén bien puestas. Las visitas se cuentan sin cookies ni datos personales y no cuentan robots ni al equipo de la tienda.</p>`, [
 			fig('seo', 'Visitas', [
@@ -415,7 +555,7 @@
 		]],
 		['pedidos', 'Pedidos', '<p>Todos los pedidos de la tienda, con búsqueda, filtros y las marcas de trabajo del día (pago confirmado, impreso y despachado).</p>', [
 			fig('pedidos', 'Lista de pedidos', [
-				'<b>Buscar</b> por número (#3846), consecutivo (PEDIDO-3841 o 3841), cédula, nombre, correo o celular.',
+				'<b>Buscar</b> por número (#3846), consecutivo (PEDIDO-3841 o 3841), cédula, nombre, correo o celular. <b>Buscar pedidos nuevos</b> trae los que acaban de llegar (la lista también se revisa sola cada 10 minutos).',
 				'<b>Filtros:</b> estado, pago confirmado, impreso, despachado y fechas.',
 				'<b>Número del pedido:</b> tócalo para abrir el detalle a la derecha.',
 				'<b>Pago confirmado, Impreso y Despachado:</b> se guardan al instante, sin botón de guardar.',
@@ -450,7 +590,7 @@
 				'<b>Tallas y stock:</b> marca las tallas que vendes y escribe las unidades. Una talla desmarcada deja de verse.',
 			], 860),
 			fig('producto-fotos', 'Fotos, descripción y publicación', [
-				'<b>Fotos y video:</b> la primera foto es la principal; ordénalas con las flechas. Se optimizan solas al subirlas. El video (MP4) se ve en la galería de la ficha.',
+				'<b>Fotos y video:</b> la primera foto es la principal; ordénalas con las flechas y, si una quedó de lado, gírala con los botones de girar. Se optimizan y se enderezan solas al subirlas. El video (MP4) se ve en la galería de la ficha.',
 				'<b>Descripción</b> corta (junto al precio) y completa (negrita y listas).',
 				'<b>Publicación:</b> publicado o borrador, y el botón para guardar.',
 			], 860),
@@ -521,9 +661,11 @@
 	function viewHelp() {
 		const items = C.scope === 'seo' ? HELP.filter(([k]) => k === 'seo' || k === 'general') : HELP;
 		main.innerHTML = `<h1 class="bk-g-h1">Ayuda</h1>
-			<p class="bk-g-hint">Cómo funciona cada sección. Los números de cada imagen corresponden a los pasos de su lista; toca la imagen para verla en grande.</p>
+			<p class="bk-g-hint">Empieza por <b>Paso a paso</b> para las tareas del día. Más abajo, cada pantalla explicada: los números de cada imagen corresponden a los pasos de su lista; toca la imagen para verla en grande.</p>
+			<label class="bk-g-hsearch"><span>Buscar en la ayuda</span><input type="search" id="bk-g-hq" placeholder="Ej.: descuento, foto, guía, imprimir" autocomplete="off"></label>
+			<p class="bk-g-hint" id="bk-g-hq-n" role="status" aria-live="polite"></p>
 			<nav class="bk-g-hnav" aria-label="Secciones de la ayuda">${items.map(([k, t]) => `<a href="#ayuda" data-help="${k}">${esc(t)}</a>`).join('')}</nav>
-			<div class="bk-g-help">${items.map(([k, t, body, figs = []], i) => `<details class="bk-g-card" id="ayuda-${k}" ${i === 0 ? 'open' : ''}><summary><h2>${esc(t)}</h2></summary><div class="bk-g-help__body">${body}${figs.map(figHtml).join('')}</div></details>`).join('')}</div>`;
+			<div class="bk-g-help">${items.map(([k, t, body, figs = [], withGuides], i) => `<details class="bk-g-card" id="ayuda-${k}" ${i === 0 ? 'open' : ''}><summary><h2>${esc(t)}</h2></summary><div class="bk-g-help__body">${body}${withGuides ? guidesHtml() : ''}${figs.map(figHtml).join('')}</div></details>`).join('')}</div>`;
 	}
 
 	/* ============================================================================
@@ -686,7 +828,33 @@
 		if (t.closest('#bk-gd, #bk-gcp, #bk-gcb, #bk-gcg')) dirty = true;
 		if (t.matches('[data-psearch]')) searchProducts(t);
 		if ((t.name === 'tmin' || t.name === 'tpct') && $('#bk-gd-tprev')) { readTiers(); $('#bk-gd-tprev').textContent = tierPreview(); }
+		if (t.id === 'bk-g-hq') helpSearch(t.value);
 	});
+	// Ayuda: buscar sin tildes en las guías y en las figuras; abre lo que coincide y oculta el resto.
+	const fold = (x) => x.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+	function helpSearch(q) {
+		const words = fold(q).split(/\s+/).filter((w) => w.length > 1);
+		let n = 0;
+		document.querySelectorAll('.bk-g-help > details').forEach((sec) => {
+			const parts = [...sec.querySelectorAll('.bk-g-guide, .bk-g-hfig')];
+			let any = false;
+			parts.forEach((el) => {
+				const hit = !words.length || words.every((w) => fold(el.textContent).includes(w));
+				el.hidden = !hit;
+				if (el.matches('details')) el.open = !!words.length && hit;
+				if (hit && words.length) { any = true; n++; }
+			});
+			sec.querySelectorAll('.bk-g-hgroup').forEach((h) => {
+				let el = h.nextElementSibling; let vis = false;
+				while (el && !el.matches('.bk-g-hgroup')) { if (!el.hidden) vis = true; el = el.nextElementSibling; }
+				h.hidden = !vis;
+			});
+			sec.hidden = !!words.length && !any;
+			if (words.length) sec.open = any;
+		});
+		const out = $('#bk-g-hq-n');
+		if (out) out.textContent = words.length ? (n ? `${n} resultado${n === 1 ? '' : 's'}` : 'Sin resultados. Prueba con otra palabra o escribe a contacto@ufoweb.co.') : '';
+	}
 	// Pegar en el editor: solo texto.
 	document.addEventListener('paste', (e) => {
 		if (!e.target.closest?.('.bk-g-rich')) return;

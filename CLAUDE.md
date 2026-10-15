@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.17.6 → `dist/buckler-core-0.17.6.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.17.7 → `dist/buckler-core-0.17.7.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -499,6 +499,28 @@ Versión actual 0.17.6 → `dist/buckler-core-0.17.6.zip` (`tools/build-plugin.s
   no hay ciudad (`bk_g_order_place()`, lista de pedidos y ciudades de compra). Aviso del carrito abandonado dentro de
   `#billing_email_field` (Woo reordena filas y quedaba arriba). Pruebas que llenaban ciudad/código postal: solo si el
   campo existe. Suite `ronda176.js` (9).
+- **0.17.7 (ronda de 5 puntos, 2026-10-15; la 0.17.6 no se empaquetó, va incluida):**
+  - Login de la gestión → inicio (@GestorTienda, @AdminDenimBlue, Gestor_ADS; origen desconocido, otro plugin/snippet):
+    `/gestion-tienda/` se pinta en `parse_request` 0 (`bk_g_early`, antes de template_redirect); durante `wp_signon` el
+    filtro `wp_redirect` (PHP_INT_MAX, `bk_g_keep_login_target`) cambia cualquier destino por la gestión; cookie
+    `bk_g_next` (5 min, httponly) → si igual termina en otra página, `bk_g_after_login` (parse_request 1) la devuelve una
+    vez a la gestión. Fixture `bk_test_login_home` = wp_login | header | template imita las 3 formas.
+  - Fotos acostadas: el editor redibuja en canvas con `<img>` (`image-orientation: from-image`, antes
+    `createImageBitmap` ignoraba EXIF en algunos navegadores) y siempre que el JPG trae orientación EXIF > 1
+    (`exifOrientation()`); las pequeñas y derechas suben tal cual. Botones Girar izquierda/derecha por foto →
+    `POST gestion/media/{id}/rotate` (`bk_gp_rotate`: gira el original, borra los archivos viejos, regenera tamaños en
+    WebP, limpia cachés de los productos que la usan). Iconos `lucide:rotate-ccw/cw`.
+  - Reseñas: total y promedio del perfil de Google con más reseñas en `wpsr_reviews_google_business_info` (y nunca
+    menos que la tabla); transitorio `bk_greviews2_*` 1 h; `bk_google_reviews_flush()` al actualizar esa opción
+    (sincronización de WP Social Ninja) + purga de caché.
+  - Mi cuenta en producción: CSS en línea del tema (Divi/hijo) pinta `.woocommerce-MyAccount-navigation ul li` (bordes,
+    li navy al hover, texto lima, padding 18px 24px / 30px) y `.woocommerce-MyAccount-content a` (navy + borde
+    inferior; `.button` navy/lima en mayúsculas; `thead th` navy/lima) → botones navy sobre navy. Anulado con
+    `body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation …` y `.woocommerce-MyAccount-content a.bk-btn` (final de
+    pages.css). ronda177.js inyecta esas reglas y mide contraste con y sin hover a 1440/390.
+  - Ayuda: sección "Paso a paso" (22 guías por tarea en `GUIDES`, gestion-more.js: productos, pedidos, descuentos,
+    carritos/correos, contenido, problemas) + buscador sin tildes (`helpSearch`). Usuarios solo SEO no la ven.
+  - Suite `ronda177.js` (30).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -543,7 +565,7 @@ Versión actual 0.17.6 → `dist/buckler-core-0.17.6.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9 = 560 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 30 = 590 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

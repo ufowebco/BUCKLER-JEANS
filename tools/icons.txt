@@ -61,3 +61,4 @@ lucide:key-round
 lucide:image
 lucide:tag
 lucide:percent
+lucide:rotate-cw

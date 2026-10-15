@@ -95,6 +95,8 @@
 			<div class="bk-gp-imgbar">
 				<button type="button" class="bk-g-icon" data-img-move="${i}" data-dir="-1" ${i === 0 ? 'disabled' : ''} aria-label="Mover la foto ${i + 1} antes">${C.icons.left}</button>
 				<button type="button" class="bk-g-icon" data-img-move="${i}" data-dir="1" ${i === st.images.length - 1 ? 'disabled' : ''} aria-label="Mover la foto ${i + 1} después">${C.icons.right}</button>
+				<button type="button" class="bk-g-icon" data-img-rot="${i}" data-dir="left" aria-label="Girar la foto ${i + 1} a la izquierda" title="Girar a la izquierda">${C.icons.rotl || '⟲'}</button>
+				<button type="button" class="bk-g-icon" data-img-rot="${i}" data-dir="right" aria-label="Girar la foto ${i + 1} a la derecha" title="Girar a la derecha">${C.icons.rotr || '⟳'}</button>
 				<button type="button" class="bk-g-icon is-danger" data-img-del="${i}" aria-label="Quitar la foto ${i + 1}">${C.icons.trash}</button>
 			</div></li>`).join('')}
 		${Array.from({ length: st.uploading }, () => '<li class="bk-gp-img is-loading"><span>Subiendo…</span></li>').join('')}
@@ -282,19 +284,56 @@
 	// Reduce en el navegador las fotos grandes del celular (lado mayor 2400 px, JPEG 88 %): sube más rápido
 	// y no choca con el límite de subida del servidor. Si el navegador no puede, se sube el original.
 	const MAX_SIDE = 2400;
-	const shrink = async (file) => {
-		if (!window.createImageBitmap || (file.size < 1.5 * 1048576 && file.type !== 'image/png')) return file;
+	// Se dibuja desde un <img>: el navegador aplica la orientación de la cámara (EXIF). createImageBitmap la ignoraba
+	// en algunos navegadores (Safari del iPhone) y las fotos verticales quedaban acostadas.
+	const loadImg = (file) => new Promise((ok, fail) => {
+		const url = URL.createObjectURL(file);
+		const img = new Image();
+		img.onload = () => { URL.revokeObjectURL(url); ok(img); };
+		img.onerror = () => { URL.revokeObjectURL(url); fail(new Error('img')); };
+		img.style.imageOrientation = 'from-image';
+		img.src = url;
+	});
+	// Orientación EXIF de un JPG (1 = derecha). Las fotos del celular suelen venir "acostadas" con la orientación en EXIF.
+	const exifOrientation = async (file) => {
+		if (file.type !== 'image/jpeg') return 1;
 		try {
-			const bmp = await createImageBitmap(file);
-			const k = Math.min(1, MAX_SIDE / Math.max(bmp.width, bmp.height));
-			if (k === 1 && file.size < 1.5 * 1048576) return file;
-			const cv = Object.assign(document.createElement('canvas'), { width: Math.round(bmp.width * k), height: Math.round(bmp.height * k) });
+			const v = new DataView(await file.slice(0, 131072).arrayBuffer());
+			if (v.getUint16(0) !== 0xFFD8) return 1;
+			for (let o = 2; o + 4 < v.byteLength;) {
+				const mk = v.getUint16(o);
+				const len = v.getUint16(o + 2);
+				if (mk === 0xFFE1 && v.getUint32(o + 4) === 0x45786966) { // "Exif"
+					const t = o + 10;
+					const le = v.getUint16(t) === 0x4949;
+					const ifd = t + v.getUint32(t + 4, le);
+					const n = v.getUint16(ifd, le);
+					for (let i = 0; i < n; i++) {
+						const e = ifd + 2 + i * 12;
+						if (v.getUint16(e, le) === 0x0112) return v.getUint16(e + 8, le);
+					}
+					return 1;
+				}
+				if ((mk & 0xFF00) !== 0xFF00) break;
+				o += 2 + len;
+			}
+		} catch { /* sin EXIF legible */ }
+		return 1;
+	};
+	const shrink = async (file) => {
+		const turned = (await exifOrientation(file)) > 1; // Se re-dibuja siempre: el archivo final sale derecho y sin EXIF.
+		if (!turned && file.size < 1.5 * 1048576 && file.type !== 'image/png') return file; // Pequeña y derecha: sube tal cual.
+		try {
+			const img = await loadImg(file);
+			const w = img.naturalWidth; const h = img.naturalHeight;
+			const k = Math.min(1, MAX_SIDE / Math.max(w, h));
+			const cv = Object.assign(document.createElement('canvas'), { width: Math.round(w * k), height: Math.round(h * k) });
 			const ctx = cv.getContext('2d');
 			ctx.fillStyle = '#fff'; // PNG con transparencia → fondo blanco.
 			ctx.fillRect(0, 0, cv.width, cv.height);
-			ctx.drawImage(bmp, 0, 0, cv.width, cv.height);
+			ctx.drawImage(img, 0, 0, cv.width, cv.height);
 			const blob = await new Promise((res) => cv.toBlob(res, 'image/jpeg', 0.88));
-			return blob && blob.size < file.size ? new File([blob], file.name.replace(/\.\w+$/, '.jpg'), { type: 'image/jpeg' }) : file;
+			return blob && (turned || blob.size < file.size) ? new File([blob], file.name.replace(/\.\w+$/, '.jpg'), { type: 'image/jpeg' }) : file;
 		} catch { return file; }
 	};
 
@@ -398,6 +437,22 @@
 			dirty = true;
 			refreshImages();
 			$(`[data-img-move="${j}"][data-dir="${mv.dataset.dir}"]`)?.focus() || $(`[data-img-move="${j}"]`)?.focus();
+			return;
+		}
+		const rot = t.closest('[data-img-rot]');
+		if (rot) {
+			const i = Number(rot.dataset.imgRot);
+			const im = st.images[i];
+			if (!im) return;
+			busy(rot, async () => {
+				try {
+					const d = await api(`media/${im.id}/rotate`, { method: 'POST', body: { dir: rot.dataset.dir } });
+					st.images[i] = { ...im, url: d.url };
+					refreshImages();
+					$(`[data-img-rot="${i}"][data-dir="${rot.dataset.dir}"]`)?.focus();
+					toast('Foto girada');
+				} catch (err) { toast(err.message, 'err'); }
+			});
 			return;
 		}
 		const del = t.closest('[data-img-del]');

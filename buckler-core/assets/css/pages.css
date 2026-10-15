@@ -661,3 +661,48 @@ body.bk-doc .pswp { display: none !important; }
 .bk-doc .woocommerce form .form-row.bk-ac-consent { margin-top: -6px; }
 .bk-doc .woocommerce form .form-row.bk-ac-consent label { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; font-size: 13px; color: #4a5560; }
 .bk-doc .woocommerce form .form-row.bk-ac-consent input[type="checkbox"] { flex: none; margin: 0; }
+
+/* Mi cuenta: en producción el CSS en línea del tema (Divi/hijo) estiliza .woocommerce-MyAccount-navigation (bordes,
+   padding 18px 24px, li navy al pasar el mouse, texto lima, padding-left 30px) y .woocommerce-MyAccount-content a
+   (texto navy + borde inferior) → los botones .bk-btn quedaban navy sobre navy. Se anulan con más especificidad. */
+body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li,
+body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li:hover,
+body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li.is-active { border: 0; background: none; transition: none; }
+body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--customer-logout { border-top: 1px solid var(--bk-line); }
+body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li a { display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 0 12px; border: 0; border-radius: 12px; background: none; color: var(--bk-ink); font-size: 15px; font-weight: 700; transition: background-color .15s; }
+body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li a:hover,
+body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li a:focus-visible { padding-left: 12px; background: var(--bk-denim); color: var(--bk-navy); }
+body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li.is-active a,
+body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li.is-active a:hover { padding-left: 12px; background: var(--bk-navy); color: #fff; }
+body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--customer-logout a { color: var(--bk-sale); }
+body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--customer-logout a:hover { background: #fdecea; color: var(--bk-sale); }
+@media (max-width: 960px) {
+	body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li a { min-height: 42px; padding: 0 14px; border: 1px solid var(--bk-line); border-radius: 99px; font-size: 14px; }
+	body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li a:hover,
+	body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li.is-active a { padding-left: 14px; }
+	body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--customer-logout { border: 0; }
+}
+body.bk-doc .woocommerce-MyAccount-content a.bk-btn,
+body.bk-doc .woocommerce-MyAccount-content a.button,
+body.bk-doc .woocommerce-MyAccount-content a.woocommerce-button { border-bottom: 0; background: var(--bk-navy); color: #fff; }
+body.bk-doc .woocommerce-MyAccount-content a.bk-btn:hover, body.bk-doc .woocommerce-MyAccount-content a.bk-btn:focus-visible,
+body.bk-doc .woocommerce-MyAccount-content a.button:hover, body.bk-doc .woocommerce-MyAccount-content a.woocommerce-button:hover { border-bottom: 0; background: var(--bk-navy-2); color: #fff; }
+body.bk-doc .woocommerce-MyAccount-content a.bk-btn.is-ghost { background: #fff; color: var(--bk-navy); }
+body.bk-doc .woocommerce-MyAccount-content a.bk-btn.is-ghost:hover,
+body.bk-doc .woocommerce-MyAccount-content a.bk-btn.is-ghost:focus-visible { background: var(--bk-denim); color: var(--bk-navy); }
+body.bk-doc .woocommerce-MyAccount-content .bk-promo a.bk-btn.is-ghost { background: transparent; }
+body.bk-doc .woocommerce-MyAccount-content .bk-promo a.bk-btn.is-ghost:hover { background: rgb(255 255 255 / .5); }
+body.bk-doc .woocommerce-MyAccount-content .bk-acc-cards a,
+body.bk-doc .woocommerce-MyAccount-content .bk-acc-cards a:hover { border-bottom: 1px solid var(--bk-line); color: var(--bk-ink); }
+body.bk-doc .woocommerce-MyAccount-content .bk-acc-cards a:hover { border-color: var(--bk-navy); }
+body.bk-doc .woocommerce-MyAccount-content a:not(.bk-btn):not(.button):not(.woocommerce-button):hover { color: var(--bk-navy); }
+body.bk-doc a.bk-btn:hover, body.bk-doc a.bk-btn:focus-visible { color: #fff; }
+body.bk-doc a.bk-btn.is-ghost:hover, body.bk-doc a.bk-btn.is-ghost:focus-visible { color: var(--bk-navy); }
+body.bk-doc .bk-login__aside a.bk-btn.is-ghost:hover { background: rgb(255 255 255 / .1); color: #fff; }
+body.bk-doc .bk-acc-nav.woocommerce-MyAccount-navigation ul { border: 0; border-radius: 0; background: none; box-shadow: none; }
+body.bk-doc .bk-woo--account .woocommerce table.shop_table { border: 1px solid var(--bk-line); }
+body.bk-doc .bk-woo--account .woocommerce table.shop_table thead th { padding: 14px 16px; border: 0; border-bottom: 1px solid var(--bk-line); background: var(--bk-denim); color: var(--bk-navy); font-weight: 700; }
+body.bk-doc .bk-woo--account .woocommerce table.shop_table td .button,
+body.bk-doc .bk-woo--account .woocommerce-MyAccount-content .button { display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 99px; background: var(--bk-navy); color: #fff; box-shadow: none; transform: none; text-transform: none; }
+body.bk-doc .bk-woo--account .woocommerce table.shop_table td .button:hover,
+body.bk-doc .bk-woo--account .woocommerce-MyAccount-content .button:hover { border: 0; background: var(--bk-navy-2); color: #fff; box-shadow: none; transform: none; }

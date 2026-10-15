@@ -17,6 +17,64 @@ const BK_G_SLUG = 'gestion-tienda';
 add_action( 'init', 'bk_g_rewrite' );
 add_filter( 'query_vars', static fn( $v ) => array_merge( $v, array( 'bk_gestion' ) ) );
 add_action( 'template_redirect', 'bk_g_render', 0 );
+// Antes que cualquier otro código de plantilla: en producción algún plugin/snippet manda al inicio a usuarios con
+// sesión (al entrar o al abrir páginas). La gestión se pinta apenas WordPress lee la URL.
+add_action( 'parse_request', 'bk_g_early', 0 );
+add_action( 'parse_request', 'bk_g_after_login', 1 );
+
+/**
+ * /gestion-tienda/ se atiende en parse_request (antes de 'wp' y template_redirect).
+ *
+ * @param WP $wp Petición.
+ */
+function bk_g_early( $wp ) {
+	if ( ! empty( $wp->query_vars['bk_gestion'] ) ) {
+		bk_g_render( true );
+	}
+}
+
+/**
+ * Si otro plugin redirigió al inicio justo después de entrar por la gestión (cookie bk_g_next, 5 min), se vuelve a
+ * la gestión una vez.
+ *
+ * @param WP $wp Petición.
+ */
+function bk_g_after_login( $wp ) {
+	if ( empty( $_COOKIE['bk_g_next'] ) || ! empty( $wp->query_vars['bk_gestion'] ) || wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || 'GET' !== ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) ) {
+		return;
+	}
+	bk_g_next_cookie( false );
+	if ( is_user_logged_in() && bk_g_can_seo() ) {
+		wp_safe_redirect( bk_g_url(), 302 );
+		exit;
+	}
+}
+
+/**
+ * Marca (o borra) "después de entrar, ir a la gestión".
+ *
+ * @param bool $on Poner o quitar.
+ */
+function bk_g_next_cookie( $on ) {
+	if ( headers_sent() ) {
+		return;
+	}
+	setcookie( 'bk_g_next', $on ? '1' : '', $on ? time() + 5 * MINUTE_IN_SECONDS : time() - HOUR_IN_SECONDS, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, is_ssl(), true );
+	if ( ! $on ) {
+		unset( $_COOKIE['bk_g_next'] );
+	}
+}
+
+/**
+ * Mientras se inicia sesión desde la gestión, cualquier redirección de otro plugin (enganchado a wp_login) vuelve
+ * a la gestión en lugar de al inicio.
+ *
+ * @param string $location Destino.
+ * @return string
+ */
+function bk_g_keep_login_target( $location ) {
+	return empty( $GLOBALS['bk_g_signing_in'] ) ? $location : bk_g_url();
+}
 add_action( 'bk_modules_saved', 'bk_g_activate' );
 
 /**
@@ -121,6 +179,9 @@ function bk_g_handle_login() {
 	if ( $fails >= 6 ) {
 		return __( 'Demasiados intentos. Espera 15 minutos o recupera tu contraseña.', 'buckler-core' );
 	}
+	$GLOBALS['bk_g_signing_in'] = true;
+	add_filter( 'wp_redirect', 'bk_g_keep_login_target', PHP_INT_MAX );
+	bk_g_next_cookie( true );
 	$user = wp_signon(
 		array(
 			'user_login'    => sanitize_user( wp_unslash( (string) ( $_POST['log'] ?? '' ) ) ),
@@ -129,7 +190,9 @@ function bk_g_handle_login() {
 		),
 		is_ssl()
 	);
+	$GLOBALS['bk_g_signing_in'] = false;
 	if ( is_wp_error( $user ) ) {
+		bk_g_next_cookie( false );
 		$generic = array( 'invalid_username', 'incorrect_password', 'invalid_email', 'empty_username', 'empty_password', 'authentication_failed' );
 		set_transient( $key, $fails + 1, 15 * MINUTE_IN_SECONDS );
 		if ( array_intersect( $user->get_error_codes(), $generic ) || ! $user->get_error_codes() ) {
@@ -236,9 +299,12 @@ document.querySelector('.bk-g-login__form')?.addEventListener('submit', (e) => {
 /**
  * Pinta la aplicación.
  */
-function bk_g_render() {
-	if ( ! get_query_var( 'bk_gestion' ) ) {
+function bk_g_render( $early = false ) {
+	if ( ! $early && ! get_query_var( 'bk_gestion' ) ) {
 		return;
+	}
+	if ( ! empty( $_COOKIE['bk_g_next'] ) && is_user_logged_in() ) {
+		bk_g_next_cookie( false ); // Llegó bien a la gestión.
 	}
 	// Nunca en caché: el sitio usa LiteSpeed Cache y otra capa propia (X-Ufocache, revisión 2026-10-14).
 	if ( ! defined( 'DONOTCACHEPAGE' ) ) {
@@ -316,6 +382,8 @@ function bk_g_render() {
 			'send'    => 'lucide:send',
 			'eye'     => 'lucide:eye',
 			'percent' => 'lucide:percent',
+			'rotl'    => 'lucide:rotate-ccw',
+			'rotr'    => 'lucide:rotate-cw',
 			'layout'  => 'lucide:image',
 			'help'    => 'lucide:circle-help',
 			'gift'    => 'lucide:gift',

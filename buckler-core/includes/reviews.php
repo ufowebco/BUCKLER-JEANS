@@ -83,7 +83,7 @@ function bk_review_promo( $context = '' ) {
 }
 
 /**
- * Reseñas de Google guardadas por WP Social Ninja (cacheadas 6 h).
+ * Reseñas de Google guardadas por WP Social Ninja (cacheadas 1 h; se renuevan al sincronizar el plugin).
  *
  * @param int $limit Máximo de reseñas.
  * @return array{items:array,avg:float,total:int}|null Null si el plugin no tiene tabla o reseñas.
@@ -125,15 +125,19 @@ function bk_google_reviews( $limit = 12 ) {
 			$data['total'] = (int) ( $sum['n'] ?? 0 );
 		}
 	}
-	// Promedio y total reales del perfil de Google, si el plugin los guardó.
+	// Promedio y total reales del perfil de Google, si el plugin los guardó. Puede haber varios perfiles/lugares
+	// (uno viejo con menos reseñas): se toma el de más reseñas, y nunca menos de las que hay en la tabla.
+	$best = null;
 	foreach ( (array) get_option( 'wpsr_reviews_google_business_info', array() ) as $info ) {
-		if ( is_array( $info ) && ! empty( $info['total_rating'] ) ) {
-			$data['avg']   = round( (float) ( $info['average_rating'] ?? $data['avg'] ), 1 );
-			$data['total'] = (int) $info['total_rating'];
-			break;
+		if ( is_array( $info ) && ! empty( $info['total_rating'] ) && ( ! $best || (int) $info['total_rating'] > (int) $best['total_rating'] ) ) {
+			$best = $info;
 		}
 	}
-	set_transient( $key, $data, 6 * HOUR_IN_SECONDS );
+	if ( $best && (int) $best['total_rating'] >= $data['total'] ) {
+		$data['avg']   = round( (float) ( $best['average_rating'] ?? $data['avg'] ), 1 );
+		$data['total'] = (int) $best['total_rating'];
+	}
+	set_transient( $key, $data, HOUR_IN_SECONDS ); // 1 h: WP Social Ninja sincroniza por su cuenta.
 	return $data['items'] ? $data : null;
 }
 
@@ -240,4 +244,22 @@ function bk_reviews_block( $args = array() ) {
  */
 function bk_reviews_shortcode( $atts ) {
 	return bk_reviews_block( shortcode_atts( array( 'titulo' => __( 'Lo que dicen nuestras clientas', 'buckler-core' ), 'limite' => 12, 'promo' => 1 ), $atts, 'bk_resenas' ) );
+}
+
+// Cuando WP Social Ninja actualiza el perfil de Google (total y promedio), se renueva el bloque de reseñas y la caché.
+foreach ( array( 'update_option_wpsr_reviews_google_business_info', 'add_option_wpsr_reviews_google_business_info' ) as $bk_hook ) {
+	add_action( $bk_hook, 'bk_google_reviews_flush' );
+}
+unset( $bk_hook );
+
+/**
+ * Borra las copias del bloque de reseñas y purga la caché de páginas.
+ */
+function bk_google_reviews_flush() {
+	foreach ( array( 3, 4, 6, 8, 10, 12, 20 ) as $n ) {
+		delete_transient( 'bk_greviews2_' . $n );
+	}
+	if ( function_exists( 'bk_cache_purge' ) ) {
+		bk_cache_purge();
+	}
 }

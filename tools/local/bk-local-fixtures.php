@@ -186,3 +186,33 @@ add_action(
 
 // Pruebas del modo anterior (casilla de autorización): la opción bk_test_ac_checkbox lo vuelve a encender.
 add_filter( 'bk_ac_consent_mode', static fn( $m ) => get_option( 'bk_test_ac_checkbox' ) ? 'checkbox' : $m );
+
+// Como algún plugin/snippet de producción (2026-10-15: @GestorTienda, @AdminDenimBlue y Gestor_ADS vuelven al inicio al
+// entrar a /gestion-tienda/). Opción bk_test_login_home: 'wp_login' (wp_safe_redirect al inicio al iniciar sesión),
+// 'header' (header('Location') directo al iniciar sesión) o 'template' (usuarios sin manage_options → inicio en
+// template_redirect, en cualquier página).
+add_action(
+	'wp_login',
+	static function () {
+		$mode = get_option( 'bk_test_login_home' );
+		if ( 'wp_login' === $mode ) {
+			wp_safe_redirect( home_url( '/' ) );
+			exit;
+		}
+		if ( 'header' === $mode ) {
+			header( 'Location: ' . home_url( '/' ), true, 302 );
+			exit;
+		}
+	},
+	99
+);
+add_action(
+	'template_redirect',
+	static function () {
+		if ( 'template' === get_option( 'bk_test_login_home' ) && is_user_logged_in() && ! current_user_can( 'manage_options' ) && ! is_front_page() ) {
+			wp_safe_redirect( home_url( '/' ) );
+			exit;
+		}
+	},
+	1
+);

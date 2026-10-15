@@ -43,6 +43,7 @@ function bk_gp_routes() {
 		)
 	);
 	register_rest_route( $ns, '/gestion/media', array( 'methods' => 'POST', 'callback' => 'bk_gp_upload', 'permission_callback' => $perm ) );
+	register_rest_route( $ns, '/gestion/media/(?P<id>\d+)/rotate', array( 'methods' => 'POST', 'callback' => 'bk_gp_rotate', 'permission_callback' => $perm ) );
 }
 
 /* ---------------------------------------------------------------------------
@@ -769,4 +770,56 @@ function bk_gp_upload( WP_REST_Request $r ) {
 			'url'  => (string) ( 'video' === $kind ? wp_get_attachment_url( $id ) : wp_get_attachment_image_url( $id, 'medium' ) ),
 		)
 	);
+}
+
+/**
+ * Gira una foto 90° (izquierda o derecha) desde la gestión: se guarda como archivo nuevo (las cachés no muestran la
+ * vieja), se regeneran los tamaños y se borran los archivos anteriores.
+ *
+ * @param WP_REST_Request $r Petición (id, dir: left|right).
+ * @return WP_REST_Response|WP_Error
+ */
+function bk_gp_rotate( WP_REST_Request $r ) {
+	$id = (int) $r['id'];
+	if ( ! $id || 'attachment' !== get_post_type( $id ) || ! wp_attachment_is_image( $id ) ) {
+		return new WP_Error( 'bk_rotate', 'No se encontró la foto.', array( 'status' => 404 ) );
+	}
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	$file = get_attached_file( $id );
+	$src  = function_exists( 'wp_get_original_image_path' ) ? wp_get_original_image_path( $id ) : $file;
+	$src  = $src && file_exists( $src ) ? $src : $file;
+	if ( ! $src || ! file_exists( $src ) ) {
+		return new WP_Error( 'bk_rotate', 'No se encontró el archivo de la foto.', array( 'status' => 404 ) );
+	}
+	$ed = wp_get_image_editor( $src );
+	if ( is_wp_error( $ed ) ) {
+		return new WP_Error( 'bk_rotate', 'El servidor no puede editar esta foto.', array( 'status' => 500 ) );
+	}
+	$ed->rotate( 'left' === $r['dir'] ? 90 : -90 ); // WordPress gira en sentido contrario a las agujas del reloj.
+	$info = pathinfo( $src );
+	$base = preg_replace( '/(-scaled|-rotated|-r\d+)+$/', '', $info['filename'] );
+	$new  = wp_unique_filename( $info['dirname'], $base . '-r' . time() . '.' . $info['extension'] );
+	$res  = $ed->save( trailingslashit( $info['dirname'] ) . $new );
+	if ( is_wp_error( $res ) ) {
+		return new WP_Error( 'bk_rotate', 'No se pudo guardar la foto girada.', array( 'status' => 500 ) );
+	}
+	// Borrar los archivos anteriores (original, escalada y tamaños) y apuntar al nuevo.
+	$old_meta = wp_get_attachment_metadata( $id );
+	$backup   = get_post_meta( $id, '_wp_attachment_backup_sizes', true );
+	wp_delete_attachment_files( $id, is_array( $old_meta ) ? $old_meta : array(), is_array( $backup ) ? $backup : array(), $file );
+	update_attached_file( $id, $res['path'] );
+	$webp = static fn( $formats ) => array_merge( (array) $formats, array( 'image/jpeg' => 'image/webp', 'image/png' => 'image/webp' ) );
+	if ( wp_image_editor_supports( array( 'mime_type' => 'image/webp' ) ) ) {
+		add_filter( 'image_editor_output_format', $webp );
+	}
+	wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $res['path'] ) );
+	remove_filter( 'image_editor_output_format', $webp );
+	// Productos que la usan: limpiar cachés de tarjetas y páginas.
+	foreach ( (array) get_posts( array( 'post_type' => 'product', 'post_status' => 'any', 'fields' => 'ids', 'posts_per_page' => 20, 'meta_query' => array( 'relation' => 'OR', array( 'key' => '_thumbnail_id', 'value' => $id ), array( 'key' => '_product_image_gallery', 'value' => (string) $id, 'compare' => 'LIKE' ) ) ) ) as $pid ) { // phpcs:ignore WordPress.DB.SlowDBQuery
+		if ( function_exists( 'bk_catalog_flush' ) ) {
+			bk_catalog_flush( (int) $pid );
+		}
+		clean_post_cache( (int) $pid );
+	}
+	return rest_ensure_response( array( 'id' => $id, 'url' => (string) wp_get_attachment_image_url( $id, 'medium' ) ) );
 }
