@@ -131,14 +131,29 @@ function bk_ac_cart_snapshot() {
  */
 function bk_ac_ajax_capture() {
 	check_ajax_referer( 'bk_ac_capture', 'nonce' );
-	$s       = bk_ac_settings();
-	$email   = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
-	$consent = ! empty( $_POST['consent'] ) || 'notice' === $s['consent_mode'];
-	$token   = WC()->session ? (string) WC()->session->get( 'bk_ac_token' ) : '';
-	$row     = $token ? bk_ac_get( $token ) : null;
+	bk_ac_maybe_install();
+	$s     = bk_ac_settings();
+	$email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+	$email = is_email( $email ) ? $email : '';
+	$phone = isset( $_POST['phone'] ) ? sanitize_text_field( wp_unslash( $_POST['phone'] ) ) : '';
+	$token = WC()->session ? (string) WC()->session->get( 'bk_ac_token' ) : '';
+	$row   = $token ? bk_ac_get( $token ) : null;
 
-	if ( 'yes' !== $s['enabled'] || ! is_email( $email ) || ! WC()->cart || WC()->cart->is_empty() || bk_ac_is_opted_out( $email ) ) {
+	// Se guarda con correo O celular: la tienda siempre ve el carrito y puede escribir por WhatsApp.
+	if ( 'yes' !== $s['enabled'] || ( ! $email && strlen( preg_replace( '/\D/', '', $phone ) ) < 7 ) || ! WC()->cart || WC()->cart->is_empty() ) {
 		wp_send_json_success( array( 'saved' => false ) );
+	}
+	if ( ! $email && $row && is_email( $row->email ) ) {
+		$email = $row->email; // Borró el correo a medias: se conserva el último válido.
+	}
+	// Correos solo con autorización y si ese correo no se dio de baja.
+	$consent = $email && ( ! empty( $_POST['consent'] ) || 'notice' === $s['consent_mode'] ) && ! bk_ac_is_opted_out( $email );
+	$extra   = array();
+	foreach ( array( 'last_name', 'id_number', 'city', 'state', 'address' ) as $k ) {
+		$v = isset( $_POST[ $k ] ) ? mb_substr( sanitize_text_field( wp_unslash( $_POST[ $k ] ) ), 0, 150 ) : '';
+		if ( '' !== $v ) {
+			$extra[ $k ] = $v;
+		}
 	}
 
 	// Sin autorización el carrito se guarda igual (la tienda lo ve en Carritos), pero NUNCA recibe correos.
@@ -146,7 +161,8 @@ function bk_ac_ajax_capture() {
 	$data = array(
 		'email'      => $email,
 		'first_name' => isset( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '',
-		'phone'      => isset( $_POST['phone'] ) ? sanitize_text_field( wp_unslash( $_POST['phone'] ) ) : '',
+		'phone'      => mb_substr( $phone, 0, 40 ),
+		'extra'      => $extra ? wp_json_encode( $extra, JSON_UNESCAPED_UNICODE ) : null,
 		'cart'       => wp_json_encode( $snap['items'] ),
 		'cart_total' => $snap['total'],
 		'currency'   => get_woocommerce_currency(),
@@ -156,6 +172,9 @@ function bk_ac_ajax_capture() {
 
 	if ( $row && in_array( $row->status, array( 'active', 'emptied' ), true ) ) {
 		$email_changed  = strtolower( $row->email ) !== strtolower( $email );
+		if ( ! $extra ) {
+			unset( $data['extra'] );
+		}
 		$data['status'] = 'active';
 		bk_ac_update( (int) $row->id, $data );
 		if ( ! $consent ) {
@@ -275,6 +294,9 @@ function bk_ac_order_created( $order ) {
 		WC()->session->set( 'bk_ac_hash', null );
 	}
 	// Otros carritos activos del mismo correo (otro dispositivo) tampoco deben recibir recordatorios.
+	if ( ! $order->get_billing_email() ) {
+		return;
+	}
 	global $wpdb;
 	$table = bk_ac_table();
 	$ids   = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM {$table} WHERE email = %s AND status = 'active'", $order->get_billing_email() ) ); // phpcs:ignore WordPress.DB

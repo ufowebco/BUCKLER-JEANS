@@ -1,6 +1,6 @@
 /**
  * Captura del correo en el checkout para recordatorios de carrito abandonado.
- * Guarda el carrito en cuanto hay un correo válido (al escribir, al salir del campo y al cerrar o
+ * Guarda el carrito en cuanto hay un correo válido o un celular (al escribir, al salir del campo y al cerrar o
  * cambiar de pestaña con sendBeacon). Sin la autorización se guarda para la tienda, pero no se envían correos.
  * Funciona con el checkout clásico (Divi / shortcode) y con el de bloques.
  */
@@ -18,17 +18,19 @@
 	let last = '';
 	let timer = 0;
 
+	const val = (id) => ($(`#${id}`)?.value || '').trim();
+	// Campos que se guardan con el carrito (si existen en el formulario).
+	const FIELDS = { first_name: 'billing_first_name', last_name: 'billing_last_name', phone: 'billing_phone', id_number: 'billing_id', city: 'billing_city', state: 'billing_state', address: 'billing_address_1' };
+	const IDS = Object.values(FIELDS);
+
 	const payload = () => {
 		const email = (emailEl()?.value || '').trim();
-		if (!valid(email)) return null;
+		const phone = val('billing_phone');
+		// Basta con un correo válido O un celular (7+ dígitos): la tienda siempre ve el carrito.
+		if (!valid(email) && phone.replace(/\D/g, '').length < 7) return null;
 		const consent = cfg.mode === 'notice' || !!consentEl()?.checked;
-		const data = {
-			nonce: cfg.nonce,
-			email,
-			consent: consent ? '1' : '',
-			first_name: ($('#billing_first_name')?.value || '').trim(),
-			phone: ($('#billing_phone')?.value || '').trim(),
-		};
+		const data = { nonce: cfg.nonce, email: valid(email) ? email : '', consent: consent ? '1' : '' };
+		for (const [k, id] of Object.entries(FIELDS)) data[k] = val(id);
 		const key = JSON.stringify(data);
 		if (key === last) return null;
 		last = key;
@@ -46,7 +48,7 @@
 		if (body && !(navigator.sendBeacon && navigator.sendBeacon(cfg.url, body))) send();
 	};
 	const queue = (ms = 400) => { clearTimeout(timer); timer = setTimeout(send, ms); };
-	const watched = (el) => el && (el === emailEl() || el === consentEl() || el.id === 'billing_first_name' || el.id === 'billing_phone');
+	const watched = (el) => el && (el === emailEl() || el === consentEl() || IDS.includes(el.id));
 
 	document.addEventListener('input', (e) => { if (watched(e.target)) queue(1200); });
 	document.addEventListener('change', (e) => { if (watched(e.target)) queue(); });
@@ -69,6 +71,6 @@
 		document.body.addEventListener('updated_checkout', place);
 	}
 
-	// Si el correo ya venía lleno (clienta registrada o restaurada desde el correo).
-	if (valid((emailEl()?.value || '').trim())) queue();
+	// Si los datos ya venían llenos (clienta registrada o restaurada desde el correo).
+	queue();
 })();

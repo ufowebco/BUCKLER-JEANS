@@ -502,7 +502,9 @@ function bk_gs_abandoned( WP_REST_Request $r ) {
 		$list[] = array(
 			'id'      => (int) $row->id,
 			'date'    => wp_date( 'j M Y, g:i a', strtotime( $row->created_at . ' UTC' ) ),
-			'name'    => $row->first_name,
+			'name'    => trim( $row->first_name . ' ' . ( bk_ac_extra( $row )['last_name'] ?? '' ) ),
+			'idnum'   => (string) ( bk_ac_extra( $row )['id_number'] ?? '' ),
+			'place'   => implode( ', ', array_filter( array( bk_ac_extra( $row )['address'] ?? '', bk_ac_extra( $row )['city'] ?? '', bk_ac_extra( $row )['state'] ?? '' ) ) ),
 			'email'   => $row->email,
 			'phone'   => $row->phone,
 			'items'   => array_map(

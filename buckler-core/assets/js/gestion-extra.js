@@ -43,7 +43,7 @@
 		main.innerHTML = `<h1 class="bk-g-h1">Carritos abandonados</h1>
 			<p class="bk-g-hint">${s.on ? 'Activo' : 'Correos pausados'} · recordatorios a las ${s.delays.map((h) => `${h} h`).join(', ')}${s.coupons.some((c) => c > 0) ? ` · cupones: ${s.coupons.map((c) => (c ? `${c} %` : '—')).join(' / ')}` : ' · sin cupón'} · autorización: ${s.consent === 'checkbox' ? 'casilla' : 'aviso'}${s.admin ? ` · <a href="${esc(s.admin)}" target="_blank" rel="noopener">Configurar</a>` : ''}</p>
 			<div class="bk-g-kpis">
-				<div class="bk-g-kpi"><span>Carritos con correo</span><b>${num(k.captured)}</b><small>Últimos 30 días</small></div>
+				<div class="bk-g-kpi"><span>Carritos capturados</span><b>${num(k.captured)}</b><small>Últimos 30 días</small></div>
 				<div class="bk-g-kpi"><span>Pendientes</span><b>${num(k.pending)}</b><small>${esc(k.pending_total)} en carritos</small></div>
 				<div class="bk-g-kpi"><span>Correos enviados</span><b>${num(k.emails)}</b><small>${num(k.clicked)} abrieron el enlace</small></div>
 				<div class="bk-g-kpi is-good"><span>Recuperados</span><b>${num(k.recovered)}</b><small>${esc(k.recovered_total)} en ventas</small></div>
@@ -53,12 +53,12 @@
 			<div class="bk-g-table-wrap"><table class="bk-g-table bk-g-carts"><thead><tr><th>Fecha</th><th>Clienta</th><th>Productos</th><th>Total</th><th>Correos</th><th>Estado</th></tr></thead><tbody>
 			${d.rows.map((r) => `<tr>
 				<td class="c-date">${esc(r.date)}</td>
-				<td class="c-cust"><b>${esc(r.name || '—')}</b><small><a href="mailto:${esc(r.email)}">${esc(r.email)}</a>${r.phone ? ` · <a href="https://wa.me/57${esc(String(r.phone).replace(/\D/g, '').replace(/^57/, ''))}" target="_blank" rel="noopener">${esc(r.phone)}</a>` : ''}</small></td>
+				<td class="c-cust"><b>${esc(r.name || '—')}</b><small>${[r.email ? `<a href="mailto:${esc(r.email)}">${esc(r.email)}</a>` : '', r.phone ? `<a href="https://wa.me/57${esc(String(r.phone).replace(/\D/g, '').replace(/^57/, ''))}" target="_blank" rel="noopener">${esc(r.phone)}</a>` : ''].filter(Boolean).join(' · ')}${r.idnum ? `<br>Cédula ${esc(r.idnum)}` : ''}${r.place ? `<br>${esc(r.place)}` : ''}</small></td>
 				<td class="c-items">${r.items.map((i) => `<span>${i.qty} × ${esc(i.name)}${i.size ? ` <small>(${esc(i.size)})</small>` : ''}</span>`).join('')}</td>
 				<td class="c-total"><b>${esc(r.total)}</b></td>
 				<td>${r.emails} de 3${r.clicked ? '<small>Abrió el enlace</small>' : ''}</td>
 				<td><span class="bk-g-pill ${cartPill[r.status] || ''}">${esc(r.label)}</span>${r.order ? `<small><button type="button" class="bk-g-link" data-order="${r.order}">Pedido</button></small>` : ''}</td></tr>`).join('')}
-			</tbody></table></div>${A.pager(d.pages, aState.page, 'a')}` : '<p class="bk-g-empty">Aún no hay carritos con esos filtros. Aparecen cuando una clienta escribe su correo en el checkout y no termina la compra.</p>'}`;
+			</tbody></table></div>${A.pager(d.pages, aState.page, 'a')}` : '<p class="bk-g-empty">Aún no hay carritos con esos filtros. Aparecen cuando una clienta escribe su correo o su celular en Finalizar compra y no termina la compra.</p>'}`;
 		$('#bk-g-af').addEventListener('change', (e) => { aState.status = e.target.value; aState.page = 1; viewCarts(); });
 	}
 

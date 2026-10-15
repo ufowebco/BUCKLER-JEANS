@@ -483,11 +483,11 @@
 			], 653),
 		]],
 		['carritos', 'Carritos abandonados', `
-			<p>Cuando una clienta escribe su correo en <b>Finalizar compra</b> y no termina, el carrito se guarda aquí (también si cierra la página). Si marcó la autorización, recibe hasta 3 recordatorios (2, 24 y 48 h) con un enlace que le devuelve el carrito. Sin autorización, el carrito se ve aquí pero no se le escribe.</p>`, [
+			<p>Cuando una clienta escribe su correo <b>o su celular</b> en <b>Finalizar compra</b> y no termina, el carrito se guarda aquí con sus datos (nombre, cédula, ciudad y dirección si los escribió), también si cierra la página. Si marcó la autorización, recibe hasta 3 recordatorios (2, 24 y 48 h) con un enlace que le devuelve el carrito. Sin autorización, el carrito se ve aquí pero no se le escribe.</p>`, [
 			fig('carritos', 'Carritos abandonados', [
-				'<b>Indicadores</b> de los últimos 30 días: carritos con correo, pendientes, correos enviados y ventas recuperadas.',
+				'<b>Indicadores</b> de los últimos 30 días: carritos capturados, pendientes, correos enviados y ventas recuperadas.',
 				'<b>Filtro</b> por estado.',
-				'<b>Clienta:</b> nombre, correo y celular (puedes escribirle por WhatsApp).',
+				'<b>Clienta:</b> nombre, correo, celular (tócalo para escribirle por WhatsApp), cédula y ciudad.',
 				'<b>Estado:</b> Pendiente (recibe recordatorios), Pendiente · sin autorización (no recibe correos), Recuperado (compró desde el correo), Compró, Vació el carrito o Vencido.',
 			], 845),
 		]],

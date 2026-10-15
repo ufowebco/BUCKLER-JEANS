@@ -191,7 +191,7 @@ function bk_ac_admin_list() {
 		<thead><tr><th>Fecha</th><th>Clienta</th><th>Productos</th><th>Total</th><th>Correos</th><th>Estado</th><th></th></tr></thead>
 		<tbody>
 		<?php if ( ! $rows ) : ?>
-			<tr><td colspan="7"><?php esc_html_e( 'Aún no hay carritos. Aparecen cuando una clienta escribe su correo en el checkout y no termina la compra.', 'buckler-core' ); ?></td></tr>
+			<tr><td colspan="7"><?php esc_html_e( 'Aún no hay carritos. Aparecen cuando una clienta escribe su correo o su celular en Finalizar compra y no termina la compra.', 'buckler-core' ); ?></td></tr>
 		<?php endif; ?>
 		<?php
 		foreach ( $rows as $r ) :
@@ -200,7 +200,8 @@ function bk_ac_admin_list() {
 			?>
 			<tr>
 				<td><?php echo esc_html( wp_date( 'j M Y, g:i a', strtotime( $r->created_at . ' UTC' ) ) ); ?></td>
-				<td><strong><?php echo esc_html( $r->first_name ); ?></strong><br><a href="mailto:<?php echo esc_attr( $r->email ); ?>"><?php echo esc_html( $r->email ); ?></a><?php echo $r->phone ? '<br>' . esc_html( $r->phone ) : ''; ?></td>
+				<?php $x = bk_ac_extra( $r ); ?>
+				<td><strong><?php echo esc_html( trim( $r->first_name . ' ' . ( $x['last_name'] ?? '' ) ) ); ?></strong><?php echo $r->email ? '<br><a href="mailto:' . esc_attr( $r->email ) . '">' . esc_html( $r->email ) . '</a>' : ''; ?><?php echo $r->phone ? '<br>' . esc_html( $r->phone ) : ''; ?><?php echo ! empty( $x['id_number'] ) ? '<br>Cédula ' . esc_html( $x['id_number'] ) : ''; ?><?php echo ! empty( $x['city'] ) ? '<br>' . esc_html( $x['city'] ) : ''; ?></td>
 				<td>
 					<?php
 					foreach ( $items as $i ) {

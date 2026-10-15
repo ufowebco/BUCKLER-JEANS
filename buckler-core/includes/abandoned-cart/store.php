@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const BK_AC_DB_VERSION = '1';
+const BK_AC_DB_VERSION = '2'; // 2: columna extra (apellido, cédula, ciudad, dirección).
 
 /**
  * Nombre de la tabla.
@@ -39,6 +39,7 @@ function bk_ac_install() {
 			email varchar(190) NOT NULL DEFAULT '',
 			first_name varchar(100) NOT NULL DEFAULT '',
 			phone varchar(40) NOT NULL DEFAULT '',
+			extra longtext NULL,
 			cart longtext NOT NULL,
 			cart_total decimal(19,4) NOT NULL DEFAULT 0,
 			currency char(3) NOT NULL DEFAULT 'COP',
@@ -61,14 +62,28 @@ function bk_ac_install() {
 	update_option( 'bk_ac_db_version', BK_AC_DB_VERSION, false );
 }
 
-add_action(
-	'admin_init',
-	static function () {
-		if ( get_option( 'bk_ac_db_version' ) !== BK_AC_DB_VERSION ) {
-			bk_ac_install();
-		}
+add_action( 'admin_init', 'bk_ac_maybe_install' );
+
+/**
+ * Actualiza la tabla si cambió su versión (en wp-admin y antes de cada captura: la tienda puede recibir
+ * carritos antes de que alguien entre a wp-admin tras actualizar el plugin).
+ */
+function bk_ac_maybe_install() {
+	if ( get_option( 'bk_ac_db_version' ) !== BK_AC_DB_VERSION ) {
+		bk_ac_install();
 	}
-);
+}
+
+/**
+ * Datos extra guardados con el carrito (apellido, cédula, ciudad, departamento, dirección).
+ *
+ * @param object $row Carrito.
+ * @return array
+ */
+function bk_ac_extra( $row ) {
+	$x = json_decode( (string) ( $row->extra ?? '' ), true );
+	return is_array( $x ) ? $x : array();
+}
 
 /**
  * Ajustes con valores por defecto. Se editan en WooCommerce → Carritos abandonados → Ajustes.

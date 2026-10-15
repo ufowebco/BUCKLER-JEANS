@@ -355,6 +355,7 @@ function bk_ac_privacy_export( $email ) {
 				array( 'name' => 'Correo', 'value' => $r->email ),
 				array( 'name' => 'Nombre', 'value' => $r->first_name ),
 				array( 'name' => 'Teléfono', 'value' => $r->phone ),
+				array( 'name' => 'Otros datos', 'value' => implode( ', ', bk_ac_extra( $r ) ) ),
 				array( 'name' => 'Productos', 'value' => implode( ', ', wp_list_pluck( json_decode( $r->cart, true ) ?: array(), 'name' ) ) ),
 				array( 'name' => 'Fecha', 'value' => $r->created_at ),
 			),

@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.17.1 → `dist/buckler-core-0.17.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.17.2 → `dist/buckler-core-0.17.2.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -453,6 +453,14 @@ Versión actual 0.17.1 → `dist/buckler-core-0.17.1.zip` (`tools/build-plugin.s
     pantalla de Woo, se quita en la API); casilla "Marcar como Completado" de la guía ocupaba media fila; anillo de foco
     en `.bk-g-main` al cambiar de sección.
   - Suite `ronda171.js` (25).
+- **0.17.2 — decisión del cliente: el carrito abandonado se captura "sí o sí":** se guarda con correo válido **o**
+  celular (7+ dígitos), aunque no haya autorización y aunque el correo se haya dado de baja (en ambos casos
+  `consent` = 0 → nunca recibe correos). Columna nueva `extra` (JSON: last_name, id_number [`#billing_id`], city, state,
+  address; `BK_AC_DB_VERSION` 2, `bk_ac_maybe_install()` también antes de cada captura, `bk_ac_extra($row)`).
+  ac-capture.js envía todos esos campos; se guarda al cargar si ya venían llenos. Sin correo: se conserva el último
+  correo válido de la fila. Al comprar, la conversión por correo se salta si el pedido no trae correo (evitaba marcar
+  todas las filas sin correo). Gestión/wp-admin: nombre completo, cédula y ciudad/dirección; KPI "Carritos capturados".
+  ronda171.js 29.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -497,7 +505,7 @@ Versión actual 0.17.1 → `dist/buckler-core-0.17.1.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 25 = 519 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29 = 523 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

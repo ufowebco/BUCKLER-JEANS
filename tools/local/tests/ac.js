@@ -62,7 +62,8 @@ const ok = (c, m) => console.log((c ? 'OK   ' : 'FAIL ') + m);
   ok((await q.textContent('.bk-toast')).includes('No te enviaremos más recordatorios'), 'mensaje de confirmación de baja');
   // Vuelve a intentar: ya no se captura
   await q.goto(`${B}/checkout/`); await q.fill('#billing_email', 'ana@ejemplo.com'); await q.locator('#billing_email').blur(); await q.waitForTimeout(1200);
-  ok(JSON.parse(php('rows')).length === 1, 'un correo dado de baja no se vuelve a capturar');
+  const r2 = JSON.parse(php('rows'));
+  ok(r2.length === 2 && +r2[1].consent === 0 && JSON.parse(php('actions')).length === 0, 'un correo dado de baja se captura igual para la tienda, pero sin correos');
   // Vacía el carrito: se cancelan
   php('reset');
   const c4 = await b.newContext(); const r = await c4.newPage();

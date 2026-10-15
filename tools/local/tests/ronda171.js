@@ -62,12 +62,40 @@ const iso = (d) => new Date(d.getTime() - 5 * 3600e3).toISOString().slice(0, 16)
   rows = JSON.parse(run('rows'));
   ok(rows.length === 1 && rows[0].email === 'pestana@ejemplo.com', 'al cambiar de pestaña o minimizar también se guarda');
 
+  // Solo celular (sin correo) + datos extra: se guarda igual.
+  run('reset');
+  const c4 = await b.newContext({ viewport: { width: 1280, height: 900 } }); const w = await c4.newPage(); watch(w);
+  await w.goto(`${B}/?add-to-cart=22&variation_id=24&attribute_pa_tallas-plus-size=16`); await w.goto(`${B}/checkout/`);
+  await w.fill('#billing_first_name', 'Marta'); await w.fill('#billing_last_name', 'Ríos'); await w.fill('#billing_city', 'Envigado');
+  await w.fill('#billing_address_1', 'Calle 10 # 5-20');
+  await w.click('#billing_phone'); await w.keyboard.type('3001234567', { delay: 10 });
+  await w.close({ runBeforeUnload: true }); await new Promise((r) => setTimeout(r, 2500));
+  const solo = JSON.parse(php('global $wpdb; echo json_encode($wpdb->get_results("SELECT email,first_name,phone,consent,extra FROM {$wpdb->prefix}bk_abandoned_carts"));'));
+  const ex = solo[0] ? JSON.parse(solo[0].extra || '{}') : {};
+  ok(solo.length === 1 && solo[0].email === '' && solo[0].phone === '3001234567' && +solo[0].consent === 0, `solo con celular (sin correo) el carrito queda guardado (${JSON.stringify(solo[0] || {})})`);
+  ok(ex.last_name === 'Ríos' && ex.city === 'Envigado' && /Calle 10/.test(ex.address || ''), 'se guardan también apellido, ciudad y dirección');
+  ok(JSON.parse(run('actions')).length === 0, 'sin correo no se programa nada');
+  // Correo dado de baja: se captura igual, sin correos.
+  php('bk_ac_opt_out("baja@ejemplo.com");');
+  const c5 = await b.newContext(); const y = await c5.newPage(); watch(y);
+  await y.goto(`${B}/?add-to-cart=22&variation_id=24&attribute_pa_tallas-plus-size=16`); await y.goto(`${B}/checkout/`);
+  await y.fill('#billing_email', 'baja@ejemplo.com'); await y.check('#bk_ac_consent'); await y.waitForTimeout(1600);
+  const rb = JSON.parse(run('rows')).find((r) => r.email === 'baja@ejemplo.com');
+  ok(rb && +rb.consent === 0 && JSON.parse(run('actions')).length === 0, 'correo que se dio de baja: el carrito se guarda, nunca recibe correos');
+  await c5.close();
+  run('reset');
+  // Vuelve el caso de la casilla para la lista de la gestión.
+  const c6 = await b.newContext(); const z = await c6.newPage(); watch(z);
+  await z.goto(`${B}/?add-to-cart=22&variation_id=24&attribute_pa_tallas-plus-size=16`); await z.goto(`${B}/checkout/`);
+  await z.fill('#billing_first_name', 'Lina'); await z.fill('#billing_city', 'Medellín'); await z.fill('#billing_email', 'lina@ejemplo.com'); await z.locator('#billing_email').blur(); await z.waitForTimeout(1600);
+
   // Lista de la gestión: etiqueta "sin autorización".
   const g = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage(); watch(g);
   await g.goto(B + '/gestion-tienda/'); await g.fill('[name=log]', 'admin'); await g.fill('[name=pwd]', 'admin');
   await Promise.all([g.waitForNavigation(), g.click('.bk-g-login__form [type=submit]')]); await g.waitForSelector('.bk-g-tabs');
   await g.goto(B + '/gestion-tienda/#carritos'); await g.waitForSelector('.bk-g-carts');
-  ok(/sin autorización/.test(await g.textContent('.bk-g-carts tbody tr:first-child')), 'Carritos: se ve el carrito y que no recibe correos (sin autorización)');
+  const first = await g.textContent('.bk-g-carts tbody tr:first-child');
+  ok(/sin autorización/.test(first) && /Lina/.test(first) && /Medellín/.test(first), 'Carritos: se ve el carrito con nombre y ciudad, y que no recibe correos (sin autorización)');
 
   // --- 3. Descuentos con el módulo apagado ------------------------------------------------------------------
   php('update_option("bk_modules", array_values(array_diff(get_option("bk_modules"), ["discounts"])));');
