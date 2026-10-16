@@ -7,7 +7,7 @@ Rutas asumidas: `BK_LOCAL=/tmp/claude-0/bk-local` (ajustar en los scripts si cam
 php tools/local/tests/seed-cards.php     # galerías, destacado, oferta, talla agotada
 php tools/local/tests/seed-shop.php      # ~60 productos con nombres/precios/categorías reales
 php tools/local/tests/seed-orders.php    # pedidos de ejemplo, usuaria "gestora" (rol Gestor de tienda)
-cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180 ronda181 ronda182 ronda184 ronda185 ronda186 ronda187 ronda188; do NODE_PATH=$(npm root -g) node $t.js; done
+cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180 ronda181 ronda182 ronda184 ronda185 ronda186 ronda187 ronda188 ronda189; do NODE_PATH=$(npm root -g) node $t.js; done
 ```
 
 | Suite | Qué prueba | Comprobaciones |
@@ -40,6 +40,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `ronda186.js` | GA4 en el dataLayer: view_item, add_to_cart, view_cart, remove_from_cart, begin_checkout, add_payment_info, purchase una vez (y al confirmarse el pago), user_data SHA-256, guía para la agencia y contenedor GTM | 18 |
 | `ronda187.js` | Guía de tallas y siluetas en texto: dos botones, pestaña de la línea, Encuentra tu talla, siluetas dibujadas con "Este modelo", falda sin siluetas, celular, editor en Gestión y restaurar | 24 |
 | `ronda188.js` | Descripción inteligente con íconos (textos reales), texto libre sin cambios, accesos a Gestión tienda desde WordPress | 19 |
+| `ronda189.js` | Otra línea por REF (exacta, mismo número), pareja agotada → similares de la misma prenda | 7 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).
 | `seguridad.js` | Nombres de usuario ocultos a visitantes: REST de usuarios 401, ?author 404, sin sitemap de usuarios, Store API pública, error de acceso genérico, editor con sesión intacto | 7 |

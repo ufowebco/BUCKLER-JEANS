@@ -861,42 +861,155 @@ function bk_pdp_size_tools() {
 		$lines = (array) bk_config( 'lines' );
 		$label = $lines[ $twin['line'] ]['label'] ?? '';
 		$sizes = $lines[ $twin['line'] ]['sizes'] ?? '';
-		/* translators: 1: tallas, 2: línea */
-		echo '<a class="bk-pdp__twin" href="' . esc_url( $twin['url'] ) . '">' . esc_html( sprintf( __( '¿Buscas %1$s? Ver este modelo en %2$s', 'buckler-core' ), mb_strtolower( $sizes ), $label ) ) . ' →</a>';
+		if ( empty( $twin['similar'] ) ) {
+			/* translators: 1: tallas, 2: línea */
+			$text = sprintf( __( '¿Buscas %1$s? Ver este modelo en %2$s', 'buckler-core' ), mb_strtolower( $sizes ), $label );
+		} elseif ( $twin['prenda'] ) {
+			/* translators: 1: tallas, 2: prenda (jeans, faldas…), 3: línea */
+			$text = sprintf( __( '¿Buscas algo similar en %1$s? Mira %2$s en %3$s', 'buckler-core' ), mb_strtolower( $sizes ), $twin['prenda'], $label );
+		} else {
+			/* translators: 1: tallas, 2: línea */
+			$text = sprintf( __( '¿Buscas algo similar en %1$s? Mira la %2$s', 'buckler-core' ), mb_strtolower( $sizes ), $label );
+		}
+		echo '<a class="bk-pdp__twin' . ( empty( $twin['similar'] ) ? '' : ' is-similar' ) . '" href="' . esc_url( $twin['url'] ) . '">' . esc_html( $text ) . ' →</a>';
 	}
 	echo '</div>';
 	echo $guide['dialogs']; // phpcs:ignore WordPress.Security.EscapeOutput -- escapado al generarse.
 }
 
 /**
- * Mismo modelo (mismo nombre) en la otra línea, publicado y con stock.
+ * REF normalizada: mayúsculas, sin tildes ni espacios ni el sufijo PLUS ("9898 Plus" → "9898", "9890 Café Plus" → "9890CAFE").
+ *
+ * @param string $sku REF.
+ * @return string
+ */
+function bk_twin_base( $sku ) {
+	$n = strtoupper( preg_replace( '/[^A-Za-z0-9]+/', '', remove_accents( (string) $sku ) ) );
+	return (string) preg_replace( '/PLUS$/', '', $n );
+}
+
+/**
+ * Mapa de REF de todos los productos publicados (padres), cacheado con la versión del catálogo.
+ *
+ * @return array<int,array{base:string,num:string,line:string}>
+ */
+function bk_twin_map() {
+	$key = 'bk_twin_map_' . (int) get_option( 'bk_catalog_v', 0 );
+	$map = get_transient( $key );
+	if ( is_array( $map ) ) {
+		return $map;
+	}
+	global $wpdb;
+	$rows = $wpdb->get_results( "SELECT p.ID, m.meta_value AS sku FROM {$wpdb->posts} p JOIN {$wpdb->postmeta} m ON m.post_id = p.ID AND m.meta_key = '_sku' WHERE p.post_type = 'product' AND p.post_status = 'publish' AND m.meta_value <> ''" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	$map  = array();
+	foreach ( (array) $rows as $r ) {
+		$line = bk_product_line( (int) $r->ID );
+		if ( ! $line ) {
+			continue;
+		}
+		$base               = bk_twin_base( $r->sku );
+		$map[ (int) $r->ID ] = array( 'base' => $base, 'num' => preg_match( '/^\d{3,}/', $base, $m ) ? $m[0] : '', 'line' => $line['slug'] );
+	}
+	set_transient( $key, $map, DAY_IN_SECONDS );
+	return $map;
+}
+
+/**
+ * ¿Tiene alguna talla disponible? (lee las variaciones: el estado del padre se sincroniza al final de la petición).
+ *
+ * @param WC_Product $p Producto.
+ * @return bool
+ */
+function bk_twin_in_stock( $p ) {
+	if ( ! $p->is_type( 'variable' ) ) {
+		return $p->is_in_stock();
+	}
+	foreach ( $p->get_children() as $c ) {
+		$v = wc_get_product( $c );
+		if ( $v && 'publish' === $v->get_status() && $v->is_in_stock() ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Prenda del producto (categoría hija de una línea), para el respaldo "similares en la otra línea".
+ *
+ * @param int $product_id Producto.
+ * @return array{name:string,key:string}|null
+ */
+function bk_twin_prenda( $product_id ) {
+	$lines = array_keys( (array) bk_config( 'lines' ) );
+	$terms = get_the_terms( $product_id, 'product_cat' );
+	$name  = ' ' . sanitize_title( remove_accents( get_the_title( $product_id ) ) ) . ' ';
+	$found = array();
+	foreach ( is_array( $terms ) ? $terms : array() as $t ) {
+		$parent = $t->parent ? get_term( $t->parent, 'product_cat' ) : null;
+		if ( $parent && ! is_wp_error( $parent ) && in_array( $parent->slug, $lines, true ) ) {
+			$item = array( 'name' => function_exists( 'bk_nice_label' ) ? bk_nice_label( $t->name ) : $t->name, 'key' => bk_prenda_key( $t->name ) );
+			// Si está en varias prendas, la que nombra el producto ("JEAN …" → jeans) gana.
+			$word = preg_replace( '/(es|s)$/', '', strtok( $item['key'], '-' ) );
+			if ( $word && preg_match( '/[\s-]' . preg_quote( $word, '/' ) . '/', $name ) ) {
+				return $item;
+			}
+			$found[] = $item;
+		}
+	}
+	return $found ? $found[0] : null;
+}
+
+/**
+ * El mismo modelo en la otra línea, por REF (9898 ↔ 9898 Plus; si no, el mismo número, p. ej. en otro color).
+ * Si no hay, enlace a prendas similares (misma prenda) en la otra línea.
  *
  * @param WC_Product $product Producto.
- * @return array{url:string,line:string}|null
+ * @return array{url:string,line:string,similar:bool,prenda:string}|null
  */
 function bk_pdp_twin( $product ) {
-	$key  = 'bk_twin_' . $product->get_id() . '_' . (int) get_option( 'bk_catalog_v', 0 );
+	$key  = 'bk_twin2_' . $product->get_id() . '_' . (int) get_option( 'bk_catalog_v', 0 );
 	$twin = get_transient( $key );
 	if ( false === $twin ) {
-		$twin = array();
-		$mine = bk_product_line( $product->get_id() );
-		$q    = new WP_Query(
-			array(
-				'post_type'      => 'product',
-				'post_status'    => 'publish',
-				'title'          => $product->get_name(),
-				'posts_per_page' => 5,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-				'post__not_in'   => array( $product->get_id() ),
-			)
-		);
-		foreach ( $q->posts as $id ) {
-			$other = bk_product_line( $id );
-			$p     = wc_get_product( $id );
-			if ( $other && $mine && $other['slug'] !== $mine['slug'] && $p && $p->is_in_stock() ) {
-				$twin = array( 'url' => get_permalink( $id ), 'line' => $other['slug'] );
-				break;
+		$twin  = array();
+		$mine  = bk_product_line( $product->get_id() );
+		$lines = (array) bk_config( 'lines' );
+		$other = $mine ? array_values( array_diff( array_keys( $lines ), array( $mine['slug'] ) ) ) : array();
+		if ( $mine && $other ) {
+			$map  = bk_twin_map();
+			$base = bk_twin_base( $product->get_sku() );
+			$num  = preg_match( '/^\d{3,}/', $base, $m ) ? $m[0] : '';
+			$pick = static function ( $test ) use ( $map, $product, $other ) {
+				foreach ( $map as $id => $row ) {
+					if ( $id !== $product->get_id() && in_array( $row['line'], $other, true ) && $test( $row ) ) {
+						$p = wc_get_product( $id );
+						if ( $p && 'publish' === $p->get_status() && bk_twin_in_stock( $p ) ) {
+							return array( 'url' => get_permalink( $id ), 'line' => $row['line'], 'similar' => false, 'prenda' => '' );
+						}
+					}
+				}
+				return array();
+			};
+			if ( '' !== $base ) {
+				$twin = $pick( static fn( $r ) => $r['base'] === $base );
+			}
+			if ( ! $twin && '' !== $num ) {
+				$twin = $pick( static fn( $r ) => $r['num'] === $num );
+			}
+			if ( ! $twin ) {
+				// Sin el mismo modelo: prendas similares en la otra línea (filtro de la tienda por prenda).
+				$line = $other[0];
+				$page = (string) ( $lines[ $line ]['page'] ?? '' );
+				$pre  = bk_twin_prenda( $product->get_id() );
+				$keys = function_exists( 'bk_child_cats_raw' ) ? array_column( (array) bk_child_cats_raw( $line ), 'key' ) : array();
+				if ( $page ) {
+					$has  = $pre && ( ! $keys || in_array( $pre['key'], $keys, true ) );
+					$twin = array(
+						'url'     => $has ? add_query_arg( 'prenda', $pre['key'], bk_url( $page ) ) : bk_url( $page ),
+						'line'    => $line,
+						'similar' => true,
+						'prenda'  => $has ? mb_strtolower( $pre['name'] ) : '',
+					);
+				}
 			}
 		}
 		set_transient( $key, $twin, DAY_IN_SECONDS );
