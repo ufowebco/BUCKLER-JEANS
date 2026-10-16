@@ -343,7 +343,7 @@
 				<label class="bk-gp-field"><span>Nota bajo la tabla</span><textarea name="note" rows="3" maxlength="400">${esc(G.note)}</textarea></label>
 			</section>
 			<section class="bk-g-card"><h2>Siluetas</h2>
-				<p class="bk-g-hint">Se abren con el botón "Siluetas" en las fichas de jeans y pantalones. La silueta del producto se marca como "Este modelo" cuando su nombre tiene una de las palabras de "Detectar por" (por ejemplo "campana" o "flare").</p>
+				<p class="bk-g-hint">Se abren con el botón "Siluetas" en todas las fichas. En jeans y pantalones, la silueta del producto se marca como "Este modelo" cuando su nombre tiene una de las palabras de "Detectar por" (por ejemplo "campana" o "flare").</p>
 				<ul class="bk-gsil">${G.sil.map((x) => `<li class="bk-gsil__i" data-k="${esc(x.k)}">
 					<div class="bk-gsil__art">${x.svg}</div>
 					<div class="bk-gsil__f">

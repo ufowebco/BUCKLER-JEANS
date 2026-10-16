@@ -243,7 +243,7 @@ function bk_size_guide_html( $product ) {
 	$jean  = '<svg class="bk-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2h12l1 6-3 14h-3l-1-11-1 11H8L5 8z"/></svg>';
 
 	$tables = array_filter( $data['tables'], static fn( $rows, $slug ) => isset( $lines[ $slug ] ) && $rows, ARRAY_FILTER_USE_BOTH );
-	$sils   = bk_size_guide_is_pants( $product ) ? array_values( array_filter( $data['sil'], static fn( $s ) => empty( $s['off'] ) ) ) : array();
+	$sils   = array_values( array_filter( $data['sil'], static fn( $s ) => empty( $s['off'] ) ) ); // En todos los productos (decisión del cliente 2026-10-16); "Este modelo" solo en jeans y pantalones.
 
 	$b = '';
 	if ( $tables ) {

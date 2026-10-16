@@ -53,7 +53,7 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
 
   // 4. Falda: guía de tallas sí, siluetas no.
   await p.goto(SKIRT, { waitUntil: 'networkidle' });
-  ok(await p.locator('[data-bk-dialog="bk-size-guide"]').count() === 1 && await p.locator('[data-bk-dialog="bk-silhouettes"]').count() === 0, 'falda: sin botón de siluetas (solo jeans y pantalones)');
+  ok(await p.locator('[data-bk-dialog="bk-size-guide"]').count() === 1 && await p.locator('[data-bk-dialog="bk-silhouettes"]').count() === 1 && await p.locator('#bk-silhouettes .bk-sil.is-current').count() === 0, 'falda: también tiene Siluetas, pero sin "Este modelo" (una "falda recta" no es un jean recto)');
 
   // 5. Celular: ventana desde abajo, sin desborde.
   const m = await (await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })).newPage();
