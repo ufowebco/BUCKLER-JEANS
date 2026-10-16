@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.0 → `dist/buckler-core-0.18.0.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.1 → `dist/buckler-core-0.18.1.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -566,6 +566,24 @@ Versión actual 0.18.0 → `dist/buckler-core-0.18.0.zip` (`tools/build-plugin.s
     otro ID o si se carga dos veces; fila "Google Merchant Center" (JSON-LD Product en la ficha + Google for
     WooCommerce) y enlace "Abrir la cuenta". Revisión del 2026-10-15: el HTML público ya no trae ningún `fbq` (ni los
     plugins de Facebook); GTM-NCDM5V29 no es legible desde este entorno.
+- **0.18.1 — recordatorios de pago (decisión del cliente 2026-10-16: automático a la 1 h y a las 24 h, sin cupón,
+  texto fijo; si no paga, cancelar):** `includes/gestion/pending-pay.php` (con el módulo gestion) +
+  `templates/emails/pending-payment.php`. Pedido del checkout (`created_via` checkout/store-api) en pending o failed →
+  Action Scheduler grupo `buckler-pp`: `bk_pp_send` [id, 1|2] a 1 h / 24 h de creado y `bk_pp_cancel` [id] a 48 h
+  (`bk_config('pending_pay')` = remind [1, 24], cancel 48; meta `_bk_pp_sched`, `_bk_pp_sent`, `_bk_pp_stopped`,
+  `_bk_pp_cancelled`). Pagar/cambiar de estado lo desprograma. **WooCommerce cancelaba los pendientes a los 60 min
+  (`woocommerce_hold_stock_minutes`)** → filtro `woocommerce_cancel_unpaid_order` falso mientras corre lo propio.
+  Enlace "Pagar pedido" firmado (`bk_pp_pay_url`, `bk_pp=` HMAC): con él se salta la verificación de correo que Woo
+  pide a invitadas pasados 10 min (`woocommerce_order_email_verification_required`); sin firma sigue pidiéndola.
+  Gestión → pedido: recuadro "Pago pendiente" (enviado / programado / cancelación), "Enviar recordatorio ahora" con
+  vista previa (solo pasados 30 min del pedido), "Copiar enlace de pago" (WhatsApp), "Detener / Reanudar
+  automáticos"; historial `pago_recordatorio` / `pago_cancelado`; sin guía de envío mientras no pague
+  (`POST gestion/orders/{id}/payment-reminder` action preview|send|stop|resume). Correos: "Recordatorio de pago 1/2".
+  Carritos: pedido creado sin pagar → `awaiting` "Pendiente de pago" (antes "Compró"); al pagar → converted/recovered
+  (`bk_ac_order_paid`); cancelado → `unpaid` "Pedido cancelado sin pagar"; KPI "Pendientes de pago". Fixture: pasarela
+  `bk_test_pending` (opción `bk_test_pending_gw`). Las unidades reservadas de un pendiente vencen a los 60 min
+  (reserva de Woo): el stock no queda bloqueado 48 h salvo que el snippet de producción lo descuente. Ayuda: tarea
+  nueva con captura `g-pago-pendiente`. Suite `ronda181.js` (31).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -610,7 +628,7 @@ Versión actual 0.18.0 → `dist/buckler-core-0.18.0.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36 = 663 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31 = 694 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
