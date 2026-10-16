@@ -644,6 +644,7 @@ body.bk-doc .woocommerce-variation-price .price { font-size: 22px; }
 
 /* --- Descripción, reseñas de Google y promoción ------------------------------- */
 .bk-pdp__desc { max-width: 880px; margin: clamp(32px, 5vw, 56px) 0 0; }
+.bk-pdp__desc:has(> .bk-desc) { max-width: none; } /* Descripción con íconos: ancho completo del diseño. */
 .bk-pdp__desc .bk-prose { color: #2c3a47; line-height: 1.7; }
 .bk-pdp__desc .bk-prose > h2:first-child { display: none; } /* Algunas descripciones repiten el título "Descripción". */
 .bk-reviews { margin: clamp(32px, 5vw, 56px) 0 0; }
@@ -771,7 +772,9 @@ body.bk-doc .bk-woo--account .woocommerce-MyAccount-content .button:hover { bord
 .bk-desc p { margin: 0; }
 .bk-desc__intro { font-size: 16px; }
 .bk-desc__title { margin: 6px 0 0; font-size: 15px; letter-spacing: .06em; text-transform: uppercase; color: var(--bk-navy); }
-.bk-desc__feat { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.bk-desc__feat { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 640px) { .bk-desc__feat { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .bk-desc__feat { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .bk-desc__item { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--bk-line); border-radius: 14px; background: #fff; }
 .bk-desc__item strong { color: var(--bk-ink); }
 .bk-desc__ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--bk-denim); color: var(--bk-navy); }

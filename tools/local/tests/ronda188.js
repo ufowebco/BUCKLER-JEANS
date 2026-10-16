@@ -32,6 +32,8 @@ const DESC = JSON.parse(fs.readFileSync(__dirname + '/fixtures/descripciones.jso
   ok(models.length === 2 && /Modelo estándar\s*Mide 1,60 m · usa talla 8/.test(models[0]) && /plus size\s*Mide 1,65 m · usa talla 14/.test(models[1]), `modelos en fotos: ${models.join(' | ')}`);
   ok(/Nota:/.test(await p.textContent('.bk-desc__note')) && /¡Envíos a toda Colombia!/.test(await p.textContent('.bk-desc__ship strong')), 'nota y envíos en sus recuadros');
   ok(/Detalles que lo hacen único/.test(await p.textContent('.bk-desc__title')), 'título de la sección tomado del texto');
+  const lay = await p.evaluate(() => ({ cols: new Set([...document.querySelectorAll('.bk-desc__item')].map((e) => Math.round(e.getBoundingClientRect().left))).size, w: document.querySelector('.bk-pdp__desc').getBoundingClientRect().width, page: document.querySelector('.bk-pdp__desc').parentElement.getBoundingClientRect().width }));
+  ok(lay.cols === 3 && lay.w > 1000 && Math.abs(lay.w - lay.page) < 2, `escritorio: ancho completo del diseño y 3 columnas (${Math.round(lay.w)} px, ${lay.cols} columnas)`);
 
   // 2. Descripción sin ese formato → igual que antes.
   await p.goto(B + '/product/jean-bota-ancha-dama-oxford-tiro-alto/', { waitUntil: 'networkidle' }).catch(() => {});

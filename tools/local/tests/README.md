@@ -39,7 +39,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `ronda185.js` | Píxel de Meta (Facebook for WooCommerce simulado): detección, aviso de dos plugins, AddToCart del carrito flotante una sola vez con eventID | 9 |
 | `ronda186.js` | GA4 en el dataLayer: view_item, add_to_cart, view_cart, remove_from_cart, begin_checkout, add_payment_info, purchase una vez (y al confirmarse el pago), user_data SHA-256, guía para la agencia y contenedor GTM | 18 |
 | `ronda187.js` | Guía de tallas y siluetas en texto: dos botones, pestaña de la línea, Encuentra tu talla, siluetas dibujadas con "Este modelo", falda sin siluetas, celular, editor en Gestión y restaurar | 24 |
-| `ronda188.js` | Descripción inteligente con íconos (textos reales), texto libre sin cambios, accesos a Gestión tienda desde WordPress | 18 |
+| `ronda188.js` | Descripción inteligente con íconos (textos reales), texto libre sin cambios, accesos a Gestión tienda desde WordPress | 19 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).
 | `seguridad.js` | Nombres de usuario ocultos a visitantes: REST de usuarios 401, ?author 404, sin sitemap de usuarios, Store API pública, error de acceso genérico, editor con sesión intacto | 7 |
