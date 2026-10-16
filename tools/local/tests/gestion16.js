@@ -131,7 +131,7 @@ const login = async (p, u, pw) => { await p.goto(B + '/ingreso/?redirect_to=' + 
 
   // --- Carritos ---------------------------------------------------------------------------------
   await p.goto(B + '/gestion-tienda/#carritos'); await p.waitForSelector('.bk-g-kpi');
-  ok(await p.locator('.bk-g-kpi').count() === 4 && /Recuperados/.test(await p.textContent('#bk-g-main')), 'Carritos abandonados: indicadores y lista');
+  ok(await p.locator('.bk-g-kpi').count() === 5 && /Pendientes de pago/.test(await p.textContent('#bk-g-main')) && /Recuperados/.test(await p.textContent('#bk-g-main')), 'Carritos abandonados: indicadores y lista');
 
   // --- Correos ----------------------------------------------------------------------------------
   await p.goto(B + '/gestion-tienda/#correos'); await p.waitForSelector('[data-mail]');
