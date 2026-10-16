@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.6 → `dist/buckler-core-0.18.6.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.7 → `dist/buckler-core-0.18.7.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -631,6 +631,20 @@ Versión actual 0.18.6 → `dist/buckler-core-0.18.6.zip` (`tools/build-plugin.s
   defecto para usuarios de solo SEO; aviso en las demás pestañas) + `GET gestion/seo/gtm-import` = contenedor GTM
   (exportFormatVersion 2: etiqueta gaawe `{{Event}}` con sendEcommerceData/dataLayer + activador regex de los 7
   eventos + 5 DLV). Doc para reenviar: `docs/agencia-ga4-gtm.md`. Icono `lucide:download`. Suite `ronda186.js` (18).
+- **0.18.7 (2026-10-16): guía de tallas y siluetas en texto** (decisión del cliente: dibujos + detección por nombre;
+  propuesta aprobada en un artifact). `includes/size-guide.php` (siempre cargado): datos `bk_size_guide_data()` =
+  opción `bk_size_guide` {tables{slug línea: [[talla, cintura min, max, cadera min, max]]}, note, sil[{k, es, en, d, kw,
+  off}]} sobre `bk_size_guide_defaults()` (transcritos de las imágenes ACF de producción: Slim 6–14, Curvy 14–24; 11
+  siluetas). Ficha (`bk_pdp_size_tools` → `bk_size_guide_html`): botones "Guía de tallas" y "Siluetas" (píldoras) →
+  `#bk-size-guide` (pestañas por línea, abre en la del producto; tabla; "Encuentra tu talla" en pages.js
+  `[data-bk-sg-finder]`: talla más pequeña que cubre cada medida, la mayor de las dos, cambia de pestaña, evento
+  `bk_size_finder`; cómo medirse con figura SVG; nota) y `#bk-silhouettes` (dibujos SVG generados en PHP
+  `bk_size_guide_svg()` desde `bk_size_guide_shapes()`, filtros por grupo, "Este modelo" = `bk_size_guide_detect()`:
+  palabras clave como palabra completa en nombre+slug sin tildes, solo jeans/pantalones `bk_size_guide_is_pants()`;
+  local detecta 43/43). Siluetas solo en jeans/pantalones. Las imágenes ACF ya no se usan. Gestión → Contenido → Guía
+  de tallas: tablas editables, nota, siluetas (nombre, inglés, descripción, "Detectar por", mostrar) y "Restaurar
+  valores originales" (doble toque); validación desde/hasta. Ayuda: tarea nueva con capturas `g-tallas-2/3`.
+  Suite `ronda187.js` (24); ronda17.js adaptada.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -675,7 +689,7 @@ Versión actual 0.18.6 → `dist/buckler-core-0.18.6.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18 = 749 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24 = 773 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

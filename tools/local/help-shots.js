@@ -151,8 +151,11 @@ const SHOTS = [
     ['.bk-gc-slide:first-child [data-balt]', 4, false, { closest: 'label' }], ['.bk-gc-slide:first-child [data-blink]', 5, false, { closest: 'label' }],
   ] },
   { name: 'g-tallas', hash: 'contenido/guia', marks: [['.bk-g-subtabs a:nth-child(2)', 1]] },
-  { name: 'g-tallas-2', hash: 'contenido/guia', scroll: '.bk-gc-slot:first-child .bk-gc-slot__bar', marks: [
-    ['.bk-gc-slot:first-child .bk-gc-slot__bar', 2], ['[name="guide_alt"]', 3, false, { closest: 'label' }], ['#bk-gcg [type="submit"]', 4],
+  { name: 'g-tallas-2', hash: 'contenido/guia', scroll: '.bk-gsg[data-line="linea-curvy"]', marks: [
+    ['.bk-gsg[data-line="linea-curvy"] .bk-gsg__t', 1], ['.bk-gsg[data-line="linea-curvy"] [data-sgadd]', 2],
+  ] },
+  { name: 'g-tallas-3', hash: 'contenido/guia', scroll: '.bk-gsil__i[data-k="flare"]', marks: [
+    ['.bk-gsil__i[data-k="flare"] [data-f="kw"]', 3, false, { closest: 'label' }], ['.bk-gsil__i[data-k="flare"] [data-f="on"]', 4, false, { closest: 'label' }],
   ] },
   { name: 'g-faq-1', hash: 'contenido/preguntas', marks: [
     ['.bk-g-subtabs a:last-child', 1], ['#bk-gc .bk-g-h2row a.bk-g-btn', 2, false, { pos: 'r' }], ['.bk-gc-post .bk-gd-item__act a.bk-g-btn', 3, false, { first: true }],

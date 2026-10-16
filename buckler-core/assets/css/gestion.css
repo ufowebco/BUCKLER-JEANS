@@ -1094,3 +1094,18 @@ code { padding: 1px 5px; border-radius: 4px; background: #eef1f4; font-size: .9e
 .bk-g-agency__sample { margin-top: 12px; }
 .bk-g-agency__sample summary { cursor: pointer; font-weight: 700; }
 .bk-g-agency__sample pre { max-width: 100%; overflow: auto; padding: 12px; border-radius: 10px; background: #10202f; color: #e8f0f6; font-size: 12.5px; }
+
+/* Contenido → Guía de tallas (tablas y siluetas en texto). */
+.bk-gsg { display: grid; gap: 8px; margin: 0 0 18px; }
+.bk-gsg h3 { margin: 4px 0 0; font-size: 15px; }
+.bk-gsg__t input { width: 100%; min-width: 64px; min-height: 38px; padding: 0 8px; border: 1px solid #cfd6dc; border-radius: 8px; font: inherit; font-variant-numeric: tabular-nums; }
+.bk-gsg__t td { padding: 4px 6px; }
+.bk-gsg .bk-g-btn { justify-self: start; }
+.bk-gsil { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.bk-gsil__i { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 14px; padding: 12px; border: 1px solid #e3e7ea; border-radius: 12px; }
+.bk-gsil__art { display: grid; place-items: center; width: 74px; height: 96px; border-radius: 10px; background: #eef2f6; }
+.bk-gsil__art svg { width: 62px; height: 88px; }
+.bk-gsil__art .bk-sil__fill { fill: #c9d5e2; stroke: #1a3955; stroke-width: 2.2; stroke-linejoin: round; }
+.bk-gsil__art .bk-sil__lines { fill: none; stroke: #1a3955; stroke-width: 1.6; stroke-linecap: round; opacity: .75; }
+.bk-gsil__f { display: grid; gap: 8px; min-width: 0; }
+@media (max-width: 560px) { .bk-gsil__i { grid-template-columns: 1fr; } }

@@ -280,34 +280,74 @@ function bk_gc_banners_save( WP_REST_Request $r ) {
  * ------------------------------------------------------------------------- */
 
 /**
- * Imágenes de la guía.
+ * Guía de tallas y siluetas en texto (includes/size-guide.php).
  *
  * @return WP_REST_Response
  */
 function bk_gc_guide_get() {
+	$data  = function_exists( 'bk_size_guide_data' ) ? bk_size_guide_data() : array( 'tables' => array(), 'note' => '', 'sil' => array() );
+	$lines = array_map( static fn( $l ) => $l['label'], (array) bk_config( 'lines' ) );
 	return rest_ensure_response(
 		array(
-			'guide'  => bk_gc_img( get_option( 'options_imagen_guia_de_tallas', null ) ?? bk_option_field( 'imagen_guia_de_tallas' ) ),
-			'shapes' => bk_gc_img( get_option( 'options_imagen_siluetas', null ) ?? bk_option_field( 'imagen_siluetas' ) ),
-			'admin'  => current_user_can( 'manage_options' ) ? admin_url( 'admin.php?page=guia-de-tallas' ) : '',
+			'lines'  => $lines,
+			'tables' => array_intersect_key( $data['tables'], $lines ),
+			'note'   => $data['note'],
+			'sil'    => array_map( static fn( $s ) => $s + array( 'svg' => function_exists( 'bk_size_guide_svg' ) ? bk_size_guide_svg( $s['k'] ) : '', 'off' => false ), $data['sil'] ),
 		)
 	);
 }
 
 /**
- * Guarda la guía.
+ * Guarda la guía (o restaura los valores originales con reset=1).
  *
- * @param WP_REST_Request $r Petición.
- * @return WP_REST_Response
+ * @param WP_REST_Request $r Petición (tables, note, sil | reset).
+ * @return WP_REST_Response|WP_Error
  */
 function bk_gc_guide_save( WP_REST_Request $r ) {
-	foreach ( array( 'guide' => 'imagen_guia_de_tallas', 'shapes' => 'imagen_siluetas' ) as $k => $f ) {
-		if ( null !== $r[ $k ] ) {
-			$id = bk_gc_img_id( $r[ $k ] );
-			bk_gc_set_option( $f, $id ? $id : '' );
-			bk_gc_set_alt( $id, $r[ $k . '_alt' ] );
-		}
+	if ( rest_sanitize_boolean( $r['reset'] ) ) {
+		delete_option( 'bk_size_guide' );
+		bk_gc_changed( 'guide' );
+		return bk_gc_guide_get();
 	}
+	$lines  = (array) bk_config( 'lines' );
+	$tables = array();
+	foreach ( (array) $r['tables'] as $slug => $rows ) {
+		if ( ! isset( $lines[ $slug ] ) ) {
+			continue;
+		}
+		$clean = array();
+		foreach ( (array) $rows as $row ) {
+			$row  = array_values( (array) $row );
+			$size = sanitize_text_field( (string) ( $row[0] ?? '' ) );
+			$nums = array_map( static fn( $v ) => round( (float) str_replace( ',', '.', (string) $v ), 1 ), array_slice( array_pad( $row, 5, 0 ), 1, 4 ) );
+			if ( '' === $size ) {
+				continue;
+			}
+			if ( $nums[0] <= 0 || $nums[1] < $nums[0] || $nums[2] <= 0 || $nums[3] < $nums[2] ) {
+				/* translators: 1: talla, 2: línea */
+				return new WP_Error( 'bk_guide', sprintf( 'Revisa la talla %1$s de %2$s: cada medida necesita "desde" y "hasta", y "hasta" no puede ser menor.', $size, $lines[ $slug ]['label'] ), array( 'status' => 400 ) );
+			}
+			$clean[] = array_merge( array( $size ), $nums );
+		}
+		$tables[ $slug ] = $clean;
+	}
+	$base = function_exists( 'bk_size_guide_defaults' ) ? array_column( bk_size_guide_defaults()['sil'], null, 'k' ) : array();
+	$sil  = array();
+	foreach ( (array) $r['sil'] as $s ) {
+		$k = sanitize_key( (string) ( $s['k'] ?? '' ) );
+		if ( ! isset( $base[ $k ] ) ) {
+			continue;
+		}
+		$sil[] = array(
+			'k'   => $k,
+			'es'  => sanitize_text_field( (string) ( $s['es'] ?? '' ) ),
+			'en'  => sanitize_text_field( (string) ( $s['en'] ?? '' ) ),
+			'd'   => sanitize_textarea_field( (string) ( $s['d'] ?? '' ) ),
+			'kw'  => sanitize_text_field( (string) ( $s['kw'] ?? '' ) ),
+			'off' => ! empty( $s['off'] ),
+		);
+	}
+	update_option( 'bk_size_guide', array( 'tables' => $tables, 'note' => sanitize_textarea_field( (string) $r['note'] ), 'sil' => $sil ), false );
 	bk_gc_changed( 'guide' );
 	return bk_gc_guide_get();
 }

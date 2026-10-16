@@ -843,19 +843,18 @@ function bk_pdp_addi() {
 }
 
 /**
- * Guía de tallas (imágenes ACF) y enlace al mismo modelo en la otra línea.
+ * Guía de tallas y siluetas (texto, includes/size-guide.php) y enlace al mismo modelo en la otra línea.
  */
 function bk_pdp_size_tools() {
 	global $product;
-	$guide = bk_image_id( bk_option_field( 'imagen_guia_de_tallas' ) );
-	$shape = bk_image_id( bk_option_field( 'imagen_siluetas' ) );
+	$guide = function_exists( 'bk_size_guide_html' ) ? bk_size_guide_html( $product ) : array( 'buttons' => '', 'dialogs' => '' );
 	$twin  = bk_pdp_twin( $product );
-	if ( ! $guide && ! $shape && ! $twin ) {
+	if ( ! $guide['buttons'] && ! $twin ) {
 		return;
 	}
 	echo '<div class="bk-pdp__tools">';
-	if ( $guide || $shape ) {
-		echo '<button type="button" class="bk-pdp__guide" data-bk-dialog="bk-size-guide">' . bk_icon_svg( 'lucide:ruler', 18 ) . esc_html__( 'Guía de tallas', 'buckler-core' ) . '</button>'; // phpcs:ignore
+	if ( $guide['buttons'] ) {
+		echo '<div class="bk-pdp__guides">' . $guide['buttons'] . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput -- escapado al generarse.
 	}
 	if ( $twin ) {
 		$lines = (array) bk_config( 'lines' );
@@ -865,13 +864,7 @@ function bk_pdp_size_tools() {
 		echo '<a class="bk-pdp__twin" href="' . esc_url( $twin['url'] ) . '">' . esc_html( sprintf( __( '¿Buscas %1$s? Ver este modelo en %2$s', 'buckler-core' ), mb_strtolower( $sizes ), $label ) ) . ' →</a>';
 	}
 	echo '</div>';
-	if ( $guide || $shape ) {
-		echo '<dialog id="bk-size-guide" class="bk-dialog" aria-labelledby="bk-size-guide-t"><div class="bk-dialog__box"><header><h2 id="bk-size-guide-t">' . esc_html__( 'Guía de tallas y siluetas', 'buckler-core' ) . '</h2><button type="button" class="bk-dialog__close" data-bk-close aria-label="' . esc_attr__( 'Cerrar', 'buckler-core' ) . '">' . bk_icon_svg( 'lucide:x', 22 ) . '</button></header>'; // phpcs:ignore
-		foreach ( array_filter( array( $guide, $shape ) ) as $img ) {
-			echo wp_get_attachment_image( $img, 'large', false, array( 'loading' => 'lazy', 'alt' => bk_image_alt( $img, __( 'Guía de tallas Buckler', 'buckler-core' ) ) ) );
-		}
-		echo '</div></dialog>';
-	}
+	echo $guide['dialogs']; // phpcs:ignore WordPress.Security.EscapeOutput -- escapado al generarse.
 }
 
 /**

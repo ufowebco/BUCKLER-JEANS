@@ -158,6 +158,42 @@
 		if (e.target.tagName === 'DIALOG') e.target.close(); // Clic en el fondo.
 	});
 
+	/* --- Guía de tallas: "Encuentra tu talla" y filtros de siluetas ------------------ */
+	$$('[data-bk-sg-finder]').forEach((f) => {
+		const rows = JSON.parse(f.dataset.sizes || '[]'); // [talla, cintura min, max, cadera min, max, línea]
+		const names = JSON.parse(f.dataset.lines || '{}');
+		const out = f.querySelector('[data-bk-sg-out]');
+		const box = f.closest('dialog') || document;
+		const num = (v) => parseFloat(String(v).replace(',', '.'));
+		// La talla más pequeña cuyo rango cubre la medida (entre dos rangos, la siguiente).
+		const pick = (v, a, b) => { const r = rows.find((x) => v <= x[b] + 0.5); return r ? r : null; };
+		const run = () => {
+			const w = num(f.w.value), h = num(f.h.value);
+			$$('tr.is-match', box).forEach((tr) => tr.classList.remove('is-match'));
+			if (!(w > 30) && !(h > 30)) { out.textContent = out.dataset.empty || out.textContent; return; }
+			const rw = w > 30 ? pick(w, 1, 2) : null, rh = h > 30 ? pick(h, 3, 4) : null;
+			if ((w > 30 && !rw) || (h > 30 && !rh)) { out.textContent = 'Escríbenos por WhatsApp y te asesoramos con tu talla.'; return; }
+			const r = [rw, rh].filter(Boolean).sort((x, y) => rows.indexOf(y) - rows.indexOf(x))[0];
+			const size = r[0];
+			const inLines = [...new Set(rows.filter((x) => x[0] === size).map((x) => x[5]))];
+			out.innerHTML = `Tu talla: <b>${size}</b> <span>· ${inLines.map((l) => names[l] || l).join(' o ')}</span>`;
+			const own = box.querySelector('[role="tab"][aria-selected="true"]');
+			if (own && !inLines.includes(own.dataset.bkSgTab)) box.querySelector(`[data-bk-sg-tab="${inLines[0]}"]`)?.click();
+			$$(`tr[data-size="${CSS.escape(size)}"]`, box).forEach((tr) => tr.classList.add('is-match'));
+			if (window.bkTrack) window.bkTrack('bk_size_finder', { size });
+		};
+		out.dataset.empty = out.textContent;
+		f.addEventListener('input', run);
+		f.addEventListener('submit', (e) => e.preventDefault());
+	});
+	document.addEventListener('click', (e) => {
+		const b = e.target.closest('[data-bk-sil-g]');
+		if (!b) return;
+		const dlg = b.closest('dialog');
+		$$('[data-bk-sil-g]', dlg).forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+		$$('.bk-sil', dlg).forEach((c) => { c.hidden = b.dataset.bkSilG !== 'all' && c.dataset.g !== b.dataset.bkSilG; });
+	});
+
 	/* --- Pestañas (Lo nuevo Slim / Curvy) ---------------------------------------- */
 	$$('[role="tablist"]').forEach((list) => {
 		const tabs = $$('[role="tab"]', list);

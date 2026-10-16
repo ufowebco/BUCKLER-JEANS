@@ -247,6 +247,65 @@ body.bk-doc .woocommerce button.button:is(.disabled, :disabled, [disabled]):hove
 .bk-dialog__close { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--bk-denim); cursor: pointer; }
 .bk-dialog img { display: block; width: 100%; margin: 0 0 12px; border-radius: 10px; }
 
+/* --- Guía de tallas y siluetas (includes/size-guide.php) --------------------- */
+.bk-pdp__guides { display: flex; flex-wrap: wrap; gap: 8px; }
+.bk-pdp__guides .bk-pdp__guide { min-height: 42px; padding: 6px 16px; border: 1.5px solid var(--bk-navy); border-radius: 99px; text-decoration: none; font-size: 14px; }
+.bk-pdp__guides .bk-pdp__guide:hover, .bk-pdp__guides .bk-pdp__guide:focus-visible { border-color: var(--bk-lime); background: var(--bk-lime); color: var(--bk-navy); }
+.bk-sg { width: min(780px, calc(100vw - 32px)); }
+.bk-sg header h2 { display: flex; align-items: center; gap: 10px; }
+.bk-sg header h2 svg { color: var(--bk-navy); }
+.bk-sg h3 { margin: 22px 0 10px; font-size: 16px; }
+.bk-sg__tabs { display: inline-flex; flex-wrap: wrap; gap: 4px; margin: 0 0 14px; padding: 4px; border-radius: 99px; background: var(--bk-denim); }
+.bk-sg__tabs button { min-height: 40px; padding: 6px 16px; border: 0; border-radius: 99px; background: transparent; color: var(--bk-ink); font: inherit; font-weight: 800; cursor: pointer; }
+.bk-sg__tabs button small { font-weight: 500; }
+.bk-sg__tabs button[aria-selected="true"] { background: var(--bk-navy); color: #fff; }
+.bk-sg__table { overflow-x: auto; border: 1px solid var(--bk-line); border-radius: 12px; }
+.bk-sg__table table { width: 100%; margin: 0; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.bk-sg__table th, .bk-sg__table td { padding: 11px 14px; border: 0; border-bottom: 1px solid var(--bk-line); text-align: left; }
+.bk-sg__table thead th { background: var(--bk-denim); color: var(--bk-mute); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+.bk-sg__table tbody th { width: 22%; font-size: 16px; font-weight: 800; }
+.bk-sg__table tbody tr:last-child > * { border-bottom: 0; }
+.bk-sg__table tr.is-match > * { background: var(--bk-lime); }
+.bk-sg__finder { margin-top: 18px; padding: 16px; border-radius: 14px; background: var(--bk-denim); }
+.bk-sg__finder h3 { margin: 0 0 10px; }
+.bk-sg__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 1.2fr); gap: 10px; align-items: end; }
+.bk-sg__row label { display: grid; gap: 4px; font-size: 13px; font-weight: 800; }
+.bk-sg__row input { width: 100%; min-height: 46px; padding: 0 12px; border: 1.5px solid #cfd6dc; border-radius: 10px; background: #fff; font: inherit; font-size: 16px; }
+.bk-sg__out { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 46px; margin: 0; padding: 8px 14px; border-radius: 10px; background: #fff; font-weight: 700; }
+.bk-sg__out b { font-size: 20px; color: var(--bk-navy); }
+.bk-sg__out span { font-weight: 500; color: var(--bk-mute); }
+@media (max-width: 560px) { .bk-sg__row { grid-template-columns: 1fr 1fr; } .bk-sg__out { grid-column: 1 / -1; } }
+.bk-sg__measure { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 18px; align-items: center; }
+.bk-sg__measure ol { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.bk-sg__measure li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; }
+.bk-sg__measure li > span { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--bk-lime); color: var(--bk-navy); font-weight: 800; font-size: 13px; }
+.bk-sg__measure p { margin: 0; }
+.bk-sg__measure b { display: block; color: var(--bk-navy); }
+.bk-sg__body { width: 100%; height: auto; }
+.bk-sg__body text { fill: var(--bk-navy); font-size: 11px; font-weight: 800; }
+.bk-sg__tape { stroke: var(--bk-ink); stroke-width: 3; stroke-dasharray: 4 4; fill: none; }
+.bk-sg__dot { fill: var(--bk-lime); }
+.bk-sg__note { margin: 18px 0 0; padding: 12px 14px; border-left: 4px solid var(--bk-lime); border-radius: 0 10px 10px 0; background: var(--bk-denim); font-size: 14px; }
+.bk-sil__filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+.bk-sil__filters button { min-height: 38px; padding: 6px 14px; border: 1.5px solid var(--bk-line); border-radius: 99px; background: #fff; color: var(--bk-ink); font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+.bk-sil__filters button[aria-pressed="true"] { border-color: var(--bk-navy); background: var(--bk-navy); color: #fff; }
+.bk-sil__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.bk-sil { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 12px; align-items: start; padding: 14px; border: 1.5px solid var(--bk-line); border-radius: 14px; }
+.bk-sil.is-current { border-color: var(--bk-navy); box-shadow: 0 0 0 3px var(--bk-lime); }
+.bk-sil[hidden] { display: none; }
+.bk-sil__art { display: grid; place-items: center; width: 74px; height: 96px; border-radius: 10px; background: var(--bk-denim); }
+.bk-sil__svg { width: 62px; height: 88px; }
+.bk-sil__fill { fill: #c9d5e2; stroke: var(--bk-navy); stroke-width: 2.2; stroke-linejoin: round; }
+.bk-sil__lines { fill: none; stroke: var(--bk-navy); stroke-width: 1.6; stroke-linecap: round; opacity: .75; }
+.bk-sil h3 { margin: 0; font-size: 15px; line-height: 1.25; }
+.bk-sil__en { display: inline-block; margin: 4px 0 6px; padding: 1px 8px; border-radius: 6px; background: var(--bk-lime); color: var(--bk-navy); font-size: 11.5px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.bk-sil p { margin: 0; color: var(--bk-mute); font-size: 13px; line-height: 1.45; }
+.bk-sil__here { display: flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 12px; color: var(--bk-navy); }
+@media (max-width: 600px) {
+	.bk-sg { width: 100vw; max-width: 100vw; max-height: 92dvh; margin: auto 0 0; border-radius: 18px 18px 0 0; }
+	.bk-sg__measure { grid-template-columns: 96px minmax(0, 1fr); }
+}
+
 /* --- Carrito, checkout, gracias, mi cuenta ---------------------------------- */
 .bk-woo { padding-bottom: clamp(40px, 6vw, 80px); }
 .bk-secure { display: flex; align-items: center; gap: 8px; margin: -4px 0 24px; color: var(--bk-mute); font-size: 14px; }

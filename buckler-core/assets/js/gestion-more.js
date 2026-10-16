@@ -329,15 +329,60 @@
 	};
 
 	function paintGuide() {
-		$('#bk-gc').innerHTML = `<form id="bk-gcg" novalidate><section class="bk-g-card"><h2>Guía de tallas y siluetas</h2>
-			<p class="bk-g-hint">Se abren en la ficha de producto con el botón "Guía de tallas".</p>
-			<div class="bk-gc-lines is-2">${imgSlot('g:guide', G.guide, 'Guía de tallas', '', 'auto')}${imgSlot('g:shapes', G.shapes, 'Siluetas', '', 'auto')}</div>
-			<div class="bk-g-row2"><label class="bk-gp-field"><span>Texto de la guía (alt)</span><input name="guide_alt" value="${esc(G.guide?.alt || '')}" placeholder="Ej.: Tabla de tallas Slim y Curvy en centímetros"></label>
-			<label class="bk-gp-field"><span>Texto de las siluetas (alt)</span><input name="shapes_alt" value="${esc(G.shapes?.alt || '')}"></label></div></section>
-			<section class="bk-g-card bk-gp-actions"><button type="submit" class="bk-g-btn">${C.icons.check} Guardar guía</button>
-			${G.admin ? `<a class="bk-g-link" href="${esc(G.admin)}" target="_blank" rel="noopener">Abrir en wp-admin ${C.icons.open}</a>` : ''}</section></form>`;
+		const row = (slug, r, i) => `<tr data-row>
+			<td><input aria-label="Talla" data-c="0" value="${esc(r[0])}" maxlength="6"></td>
+			${[1, 2, 3, 4].map((c) => `<td><input aria-label="${['', 'Cintura desde', 'Cintura hasta', 'Cadera desde', 'Cadera hasta'][c]}" data-c="${c}" inputmode="decimal" value="${esc(r[c])}"></td>`).join('')}
+			<td><button type="button" class="bk-g-icon is-danger" data-sgdel aria-label="Quitar la talla ${esc(r[0])}">${C.icons.trash}</button></td></tr>`;
+		$('#bk-gc').innerHTML = `<form id="bk-gcg" novalidate>
+			<section class="bk-g-card"><h2>Guía de tallas</h2>
+				<p class="bk-g-hint">Se abre en la ficha con el botón "Guía de tallas", en la pestaña de la línea del producto. Medidas en centímetros. La clienta también puede escribir su cintura y cadera y la tienda le dice la talla.</p>
+				${Object.entries(G.lines).map(([slug, label]) => `<div class="bk-gsg" data-line="${esc(slug)}"><h3>${esc(label)}</h3>
+					<div class="bk-g-table-wrap"><table class="bk-g-table bk-gsg__t"><thead><tr><th>Talla</th><th>Cintura desde</th><th>hasta</th><th>Cadera desde</th><th>hasta</th><th><span class="bk-g-sr">Quitar</span></th></tr></thead>
+					<tbody>${(G.tables[slug] || []).map((r, i) => row(slug, r, i)).join('')}</tbody></table></div>
+					<button type="button" class="bk-g-btn is-ghost is-small" data-sgadd>${C.icons.plus} Agregar talla</button></div>`).join('')}
+				<label class="bk-gp-field"><span>Nota bajo la tabla</span><textarea name="note" rows="3" maxlength="400">${esc(G.note)}</textarea></label>
+			</section>
+			<section class="bk-g-card"><h2>Siluetas</h2>
+				<p class="bk-g-hint">Se abren con el botón "Siluetas" en las fichas de jeans y pantalones. La silueta del producto se marca como "Este modelo" cuando su nombre tiene una de las palabras de "Detectar por" (por ejemplo "campana" o "flare").</p>
+				<ul class="bk-gsil">${G.sil.map((x) => `<li class="bk-gsil__i" data-k="${esc(x.k)}">
+					<div class="bk-gsil__art">${x.svg}</div>
+					<div class="bk-gsil__f">
+						<div class="bk-g-row2"><label class="bk-gp-field"><span>Nombre</span><input data-f="es" value="${esc(x.es)}" maxlength="60"></label>
+						<label class="bk-gp-field"><span>Nombre en inglés</span><input data-f="en" value="${esc(x.en)}" maxlength="40"></label></div>
+						<label class="bk-gp-field"><span>Descripción</span><textarea data-f="d" rows="2" maxlength="300">${esc(x.d)}</textarea></label>
+						<div class="bk-g-row2"><label class="bk-gp-field"><span>Detectar por (palabras del nombre, separadas por coma)</span><input data-f="kw" value="${esc(x.kw)}" maxlength="120"></label>
+						<label class="bk-g-switch"><input type="checkbox" data-f="on" ${x.off ? '' : 'checked'}><span>Mostrar en la tienda</span></label></div>
+					</div></li>`).join('')}</ul>
+			</section>
+			<section class="bk-g-card bk-gp-actions"><p class="bk-g-formerr" role="alert" hidden></p>
+				<button type="submit" class="bk-g-btn">${C.icons.check} Guardar guía</button>
+				<button type="button" class="bk-g-btn is-ghost" data-sgreset>Restaurar valores originales</button></section></form>`;
 		dirty = false;
 	}
+	const readGuide = () => {
+		const f = $('#bk-gcg');
+		const tables = {};
+		$$('.bk-gsg', f).forEach((g) => { tables[g.dataset.line] = $$('[data-row]', g).map((tr) => $$('[data-c]', tr).map((i) => i.value.trim())).filter((r) => r[0]); });
+		const sil = $$('.bk-gsil__i', f).map((li) => ({ k: li.dataset.k, es: $('[data-f="es"]', li).value, en: $('[data-f="en"]', li).value, d: $('[data-f="d"]', li).value, kw: $('[data-f="kw"]', li).value, off: !$('[data-f="on"]', li).checked }));
+		return { tables, note: f.note.value, sil };
+	};
+	document.addEventListener('click', async (e) => {
+		const f = e.target.closest('#bk-gcg');
+		if (!f) return;
+		if (e.target.closest('[data-sgadd]')) {
+			const tb = e.target.closest('.bk-gsg').querySelector('tbody');
+			tb.insertAdjacentHTML('beforeend', `<tr data-row><td><input aria-label="Talla" data-c="0" maxlength="6"></td>${[1, 2, 3, 4].map((c) => `<td><input aria-label="${['', 'Cintura desde', 'Cintura hasta', 'Cadera desde', 'Cadera hasta'][c]}" data-c="${c}" inputmode="decimal"></td>`).join('')}<td><button type="button" class="bk-g-icon is-danger" data-sgdel aria-label="Quitar la talla">${C.icons.trash}</button></td></tr>`);
+			tb.lastElementChild.querySelector('input').focus();
+			dirty = true;
+		}
+		const del = e.target.closest('[data-sgdel]');
+		if (del) { del.closest('tr').remove(); dirty = true; }
+		const rs = e.target.closest('[data-sgreset]');
+		if (rs) {
+			if (rs.dataset.sure !== '1') { rs.dataset.sure = '1'; rs.textContent = 'Toca otra vez para restaurar'; return; }
+			await busy(rs, async () => { G = await api('content/guide', { method: 'POST', body: { reset: 1 } }); paintGuide(); toast('Guía restaurada'); });
+		}
+	});
 
 	function paintPosts() {
 		const faq = P.type === 'faq';
@@ -561,12 +606,12 @@
 				'Escribe el <b>Enlace</b> al que lleva el banner.',
 				'Ordénalos con las flechas o quítalos con la papelera, y toca <b>Guardar banners</b> al final.',
 			], 'El primer banner es el que carga más rápido: úsalo para lo más importante.'),
-			task('Cambiar la guía de tallas', ['g-tallas', 'g-tallas-2'], [
-				'Entra a <b>Contenido → Guía de tallas</b>.',
-				'Toca <b>Cambiar</b> y sube la imagen nueva.',
-				'Escribe el texto de la imagen.',
-				'Toca <b>Guardar guía</b>.',
-			]),
+			task('Cambiar la guía de tallas y las siluetas', ['g-tallas-2', 'g-tallas-3'], [
+				'Entra a <b>Contenido → Guía de tallas</b> y corrige las medidas de cada línea (desde y hasta, en centímetros).',
+				'Toca <b>Agregar talla</b> para sumar una fila; la papelera la quita.',
+				'En <b>Siluetas</b>, "Detectar por" son las palabras del nombre del producto que marcan la silueta como <b>"Este modelo"</b> (por ejemplo "campana, flare").',
+				'Desmarca <b>Mostrar en la tienda</b> para ocultar una silueta. Al final toca <b>Guardar guía</b>.',
+			], 'Si algo queda mal, "Restaurar valores originales" vuelve a las medidas de la guía de Buckler.'),
 			task('Editar una pregunta frecuente', ['g-faq-1', 'g-faq-2'], [
 				'Entra a <b>Contenido → Preguntas frecuentes</b>.',
 				'Para una nueva toca <b>Nueva pregunta</b>…',
@@ -886,7 +931,7 @@
 		if (f.id === 'bk-gcg') {
 			e.preventDefault();
 			await busy(f.querySelector('[type="submit"]'), async () => {
-				G = await api('content/guide', { method: 'POST', body: { guide: G.guide?.id || 0, shapes: G.shapes?.id || 0, guide_alt: f.guide_alt.value, shapes_alt: f.shapes_alt.value } });
+				G = await api('content/guide', { method: 'POST', body: readGuide() });
 				paintGuide(); toast('Guía de tallas guardada');
 			});
 			return;

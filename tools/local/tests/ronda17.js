@@ -83,8 +83,12 @@ const loginG = async (p, u, pw) => { await p.goto(B + '/gestion-tienda/'); await
   await p.goto(B + '/'); ok(await p.locator('.bk-hero picture, .bk-hero img').count() >= 1, 'el inicio muestra los banners guardados desde la gestión');
   await g.goto(B + '/gestion-tienda/#contenido/banners'); await g.waitForSelector('.bk-gc-slide');
   ok(await g.locator('.bk-gc-slide').count() === 2 && await g.locator('.bk-gc-lines .bk-gc-slot').count() === 4, 'Contenido → Banners: 2 banners y 4 imágenes de líneas');
-  c = await api('content/guide', { guide: imgs[1], shapes: 0, guide_alt: 'Tabla de tallas' });
-  ok(c.d.guide?.id === imgs[1] && !c.d.shapes && php('echo get_option("options_imagen_guia_de_tallas");') === String(imgs[1]), 'guía de tallas guardada');
+  // Desde 0.18.7 la guía es texto (tablas + siluetas): guardar y restaurar.
+  c = await api('content/guide', { reset: 1 });
+  const gt = c.d.tables['linea-slim'];
+  c = await api('content/guide', { tables: { 'linea-slim': [...gt, ['16', 89, 94, 117, 122]] }, note: 'Nota de prueba', sil: c.d.sil });
+  ok(c.d.tables['linea-slim'].length === gt.length + 1 && c.d.note === 'Nota de prueba', 'guía de tallas guardada');
+  await api('content/guide', { reset: 1 });
   // Preguntas frecuentes: crear, editar, ordenar, papelera.
   const term = php('$t=term_exists("Envíos","caregoria-pf"); if(!$t){$t=wp_insert_term("Envíos","caregoria-pf");} echo is_array($t)?$t["term_id"]:$t;').trim();
   c = await api('content/posts/faq/save', { title: '¿Hacen envíos a San Andrés?', text: '<p>Sí, con <strong>costo adicional</strong>.</p>', cat: Number(term), status: 'publish' });
