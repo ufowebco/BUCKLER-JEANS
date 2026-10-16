@@ -32,8 +32,8 @@ $bk_track  = $bk_last ? $bk_last->get_meta( '_bk_tracking' ) : null;
 				<div><dt><?php esc_html_e( 'Pedido', 'buckler-core' ); ?></dt><dd>#<?php echo esc_html( $bk_last->get_order_number() ); ?></dd></div>
 				<div><dt><?php esc_html_e( 'Fecha', 'buckler-core' ); ?></dt><dd><?php echo esc_html( wc_format_datetime( $bk_last->get_date_created() ) ); ?></dd></div>
 				<div><dt><?php esc_html_e( 'Total', 'buckler-core' ); ?></dt><dd><?php echo wp_kses_post( $bk_last->get_formatted_order_total() ); ?></dd></div>
-				<?php if ( is_array( $bk_track ) && ! empty( $bk_track['number'] ) ) : ?>
-					<div><dt><?php esc_html_e( 'Guía de envío', 'buckler-core' ); ?></dt><dd><?php echo esc_html( trim( ( $bk_track['carrier'] ?? '' ) . ' ' . $bk_track['number'] ) ); ?></dd></div>
+				<?php if ( is_array( $bk_track ) && ( ! empty( $bk_track['number'] ) || ( function_exists( 'bk_carrier_is_local' ) && bk_carrier_is_local( (string) ( $bk_track['carrier'] ?? '' ) ) ) ) ) : ?>
+					<div><dt><?php esc_html_e( 'Guía de envío', 'buckler-core' ); ?></dt><dd><?php echo esc_html( empty( $bk_track['number'] ) ? __( 'Entrega local hoy (sin guía)', 'buckler-core' ) : trim( ( function_exists( 'bk_carriers' ) ? ( bk_carriers()[ $bk_track['carrier'] ?? '' ]['name'] ?? '' ) : '' ) . ' ' . $bk_track['number'] ) ); ?></dd></div>
 				<?php endif; ?>
 			</dl>
 			<div class="bk-acc-last__thumbs">

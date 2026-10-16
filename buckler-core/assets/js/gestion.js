@@ -396,13 +396,15 @@
 		</div>`;
 
 	/* --- Guía de envío ------------------------------------------------------------ */
+	const isLocal = (k) => !!k && (C.carriersLocal || []).includes(k);
 	const shipHtml = (o) => `<section class="bk-g-ship"><h3>${C.icons.truck} Enviar guía de envío</h3>
-		${o.tracking ? `<p class="bk-g-shipped">Enviado con <b>${esc(C.carriers[o.tracking.carrier] || o.tracking.carrier)}</b> · guía <b>${esc(o.tracking.number)}</b><small>${esc(o.tracking.date)}${o.tracking.sent_by ? ` · ${esc(o.tracking.sent_by)}` : ''}</small></p>` : ''}
+		${o.tracking ? `<p class="bk-g-shipped">Enviado con <b>${esc(C.carriers[o.tracking.carrier] || o.tracking.carrier)}</b> · ${o.tracking.number ? `guía <b>${esc(o.tracking.number)}</b>` : 'entrega local (sin guía)'}<small>${esc(o.tracking.date)}${o.tracking.sent_by ? ` · ${esc(o.tracking.sent_by)}` : ''}</small></p>` : ''}
 		<form id="bk-g-shipform" data-id="${o.id}" novalidate>
 			<div class="bk-g-row2">
 				<label><span>Transportadora</span><select name="carrier" required><option value="">Elige…</option>${Object.entries(C.carriers).map(([k, v]) => `<option value="${k}" ${o.tracking?.carrier === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></label>
-				<label><span>Número de guía</span><input name="number" required inputmode="text" autocomplete="off" value="${esc(o.tracking?.number || '')}" placeholder="Ej.: 2401234567"></label>
+				<label data-ship-number ${isLocal(o.tracking?.carrier) ? 'hidden' : ''}><span>Número de guía</span><input name="number" required inputmode="text" autocomplete="off" value="${esc(o.tracking?.number || '')}" placeholder="Ej.: 2401234567"></label>
 			</div>
+			<p class="bk-g-hint" data-ship-local ${isLocal(o.tracking?.carrier) ? '' : 'hidden'}>Entrega local (domicilios Medellín y área metropolitana): no necesita número de guía. La clienta recibe el correo "Tu pedido llega hoy".</p>
 			${o.status !== 'completed' ? '<label class="bk-g-switch"><input type="checkbox" name="complete" checked><span>Marcar como Completado (sin el correo estándar de WooCommerce)</span></label>' : ''}
 			<p class="bk-g-formerr" role="alert" hidden></p>
 			<button type="submit" class="bk-g-btn">${C.icons.mail} ${o.tracking ? 'Reenviar correo' : 'Ver correo antes de enviar'}</button>
@@ -762,6 +764,12 @@
 
 	document.addEventListener('change', (e) => {
 		if (e.target.name === 'same' && e.target.closest('#bk-g-custform')) $('.bk-g-custship').hidden = e.target.checked;
+		const sf = e.target.name === 'carrier' && e.target.closest('#bk-g-shipform');
+		if (sf) {
+			const loc = isLocal(e.target.value);
+			$('[data-ship-number]', sf).hidden = loc;
+			$('[data-ship-local]', sf).hidden = !loc;
+		}
 	});
 
 	document.addEventListener('submit', async (e) => {
@@ -802,9 +810,9 @@
 		if (form.id === 'bk-g-shipform') {
 			e.preventDefault();
 			const err = $('.bk-g-formerr', form);
-			const body = { carrier: form.carrier.value, number: form.number.value.trim(), complete: !!form.complete?.checked };
+			const body = { carrier: form.carrier.value, number: isLocal(form.carrier.value) ? '' : form.number.value.trim(), complete: !!form.complete?.checked };
 			err.hidden = true;
-			if (!body.carrier || body.number.length < 4) {
+			if (!body.carrier || (!isLocal(body.carrier) && body.number.length < 4)) {
 				err.textContent = !body.carrier ? 'Elige la transportadora.' : 'Escribe el número de guía.';
 				err.hidden = false;
 				(!body.carrier ? form.carrier : form.number).focus();

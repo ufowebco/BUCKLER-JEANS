@@ -600,7 +600,7 @@ function bk_g_print_render( $ids ) {
 			<section class="box"><h2><?php esc_html_e( 'Envío', 'buckler-core' ); ?></h2>
 				<p><?php echo wp_kses( (string) $ship, array( 'br' => array() ) ); ?></p>
 				<?php if ( $o->get_shipping_method() ) : ?><p><?php echo esc_html( 'Método: ' . $o->get_shipping_method() ); ?></p><?php endif; ?>
-				<?php if ( $tracking ) : ?><p><strong><?php echo esc_html( 'Guía: ' . ( bk_carriers()[ $tracking['carrier'] ]['name'] ?? $tracking['carrier'] ) . ' ' . $tracking['number'] ); ?></strong></p><?php endif; ?>
+				<?php if ( $tracking ) : ?><p><strong><?php echo esc_html( 'Guía: ' . ( bk_carriers()[ $tracking['carrier'] ]['name'] ?? $tracking['carrier'] ) . ' ' . ( $tracking['number'] ? $tracking['number'] : '(entrega local)' ) ); ?></strong></p><?php endif; ?>
 			</section>
 		</div>
 		<?php if ( $o->get_customer_note() ) : ?><p class="note"><strong><?php esc_html_e( 'Nota de la clienta:', 'buckler-core' ); ?></strong> <?php echo esc_html( $o->get_customer_note() ); ?></p><?php endif; ?>

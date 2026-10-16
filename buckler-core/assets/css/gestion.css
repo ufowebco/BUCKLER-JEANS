@@ -444,6 +444,8 @@ code { font-size: 13px; background: #f1f4f6; padding: 2px 6px; border-radius: 4p
 .bk-g-dbody p { margin: 0 0 6px; }
 
 .bk-g-row2 { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
+.bk-g-row2 label[hidden] { display: none; }
+.bk-g-row2:has(> label[hidden]) { grid-template-columns: 1fr; }
 
 .bk-g-switch {
 	display: inline-flex !important;

@@ -20,7 +20,7 @@ const login = async (p, u, pw) => { await p.goto(B + '/ingreso/?redirect_to=' + 
   const row = p.locator('.bk-g-orders tbody tr').first();
   const id = await row.locator('[data-order]').first().getAttribute('data-order');
   await row.locator('[data-order]').first().click(); await p.waitForSelector('#bk-g-shipform');
-  ok(await p.locator('#bk-g-shipform select[name="carrier"] option').count() === 10, 'desplegable con las 9 transportadoras');
+  ok(await p.locator('#bk-g-shipform select[name="carrier"] option').count() === 11, 'desplegable con las 10 transportadoras (incluye Transportador Local)');
 
   // Validación en el navegador
   await p.click('#bk-g-shipform button[type="submit"]');

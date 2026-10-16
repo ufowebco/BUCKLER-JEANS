@@ -339,7 +339,15 @@ function bk_gs_tags( WP_REST_Request $r ) {
 		$px_note   = "El píxel de la cuenta ({$px}) está instalado {$where}." . ( $dup || ( $px_html && $px_gtm ) ? ' Se carga más de una vez: los eventos llegan dobles a Meta. Deja solo una instalación.' : '' ) . ( $others ? ' También se carga otro píxel (' . implode( ', ', $others ) . '): revisa si debe quitarse.' : '' );
 	} else {
 		$px_status = $pixels ? 'warn' : 'missing';
-		$px_note   = $pixels ? 'El sitio carga el píxel ' . implode( ', ', $pixels ) . ", pero el de la cuenta es {$px}: hay que cambiarlo." : "Falta el píxel de la cuenta ({$px}).";
+		$px_note   = $pixels ? 'El sitio carga el píxel ' . implode( ', ', $pixels ) . ", pero el de la cuenta es {$px}: hay que cambiarlo." : "Falta el píxel de la cuenta ({$px}): no está en el HTML del sitio" . ( $gtm_info && ! array_filter( $gtm_info, static fn( $g ) => empty( $g['ok'] ) ) ? ' ni dentro de GTM.' : '.' );
+		if ( ! $pixels ) {
+			$unread = array_keys( array_filter( $gtm_info, static fn( $g ) => empty( $g['ok'] ) ) );
+			if ( $unread ) {
+				$px_status = 'info';
+				$px_note  .= ' No se pudo leer el contenedor ' . implode( ', ', $unread ) . ' desde el servidor: compruébalo con la extensión Meta Pixel Helper.';
+			}
+			$px_note .= bk_gs_fb_plugins_note();
+		}
 	}
 	$tags[] = array(
 		'name'   => 'Píxel de Meta (Facebook / Instagram)',
@@ -592,3 +600,24 @@ function bk_gs_abandoned( WP_REST_Request $r ) {
 		)
 	);
 }
+
+/**
+ * Estado de los plugins que suelen instalar el píxel de Meta (instalados pero apagados = causa típica).
+ *
+ * @return string Texto para la nota del píxel ('' si no hay ninguno instalado).
+ */
+function bk_gs_fb_plugins_note() {
+	$active = (array) get_option( 'active_plugins', array() );
+	$off    = array();
+	foreach ( array( 'facebook-for-woocommerce' => 'Facebook for WooCommerce', 'official-facebook-pixel' => 'Meta Pixel', 'pixelyoursite' => 'PixelYourSite' ) as $dir => $label ) {
+		if ( ! is_dir( WP_PLUGIN_DIR . '/' . $dir ) ) {
+			continue;
+		}
+		$on = (bool) array_filter( $active, static fn( $f ) => 0 === strpos( $f, $dir . '/' ) );
+		if ( ! $on ) {
+			$off[] = $label;
+		}
+	}
+	return $off ? ' El plugin ' . implode( ' y ', $off ) . ' está instalado pero desactivado (antes era el que cargaba el píxel): actívalo de nuevo (solo uno, para no duplicar eventos).' : '';
+}
+

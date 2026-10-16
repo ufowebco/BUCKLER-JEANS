@@ -405,7 +405,7 @@
 				'Escribe el <b>número de guía</b>.',
 				'Deja marcada la casilla para que el pedido pase a <b>Completado</b>.',
 				'Toca <b>Ver correo antes de enviar</b>, revisa el correo y toca <b>Confirmar y enviar</b>.',
-			], 'La clienta recibe un correo con la guía y también la ve en Mi cuenta.'),
+			], 'La clienta recibe un correo con la guía y también la ve en Mi cuenta. ¿Domicilio en Medellín? Elige <b>Transportador Local</b>: no pide número de guía y le llega el correo "Tu pedido llega hoy".'),
 			task('Buscar un pedido', ['g-buscar'], [
 				'Escribe el número (3846 o #3846), el consecutivo (PEDIDO-3841), la cédula, el nombre, el correo o el celular.',
 				'Acota con los filtros: estado, pago, impresión, despacho y fechas.',

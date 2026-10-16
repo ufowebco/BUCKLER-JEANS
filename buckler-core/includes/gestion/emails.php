@@ -87,6 +87,9 @@ function bk_gm_list() {
 		);
 	}
 	$list[] = array( 'id' => 'bk:shipped', 'title' => 'Tu pedido ha sido enviado (guía)', 'group' => 'Clienta', 'when' => 'Se envía desde el pedido al registrar transportadora y número de guía.', 'enabled' => true, 'source' => 'buckler-core' );
+	if ( bk_ship_local_keys() ) {
+		$list[] = array( 'id' => 'bk:local', 'title' => 'Tu pedido llega hoy (entrega local)', 'group' => 'Clienta', 'when' => 'Se envía desde el pedido al elegir "Transportador Local" (domicilios Medellín y área metropolitana, sin número de guía).', 'enabled' => true, 'source' => 'buckler-core' );
+	}
 	if ( function_exists( 'bk_pp_email' ) ) {
 		$pp = bk_pp_cfg();
 		foreach ( $pp['remind'] as $i => $h ) {
@@ -148,6 +151,14 @@ function bk_gm_build( $id, $order ) {
 		$t    = function_exists( 'bk_ship_get' ) ? bk_ship_get( $o ) : null;
 		$keys = array_keys( bk_carriers() );
 		$mail = bk_ship_email( $o, $t['carrier'] ?? ( $keys[0] ?? '' ), $t['number'] ?? 'EJEMPLO123456' );
+		return array( 'subject' => $mail['subject'], 'to' => $o->get_billing_email(), 'html' => $mail['html'] );
+	}
+	if ( 'bk:local' === $id ) {
+		$local = bk_ship_local_keys();
+		if ( ! $o || ! $local ) {
+			return new WP_Error( 'bk_no_orders', 'Necesitas al menos un pedido para la vista previa.', array( 'status' => 400 ) );
+		}
+		$mail = bk_ship_email( $o, $local[0], '' );
 		return array( 'subject' => $mail['subject'], 'to' => $o->get_billing_email(), 'html' => $mail['html'] );
 	}
 	if ( preg_match( '/^bk:pp(\d)$/', $id, $m ) && function_exists( 'bk_pp_email' ) ) {

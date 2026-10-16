@@ -7,7 +7,7 @@ Rutas asumidas: `BK_LOCAL=/tmp/claude-0/bk-local` (ajustar en los scripts si cam
 php tools/local/tests/seed-cards.php     # galerías, destacado, oferta, talla agotada
 php tools/local/tests/seed-shop.php      # ~60 productos con nombres/precios/categorías reales
 php tools/local/tests/seed-orders.php    # pedidos de ejemplo, usuaria "gestora" (rol Gestor de tienda)
-cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180 ronda181 ronda182; do NODE_PATH=$(npm root -g) node $t.js; done
+cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180 ronda181 ronda182 ronda184; do NODE_PATH=$(npm root -g) node $t.js; done
 ```
 
 | Suite | Qué prueba | Comprobaciones |
@@ -35,6 +35,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `ronda180.js` | wp-admin/wp-login.php ocultos sin sesión (rutas, POST, sin caché), admin-ajax/admin-post/carrito intactos, /ingreso/ a wp-admin, salir, interruptor, contraseña olvidada y enlace con clave, páginas con contraseña; centro de ayuda (módulos, capturas por tarea, marcas ↔ pasos, ampliar, buscar, celular) | 36 |
 | `ronda181.js` | Recordatorios de pago: checkout que queda pendiente, programación 1 h/24 h/48 h, Woo no lo cancela a los 60 min, correo con enlace firmado, sin repetir, gestión (estado, vista previa, enviar, detener/reanudar, copiar enlace, espera de 30 min), pagar desde el enlace (sin verificar correo; sin firma sí), cancelación a las 48 h, Carritos Pendiente de pago → Compró / cancelado sin pagar, Correos | 31 |
 | `ronda182.js` | Datos estructurados para Search Console: SKU válido, un Offer por talla, agotados con precio, deliveryTime, San Andrés, política de cambios (y ¡Sale! sin cambio), sin Product si no hay precio | 12 |
+| `ronda184.js` | Transportador Local: sin número de guía, correo "Tu pedido llega hoy", Mi cuenta, historial, plantilla en Correos; las demás siguen exigiendo guía | 16 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).
 | `seguridad.js` | Nombres de usuario ocultos a visitantes: REST de usuarios 401, ?author 404, sin sitemap de usuarios, Store API pública, error de acceso genérico, editor con sesión intacto | 7 |

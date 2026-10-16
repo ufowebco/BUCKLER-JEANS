@@ -109,6 +109,8 @@ function bk_config( $key = null ) {
 				// Transportadoras para la guía de envío. 'track' (opcional): URL de rastreo con {guia};
 				// si está vacía, el correo enlaza al sitio de la transportadora y muestra el número para copiar.
 				'carriers'      => array(
+					// Entrega local (domicilios Medellín y área metropolitana): sin número de guía ni rastreo.
+					'local'           => array( 'name' => 'Transportador Local', 'url' => '', 'track' => '', 'local' => true ),
 					'interrapidisimo' => array( 'name' => 'Inter Rapidísimo', 'url' => 'https://www.interrapidisimo.com/', 'track' => '' ),
 					'servientrega'    => array( 'name' => 'Servientrega', 'url' => 'https://www.servientrega.com/', 'track' => '' ),
 					'coordinadora'    => array( 'name' => 'Coordinadora', 'url' => 'https://coordinadora.com/', 'track' => '' ),

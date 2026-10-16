@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.3 → `dist/buckler-core-0.18.3.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.4 → `dist/buckler-core-0.18.4.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -595,6 +595,17 @@ Versión actual 0.18.3 → `dist/buckler-core-0.18.3.zip` (`tools/build-plugin.s
   tildes ni espacios: "9890 Café Plus" → "9890-CAFE-PLUS", 97 de 133 REF tenían espacios; la REF visible no cambia).
   `bk_config('merchant')` ajusta los datos. "review/aggregateRating" (no críticos) quedan sin cumplir a propósito:
   las reseñas de Google son de la tienda y Google prohíbe usarlas como calificación del producto. Suite `ronda182.js` (12).
+- **0.18.4 (2026-10-16):**
+  - **Píxel de Meta 339783714479962:** el 2026-10-14 lo cargaban Facebook for WooCommerce + Meta Pixel (oficial) (7–8
+    apariciones del ID en `snapshots/live/*.html`); hoy esos plugins no cargan nada (sin namespaces REST ni archivos) →
+    los desactivaron. GTM no lo dispara al cargar (desde aquí googletagmanager.com da 403: no se puede leer el
+    contenedor). La revisión de etiquetas ahora dice si no pudo leer GTM (estado info + Meta Pixel Helper) y si un
+    plugin de píxel está instalado pero desactivado (`bk_gs_fb_plugins_note()`).
+  - **Transportador Local** (`carriers.local`, `'local' => true`; `bk_carrier_is_local()`, `bk_ship_local_keys()`):
+    sin número de guía (formulario lo oculta; API guarda `number` ''), correo "Tu pedido #N llega hoy" (variante en
+    `order-shipped.php`: domicilios Medellín y área metropolitana, quédate pendiente, botón WhatsApp "¿No vas a estar?"),
+    Mi cuenta "Tu pedido llega hoy" sin rastreo, nota/historial "sin guía (entrega local)", plantilla `bk:local` en
+    Correos, Ayuda. Suite `ronda184.js` (16); envio.js cuenta 10 transportadoras.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -639,7 +650,7 @@ Versión actual 0.18.3 → `dist/buckler-core-0.18.3.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12 = 706 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16 = 722 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

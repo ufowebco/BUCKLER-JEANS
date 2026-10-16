@@ -363,6 +363,7 @@ function bk_g_render( $early = false ) {
 		),
 		'lines'    => array_map( static fn( $l ) => $l['label'], (array) bk_config( 'lines' ) ),
 		'carriers' => array_map( static fn( $c ) => $c['name'], (array) bk_config( 'carriers' ) ),
+		'carriersLocal' => bk_ship_local_keys(),
 		'isAdmin'  => current_user_can( 'manage_options' ),
 		'hasDispatch' => (bool) bk_g_fields()['despachado'],
 		'user'     => wp_get_current_user()->display_name,
