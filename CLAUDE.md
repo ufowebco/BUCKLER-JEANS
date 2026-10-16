@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.5 → `dist/buckler-core-0.18.5.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.6 → `dist/buckler-core-0.18.6.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -617,6 +617,20 @@ Versión actual 0.18.5 → `dist/buckler-core-0.18.5.zip` (`tools/build-plugin.s
   interceptando fetch, pero carga retrasado → sidecart.js `metaAdd()` lo dispara si aún no se envió
   (`wcFacebookPixelFiredEvents`). InitiateCheckout (`woocommerce_after_checkout_form`) y Purchase (`woocommerce_thankyou`
   + servidor) salen del checkout clásico sin retraso. Fixture `bk_test_fb` ('1' | 'both'). Suite `ronda185.js` (9).
+- **0.18.6 (2026-10-16): comercio electrónico de GA4 para la agencia externa** (el cliente no maneja GTM; la agencia sí).
+  En producción solo había `gtag('config','G-BR4MXPY7HS')` (page_view) + GTM sin eventos estándar en el HTML.
+  `includes/pages/datalayer.php` (con `pages`; apagar: filtro `bk_datalayer_enabled`): eventos estándar de GA4 en el
+  dataLayer, cada uno precedido de `{ecommerce:null}`: view_item (ficha), view_cart, begin_checkout, purchase (en el
+  head, antes de GTM; GTM carga diferido y procesa la cola) + `assets/js/datalayer.js` (`window.bkEcom.storeItem`):
+  add_to_cart / remove_from_cart desde el carrito flotante (`lastCart`) y el enlace "Quitar" del carrito,
+  add_payment_info al enviar el checkout. Items `bk_dl_item()`: item_id = REF del padre, item_category "Línea X",
+  item_category2 prenda (`bk_dl_categories`), item_variant talla, precio vigente (carrito/pedido: total de la línea).
+  purchase: solo `is_paid()` u on-hold, una vez (`_bk_dl_purchase`); pendiente → `bkDL.wait` y el navegador consulta
+  `GET bk/v1/dl/purchase?order&key` (clave del pedido) cada 5 s, 2 min. `user_data` SHA-256 (correo, +57…).
+  `bk_config('ads_ids')` suma ga4 y gtm. Gestión → SEO y ADS → **Guía para la agencia (GA4 + GTM)** (pestaña por
+  defecto para usuarios de solo SEO; aviso en las demás pestañas) + `GET gestion/seo/gtm-import` = contenedor GTM
+  (exportFormatVersion 2: etiqueta gaawe `{{Event}}` con sendEcommerceData/dataLayer + activador regex de los 7
+  eventos + 5 DLV). Doc para reenviar: `docs/agencia-ga4-gtm.md`. Icono `lucide:download`. Suite `ronda186.js` (18).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -661,7 +675,7 @@ Versión actual 0.18.5 → `dist/buckler-core-0.18.5.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9 = 731 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18 = 749 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

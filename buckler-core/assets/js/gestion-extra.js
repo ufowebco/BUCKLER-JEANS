@@ -166,14 +166,99 @@
 	};
 
 	async function viewSeo(sub) {
-		const tab = sub[0] === 'etiquetas' || sub[0] === 'rastreo' ? sub[0] : 'visitas';
+		const tab = ['etiquetas', 'rastreo', 'agencia'].includes(sub[0]) ? sub[0] : (sub[0] === 'visitas' || C.scope !== 'seo' ? 'visitas' : 'agencia');
 		main.innerHTML = `<h1 class="bk-g-h1">SEO y ADS</h1>
 			<aside class="bk-g-alert" role="note" aria-labelledby="bk-g-alert-t">${C.icons.info || ''}<div><p id="bk-g-alert-t"><b>¿Falta alguna etiqueta o píxel?</b></p>
 				<p>Si necesitas medir algo que no aparece aquí (Google Ads, GA4, píxel de Meta o TikTok, conversiones, Merchant Center…), envía el ID y qué debe medir a <a id="bk-g-alert-mail" href="${mailto([])}">contacto@ufoweb.co</a>. No pegues códigos directamente en el sitio: se instalan con carga diferida para no hacerlo más lento.</p></div></aside>
-			<nav class="bk-g-subtabs" aria-label="SEO y ADS">${[['visitas', 'Visitas'], ['etiquetas', 'Etiquetas Google y Meta'], ['rastreo', 'Clases y eventos rastreables']].map(([k, l]) => `<a href="#seo/${k}" ${tab === k ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>
+			${tab !== 'agencia' ? `<a class="bk-g-agency-cta" href="#seo/agencia">${C.icons.chart} <span><b>¿Eres la agencia de pauta?</b> Aquí está todo listo para GA4, GTM y Google Ads: eventos de comercio electrónico y contenedor para importar.</span> ${C.icons.ext}</a>` : ''}
+			<nav class="bk-g-subtabs" aria-label="SEO y ADS">${[['agencia', 'Guía para la agencia (GA4 + GTM)'], ['visitas', 'Visitas'], ['etiquetas', 'Etiquetas Google y Meta'], ['rastreo', 'Clases y eventos rastreables']].map(([k, l]) => `<a href="#seo/${k}" ${tab === k ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>
 			<div id="bk-g-seo"><div class="bk-g-loading">Cargando…</div></div>`;
-		({ visitas: seoVisits, etiquetas: seoTags, rastreo: seoTrack })[tab]();
+		({ visitas: seoVisits, etiquetas: seoTags, rastreo: seoTrack, agencia: seoAgency })[tab]();
 	}
+
+	/* --- Guía para la agencia: GA4 + GTM ------------------------------------------ */
+	const ECOM = [
+		['view_item', 'Ficha de producto', 'Al abrir la ficha (1 producto, precio vigente).'],
+		['add_to_cart', 'Ficha y carrito flotante', 'Al agregar una prenda (talla en item_variant, cantidad, precio).'],
+		['remove_from_cart', 'Carrito flotante y carrito', 'Al quitar una prenda.'],
+		['view_cart', 'Página del carrito', 'Al abrir el carrito (todas las prendas y el total).'],
+		['begin_checkout', 'Finalizar compra', 'Al abrir el checkout con productos (cupones en coupon).'],
+		['add_payment_info', 'Finalizar compra', 'Al tocar "Realizar el pedido" (payment_type = Wompi, Bold, Addi…).'],
+		['purchase', 'Gracias por tu compra', 'Una sola vez por pedido, solo pagado (o en espera de verificación). Si la pasarela confirma unos segundos después, se envía al confirmarse. transaction_id = número de pedido.'],
+	];
+	const SAMPLE = {
+		event: 'purchase',
+		ecommerce: {
+			transaction_id: '3846', affiliation: 'Buckler Jeans · Tienda online', value: 169900, tax: 0, shipping: 0, currency: 'COP', coupon: '', payment_type: 'Wompi',
+			items: [{ item_id: '9912', item_name: 'CHAQUETA DAMA', item_brand: 'Buckler Jeans', item_category: 'Línea Slim', item_category2: 'Chaquetas Y Chalecos', item_variant: '8', price: 169900, quantity: 1, index: 0 }],
+		},
+		user_data: { sha256_email_address: '9f86d0…', sha256_phone_number: 'a3c4e1…' },
+	};
+
+	function seoAgency() {
+		const box = $('#bk-g-seo');
+		const ids = C.adsIds || {};
+		const code = (t) => `<code>${esc(t)}</code>`;
+		box.innerHTML = `<section class="bk-g-card bk-g-agency">
+			<h2>Guía para la agencia: GA4, Google Tag Manager y Google Ads</h2>
+			<p>El sitio ya deja en el <b>dataLayer</b> todos los eventos de comercio electrónico de GA4, con el <b>formato estándar de Google</b> (cada uno precedido de ${code('{ ecommerce: null }')}). Solo falta que GTM los envíe a GA4: se hace importando el contenedor de abajo, en 5 minutos y sin tocar el código del sitio.</p>
+			<dl class="bk-g-agency__ids">
+				<div><dt>Google Tag Manager</dt><dd>${code(ids.gtm || '—')}</dd></div>
+				<div><dt>GA4 (ID de medición)</dt><dd>${code(ids.ga4 || '—')}</dd></div>
+				<div><dt>Píxel de Meta</dt><dd>${code(ids.meta_pixel || '—')} <small>(lo maneja Facebook for WooCommerce)</small></dd></div>
+				<div><dt>Merchant Center</dt><dd>${code(ids.merchant_center || '—')}</dd></div>
+			</dl>
+			<p><button type="button" class="bk-g-btn" data-gtm-import>${C.icons.dl} Descargar contenedor para importar (JSON)</button></p>
+
+			<h3>1. Importar en GTM (una vez)</h3>
+			<ol class="bk-g-agency__steps">
+				<li>En <a href="https://tagmanager.google.com/" target="_blank" rel="noopener">Tag Manager</a> abre el contenedor ${code(ids.gtm || '')} → <b>Administrador → Importar contenedor</b>.</li>
+				<li>Elige el archivo descargado, el espacio de trabajo actual y la opción <b>Combinar → Cambiar el nombre de etiquetas, activadores y variables en conflicto</b> (no reemplaza nada de lo que ya tienen).</li>
+				<li>Se crean: la etiqueta <b>GA4 - Comercio electrónico (Buckler)</b> (Evento de GA4, nombre ${code('{{Event}}')}, "Enviar datos de comercio electrónico" desde la capa de datos, ID ${code(ids.ga4 || '')}), el activador <b>CE - Comercio electrónico GA4 (Buckler)</b> (evento personalizado: ${code(ECOM.map((e) => e[0]).join('|'))}) y 5 variables de capa de datos para Google Ads.</li>
+				<li>Revisa que no tengan ya otra etiqueta que envíe ${code('purchase')} a GA4 (si existe, páusala: si no, cada compra se cuenta dos veces).</li>
+				<li><b>Vista previa</b> (Tag Assistant): agrega una prenda, abre el carrito y el checkout. Deben aparecer los eventos de la tabla con la pestaña <i>Data Layer</i> llena. Luego <b>Enviar → Publicar</b>.</li>
+			</ol>
+
+			<h3>2. En GA4</h3>
+			<ol class="bk-g-agency__steps">
+				<li><b>Administrador → Eventos</b>: marca ${code('purchase')} como <b>evento clave</b> (aparece tras la primera compra; también se puede crear a mano con ese nombre).</li>
+				<li>Los informes de <b>Monetización → Compras de comercio electrónico</b> se llenan solos (productos, tallas, línea y prenda).</li>
+				<li>Para Google Ads: vincula GA4 con la cuenta de Ads e <b>importa el evento clave purchase</b> como conversión (valor dinámico en COP).</li>
+			</ol>
+
+			<h3>3. Conversiones mejoradas (opcional, recomendado para Google Ads)</h3>
+			<p>${code('purchase')} trae ${code('user_data.sha256_email_address')} y ${code('user_data.sha256_phone_number')} (SHA-256, celular en formato +57…). Nunca viajan en claro. En una etiqueta de conversión de Google Ads usen "Incluir datos proporcionados por el usuario" con las variables ${code('DLV - user_data.*')} del contenedor importado.</p>
+
+			<h3>Eventos disponibles</h3>
+			<div class="bk-g-table-wrap"><table class="bk-g-table"><thead><tr><th>Evento</th><th>Dónde</th><th>Cuándo y qué datos</th></tr></thead><tbody>
+				${ECOM.map(([e, w, d]) => `<tr><td>${code(e)}</td><td>${esc(w)}</td><td>${esc(d)}</td></tr>`).join('')}
+			</tbody></table></div>
+			<p class="bk-g-hint">Cada item trae: ${code('item_id')} (REF), ${code('item_name')}, ${code('item_brand')}, ${code('item_category')} (Línea Slim / Curvy), ${code('item_category2')} (prenda), ${code('item_variant')} (talla), ${code('price')} y ${code('quantity')}. Moneda: COP.</p>
+			<details class="bk-g-agency__sample"><summary>Ejemplo de ${code('purchase')} en el dataLayer</summary><pre>${esc(JSON.stringify(SAMPLE, null, 2))}</pre></details>
+
+			<h3>Bueno saber</h3>
+			<ul class="bk-g-agency__notes">
+				<li><b>Carga diferida:</b> para que el sitio sea rápido, GTM, GA4 y AdsAgent se cargan con la primera interacción (tocar, mover el mouse o desplazarse). Los eventos quedan en cola en el dataLayer y GTM los procesa al cargar: no se pierden. En el checkout y la página de gracias carga de inmediato.</li>
+				<li><b>Meta:</b> el píxel ${code(ids.meta_pixel || '')} y su API de conversiones los maneja el plugin Facebook for WooCommerce. No agreguen el píxel en GTM (se duplicaría).</li>
+				<li><b>GA4 directo:</b> el sitio también carga ${code(ids.ga4 || '')} con gtag (vistas de página). La etiqueta importada no envía page_view, así que no se duplican.</li>
+				<li>Siguen existiendo los eventos propios ${code('bk_*')} (clics en WhatsApp, tallas, banners, búsquedas…): están en la pestaña <a href="#seo/rastreo">Clases y eventos rastreables</a>.</li>
+				<li>¿Dudas o algo que no se pueda medir? Escriban a <a href="mailto:contacto@ufoweb.co">contacto@ufoweb.co</a>. No peguen códigos en el sitio: se instalan con carga diferida.</li>
+			</ul>
+		</section>`;
+	}
+
+	document.addEventListener('click', async (e) => {
+		const b = e.target.closest('[data-gtm-import]');
+		if (!b) return;
+		await busy(b, async () => {
+			const d = await api('seo/gtm-import');
+			const url = URL.createObjectURL(new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' }));
+			const a = Object.assign(document.createElement('a'), { href: url, download: 'buckler-gtm-ga4-ecommerce.json' });
+			document.body.append(a); a.click(); a.remove();
+			setTimeout(() => URL.revokeObjectURL(url), 2000);
+			toast('Contenedor descargado');
+		});
+	});
 
 	async function seoVisits() {
 		const box = $('#bk-g-seo');

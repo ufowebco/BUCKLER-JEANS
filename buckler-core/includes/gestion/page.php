@@ -370,6 +370,7 @@ function bk_g_render( $early = false ) {
 		'logout'   => bk_g_url( array( 'salir' => 1, '_wpnonce' => wp_create_nonce( 'bk_g_logout' ) ) ),
 		'scope'    => $seo_only ? 'seo' : 'all',
 		'site'     => home_url( '/' ),
+		'adsIds'   => (array) bk_config( 'ads_ids' ),
 		'printUrl' => esc_url_raw( home_url( '/' . BK_G_SLUG . '/' ) ) . '?imprimir=',
 		'helpImg'  => esc_url_raw( BK_URL . 'assets/img/ayuda/' ),
 		'ver'      => BK_VERSION,
@@ -417,6 +418,7 @@ function bk_g_render( $early = false ) {
 			'info'    => 'lucide:info',
 			'up'      => 'lucide:chevron-up',
 			'down'    => 'lucide:chevron-down',
+			'dl'      => 'lucide:download',
 		) ),
 	);
 	?>

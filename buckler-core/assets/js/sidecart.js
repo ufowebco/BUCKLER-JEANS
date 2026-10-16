@@ -129,8 +129,9 @@
 		body.innerHTML = `<p class="bk-sc__msg">${esc(t.error)}</p>`;
 	};
 
+	let lastCart = null; // Último carrito pintado (para saber qué prenda se quita: remove_from_cart).
 	const render = (cart) => {
-		if (cart && cart.items) snapshot(cart);
+		if (cart && cart.items) { snapshot(cart); lastCart = cart; }
 		body.setAttribute('aria-busy', 'false');
 		const n = cart.items_count || 0;
 		countEl.textContent = n ? `(${n})` : '';
@@ -235,7 +236,9 @@
 				const key = li.dataset.key;
 				const qty = Number(li.querySelector('.bk-sc__qty span').textContent);
 				if (btn.dataset.act === 'remove') {
+					const gone = (lastCart?.items || []).find((i) => i.key === key);
 					cart = await api('cart/remove-item', { method: 'POST', body: { key } });
+					if (gone) window.bkEcom?.storeItem?.('remove_from_cart', gone, gone.quantity);
 					say(t.removed);
 					fireJq('removed_from_cart');
 				} else {
@@ -277,6 +280,7 @@
 	const trackAdd = (cart, id, qty) => {
 		metaAdd(cart);
 		const it = (cart?.items || []).find((i) => i.id === id);
+		if (it) window.bkEcom?.storeItem?.('add_to_cart', it, qty); // GA4 estándar (datalayer.js).
 		if (!it || !window.bkTrack) return;
 		const minor = it.prices?.currency_minor_unit ?? 0;
 		const price = Number(it.prices?.price || 0) / 10 ** minor;

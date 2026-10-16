@@ -85,6 +85,7 @@ add_action(
 		}
 		if ( bk_on( 'pages' ) ) {
 			require_once BK_DIR . 'includes/pages/pages.php';
+			require_once BK_DIR . 'includes/pages/datalayer.php';
 			if ( bk_on( 'cache' ) ) {
 				require_once BK_DIR . 'includes/page-cache.php';
 			}

@@ -62,3 +62,4 @@ lucide:image
 lucide:tag
 lucide:percent
 lucide:rotate-cw
+lucide:download

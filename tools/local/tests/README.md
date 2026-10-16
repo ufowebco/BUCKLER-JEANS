@@ -7,7 +7,7 @@ Rutas asumidas: `BK_LOCAL=/tmp/claude-0/bk-local` (ajustar en los scripts si cam
 php tools/local/tests/seed-cards.php     # galerías, destacado, oferta, talla agotada
 php tools/local/tests/seed-shop.php      # ~60 productos con nombres/precios/categorías reales
 php tools/local/tests/seed-orders.php    # pedidos de ejemplo, usuaria "gestora" (rol Gestor de tienda)
-cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180 ronda181 ronda182 ronda184 ronda185; do NODE_PATH=$(npm root -g) node $t.js; done
+cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180 ronda181 ronda182 ronda184 ronda185 ronda186; do NODE_PATH=$(npm root -g) node $t.js; done
 ```
 
 | Suite | Qué prueba | Comprobaciones |
@@ -37,6 +37,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `ronda182.js` | Datos estructurados para Search Console: SKU válido, un Offer por talla, agotados con precio, deliveryTime, San Andrés, política de cambios (y ¡Sale! sin cambio), sin Product si no hay precio | 12 |
 | `ronda184.js` | Transportador Local: sin número de guía, correo "Tu pedido llega hoy", Mi cuenta, historial, plantilla en Correos; las demás siguen exigiendo guía | 16 |
 | `ronda185.js` | Píxel de Meta (Facebook for WooCommerce simulado): detección, aviso de dos plugins, AddToCart del carrito flotante una sola vez con eventID | 9 |
+| `ronda186.js` | GA4 en el dataLayer: view_item, add_to_cart, view_cart, remove_from_cart, begin_checkout, add_payment_info, purchase una vez (y al confirmarse el pago), user_data SHA-256, guía para la agencia y contenedor GTM | 18 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).
 | `seguridad.js` | Nombres de usuario ocultos a visitantes: REST de usuarios 401, ?author 404, sin sitemap de usuarios, Store API pública, error de acceso genérico, editor con sesión intacto | 7 |

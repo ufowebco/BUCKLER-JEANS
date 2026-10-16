@@ -30,6 +30,7 @@ add_action( 'deactivated_plugin', static fn() => delete_transient( 'bk_gs_tags' 
 function bk_gs_routes() {
 	$ns = 'bk/v1';
 	register_rest_route( $ns, '/gestion/seo/tags', array( 'methods' => 'GET', 'callback' => 'bk_gs_tags', 'permission_callback' => 'bk_g_can_seo' ) );
+	register_rest_route( $ns, '/gestion/seo/gtm-import', array( 'methods' => 'GET', 'callback' => 'bk_gs_gtm_import_rest', 'permission_callback' => 'bk_g_can_seo' ) );
 	register_rest_route( $ns, '/gestion/seo/visits', array( 'methods' => 'GET', 'callback' => 'bk_gs_visits', 'permission_callback' => 'bk_g_can_seo' ) );
 	register_rest_route( $ns, '/gestion/seo/geo', array( 'methods' => 'POST', 'callback' => 'bk_gs_geo', 'permission_callback' => static fn() => current_user_can( 'manage_options' ) ) );
 	register_rest_route( $ns, '/gestion/abandoned', array( 'methods' => 'GET', 'callback' => 'bk_gs_abandoned', 'permission_callback' => 'bk_g_can' ) );
@@ -670,5 +671,98 @@ function bk_gs_meta_scan( $h ) {
 	$inits = preg_match_all( '/fbq\(\s*[\'"]init[\'"]\s*,\s*[\'"]\d/', $h );
 	$dup   = count( $sources ) > 1 || ( ! $sources && $inits > 1 );
 	return array( 'ids' => array_values( array_unique( $ids ) ), 'sources' => $sources, 'events' => array_values( array_unique( $events ) ), 'dup' => $dup );
+}
+
+/**
+ * Eventos de comercio electrónico de GA4 que el sitio deja en el dataLayer (includes/pages/datalayer.php).
+ *
+ * @return string[]
+ */
+function bk_gs_ecom_events() {
+	return array( 'view_item', 'add_to_cart', 'remove_from_cart', 'view_cart', 'begin_checkout', 'add_payment_info', 'purchase' );
+}
+
+/**
+ * Contenedor de GTM para importar (Administrador → Importar contenedor → Combinar): una etiqueta "Evento de GA4"
+ * que reenvía todos los eventos de comercio electrónico con sus datos, su activador y variables útiles para Google Ads.
+ *
+ * @return array
+ */
+function bk_gs_gtm_import() {
+	$ids = (array) bk_config( 'ads_ids' );
+	$ga4 = (string) ( $ids['ga4'] ?? '' );
+	$gtm = (string) ( $ids['gtm'] ?? '' );
+	$acc = array( 'accountId' => '0', 'containerId' => '0' );
+	$p   = static fn( $type, $key, $value ) => array( 'type' => $type, 'key' => $key, 'value' => $value );
+	$dlv = static function ( $id, $name, $path ) use ( $acc, $p ) {
+		return $acc + array(
+			'variableId' => (string) $id,
+			'name'       => $name,
+			'type'       => 'v',
+			'parameter'  => array( $p( 'INTEGER', 'dataLayerVersion', '2' ), $p( 'BOOLEAN', 'setDefaultValue', 'false' ), $p( 'TEMPLATE', 'name', $path ) ),
+		);
+	};
+	return array(
+		'exportFormatVersion' => 2,
+		'exportTime'          => gmdate( 'Y-m-d H:i:s' ),
+		'containerVersion'    => $acc + array(
+			'path'               => 'accounts/0/containers/0/versions/0',
+			'containerVersionId' => '0',
+			'container'          => $acc + array(
+				'path'         => 'accounts/0/containers/0',
+				'name'         => 'Buckler Jeans - comercio electrónico GA4',
+				'publicId'     => $gtm,
+				'usageContext' => array( 'WEB' ),
+			),
+			'tag'                => array(
+				$acc + array(
+					'tagId'            => '1',
+					'name'             => 'GA4 - Comercio electrónico (Buckler)',
+					'type'             => 'gaawe',
+					'parameter'        => array(
+						$p( 'BOOLEAN', 'sendEcommerceData', 'true' ),
+						$p( 'TEMPLATE', 'getEcommerceDataFrom', 'dataLayer' ),
+						$p( 'TEMPLATE', 'eventName', '{{Event}}' ),
+						$p( 'TEMPLATE', 'measurementIdOverride', $ga4 ),
+					),
+					'firingTriggerId'  => array( '2' ),
+					'tagFiringOption'  => 'ONCE_PER_EVENT',
+					'notes'            => 'Creada por buckler-core. Reenvía a GA4 los eventos estándar de comercio electrónico que el sitio deja en el dataLayer.',
+				),
+			),
+			'trigger'            => array(
+				$acc + array(
+					'triggerId'         => '2',
+					'name'              => 'CE - Comercio electrónico GA4 (Buckler)',
+					'type'              => 'CUSTOM_EVENT',
+					'customEventFilter' => array(
+						array(
+							'type'      => 'MATCH_REGEX',
+							'parameter' => array( $p( 'TEMPLATE', 'arg0', '{{_event}}' ), $p( 'TEMPLATE', 'arg1', '^(' . implode( '|', bk_gs_ecom_events() ) . ')$' ) ),
+						),
+					),
+				),
+			),
+			'variable'           => array(
+				$dlv( 3, 'DLV - ecommerce.transaction_id', 'ecommerce.transaction_id' ),
+				$dlv( 4, 'DLV - ecommerce.value', 'ecommerce.value' ),
+				$dlv( 5, 'DLV - ecommerce.currency', 'ecommerce.currency' ),
+				$dlv( 6, 'DLV - user_data.sha256_email_address', 'user_data.sha256_email_address' ),
+				$dlv( 7, 'DLV - user_data.sha256_phone_number', 'user_data.sha256_phone_number' ),
+			),
+			'builtInVariable'    => array( $acc + array( 'type' => 'EVENT', 'name' => 'Event' ) ),
+		),
+	);
+}
+
+/**
+ * Descarga del contenedor para importar.
+ *
+ * @return WP_REST_Response
+ */
+function bk_gs_gtm_import_rest() {
+	$r = rest_ensure_response( bk_gs_gtm_import() );
+	$r->header( 'Content-Disposition', 'attachment; filename="buckler-gtm-ga4-ecommerce.json"' );
+	return $r;
 }
 

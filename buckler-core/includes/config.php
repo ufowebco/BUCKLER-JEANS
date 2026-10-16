@@ -38,6 +38,8 @@ function bk_config( $key = null ) {
 				'ads_ids'       => array(
 					'meta_pixel'      => '339783714479962',
 					'merchant_center' => '5730910704',
+					'ga4'             => 'G-BR4MXPY7HS',
+					'gtm'             => 'GTM-NCDM5V29',
 				),
 				'addi_url'      => 'https://preapproval.addi.com/?allySlug=addi-preapproval-pm',
 				'city'          => 'Medellín, Colombia',
