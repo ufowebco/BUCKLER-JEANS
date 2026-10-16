@@ -26,7 +26,7 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
   const co = sd.find((x) => !x.shippingDestination.addressRegion);
   const sap = sd.find((x) => x.shippingDestination.addressRegion === 'SAP');
   ok(co && co.shippingRate.value === 0 && co.deliveryTime?.handlingTime?.unitCode === 'DAY' && co.deliveryTime.transitTime.minValue === 3 && co.deliveryTime.transitTime.maxValue === 7, 'envío gratis en Colombia con deliveryTime (preparación + 3 a 7 días hábiles)');
-  ok(sap && sap.shippingRate.value === 35900, 'San Andrés con su costo de envío ($35.900)');
+  ok(!sap && !Array.isArray(of[0].shippingDetails), 'San Andrés también gratis: un solo envío gratis para toda Colombia');
   const rp = of[0].hasMerchantReturnPolicy;
   ok(rp && rp.applicableCountry === 'CO' && rp.merchantReturnDays === 30 && /FiniteReturnWindow/.test(rp.returnPolicyCategory) && /ReturnByMail/.test(rp.returnMethod) && /CustomerResponsibility/.test(rp.returnFees), 'hasMerchantReturnPolicy: cambios en 30 días, envío a cargo de la clienta');
   ok(!pr.aggregateRating && !pr.review, 'sin calificaciones inventadas (las reseñas de Google son de la tienda, no del producto)');

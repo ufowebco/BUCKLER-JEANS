@@ -302,7 +302,8 @@ function bk_seo_product_schema( $p ) {
 
 /**
  * Datos de envío y cambios para Google (Fichas de comerciantes). Tomados de las políticas publicadas en
- * buckler.com.co (2026-10-16): envío gratis en Colombia salvo San Andrés ($35.900), entrega 3–4 días hábiles en
+ * buckler.com.co (2026-10-16): envío gratis en toda Colombia, San Andrés incluido (confirmado por el cliente; la
+ * política publicada aún dice $35.900; a Providencia no se envía), entrega 3–4 días hábiles en
  * ciudades principales y 5–7 en el resto del país tras el despacho; cambios en 30 días desde la entrega, envío del
  * cambio a cargo de la clienta; prendas de ¡Sale! sin cambio. bk_config('merchant') lo puede ajustar.
  *
@@ -314,7 +315,7 @@ function bk_seo_merchant_cfg() {
 			'handling'      => array( 0, 2 ), // Días hábiles para preparar y despachar después del pago.
 			'transit'       => array( 3, 7 ), // Días hábiles de la transportadora.
 			'business_days' => array( 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday' ),
-			'paid_regions'  => array( 'SAP' => 35900 ), // San Andrés (código ISO 3166-2 sin "CO-").
+			'paid_regions'  => array(), // Regiones con costo: código ISO 3166-2 sin "CO-" => valor (hoy ninguna).
 			'return_days'   => 30,
 			'return_fees'   => 'https://schema.org/ReturnFeesCustomerResponsibility',
 			'refund_type'   => 'https://schema.org/ExchangeRefund',
