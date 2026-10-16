@@ -120,7 +120,7 @@ const menuIds = (p) => p.evaluate(() => [...document.querySelectorAll('#adminmen
   await p.goto(tool());
   await Promise.all([p.waitForNavigation(), p.click('[data-bk-reset] [type=submit]')]);
   ids = await menuIds(p);
-  ok(ids.includes('edit.php') && !ids.some((x) => x.startsWith('H:')) && ids.filter((x) => x !== 'LOGO')[0] === 'index.php', 'restablecer global: menú original de WordPress ' + JSON.stringify(ids.slice(0, 4)));
+  ok(ids.includes('edit.php') && !ids.some((x) => x.startsWith('H:')) && ids.filter((x) => x !== 'LOGO' && !/gestion-tienda/.test(x))[0] === 'index.php', 'restablecer global: menú original de WordPress ' + JSON.stringify(ids.slice(0, 4)));
   await p.goto(tool()); await p.screenshot({ path: `${OUT}/am-tool.png`, fullPage: true });
   ok(errs.length === 0, 'sin errores JS ' + errs.join(' | '));
   await b.close();

@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Buckler Core
  * Description:       Funciones propias de buckler.com.co: banners ACF, video de producto, iconos, protección de clics y utilidades de WooCommerce. Reemplaza plugins pesados.
- * Version:           0.18.7
+ * Version:           0.18.8
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            UFO Web
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'BK_VERSION', '0.18.7' );
+define( 'BK_VERSION', '0.18.8' );
 define( 'BK_FILE', __FILE__ );
 define( 'BK_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BK_URL', plugin_dir_url( __FILE__ ) );
@@ -87,6 +87,7 @@ add_action(
 		if ( bk_on( 'pages' ) ) {
 			require_once BK_DIR . 'includes/pages/pages.php';
 			require_once BK_DIR . 'includes/pages/datalayer.php';
+			require_once BK_DIR . 'includes/pages/smart-desc.php';
 			if ( bk_on( 'cache' ) ) {
 				require_once BK_DIR . 'includes/page-cache.php';
 			}
@@ -95,6 +96,7 @@ add_action(
 			require_once BK_DIR . 'includes/gestion/api.php';
 			require_once BK_DIR . 'includes/gestion/page.php';
 			require_once BK_DIR . 'includes/gestion/login.php';
+			require_once BK_DIR . 'includes/gestion/admin-link.php';
 			require_once BK_DIR . 'includes/gestion/pending-pay.php';
 			require_once BK_DIR . 'includes/gestion/shipping.php';
 			require_once BK_DIR . 'includes/gestion/product-editor.php';

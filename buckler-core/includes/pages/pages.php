@@ -397,7 +397,8 @@ function bk_pdp_description() {
 	if ( '' === trim( wp_strip_all_tags( (string) $content ) ) ) {
 		return;
 	}
-	echo '<section class="bk-pdp__desc" aria-labelledby="bk-desc-title"><h2 id="bk-desc-title" class="bk-section-title">' . esc_html__( 'Descripción', 'buckler-core' ) . '</h2><div class="bk-prose">' . $content . '</div></section>'; // phpcs:ignore WordPress.Security.EscapeOutput
+	$smart = function_exists( 'bk_desc_smart' ) ? bk_desc_smart( (string) $content ) : '';
+	echo '<section class="bk-pdp__desc" aria-labelledby="bk-desc-title"><h2 id="bk-desc-title" class="bk-section-title">' . esc_html__( 'Descripción', 'buckler-core' ) . '</h2>' . ( $smart ? $smart : '<div class="bk-prose">' . $content . '</div>' ) . '</section>'; // phpcs:ignore WordPress.Security.EscapeOutput
 }
 
 /**

@@ -63,3 +63,11 @@ lucide:tag
 lucide:percent
 lucide:rotate-cw
 lucide:download
+lucide:shirt
+lucide:layers
+lucide:palette
+lucide:scissors
+lucide:feather
+lucide:circle-dot
+lucide:wallet
+lucide:store
