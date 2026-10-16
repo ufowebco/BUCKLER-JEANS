@@ -241,55 +241,43 @@ function bk_seo_product_schema( $p ) {
 		}
 	}
 	$currency = get_woocommerce_currency();
-	$prices   = array();
-	$in       = false;
-	$until    = '';
-	$children = $p->is_type( 'variable' ) ? $p->get_visible_children() : array( $p->get_id() );
-	foreach ( $children as $cid ) {
+	$cfg      = bk_seo_merchant_cfg();
+	$sku      = bk_seo_sku( $p->get_sku() );
+	$sale     = bk_seo_is_sale( $p );
+	// Todas las tallas (también las agotadas: con "Ocultar agotados" get_visible_children() las quitaba y los 34
+	// productos agotados quedaban sin precio → Search Console: "Debe especificarse offers"). Precio = el vigente o,
+	// si la talla no tiene, el normal.
+	$offers   = array();
+	$children = $p->is_type( 'variable' ) ? $p->get_children() : array( $p->get_id() );
+	foreach ( array_slice( $children, 0, 20 ) as $cid ) {
 		$v = $cid === $p->get_id() ? $p : wc_get_product( $cid );
-		if ( ! $v || '' === (string) $v->get_price() ) {
+		if ( ! $v || ( $v->get_id() !== $p->get_id() && ! in_array( $v->get_status(), array( 'publish', 'private' ), true ) ) || 'private' === $v->get_status() ) {
 			continue;
 		}
-		$prices[] = (float) $v->get_price();
-		$in       = $in || $v->is_in_stock();
-		if ( $v->is_on_sale() && $v->get_date_on_sale_to() ) {
-			$until = $v->get_date_on_sale_to()->date( 'Y-m-d' );
+		$price = '' !== (string) $v->get_price() ? (float) $v->get_price() : (float) $v->get_regular_price();
+		if ( $price <= 0 ) {
+			continue;
 		}
-	}
-	$avail    = $in ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock';
-	$shipping = array(
-		'@type'               => 'OfferShippingDetails',
-		'shippingRate'        => array( '@type' => 'MonetaryAmount', 'value' => 0, 'currency' => $currency ),
-		'shippingDestination' => array( '@type' => 'DefinedRegion', 'addressCountry' => 'CO' ),
-	);
-	$seller   = array( '@type' => 'Organization', 'name' => $brand, 'url' => home_url( '/' ) );
-	if ( ! $prices ) {
-		$offers = null;
-	} elseif ( min( $prices ) === max( $prices ) ) {
-		$offers = array_filter(
+		$size     = $v->get_id() !== $p->get_id() ? implode( ' ', array_filter( array_map( 'strval', $v->get_attributes() ) ) ) : '';
+		$offers[] = array_filter(
 			array(
-				'@type'           => 'Offer',
-				'url'             => $p->get_permalink(),
-				'price'           => wc_format_decimal( min( $prices ), wc_get_price_decimals() ),
-				'priceCurrency'   => $currency,
-				'availability'    => $avail,
-				'itemCondition'   => 'https://schema.org/NewCondition',
-				'priceValidUntil' => $until,
-				'shippingDetails' => $shipping,
-				'seller'          => $seller,
+				'@type'                   => 'Offer',
+				'url'                     => $p->get_permalink(),
+				'sku'                     => $sku && $size ? bk_seo_sku( $sku . '-' . $size ) : $sku,
+				'name'                    => $size ? 'Talla ' . $size : '',
+				'price'                   => wc_format_decimal( $price, wc_get_price_decimals() ),
+				'priceCurrency'           => $currency,
+				'availability'            => $v->is_in_stock() ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+				'itemCondition'           => 'https://schema.org/NewCondition',
+				'priceValidUntil'         => $v->is_on_sale() && $v->get_date_on_sale_to() ? $v->get_date_on_sale_to()->date( 'Y-m-d' ) : '',
+				'shippingDetails'         => bk_seo_shipping_details( $currency, $cfg ),
+				'hasMerchantReturnPolicy' => bk_seo_return_policy( $sale, $cfg ),
+				'seller'                  => array( '@type' => 'Organization', 'name' => $brand, 'url' => home_url( '/' ) ),
 			)
 		);
-	} else {
-		$offers = array(
-			'@type'         => 'AggregateOffer',
-			'url'           => $p->get_permalink(),
-			'lowPrice'      => wc_format_decimal( min( $prices ), wc_get_price_decimals() ),
-			'highPrice'     => wc_format_decimal( max( $prices ), wc_get_price_decimals() ),
-			'offerCount'    => count( $prices ),
-			'priceCurrency' => $currency,
-			'availability'  => $avail,
-			'seller'        => $seller,
-		);
+	}
+	if ( ! $offers ) {
+		return array(); // Sin ningún precio no se publica el producto (sería un error crítico para Google).
 	}
 	$desc = wp_strip_all_tags( $p->get_short_description() ? $p->get_short_description() : $p->get_description() );
 	$data = array_filter(
@@ -299,17 +287,122 @@ function bk_seo_product_schema( $p ) {
 			'@id'         => $p->get_permalink() . '#product',
 			'name'        => bk_nice_label( $p->get_name() ) . ( $line ? ' · ' . $line['label'] : '' ),
 			'url'         => $p->get_permalink(),
-			'sku'         => (string) $p->get_sku(),
-			'mpn'         => (string) $p->get_sku(),
+			'sku'         => $sku,
+			'mpn'         => $sku,
 			'image'       => $imgs,
 			'description' => bk_seo_trim( $desc, 500 ),
 			'brand'       => array( '@type' => 'Brand', 'name' => $brand ),
 			'category'    => $line ? 'Ropa de mujer > ' . $line['label'] : 'Ropa de mujer',
 			'audience'    => array( '@type' => 'PeopleAudience', 'suggestedGender' => 'female' ),
-			'offers'      => $offers,
+			'offers'      => 1 === count( $offers ) ? $offers[0] : $offers,
 		)
 	);
 	return (array) apply_filters( 'bk_seo_product_schema', $data, $p );
+}
+
+/**
+ * Datos de envío y cambios para Google (Fichas de comerciantes). Tomados de las políticas publicadas en
+ * buckler.com.co (2026-10-16): envío gratis en Colombia salvo San Andrés ($35.900), entrega 3–4 días hábiles en
+ * ciudades principales y 5–7 en el resto del país tras el despacho; cambios en 30 días desde la entrega, envío del
+ * cambio a cargo de la clienta; prendas de ¡Sale! sin cambio. bk_config('merchant') lo puede ajustar.
+ *
+ * @return array
+ */
+function bk_seo_merchant_cfg() {
+	return array_merge(
+		array(
+			'handling'      => array( 0, 2 ), // Días hábiles para preparar y despachar después del pago.
+			'transit'       => array( 3, 7 ), // Días hábiles de la transportadora.
+			'business_days' => array( 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday' ),
+			'paid_regions'  => array( 'SAP' => 35900 ), // San Andrés (código ISO 3166-2 sin "CO-").
+			'return_days'   => 30,
+			'return_fees'   => 'https://schema.org/ReturnFeesCustomerResponsibility',
+			'refund_type'   => 'https://schema.org/ExchangeRefund',
+		),
+		(array) bk_config( 'merchant' )
+	);
+}
+
+/**
+ * Envío: Colombia gratis (+ regiones con costo) con tiempos de preparación y entrega.
+ *
+ * @param string $currency Moneda.
+ * @param array  $cfg      bk_seo_merchant_cfg().
+ * @return array
+ */
+function bk_seo_shipping_details( $currency, $cfg ) {
+	$time = array(
+		'@type'        => 'ShippingDeliveryTime',
+		'handlingTime' => array( '@type' => 'QuantitativeValue', 'minValue' => (int) $cfg['handling'][0], 'maxValue' => (int) $cfg['handling'][1], 'unitCode' => 'DAY' ),
+		'transitTime'  => array( '@type' => 'QuantitativeValue', 'minValue' => (int) $cfg['transit'][0], 'maxValue' => (int) $cfg['transit'][1], 'unitCode' => 'DAY' ),
+		'businessDays' => array( '@type' => 'OpeningHoursSpecification', 'dayOfWeek' => array_map( static fn( $d ) => 'https://schema.org/' . $d, (array) $cfg['business_days'] ) ),
+	);
+	$out  = array(
+		array(
+			'@type'               => 'OfferShippingDetails',
+			'shippingRate'        => array( '@type' => 'MonetaryAmount', 'value' => 0, 'currency' => $currency ),
+			'shippingDestination' => array( '@type' => 'DefinedRegion', 'addressCountry' => 'CO' ),
+			'deliveryTime'        => $time,
+		),
+	);
+	foreach ( (array) $cfg['paid_regions'] as $region => $rate ) {
+		$out[] = array(
+			'@type'               => 'OfferShippingDetails',
+			'shippingRate'        => array( '@type' => 'MonetaryAmount', 'value' => (float) $rate, 'currency' => $currency ),
+			'shippingDestination' => array( '@type' => 'DefinedRegion', 'addressCountry' => 'CO', 'addressRegion' => (string) $region ),
+			'deliveryTime'        => $time,
+		);
+	}
+	return 1 === count( $out ) ? $out[0] : $out;
+}
+
+/**
+ * Política de cambios (las prendas de ¡Sale! no tienen cambio).
+ *
+ * @param bool  $sale Prenda de ¡Sale!.
+ * @param array $cfg  bk_seo_merchant_cfg().
+ * @return array
+ */
+function bk_seo_return_policy( $sale, $cfg ) {
+	if ( $sale ) {
+		return array( '@type' => 'MerchantReturnPolicy', 'applicableCountry' => 'CO', 'returnPolicyCategory' => 'https://schema.org/MerchantReturnNotPermitted' );
+	}
+	return array(
+		'@type'                => 'MerchantReturnPolicy',
+		'applicableCountry'    => 'CO',
+		'returnPolicyCategory' => 'https://schema.org/MerchantReturnFiniteReturnWindow',
+		'merchantReturnDays'   => (int) $cfg['return_days'],
+		'returnMethod'         => 'https://schema.org/ReturnByMail',
+		'returnFees'           => $cfg['return_fees'],
+		'refundType'           => $cfg['refund_type'],
+	);
+}
+
+/**
+ * ¿Prenda de ¡Sale!? (categoría de ¡Sale! o alguna talla con precio rebajado propio).
+ *
+ * @param WC_Product $p Producto.
+ * @return bool
+ */
+function bk_seo_is_sale( $p ) {
+	if ( function_exists( 'bk_disc_is_sale' ) ) {
+		return bk_disc_is_sale( $p );
+	}
+	$cat = get_term_by( 'slug', (string) bk_config( 'sale_cat' ), 'product_cat' );
+	return ( $cat && has_term( $cat->term_id, 'product_cat', $p->get_id() ) ) || $p->is_on_sale( 'edit' );
+}
+
+/**
+ * REF como SKU válido para Google: sin tildes ni espacios ("9890 Café Plus" → "9890-CAFE-PLUS"). La REF que ve la
+ * clienta en la ficha no cambia.
+ *
+ * @param string $sku REF.
+ * @return string
+ */
+function bk_seo_sku( $sku ) {
+	$s = strtoupper( remove_accents( trim( (string) $sku ) ) );
+	$s = preg_replace( '/[^A-Z0-9]+/', '-', $s );
+	return substr( trim( (string) $s, '-' ), 0, 50 );
 }
 
 /**
@@ -372,8 +465,9 @@ function bk_seo_apply( $html, $route ) {
 	}
 	if ( 'product' === $route && is_singular( 'product' ) && ! preg_match( '#"@type"\s*:\s*"Product"#', $html ) ) {
 		$p = wc_get_product( get_queried_object_id() );
-		if ( $p ) {
-			$json = wp_json_encode( bk_seo_product_schema( $p ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG );
+		$ld = $p ? bk_seo_product_schema( $p ) : array();
+		if ( $ld ) {
+			$json = wp_json_encode( $ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG );
 			$head = (string) preg_replace_callback( '#</head>#i', static fn() => '<script type="application/ld+json" id="bk-product-schema">' . $json . "</script>\n</head>", $head, 1 );
 		}
 	}
