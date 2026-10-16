@@ -254,7 +254,28 @@
 	});
 
 	// dataLayer (Google Tag Manager): evento bk_add_to_cart con formato de comercio electrónico de GA4.
+	// Píxel de Meta: Facebook for WooCommerce deja el AddToCart (con event_id, el mismo que manda por la API de
+	// conversiones) en la respuesta de la Store API. Su script lo lee interceptando fetch, pero se carga retrasado:
+	// si aún no estaba, lo disparamos aquí. wcFacebookPixelFiredEvents evita enviarlo dos veces.
+	const metaAdd = (cart) => {
+		const ev = cart?.extensions?.['facebook-for-woocommerce'];
+		if (!ev?.event) return;
+		const params = ev.params || {};
+		const id = params.event_id || null;
+		const fired = (window.wcFacebookPixelFiredEvents = window.wcFacebookPixelFiredEvents || {});
+		let tries = 0;
+		const go = () => {
+			if (id && fired[id]) return;
+			if (window.FacebookSignals?.trackEvent) window.FacebookSignals.trackEvent(ev.event, params, null, 'track', id);
+			else if (typeof window.fbq === 'function') window.fbq('track', ev.event, params, id ? { eventID: id } : undefined);
+			else { if (++tries < 30) setTimeout(go, 500); return; } // Píxel aún retrasado: espera hasta 15 s.
+			if (id) fired[id] = true;
+		};
+		setTimeout(go, 400); // Primero deja actuar al script del plugin, si ya está cargado.
+	};
+
 	const trackAdd = (cart, id, qty) => {
+		metaAdd(cart);
 		const it = (cart?.items || []).find((i) => i.id === id);
 		if (!it || !window.bkTrack) return;
 		const minor = it.prices?.currency_minor_unit ?? 0;

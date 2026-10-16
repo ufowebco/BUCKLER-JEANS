@@ -37,6 +37,9 @@ add_action( 'acf/save_post', 'bk_cache_purge' );
 add_action( 'bk_modules_saved', 'bk_cache_purge' );
 add_action( 'woocommerce_settings_saved', 'bk_cache_purge' );
 add_action( 'wp_update_nav_menu', 'bk_cache_purge' );
+add_action( 'activated_plugin', 'bk_cache_purge' ); // Un plugin nuevo (p. ej. el píxel) debe verse ya, no tras 10 h.
+add_action( 'deactivated_plugin', 'bk_cache_purge' );
+add_action( 'upgrader_process_complete', 'bk_cache_purge' );
 add_action( 'init', 'bk_cache_send_pending', 1 );
 add_action( 'admin_post_bk_cache_purge', 'bk_cache_purge_action' );
 add_action( 'bk_cache_warm', 'bk_cache_warm' );

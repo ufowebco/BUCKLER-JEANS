@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.4 → `dist/buckler-core-0.18.4.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.5 → `dist/buckler-core-0.18.5.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -606,6 +606,17 @@ Versión actual 0.18.4 → `dist/buckler-core-0.18.4.zip` (`tools/build-plugin.s
     `order-shipped.php`: domicilios Medellín y área metropolitana, quédate pendiente, botón WhatsApp "¿No vas a estar?"),
     Mi cuenta "Tu pedido llega hoy" sin rastreo, nota/historial "sin guía (entrega local)", plantilla `bk:local` en
     Correos, Ayuda. Suite `ronda184.js` (16); envio.js cuenta 10 transportadoras.
+- **0.18.5 (2026-10-16): píxel de Meta con Facebook for WooCommerce 3.7.8.** El cliente reactivó los plugins: en
+  producción quedaron **los dos** (FB4WC `FacebookSignals.initPixel`, agent `woocommerce_0`, y el oficial
+  `FacebookSignal.init` / `fbpix_release_signals`, agent `wordpress_0`, con CAPI propia) → PageView/ViewContent dobles.
+  Hay que dejar solo FB4WC. Revisión de etiquetas: `bk_gs_meta_scan()` (IDs por fbq init, initPixel, pixelId, noscript
+  `/tr?id=`; plugin por firma; eventos únicos: FB4WC repite cada fbq('track') en ramas if/else; duplicado = 2 plugins);
+  arreglado el regex `\\?` (antes `\?` exigía un "?" literal y no encontraba el ID en gtm.js ni en el HTML nuevo).
+  Transitorio `bk_gs_tags` y caché de páginas se vacían al activar/desactivar plugins. AddToCart: FB4WC lo deja en
+  `extensions['facebook-for-woocommerce']` de la Store API (con el event_id de su CAPI) y su pixel-events.js lo lee
+  interceptando fetch, pero carga retrasado → sidecart.js `metaAdd()` lo dispara si aún no se envió
+  (`wcFacebookPixelFiredEvents`). InitiateCheckout (`woocommerce_after_checkout_form`) y Purchase (`woocommerce_thankyou`
+  + servidor) salen del checkout clásico sin retraso. Fixture `bk_test_fb` ('1' | 'both'). Suite `ronda185.js` (9).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -650,7 +661,7 @@ Versión actual 0.18.4 → `dist/buckler-core-0.18.4.zip` (`tools/build-plugin.s
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16 = 722 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9 = 731 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

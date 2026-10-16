@@ -20,6 +20,9 @@
 defined( 'ABSPATH' ) || exit;
 
 add_action( 'rest_api_init', 'bk_gs_routes' );
+// Activar o apagar un plugin (píxel, GTM…) cambia las etiquetas: la próxima revisión no usa la copia de 6 h.
+add_action( 'activated_plugin', static fn() => delete_transient( 'bk_gs_tags' ) );
+add_action( 'deactivated_plugin', static fn() => delete_transient( 'bk_gs_tags' ) );
 
 /**
  * Rutas.
@@ -128,7 +131,7 @@ function bk_gs_gtm( $id ) {
 		'events'   => array_values( array_filter( bk_gs_all( '/"vtp_eventName":"([A-Za-z0-9_]{2,40})"/', $js ) ) ),
 		'triggers' => array_values( array_filter( bk_gs_all( '/"arg1":"((?:bk_|gtm\.|purchase|add_to_cart|begin_checkout|view_item)[A-Za-z0-9_.]*)"/', $js ), static fn( $e ) => ! in_array( $e, array( 'gtm.js', 'gtm.dom', 'gtm.load', 'gtm.init', 'gtm.init_consent' ), true ) ) ),
 		'extra'    => $html_pixels,
-		'pixels'   => bk_gs_all( '/fbq\(\s*\\?[\'"]init\\?[\'"]\s*,\s*\\?[\'"]?(\d{10,20})/', $js ),
+		'pixels'   => bk_gs_all( '/fbq\(\s*\\\\?[\'"]init\\\\?[\'"]\s*,\s*\\\\?[\'"]?(\d{10,20})/', $js ),
 		'has_px'   => '' !== $px && false !== strpos( $js, $px ),
 		'size_kb'  => (int) round( strlen( $js ) / 1024 ),
 	);
@@ -252,6 +255,7 @@ function bk_gs_tags( WP_REST_Request $r ) {
 			'ms'    => $res['ms'],
 			'error' => $res['error'] ?? '',
 			'fbq'   => bk_gs_all( '/fbq\(\s*[\'"]track[\'"]\s*,\s*[\'"](\w+)[\'"]/', $h ),
+			'_html' => $h,
 			'gtag'  => bk_gs_all( '/gtag\(\s*[\'"]event[\'"]\s*,\s*[\'"](\w+)[\'"]/', $h ),
 			'dl'    => bk_gs_all( '/[\'"]event[\'"]\s*:\s*[\'"]([A-Za-z0-9_.]{3,40})[\'"]/', $h ),
 		);
@@ -276,13 +280,17 @@ function bk_gs_tags( WP_REST_Request $r ) {
 	$gtm     = bk_gs_all( '/\b(GTM-[A-Z0-9]{4,10})\b/', $html );
 	$ga4     = bk_gs_all( '/\b(G-[A-Z0-9]{6,12})\b/', $html );
 	$ads     = bk_gs_all( '/\b(AW-\d{6,12})\b/', $html );
-	$pixels  = bk_gs_all( '/fbq\(\s*[\'"]init[\'"]\s*,\s*[\'"]?(\d{10,20})/', $html );
-	$inits   = preg_match_all( '/fbq\(\s*[\'"]init[\'"]/', (string) ( $html ) );
-	$fb_src  = array();
-	foreach ( array( 'facebook-for-woocommerce' => 'Facebook for WooCommerce', 'official-facebook-pixel' => 'Meta Pixel (plugin oficial)', 'pixelyoursite' => 'PixelYourSite' ) as $needle => $label ) {
-		if ( false !== stripos( $html, $needle ) ) {
-			$fb_src[] = $label;
+	$meta    = bk_gs_meta_scan( $html );
+	$pixels  = $meta['ids'];
+	$fb_src  = $meta['sources'];
+	$ev_dup  = array();
+	foreach ( $found as $key => $pg ) {
+		$scan                 = bk_gs_meta_scan( $pg['_html'] );
+		$found[ $key ]['fbq'] = $scan['events'];
+		if ( $scan['dup'] ) {
+			$ev_dup[] = $pg['label'];
 		}
+		unset( $found[ $key ]['_html'] );
 	}
 	$extra = array();
 	foreach (
@@ -329,14 +337,14 @@ function bk_gs_tags( WP_REST_Request $r ) {
 	$px_gtm  = (bool) array_filter( $gtm_info, static fn( $g ) => ! empty( $g['has_px'] ) );
 	$px_html = $px && in_array( $px, $pixels, true );
 	$others  = array_values( array_diff( $pixels, array( $px ) ) );
-	$dup     = $inits > count( $found ) || count( $fb_src ) > 1;
+	$dup     = count( $fb_src ) > 1 || (bool) $ev_dup;
 	if ( ! $px ) {
 		$px_status = $pixels ? ( $dup ? 'warn' : 'ok' ) : 'missing';
 		$px_note   = $pixels ? ( count( $fb_src ) > 1 ? 'Lo cargan ' . implode( ' y ', $fb_src ) . ': el píxel está DUPLICADO (eventos dobles en Meta). Deja solo uno.' : 'Instalado' . ( $fb_src ? ' por ' . implode( ', ', $fb_src ) : '' ) . '.' ) : 'No se encontró en el HTML público.';
 	} elseif ( $px_html || $px_gtm ) {
 		$where     = trim( ( $px_html ? 'en el sitio' . ( $fb_src ? ' (' . implode( ', ', $fb_src ) . ')' : '' ) : '' ) . ( $px_html && $px_gtm ? ' y ' : '' ) . ( $px_gtm ? 'dentro de GTM' : '' ) );
 		$px_status = $dup || $others || ( $px_html && $px_gtm ) ? 'warn' : 'ok';
-		$px_note   = "El píxel de la cuenta ({$px}) está instalado {$where}." . ( $dup || ( $px_html && $px_gtm ) ? ' Se carga más de una vez: los eventos llegan dobles a Meta. Deja solo una instalación.' : '' ) . ( $others ? ' También se carga otro píxel (' . implode( ', ', $others ) . '): revisa si debe quitarse.' : '' );
+		$px_note   = "El píxel de la cuenta ({$px}) está instalado {$where}." . ( count( $fb_src ) > 1 ? ' Lo cargan ' . implode( ' y ', $fb_src ) . ' a la vez: los eventos llegan DOBLES a Meta. ' . ( in_array( 'Facebook for WooCommerce', $fb_src, true ) ? 'Desactiva ' . implode( ' y ', array_diff( $fb_src, array( 'Facebook for WooCommerce' ) ) ) . ' y deja solo Facebook for WooCommerce (también envía las compras desde el servidor).' : 'Desactiva uno de los dos.' ) : ( $dup || ( $px_html && $px_gtm ) ? ' Se carga más de una vez' . ( $ev_dup ? ' (' . implode( ', ', array_unique( $ev_dup ) ) . ')' : '' ) . ': los eventos llegan dobles a Meta. Deja solo una instalación.' : '' ) ) . ( $px_html && ! $dup ? ' Eventos en las páginas revisadas: ' . implode( ', ', array_values( array_unique( array_merge( ...array_values( array_map( static fn( $pg ) => (array) $pg['fbq'], $found ) ) ) ) ) ) . '.' : '' ) . ( $others ? ' También se carga otro píxel (' . implode( ', ', $others ) . '): revisa si debe quitarse.' : '' );
 	} else {
 		$px_status = $pixels ? 'warn' : 'missing';
 		$px_note   = $pixels ? 'El sitio carga el píxel ' . implode( ', ', $pixels ) . ", pero el de la cuenta es {$px}: hay que cambiarlo." : "Falta el píxel de la cuenta ({$px}): no está en el HTML del sitio" . ( $gtm_info && ! array_filter( $gtm_info, static fn( $g ) => empty( $g['ok'] ) ) ? ' ni dentro de GTM.' : '.' );
@@ -619,5 +627,48 @@ function bk_gs_fb_plugins_note() {
 		}
 	}
 	return $off ? ' El plugin ' . implode( ' y ', $off ) . ' está instalado pero desactivado (antes era el que cargaba el píxel): actívalo de nuevo (solo uno, para no duplicar eventos).' : '';
+}
+
+/**
+ * Busca el píxel de Meta en un HTML: IDs (fbq init, FacebookSignals.initPixel, pixelId, noscript /tr?id=),
+ * plugin que lo instala y cuántas veces se dispara cada evento estándar.
+ *
+ * @param string $h HTML.
+ * @return array{ids:string[],sources:string[],events:array<string,int>}
+ */
+function bk_gs_meta_scan( $h ) {
+	$h   = (string) $h;
+	$ids = array();
+	foreach (
+		array(
+			'/fbq\(\s*\\\\?[\'"]init\\\\?[\'"]\s*,\s*\\\\?[\'"]?(\d{10,20})/',
+			'/initPixel\(\s*\\\\?[\'"](\d{10,20})/',
+			'/\\\\?[\'"]?pixel_?[iI]d\\\\?[\'"]?\s*:\s*\\\\?[\'"](\d{10,20})/',
+			'#facebook\.com/tr/?\?id=(\d{10,20})#',
+		) as $re
+	) {
+		$ids = array_merge( $ids, bk_gs_all( $re, $h ) );
+	}
+	$sources = array();
+	foreach (
+		array(
+			'Facebook for WooCommerce' => '/facebook_release_signals|wcFacebookPixel|"agent"\s*:\s*"woocommerce|plugins\/facebook-for-woocommerce\//',
+			'Meta Pixel (plugin oficial)' => '/fbpix_release_signals|"agent"\s*:\s*"wordpress|plugins\/official-facebook-pixel\//',
+			'PixelYourSite'            => '/pixelyoursite|pysOptions/i',
+		) as $label => $re
+	) {
+		if ( preg_match( $re, $h ) ) {
+			$sources[] = $label;
+		}
+	}
+	// Eventos (únicos: Facebook for WooCommerce repite cada fbq('track') en ramas if/else de su código).
+	$events = array_merge(
+		bk_gs_all( '/fbq\(\s*[\'"]track(?:Custom)?[\'"]\s*,\s*[\'"](\w+)[\'"]/', $h ),
+		bk_gs_all( '/trackEvent\(\s*[\'"](\w+)[\'"]/', $h )
+	);
+	// Más de una instalación: dos plugins, o (sin plugin reconocido) varios fbq('init') del mismo ID.
+	$inits = preg_match_all( '/fbq\(\s*[\'"]init[\'"]\s*,\s*[\'"]\d/', $h );
+	$dup   = count( $sources ) > 1 || ( ! $sources && $inits > 1 );
+	return array( 'ids' => array_values( array_unique( $ids ) ), 'sources' => $sources, 'events' => array_values( array_unique( $events ) ), 'dup' => $dup );
 }
 

@@ -279,3 +279,46 @@ add_action(
 	},
 	20
 );
+
+// Simula Facebook for WooCommerce 3.7.8 (opción bk_test_fb): AddToCart en la extensión de la Store API con event_id
+// (igual que register_store_api_endpoint_data) y su código de píxel en el HTML (FacebookSignals.initPixel, noscript).
+add_action(
+	'woocommerce_blocks_loaded',
+	static function () {
+		if ( ! get_option( 'bk_test_fb' ) || ! function_exists( 'woocommerce_store_api_register_endpoint_data' ) ) {
+			return;
+		}
+		woocommerce_store_api_register_endpoint_data(
+			array(
+				'endpoint'        => \Automattic\WooCommerce\StoreApi\Schemas\V1\CartSchema::IDENTIFIER,
+				'namespace'       => 'facebook-for-woocommerce',
+				'data_callback'   => static fn() => $GLOBALS['bk_test_fb_ev'] ?? array(),
+				'schema_callback' => static fn() => array(),
+				'schema_type'     => ARRAY_A,
+			)
+		);
+	}
+);
+add_action(
+	'woocommerce_add_to_cart',
+	static function ( $key, $pid ) {
+		if ( get_option( 'bk_test_fb' ) ) {
+			$GLOBALS['bk_test_fb_ev'] = array( 'event' => 'AddToCart', 'params' => array( 'content_ids' => '["' . $pid . '"]', 'content_type' => 'product', 'currency' => 'COP', 'event_id' => wp_generate_uuid4() ) );
+		}
+	},
+	40,
+	2
+);
+add_action(
+	'wp_head',
+	static function () {
+		if ( ! get_option( 'bk_test_fb' ) ) {
+			return;
+		}
+		$px = '339783714479962';
+		echo "<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){(f.bkFbCalls=f.bkFbCalls||[]).push([].slice.call(arguments))};}(window,document);window.FacebookSignals={initPixel:function(){},trackEvent:function(e,p,x,m,id){fbq(m||'track',e,p,id?{eventID:id}:undefined);}};FacebookSignals.initPixel(\"{$px}\",{},{\"agent\":\"woocommerce_0-11.2.1-3.7.8\"});fbq('track', 'PageView', {});</script>\n";
+		if ( 'both' === get_option( 'bk_test_fb' ) ) {
+			echo "<script>FacebookSignal={initPixel:function(){}};FacebookSignal.init({\"held\":false,\"releaseAction\":\"fbpix_release_signals\",\"pixelId\":\"{$px}\"});fbq('track', 'PageView', []);</script>\n";
+		}
+	}
+);
