@@ -344,6 +344,23 @@
 		</form>`;
 	};
 
+	// Pedido sin pagar: recordatorios automáticos (1 h y 24 h), cancelación (48 h), enviar a mano, detener, enlace de pago.
+	const payremHtml = (o) => {
+		const p = o.payrem;
+		if (!p) return '';
+		const li = (x, done) => `<li class="${done ? 'is-done' : x.cancel ? 'is-cancel' : ''}">${done ? C.icons.check : (x.cancel ? C.icons.x : C.icons.clock)}<span>${esc(x.label)}</span><small>${esc(x.date)}</small></li>`;
+		return `<section class="bk-g-payrem" id="bk-g-payrem" data-id="${o.id}"><h3>${C.icons.card} ${p.unpaid ? 'Pago pendiente' : 'Recordatorios de pago'}</h3>
+			<p class="bk-g-hint">${p.unpaid ? (p.stopped ? 'La clienta aún no paga. Los recordatorios y la cancelación automática están <b>detenidos</b>.' : 'La clienta aún no paga. Recibe un recordatorio a la hora y otro a las 24 horas; si no paga, el pedido se cancela solo y las prendas vuelven al inventario.') : (p.cancelled ? `Cancelado automáticamente el ${esc(p.cancelled)} por falta de pago.` : 'El pedido ya no está pendiente de pago.')}</p>
+			${p.sent.length || p.next.length ? `<ol class="bk-g-pptl">${p.sent.map((x) => li(x, true)).join('')}${p.next.map((x) => li(x, false)).join('')}</ol>` : ''}
+			${p.unpaid ? `<div class="bk-g-dactions">
+				<button type="button" class="bk-g-btn" data-pp="preview" ${p.can_send ? '' : 'disabled'}>${C.icons.eye || ''} Enviar recordatorio ahora</button>
+				<button type="button" class="bk-g-btn is-ghost" data-pp="copy" data-url="${esc(p.pay_url)}">${C.icons.copy} Copiar enlace de pago</button>
+				<button type="button" class="bk-g-btn is-ghost" data-pp="${p.stopped ? 'resume' : 'stop'}">${p.stopped ? 'Reanudar automáticos' : 'Detener automáticos'}</button></div>
+				${p.can_send ? '' : `<small class="bk-g-hint">El pedido se creó hace poco: la clienta puede estar pagando. Podrás enviar el recordatorio en ${p.wait} min.</small>`}
+				<div class="bk-g-pppv" hidden></div>` : ''}
+		</section>`;
+	};
+
 	const orderHtml = (o) => `
 		<header class="bk-g-dhead"><div><h2 id="bk-g-dtitle">Pedido #${esc(o.number)}</h2><small>${esc(o.date)}${o.consecutivo ? ` · Consecutivo ${esc(o.consecutivo)}` : ''}</small></div>
 			<button type="button" class="bk-g-icon" data-close aria-label="Cerrar">${C.icons.x}</button></header>
@@ -356,7 +373,7 @@
 			</div>
 			<div class="bk-g-dactions"><button type="button" class="bk-g-btn" id="bk-g-osave" data-id="${o.id}">Guardar estado</button>
 				<button type="button" class="bk-g-btn is-ghost" data-print="${o.id}">${C.icons.print} Imprimir pedido</button></div>
-			${shipHtml(o)}
+			${payremHtml(o)}${o.payrem?.unpaid ? '' : shipHtml(o)}
 			<section class="bk-g-cust"><div class="bk-g-cust__head"><h3>Clienta</h3>${o.edit ? `<button type="button" class="bk-g-btn is-ghost is-small" data-cust-edit aria-expanded="false" aria-controls="bk-g-custform">${C.icons.edit} Editar datos</button>` : ''}</div>
 				${custFormHtml(o)}<p class="bk-g-cust__view"><b>${esc(o.customer)}</b>${o.fields?.cedula || o.cedula ? `<br>Cédula: ${esc(o.cedula || '—')}` : ''}${o.fields?.consecutivo ? `<br>Consecutivo: ${esc(o.consecutivo || '—')}` : ''}${o.origin ? `<br><small>Origen de la venta: ${esc(o.origin)}</small>` : ''}<br>
 				${o.phone ? `<a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> · <a href="https://wa.me/57${esc(String(o.phone).replace(/\D/g, '').replace(/^57/, ''))}" target="_blank" rel="noopener">WhatsApp</a><br>` : ''}
@@ -580,6 +597,34 @@
 			await busy(fdel, async () => {
 				setOrder(await api(`orders/${fdel.dataset.id}/files/delete`, { method: 'POST', body: { index: Number(fdel.dataset.fileDel) } }));
 				toast('Archivo quitado');
+			});
+			return;
+		}
+
+		const pp = t.closest('[data-pp]');
+		if (pp) {
+			const box = $('#bk-g-payrem'); const id = box.dataset.id; const act = pp.dataset.pp;
+			if (act === 'copy') {
+				try { await navigator.clipboard.writeText(pp.dataset.url); toast('Enlace de pago copiado: pégalo en WhatsApp'); } catch { window.prompt('Copia el enlace de pago:', pp.dataset.url); }
+				return;
+			}
+			await busy(pp, async () => {
+				try {
+					if (act === 'preview') {
+						const d = await api(`orders/${id}/payment-reminder`, { method: 'POST', body: { action: 'preview' } });
+						const pv = $('.bk-g-pppv', box);
+						pv.hidden = false;
+						pv.innerHTML = `<p class="bk-g-pvmeta"><b>Para:</b> ${esc(d.to)}<br><b>Asunto:</b> ${esc(d.subject)}</p><iframe class="bk-g-pvframe" title="Vista previa del recordatorio de pago"></iframe>
+							<div class="bk-g-dactions"><button type="button" class="bk-g-btn" data-pp="send">${C.icons.send || ''} Confirmar y enviar</button><button type="button" class="bk-g-btn is-ghost" data-pp="close">Cancelar</button></div>`;
+						$('iframe', pv).srcdoc = d.html;
+						$('[data-pp="send"]', pv).focus();
+						return;
+					}
+					if (act === 'close') { const pv = $('.bk-g-pppv', box); pv.hidden = true; pv.innerHTML = ''; return; }
+					const o = await api(`orders/${id}/payment-reminder`, { method: 'POST', body: { action: act } });
+					setOrder(o);
+					toast({ send: 'Recordatorio de pago enviado', stop: 'Recordatorios automáticos detenidos', resume: 'Recordatorios automáticos reanudados' }[act] || 'Listo');
+				} catch (er) { toast(er.message, 'err'); }
 			});
 			return;
 		}

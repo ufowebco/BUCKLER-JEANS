@@ -87,6 +87,19 @@ function bk_gm_list() {
 		);
 	}
 	$list[] = array( 'id' => 'bk:shipped', 'title' => 'Tu pedido ha sido enviado (guía)', 'group' => 'Clienta', 'when' => 'Se envía desde el pedido al registrar transportadora y número de guía.', 'enabled' => true, 'source' => 'buckler-core' );
+	if ( function_exists( 'bk_pp_email' ) ) {
+		$pp = bk_pp_cfg();
+		foreach ( $pp['remind'] as $i => $h ) {
+			$list[] = array(
+				'id'      => 'bk:pp' . ( $i + 1 ),
+				'title'   => sprintf( 'Recordatorio de pago %d', $i + 1 ),
+				'group'   => 'Clienta',
+				'when'    => sprintf( '%d h después de un pedido que quedó pendiente de pago.', $h ) . ( $i + 1 === count( $pp['remind'] ) && $pp['cancel'] ? sprintf( ' Si a las %d h no paga, el pedido se cancela solo.', $pp['cancel'] ) : '' ),
+				'enabled' => true,
+				'source'  => 'buckler-core',
+			);
+		}
+	}
 	if ( function_exists( 'bk_ac_build_email' ) ) {
 		$s = bk_ac_settings();
 		foreach ( array( 1, 2, 3 ) as $step ) {
@@ -135,6 +148,13 @@ function bk_gm_build( $id, $order ) {
 		$t    = function_exists( 'bk_ship_get' ) ? bk_ship_get( $o ) : null;
 		$keys = array_keys( bk_carriers() );
 		$mail = bk_ship_email( $o, $t['carrier'] ?? ( $keys[0] ?? '' ), $t['number'] ?? 'EJEMPLO123456' );
+		return array( 'subject' => $mail['subject'], 'to' => $o->get_billing_email(), 'html' => $mail['html'] );
+	}
+	if ( preg_match( '/^bk:pp(\d)$/', $id, $m ) && function_exists( 'bk_pp_email' ) ) {
+		if ( ! $o ) {
+			return new WP_Error( 'bk_no_orders', 'Necesitas al menos un pedido para la vista previa.', array( 'status' => 400 ) );
+		}
+		$mail = bk_pp_email( $o, (int) $m[1] );
 		return array( 'subject' => $mail['subject'], 'to' => $o->get_billing_email(), 'html' => $mail['html'] );
 	}
 	if ( preg_match( '/^bk:ac([123])$/', $id, $m ) ) {

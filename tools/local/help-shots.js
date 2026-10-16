@@ -85,6 +85,9 @@ const SHOTS = [
   { name: 'g-cliente', hash: 'pedidos', open: true, click: ['[data-cust-edit]'], scroll: '.bk-g-cust', marks: [
     ['[data-cust-edit]', 1, false, { pos: 'r' }], ['.bk-g-custgrid', 2, false, { first: true }], ['#bk-g-custform [name="same"]', 3, false, { closest: 'label' }], ['#bk-g-custform [type="submit"]', 4],
   ] },
+  { name: 'g-pago-pendiente', hash: 'pedidos', open: '.bk-g-orders tbody tr:has(.is-pending) td:first-child [data-order]', scroll: '#bk-g-payrem', marks: [
+    ['#bk-g-payrem h3', 1], ['.bk-g-pptl', 2], ['[data-pp="preview"]', 3], ['[data-pp="copy"]', 4], ['[data-pp="stop"]', 5, false, { pos: 'r' }],
+  ] },
   { name: 'g-archivos', hash: 'pedidos', open: true, scroll: '.bk-g-fsec', marks: [
     ['.bk-g-fsec h3', 1], ['.bk-g-upload', 2],
   ] },
@@ -171,6 +174,7 @@ const SHOTS = [
   const low = JSON.parse(php(`$out=[]; foreach([24,26] as $i=>$id){ $v=wc_get_product($id); if($v){ $out[$id]=$v->get_stock_quantity(); $v->set_stock_quantity($i+1); $v->save(); } } delete_transient("bk_g_summary"); echo json_encode($out);`));
   php(`global $wpdb; $t=bk_ac_table(); $wpdb->query("DELETE FROM $t WHERE email LIKE \\"%@ejemplo.co\\""); $p=wc_get_product(22); $img=wp_get_attachment_image_url($p->get_image_id(),"woocommerce_thumbnail"); $cart=wp_json_encode([["product_id"=>22,"variation_id"=>24,"quantity"=>1,"variation"=>["attribute_pa_tallas-plus-size"=>["label"=>"Talla","value"=>"16","raw"=>"16"]],"name"=>$p->get_name(),"line_total"=>149900,"image"=>$img]]); $now=time(); foreach([["Sara López","sara@ejemplo.co","converted",1,0,50],["Daniela Muñoz","daniela@ejemplo.co","recovered",1,2,30],["Paula Herrera","paula@ejemplo.co","active",0,0,5],["Valentina Ríos","valentina@ejemplo.co","active",1,1,3]] as $i=>$r){ $d=gmdate("Y-m-d H:i:s",$now-$r[5]*3600); $wpdb->insert($t,["token"=>bin2hex(random_bytes(16)),"session_key"=>"demo$i","email"=>$r[1],"first_name"=>$r[0],"phone"=>"300000000$i","cart"=>$cart,"cart_total"=>149900,"currency"=>"COP","consent"=>$r[3],"status"=>$r[2],"emails_sent"=>$r[4],"clicked_at"=>$r[2]==="recovered"?$d:null,"created_at"=>$d,"updated_at"=>$d]); }`);
 
+  const ppOrder = php(`$o=wc_create_order(["created_via"=>"checkout"]); $o->add_product(wc_get_product(24),1); $o->set_billing_first_name("Valentina"); $o->set_billing_last_name("Ríos"); $o->set_billing_email("valentina@ejemplo.co"); $o->set_billing_phone("3001112233"); $o->set_billing_state("CO-ANT"); $o->set_billing_address_1("Cra 43A # 1-50"); $o->calculate_totals(); $o->set_status("pending"); $o->set_date_created(time()-50*60); $o->save(); bk_pp_track($o); bk_pp_send($o->get_id(), 1); echo $o->get_id();`).trim();
   const b = await chromium.launch({ args: ['--lang=es-CO'] });
   const ctx = await b.newContext({ viewport: { width: 1280, height: 860 }, locale: 'es-CO', timezoneId: 'America/Bogota' });
   const p = await ctx.newPage();
@@ -271,6 +275,7 @@ const SHOTS = [
 
   // --- Restaurar datos ---------------------------------------------------------------------------------
   const disc = saved.disc === null ? 'delete_option("bk_discounts");' : `update_option("bk_discounts", json_decode(base64_decode("${Buffer.from(JSON.stringify(saved.disc)).toString('base64')}"), true));`;
+  php(`$o=wc_get_order(${ppOrder}); if($o){ bk_pp_unschedule($o->get_id()); $o->delete(true); }`);
   php(`${disc} global $wpdb; $t=bk_ac_table(); $wpdb->query("DELETE FROM $t WHERE email LIKE \\"%@ejemplo.co\\""); foreach(json_decode(base64_decode("${Buffer.from(JSON.stringify(low)).toString('base64')}"), true) as $id=>$q){ $v=wc_get_product($id); if($v){ $v->set_stock_quantity($q); $v->save(); } } delete_transient("bk_g_summary"); if(function_exists("bk_disc_flush")) bk_disc_flush();`);
   }
 

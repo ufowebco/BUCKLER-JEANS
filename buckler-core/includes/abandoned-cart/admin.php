@@ -30,6 +30,8 @@ function bk_ac_status_labels() {
 		'active'       => array( 'Pendiente', '#1a3955', '#e3eefb' ),
 		'recovered'    => array( 'Recuperado', '#1f7a4d', '#e6f4ec' ),
 		'converted'    => array( 'Compró', '#1f7a4d', '#eef7f1' ),
+		'awaiting'     => array( 'Pendiente de pago', '#8a5300', '#fff4e0' ),
+		'unpaid'       => array( 'Pedido cancelado sin pagar', '#8a1c14', '#fdecea' ),
 		'emptied'      => array( 'Vació el carrito', '#5b6773', '#f0f2f4' ),
 		'expired'      => array( 'Vencido', '#5b6773', '#f0f2f4' ),
 		'unsubscribed' => array( 'Se dio de baja', '#8a1c14', '#fdecea' ),

@@ -28,7 +28,7 @@
 		} catch (e) { if (!old) main.innerHTML = err(e); }
 	}
 
-	const cartPill = { active: 'is-on-hold', recovered: 'is-completed', converted: 'is-completed', emptied: 'is-cancelled', expired: 'is-cancelled', unsubscribed: 'is-failed' };
+	const cartPill = { active: 'is-on-hold', recovered: 'is-completed', converted: 'is-completed', awaiting: 'is-pending', unpaid: 'is-failed', emptied: 'is-cancelled', expired: 'is-cancelled', unsubscribed: 'is-failed' };
 
 	function paintCarts(d) {
 		if (!d.enabled) {
@@ -45,6 +45,7 @@
 			<div class="bk-g-kpis">
 				<div class="bk-g-kpi"><span>Carritos capturados</span><b>${num(k.captured)}</b><small>Últimos 30 días</small></div>
 				<div class="bk-g-kpi"><span>Pendientes</span><b>${num(k.pending)}</b><small>${esc(k.pending_total)} en carritos</small></div>
+				<div class="bk-g-kpi"><span>Pendientes de pago</span><b>${num(k.awaiting || 0)}</b><small>${esc(k.awaiting_total || '')} en pedidos sin pagar</small></div>
 				<div class="bk-g-kpi"><span>Correos enviados</span><b>${num(k.emails)}</b><small>${num(k.clicked)} abrieron el enlace</small></div>
 				<div class="bk-g-kpi is-good"><span>Recuperados</span><b>${num(k.recovered)}</b><small>${esc(k.recovered_total)} en ventas</small></div>
 			</div>

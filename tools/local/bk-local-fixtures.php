@@ -242,3 +242,40 @@ add_action(
 
 // Pruebas del total de reseñas ("92 reseñas en Google"): por defecto apagado (reviews_show_total).
 add_filter( 'bk_site_config', static fn( $c ) => get_option( 'bk_test_reviews_total' ) ? array_merge( $c, array( 'reviews_show_total' => true ) ) : $c );
+
+// Pasarela de prueba "Pago en línea (prueba)": como Wompi/Bold cuando la clienta no termina, deja el pedido en
+// "Pendiente de pago" y lleva a la página de gracias. Solo con la opción bk_test_pending_gw.
+add_action(
+	'plugins_loaded',
+	static function () {
+		if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
+			return;
+		}
+		/**
+		 * Pasarela de prueba.
+		 */
+		class BK_Test_Pending_Gateway extends WC_Payment_Gateway {
+			/** Constructor. */
+			public function __construct() {
+				$this->id           = 'bk_test_pending';
+				$this->method_title = 'Pago en línea (prueba)';
+				$this->title        = 'Pago en línea (prueba)';
+				$this->has_fields   = false;
+				$this->enabled      = get_option( 'bk_test_pending_gw' ) ? 'yes' : 'no';
+			}
+			/**
+			 * Deja el pedido pendiente.
+			 *
+			 * @param int $order_id Pedido.
+			 * @return array
+			 */
+			public function process_payment( $order_id ) {
+				$o = wc_get_order( $order_id );
+				WC()->cart->empty_cart();
+				return array( 'result' => 'success', 'redirect' => $this->get_return_url( $o ) );
+			}
+		}
+		add_filter( 'woocommerce_payment_gateways', static fn( $g ) => array_merge( $g, array( 'BK_Test_Pending_Gateway' ) ) );
+	},
+	20
+);

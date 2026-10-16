@@ -611,6 +611,7 @@ function bk_g_order( WP_REST_Request $r ) {
 				),
 				'edit_url'    => $o->get_edit_order_url(),
 				'edit'        => bk_g_customer_data( $o, $f ),
+				'payrem'      => function_exists( 'bk_pp_info' ) ? bk_pp_info( $o ) : null,
 			)
 		)
 	);

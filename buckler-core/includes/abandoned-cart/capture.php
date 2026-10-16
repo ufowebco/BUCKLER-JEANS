@@ -302,8 +302,18 @@ function bk_ac_order_created( $order ) {
 	$ids   = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM {$table} WHERE email = %s AND status = 'active'", $order->get_billing_email() ) ); // phpcs:ignore WordPress.DB
 	foreach ( $ids as $id ) {
 		bk_ac_unschedule( (int) $id );
-		bk_ac_update( (int) $id, array( 'status' => 'converted', 'order_id' => $order->get_id() ) );
+		bk_ac_update( (int) $id, array( 'status' => bk_ac_order_unpaid( $order ) ? 'awaiting' : 'converted', 'order_id' => $order->get_id() ) );
 	}
+}
+
+/**
+ * ¿El pedido quedó sin pagar? (En el checkout el pedido nace "pendiente" y la pasarela lo cambia después.)
+ *
+ * @param WC_Order $order Pedido.
+ * @return bool
+ */
+function bk_ac_order_unpaid( $order ) {
+	return $order instanceof WC_Order && in_array( $order->get_status(), array( 'pending', 'failed' ), true );
 }
 
 /**
@@ -314,14 +324,48 @@ function bk_ac_order_created( $order ) {
  */
 function bk_ac_mark_ordered( $row, $order ) {
 	bk_ac_unschedule( (int) $row->id );
+	$order->update_meta_data( '_bk_ac_id', (int) $row->id );
+	if ( bk_ac_order_unpaid( $order ) ) { // Hizo el pedido pero falta el pago: "Pendiente de pago" hasta que pague.
+		bk_ac_update( (int) $row->id, array( 'status' => 'awaiting', 'order_id' => $order->get_id() ) );
+		$order->save();
+		return;
+	}
 	$status = ( $row->clicked_at && (int) $row->emails_sent > 0 ) ? 'recovered' : 'converted';
 	bk_ac_update( (int) $row->id, array( 'status' => $status, 'order_id' => $order->get_id() ) );
-	$order->update_meta_data( '_bk_ac_id', (int) $row->id );
 	if ( 'recovered' === $status ) {
 		$order->update_meta_data( '_bk_ac_recovered', 'yes' );
 		$order->add_order_note( sprintf( 'Pedido recuperado desde el recordatorio de carrito abandonado n.º %d.', (int) $row->emails_sent ) );
 	}
 	$order->save();
+}
+
+// Pagó: el carrito "Pendiente de pago" pasa a Compró (o Recuperado si vino del correo de carrito abandonado).
+foreach ( array( 'processing', 'completed', 'on-hold' ) as $bk_ac_st ) {
+	add_action( 'woocommerce_order_status_' . $bk_ac_st, 'bk_ac_order_paid' );
+}
+
+/**
+ * El pedido se pagó.
+ *
+ * @param int $order_id Pedido.
+ */
+function bk_ac_order_paid( $order_id ) {
+	global $wpdb;
+	$order = wc_get_order( $order_id );
+	if ( ! $order ) {
+		return;
+	}
+	$table = bk_ac_table();
+	$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE order_id = %d AND status IN ('awaiting','unpaid')", $order->get_id() ) ); // phpcs:ignore WordPress.DB
+	foreach ( (array) $rows as $row ) {
+		$status = ( $row->clicked_at && (int) $row->emails_sent > 0 ) ? 'recovered' : 'converted';
+		bk_ac_update( (int) $row->id, array( 'status' => $status ) );
+		if ( 'recovered' === $status && (int) $order->get_meta( '_bk_ac_id' ) === (int) $row->id && 'yes' !== $order->get_meta( '_bk_ac_recovered' ) ) {
+			$order->update_meta_data( '_bk_ac_recovered', 'yes' );
+			$order->add_order_note( sprintf( 'Pedido recuperado desde el recordatorio de carrito abandonado n.º %d.', (int) $row->emails_sent ) );
+			$order->save();
+		}
+	}
 }
 
 add_action( 'woocommerce_order_status_cancelled', 'bk_ac_order_failed' );
@@ -336,6 +380,17 @@ function bk_ac_order_failed( $order_id ) {
 	$order = wc_get_order( $order_id );
 	$id    = $order ? (int) $order->get_meta( '_bk_ac_id' ) : 0;
 	$row   = $id ? bk_ac_get( $id ) : null;
+	// Con los recordatorios de pago activos, el pedido sin pagar se trabaja desde el pedido (no con los correos de
+	// carrito): pago fallido = sigue "Pendiente de pago"; cancelado = "Pedido cancelado sin pagar".
+	if ( $row && 'awaiting' === $row->status && function_exists( 'bk_pp_unpaid' ) ) {
+		if ( $order->has_status( 'cancelled' ) ) {
+			bk_ac_update( $id, array( 'status' => 'unpaid' ) );
+		}
+		return;
+	}
+	if ( $row && 'awaiting' === $row->status ) {
+		$row->status = 'converted';
+	}
 	if ( ! $row || ! in_array( $row->status, array( 'converted', 'recovered' ), true ) || (int) $row->emails_sent >= 3 || bk_ac_is_opted_out( $row->email ) ) {
 		return;
 	}

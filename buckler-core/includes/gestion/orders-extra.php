@@ -155,6 +155,10 @@ function bk_g_history( $o ) {
 			$label = 'Guía de envío enviada: ' . trim( ( $e['carrier'] ?? '' ) . ' ' . $val );
 		} elseif ( 'archivo' === $ev ) {
 			$label = $val;
+		} elseif ( 'pago_recordatorio' === $ev ) {
+			$label = 'Recordatorio de pago enviado (' . $val . ')';
+		} elseif ( 'pago_cancelado' === $ev ) {
+			$label = 'Cancelado automáticamente: sin pago ' . $val . ' h después del pedido';
 		} elseif ( 'cliente' === $ev ) {
 			$label = 'Datos de la clienta editados: ' . $val;
 		} else {

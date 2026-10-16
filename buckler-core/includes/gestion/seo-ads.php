@@ -516,6 +516,8 @@ function bk_gs_abandoned( WP_REST_Request $r ) {
 		'active'       => 'Pendiente',
 		'recovered'    => 'Recuperado',
 		'converted'    => 'Compró',
+		'awaiting'     => 'Pendiente de pago',
+		'unpaid'       => 'Pedido cancelado sin pagar',
 		'emptied'      => 'Vació el carrito',
 		'expired'      => 'Vencido',
 		'unsubscribed' => 'Se dio de baja',
@@ -527,7 +529,8 @@ function bk_gs_abandoned( WP_REST_Request $r ) {
 	$kpi    = $wpdb->get_row( // phpcs:ignore WordPress.DB
 		"SELECT COUNT(*) AS captured, SUM(status = 'active') AS pending, SUM(status = 'recovered') AS recovered,
 			SUM(CASE WHEN status = 'recovered' THEN cart_total ELSE 0 END) AS recovered_total, SUM(emails_sent) AS emails,
-			SUM(clicked_at IS NOT NULL) AS clicked, SUM(CASE WHEN status = 'active' THEN cart_total ELSE 0 END) AS pending_total
+			SUM(clicked_at IS NOT NULL) AS clicked, SUM(CASE WHEN status = 'active' THEN cart_total ELSE 0 END) AS pending_total,
+			SUM(status = 'awaiting') AS awaiting, SUM(CASE WHEN status = 'awaiting' THEN cart_total ELSE 0 END) AS awaiting_total
 		 FROM {$table} WHERE created_at > UTC_TIMESTAMP() - INTERVAL 30 DAY"
 	);
 	$total  = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} {$where}" ); // phpcs:ignore WordPress.DB
@@ -576,6 +579,8 @@ function bk_gs_abandoned( WP_REST_Request $r ) {
 				'captured'       => (int) $kpi->captured,
 				'pending'        => (int) $kpi->pending,
 				'pending_total'  => bk_g_money( (float) $kpi->pending_total ),
+				'awaiting'       => (int) $kpi->awaiting,
+				'awaiting_total' => bk_g_money( (float) $kpi->awaiting_total ),
 				'emails'         => (int) $kpi->emails,
 				'clicked'        => (int) $kpi->clicked,
 				'recovered'      => (int) $kpi->recovered,
