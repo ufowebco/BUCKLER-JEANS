@@ -12,7 +12,7 @@ const sched = (id) => JSON.parse(php(`echo json_encode(array_map(fn($a)=>$a->get
 const back = (id, h) => php(`$o=wc_get_order(${id}); $o->set_date_created(time()-${h}*3600); $o->save();`);
 
 (async () => {
-  php('update_option("bk_test_pending_gw", 1); foreach(wc_get_product(22)->get_children() as $c){ $v=wc_get_product($c); $v->set_stock_quantity(10); $v->set_stock_status("instock"); $v->save(); }');
+  php('update_option("bk_test_pending_gw", 1); foreach(wc_get_product(22)->get_children() as $c){ $v=wc_get_product($c); if($v->get_attribute("pa_tallas-plus-size")!=="18"){ $v->set_stock_quantity(10); $v->set_stock_status("instock"); $v->save(); } }');
   // Restos de corridas anteriores: pedidos de prueba pendientes (reservan unidades) y la reserva de stock.
   php('foreach(["paula.pendiente@ejemplo.com","reciente@ejemplo.com","cod@ejemplo.com"] as $e){ foreach(wc_get_orders(["billing_email"=>$e,"limit"=>-1,"status"=>"any"]) as $o){ $o->delete(true); } } global $wpdb; $wpdb->query("DELETE FROM {$wpdb->prefix}wc_reserved_stock");');
   execSync('php /tmp/claude-0/bk-local/t/run.php reset');
