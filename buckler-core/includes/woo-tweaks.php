@@ -84,13 +84,14 @@ add_filter(
 );
 
 /**
- * Checkout (decisión del cliente 2026-10-15): sin "Población" (ciudad) ni "Código postal"; en Colombia el envío se
- * hace con departamento + dirección. Se quitan del formulario (facturación y envío) y del idioma de direcciones de
+ * Checkout: sin "Código postal" (decisión del cliente 2026-10-15; en Colombia el envío va con departamento + ciudad +
+ * dirección). La ciudad se ocultó en 0.17.6 y volvió en 0.18.13: Addi la exige para aprobar el crédito y las
+ * transportadoras la necesitan. Se quitan del formulario (facturación y envío) y del idioma de direcciones de
  * Colombia, para que el script de Woo no los vuelva a mostrar ni exigir al cambiar de país.
  * Volver a mostrarlos: add_filter( 'bk_checkout_hidden_fields', '__return_empty_array' ).
  */
 function bk_checkout_hidden_fields() {
-	return (array) apply_filters( 'bk_checkout_hidden_fields', array( 'city', 'postcode' ) );
+	return (array) apply_filters( 'bk_checkout_hidden_fields', array( 'postcode' ) );
 }
 
 add_filter(
@@ -109,6 +110,10 @@ add_filter(
 	static function ( $locale ) {
 		foreach ( bk_checkout_hidden_fields() as $f ) {
 			$locale['CO'][ $f ] = array_merge( (array) ( $locale['CO'][ $f ] ?? array() ), array( 'required' => false, 'hidden' => true ) );
+		}
+		// Ciudad visible y obligatoria, con el nombre que se usa en Colombia (Woo en español dice "Población").
+		if ( ! in_array( 'city', bk_checkout_hidden_fields(), true ) ) {
+			$locale['CO']['city'] = array_merge( (array) ( $locale['CO']['city'] ?? array() ), array( 'label' => __( 'Ciudad o municipio', 'buckler-core' ), 'required' => true, 'hidden' => false ) );
 		}
 		return $locale;
 	},

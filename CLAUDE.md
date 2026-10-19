@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.12 → `dist/buckler-core-0.18.12.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.13 → `dist/buckler-core-0.18.13.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -680,6 +680,13 @@ Versión actual 0.18.12 → `dist/buckler-core-0.18.12.zip` (`tools/build-plugin
   Lista: columna "Origen" (`o.source`, chip con ícono), filtro `source` (`bk_g_source_filter`: SQL de metas, post__in /
   not_in), detalle "Origen de la venta: chip + Campaña · dispositivo", Resumen "¿De dónde vienen las ventas?" (mes,
   pagados, `bk_g_source_summary`, enlaces a `#pedidos?source=`). `C.sources` en page.php. Suite `ronda1812.js` (9).
+- **0.18.13 (2026-10-19): Addi + ciudad en el checkout.** Addi fallaba en el checkout ("Se produjo un error al
+  procesar tu pedido", solo con Addi) y sus pagos quedaban en Pendiente: el **Client Secret estaba vacío** en los
+  ajustes de Addi (el cliente lo volvió a pegar); además el cliente agregó al `.htaccess`, arriba de `# BEGIN LSCACHE`,
+  el bloque "Addi Authorization" (`SetEnvIf Authorization` + RewriteRule E=HTTP_AUTHORIZATION, sin CGIPassAuth ni [L]).
+  El aviso de Addi es `/?wc-api=wc_addi_gateway` (responde 401 sin credenciales = vivo). La **ciudad vuelve** al
+  checkout (decisión del cliente; Addi la exige): `bk_checkout_hidden_fields()` = solo `postcode`; locale CO `city`
+  "Ciudad o municipio", obligatoria. ronda176.js adaptada.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -724,7 +731,7 @@ Versión actual 0.18.12 → `dist/buckler-core-0.18.12.zip` (`tools/build-plugin
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 9, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9 = 808 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 10, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9 = 809 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

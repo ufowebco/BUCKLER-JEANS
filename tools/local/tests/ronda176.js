@@ -1,4 +1,5 @@
-// 0.17.6: tallas ordenadas en las tarjetas (al pasar el mouse) y checkout sin Población ni Código postal.
+// 0.17.6: tallas ordenadas en las tarjetas (al pasar el mouse) y checkout sin Código postal (0.18.13: la ciudad vuelve,
+// obligatoria, porque Addi la exige).
 const { chromium } = require('playwright');
 const { execSync } = require('child_process');
 const B = 'http://localhost:8899';
@@ -26,32 +27,33 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
   await p.locator('.bk-card').first().hover(); await p.waitForTimeout(400);
   await p.screenshot({ path: '/tmp/claude-0/bk-local/r176-hover.png', clip: { x: 300, y: 250, width: 1100, height: 650 } });
 
-  // Checkout sin Población ni Código postal; el pedido se crea igual.
+  // Checkout sin Código postal y con Ciudad obligatoria.
   await p.goto(`${B}/?add-to-cart=22&variation_id=24&attribute_pa_tallas-plus-size=16&quantity=1`);
   await p.goto(`${B}/checkout/`);
   const vis = await p.evaluate(() => ['billing_city_field', 'billing_postcode_field', 'shipping_city_field', 'shipping_postcode_field'].map((id) => { const e = document.getElementById(id); return !!e && !!e.offsetParent; }));
-  ok(vis.every((v) => !v), 'checkout: sin "Población" ni "Código postal" (facturación y envío)');
+  ok(vis[0] && !vis[1] && !vis[3], 'checkout: con Ciudad y sin Código postal');
+  ok(/Ciudad o municipio/.test(await p.textContent('#billing_city_field label')) && /obligatorio|\*/.test(await p.textContent('#billing_city_field label')), 'la ciudad se llama "Ciudad o municipio" y es obligatoria');
   ok(await p.locator('#billing_email_field .bk-ac-notice').count() === 1, 'aviso del carrito abandonado justo debajo del correo');
   await p.fill('#billing_email', 'sincp@ejemplo.com'); await p.fill('#billing_first_name', 'Ana'); await p.fill('#billing_last_name', 'Sin CP');
-  await p.fill('#billing_address_1', 'Cra 43A # 1-50'); await p.fill('#billing_phone', '3000000000');
+  await p.fill('#billing_address_1', 'Cra 43A # 1-50'); await p.fill('#billing_city', 'Medellín'); await p.fill('#billing_phone', '3000000000');
   if (await p.locator('#billing_id').count()) await p.fill('#billing_id', '1234567890');
   await p.evaluate(() => { const s = document.querySelector('#billing_state'); s.value = s.tagName === 'SELECT' ? [...s.options].find((o) => /Antioquia/.test(o.text)).value : 'Antioquia'; s.dispatchEvent(new Event('change', { bubbles: true })); });
   await p.waitForTimeout(1500);
   const vis2 = await p.evaluate(() => ['billing_city_field', 'billing_postcode_field'].map((id) => { const e = document.getElementById(id); return !!e && !!e.offsetParent; }));
-  ok(vis2.every((v) => !v), 'después de elegir departamento siguen ocultos (el script de Woo no los vuelve a mostrar)');
+  ok(vis2[0] && !vis2[1], 'después de elegir departamento: la ciudad sigue y el código postal no vuelve');
   await p.screenshot({ path: '/tmp/claude-0/bk-local/r176-checkout.png', fullPage: true });
   await p.click('#place_order'); await p.waitForURL(/order-received/, { timeout: 30000 }).catch(() => {});
   const err = (await p.locator('.woocommerce-error, .woocommerce-NoticeGroup').allTextContents()).join(' ').replace(/\s+/g, ' ').slice(0, 200);
-  ok(/order-received/.test(p.url()), 'pedido creado sin ciudad ni código postal ' + err);
+  ok(/order-received/.test(p.url()), 'pedido creado con ciudad y sin código postal ' + err);
   const oid = (p.url().match(/order-received\/(\d+)/) || [])[1];
 
-  // Gestión: muestra el departamento donde antes iba la ciudad.
+  // Gestión: muestra la ciudad.
   if (oid) {
     const g = await (await b.newContext()).newPage();
     await g.goto(B + '/gestion-tienda/'); await g.fill('[name=log]', 'admin'); await g.fill('[name=pwd]', 'admin');
     await Promise.all([g.waitForNavigation(), g.click('.bk-g-login__form [type=submit]')]);
     const row = await g.evaluate(async (id) => (await (await fetch(window.bkG.api + 'orders?q=' + id, { headers: { 'X-WP-Nonce': window.bkG.nonce } })).json()).orders[0], oid);
-    ok(row && /Antioquia/.test(row.city), `gestión: el pedido muestra el departamento (${row && row.city})`);
+    ok(row && /Medellín/.test(row.city), `gestión: el pedido muestra la ciudad (${row && row.city})`);
     php(`wc_get_order(${oid})->delete(true);`);
   }
 
