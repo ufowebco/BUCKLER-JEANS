@@ -295,6 +295,7 @@ function bk_g_summary() {
 		'month'   => $sum( $month ),
 		'pending' => $pending,
 		'low'     => $low,
+		'sources' => function_exists( 'bk_g_source_summary' ) ? bk_g_source_summary( $month ) : array(),
 	);
 	set_transient( 'bk_g_summary', $data, 5 * MINUTE_IN_SECONDS );
 	return rest_ensure_response( $data );
@@ -328,6 +329,7 @@ function bk_g_order_row( $o ) {
 		'paid_ok'     => $f['pago'] ? in_array( strtolower( (string) $o->get_meta( $f['pago'] ) ), BK_G_TRUE, true ) : false,
 		'consecutivo' => $f['consecutivo'] ? (string) $o->get_meta( $f['consecutivo'] ) : '',
 		'tracking'    => function_exists( 'bk_ship_get' ) ? bk_ship_get( $o ) : null,
+		'source'      => function_exists( 'bk_g_source' ) ? bk_g_source( $o ) : null,
 	);
 }
 
@@ -365,6 +367,17 @@ function bk_g_orders( WP_REST_Request $r ) {
 			$args['post__in'] = $args['post__in'] ? array_values( $args['post__in'] ) : array( 0 );
 		} elseif ( $on ) {
 			$args['post__not_in'] = array_values( array_unique( array_merge( $args['post__not_in'] ?? array(), $on ) ) );
+		}
+	}
+
+	// Origen de la venta (canal): IDs por SQL + post__in / post__not_in.
+	$source = sanitize_key( (string) $r['source'] );
+	if ( $source && function_exists( 'bk_g_source_filter' ) && isset( bk_g_sources()[ $source ] ) ) {
+		$sf = bk_g_source_filter( $source );
+		if ( isset( $sf['in'] ) ) {
+			$args['post__in'] = isset( $args['post__in'] ) ? ( array_values( array_intersect( $args['post__in'], $sf['in'] ) ) ?: array( 0 ) ) : $sf['in'];
+		} else {
+			$args['post__not_in'] = array_values( array_unique( array_merge( $args['post__not_in'] ?? array(), $sf['not_in'] ) ) );
 		}
 	}
 
@@ -604,6 +617,7 @@ function bk_g_order( WP_REST_Request $r ) {
 				'history'     => bk_g_history( $o ),
 				'print_url'   => bk_g_print_url( $o->get_id() ),
 				'origin'      => bk_g_origin( $o ),
+				'source'      => function_exists( 'bk_g_source' ) ? bk_g_source( $o ) : null,
 				'extra'       => bk_g_extra_meta( $o, $f ),
 				'fields'      => array(
 					'consecutivo' => (bool) $f['consecutivo'],

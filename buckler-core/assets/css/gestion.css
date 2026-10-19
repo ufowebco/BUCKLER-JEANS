@@ -1109,3 +1109,25 @@ code { padding: 1px 5px; border-radius: 4px; background: #eef1f4; font-size: .9e
 .bk-gsil__art .bk-sil__lines { fill: none; stroke: #1a3955; stroke-width: 1.6; stroke-linecap: round; opacity: .75; }
 .bk-gsil__f { display: grid; gap: 8px; min-width: 0; }
 @media (max-width: 560px) { .bk-gsil__i { grid-template-columns: 1fr; } }
+
+/* Origen de la venta (canal). */
+.bk-g-src { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 99px; background: #eef2f6; color: #1a3955; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.bk-g-src svg { width: 14px; height: 14px; flex: none; }
+.bk-g-src.is-meta_ads, .bk-g-src.is-meta { background: #e7efff; color: #1b4fb8; }
+.bk-g-src.is-google_ads, .bk-g-src.is-google { background: #e8f5ec; color: #1d6b3a; }
+.bk-g-src.is-whatsapp { background: #e3f7ea; color: #117a3d; }
+.bk-g-src.is-tiktok { background: #f1eef8; color: #3c2a63; }
+.bk-g-src.is-cart_email, .bk-g-src.is-email { background: #fff4d6; color: #7a5300; }
+.bk-g-src.is-unknown { background: #f2f4f6; color: #5b6773; font-weight: 600; }
+.bk-g-src__d { color: var(--g-mute); }
+.bk-g-srcline { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 4px; }
+.bk-g-orders .c-src { white-space: nowrap; }
+.bk-g-srcs { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.bk-g-srcs a { display: grid; grid-template-columns: minmax(150px, max-content) minmax(60px, 1fr) auto; grid-template-areas: "chip bar total" "chip bar meta"; column-gap: 12px; align-items: center; padding: 8px 10px; border-radius: 10px; color: inherit; text-decoration: none; }
+.bk-g-srcs a:hover, .bk-g-srcs a:focus-visible { background: #f6f8fa; }
+.bk-g-srcs .bk-g-src { grid-area: chip; justify-self: start; }
+.bk-g-srcs__bar { grid-area: bar; height: 10px; border-radius: 99px; background: #eef2f6; overflow: hidden; }
+.bk-g-srcs__bar i { display: block; width: var(--w); height: 100%; border-radius: 99px; background: #1a3955; }
+.bk-g-srcs b { grid-area: total; text-align: right; font-variant-numeric: tabular-nums; }
+.bk-g-srcs small { grid-area: meta; text-align: right; color: var(--g-mute); }
+@media (max-width: 560px) { .bk-g-srcs a { grid-template-columns: 1fr auto; grid-template-areas: "chip total" "bar meta"; row-gap: 6px; } }

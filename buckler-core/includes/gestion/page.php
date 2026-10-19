@@ -371,6 +371,7 @@ function bk_g_render( $early = false ) {
 		'scope'    => $seo_only ? 'seo' : 'all',
 		'site'     => home_url( '/' ),
 		'adsIds'   => (array) bk_config( 'ads_ids' ),
+		'sources'  => function_exists( 'bk_g_sources' ) ? array_map( static fn( $s ) => array( 'label' => $s['label'], 'icon' => bk_icon_svg( $s['icon'], 16 ) ), bk_g_sources() ) : array(),
 		'printUrl' => esc_url_raw( home_url( '/' . BK_G_SLUG . '/' ) ) . '?imprimir=',
 		'helpImg'  => esc_url_raw( BK_URL . 'assets/img/ayuda/' ),
 		'ver'      => BK_VERSION,

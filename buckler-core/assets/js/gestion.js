@@ -159,6 +159,9 @@
 					<a class="bk-g-kpi is-link" href="#pedidos?status=on-hold"><span>En espera</span><b>${d.pending['on-hold']}</b><small>Revisar pago</small></a>
 					<a class="bk-g-kpi is-link" href="#pedidos?status=pending"><span>Pendientes de pago</span><b>${d.pending.pending}</b><small>Sin pagar aún</small></a>
 				</div>
+				${d.sources?.length ? `<section class="bk-g-card"><h2>¿De dónde vienen las ventas? <small>(este mes, pedidos pagados)</small></h2>
+					<ul class="bk-g-srcs">${d.sources.map((x) => `<li><a href="#pedidos?source=${esc(x.key)}">${srcChip({ key: x.key, label: x.label })}<span class="bk-g-srcs__bar"><i style="--w:${Math.max(2, x.pct)}%"></i></span><b>${esc(x.total)}</b><small>${x.count} pedido${x.count === 1 ? '' : 's'} · ${x.pct} %</small></a></li>`).join('')}</ul>
+					<p class="bk-g-hint">Se toma de lo que WooCommerce registra en cada compra (enlace de la campaña, buscador, red social o sitio de donde llegó la clienta). "Sin dato": pedidos de antes de activar el registro o con bloqueadores de anuncios.</p></section>` : ''}
 				<section class="bk-g-card"><h2>Tallas por agotarse (1–2 unidades)</h2>
 				${d.low.length ? `<div class="bk-g-table-wrap"><table class="bk-g-table"><thead><tr><th>Producto</th><th>REF</th><th>Talla</th><th>Quedan</th></tr></thead><tbody>
 					${d.low.map((l) => `<tr><td>${esc(l.name)}</td><td>${esc(l.sku)}</td><td>${esc(l.size)}</td><td><b class="bk-g-low">${l.stock}</b></td></tr>`).join('')}
@@ -176,11 +179,14 @@
 
 	/* --- Pedidos ------------------------------------------------------------------- */
 	const hashParams = () => new URLSearchParams(location.hash.split('?')[1] || '');
-	const oState = { q: '', status: 'all', paid_ok: '', printed: '', dispatched: '', from: '', to: '', page: 1 };
+	const oState = { q: '', status: 'all', paid_ok: '', printed: '', dispatched: '', source: '', from: '', to: '', page: 1 };
+	// Origen de la venta: etiqueta con ícono (Meta Ads, Google orgánico, WhatsApp…).
+	const srcChip = (s, withDetail) => s && C.sources?.[s.key] ? `<span class="bk-g-src is-${esc(s.key)}" title="${esc(s.detail || s.label)}">${C.sources[s.key].icon}${esc(s.label)}</span>${withDetail && s.detail ? ` <small class="bk-g-src__d">${esc(s.detail)}</small>` : ''}` : '';
 
 	async function viewOrders() {
 		const hp = hashParams();
 		if (hp.get('status')) oState.status = hp.get('status');
+		if (hp.has('source')) { oState.source = hp.get('source'); oState.page = 1; }
 		main.innerHTML = `<div class="bk-g-h1row"><h1 class="bk-g-h1">Pedidos</h1>
 				<div class="bk-g-refresh"><small id="bk-g-oupd" aria-live="polite"></small><button type="button" class="bk-g-btn" data-orders-refresh>${C.icons.refresh || ''} Buscar pedidos nuevos</button></div></div>
 			<form class="bk-g-filters" id="bk-g-of" role="search">
@@ -188,6 +194,7 @@
 					<input type="search" name="q" value="${esc(oState.q)}" placeholder="Número, consecutivo, cédula, nombre, correo o celular" autocomplete="off"></label>
 				<label><span>Estado</span><select name="status"><option value="all">Todos</option>${Object.entries(C.statuses).map(([k, v]) => `<option value="${k}" ${oState.status === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></label>
 				<label><span>Pago</span><select name="paid_ok"><option value="">Todos</option><option value="no" ${oState.paid_ok === 'no' ? 'selected' : ''}>Sin confirmar</option><option value="yes" ${oState.paid_ok === 'yes' ? 'selected' : ''}>Confirmado</option></select></label>
+				<label><span>Origen</span><select name="source"><option value="">Todos</option>${Object.entries(C.sources || {}).map(([k, v]) => `<option value="${k}" ${oState.source === k ? 'selected' : ''}>${esc(v.label)}</option>`).join('')}</select></label>
 				<label><span>Impresión</span><select name="printed"><option value="">Todos</option><option value="no" ${oState.printed === 'no' ? 'selected' : ''}>Sin imprimir</option><option value="yes" ${oState.printed === 'yes' ? 'selected' : ''}>Impresos</option></select></label>
 				${C.hasDispatch ? `<label><span>Despacho</span><select name="dispatched"><option value="">Todos</option><option value="no" ${oState.dispatched === 'no' ? 'selected' : ''}>Sin despachar</option><option value="yes" ${oState.dispatched === 'yes' ? 'selected' : ''}>Despachados</option></select></label>` : ''}
 				<label><span>Desde</span><input type="date" name="from" value="${esc(oState.from)}"></label>
@@ -263,11 +270,12 @@
 		box.innerHTML = d.orders.length ? `
 			<p class="bk-g-count">${d.total} pedido${d.total === 1 ? '' : 's'}</p>
 			<div class="bk-g-table-wrap"><table class="bk-g-table bk-g-orders">
-				<thead><tr><th>Pedido</th><th>Fecha</th><th>Clienta</th><th>Total</th><th>Estado</th><th>Pago confirmado</th><th>Impreso</th>${showDisp ? '<th>Despachado</th>' : ''}<th><span class="bk-g-sr">Imprimir</span></th></tr></thead>
+				<thead><tr><th>Pedido</th><th>Fecha</th><th>Clienta</th><th>Origen</th><th>Total</th><th>Estado</th><th>Pago confirmado</th><th>Impreso</th>${showDisp ? '<th>Despachado</th>' : ''}<th><span class="bk-g-sr">Imprimir</span></th></tr></thead>
 				<tbody>${d.orders.map((o) => `<tr data-row="${o.id}">
 					<td class="c-num"><button type="button" class="bk-g-link" data-order="${o.id}">#${esc(o.number)}</button></td>
 					<td class="c-date">${esc(o.date)}</td>
 					<td class="c-cust">${esc(o.customer)}<small>${esc(o.city)} · ${o.items} prenda${o.items === 1 ? '' : 's'}${o.nfiles ? ` · <span class="bk-g-nfiles" title="Archivos del pedido">📎 ${o.nfiles}</span>` : ''}</small></td>
+					<td class="c-src">${srcChip(o.source) || '—'}</td>
 					<td class="c-total"><b>${esc(o.total)}</b><small>${esc(o.payment)}</small></td>
 					<td class="c-status"><span class="bk-g-pill is-${esc(o.status)}">${esc(statusLabel(o.status))}</span>${o.tracking ? `<small class="bk-g-trk">${C.icons.truck} ${esc(C.carriers[o.tracking.carrier] || '')}</small>` : ''}</td>
 					<td class="c-print c-paid">${check('paid_ok', o, 'Pago confirmado', o.paid_ok)}</td>
@@ -375,7 +383,7 @@
 				<button type="button" class="bk-g-btn is-ghost" data-print="${o.id}">${C.icons.print} Imprimir pedido</button></div>
 			${payremHtml(o)}${o.payrem?.unpaid ? '' : shipHtml(o)}
 			<section class="bk-g-cust"><div class="bk-g-cust__head"><h3>Clienta</h3>${o.edit ? `<button type="button" class="bk-g-btn is-ghost is-small" data-cust-edit aria-expanded="false" aria-controls="bk-g-custform">${C.icons.edit} Editar datos</button>` : ''}</div>
-				${custFormHtml(o)}<p class="bk-g-cust__view"><b>${esc(o.customer)}</b>${o.fields?.cedula || o.cedula ? `<br>Cédula: ${esc(o.cedula || '—')}` : ''}${o.fields?.consecutivo ? `<br>Consecutivo: ${esc(o.consecutivo || '—')}` : ''}${o.origin ? `<br><small>Origen de la venta: ${esc(o.origin)}</small>` : ''}<br>
+				${custFormHtml(o)}<p class="bk-g-cust__view"><b>${esc(o.customer)}</b>${o.fields?.cedula || o.cedula ? `<br>Cédula: ${esc(o.cedula || '—')}` : ''}${o.fields?.consecutivo ? `<br>Consecutivo: ${esc(o.consecutivo || '—')}` : ''}${o.source ? `<br><span class="bk-g-srcline">Origen de la venta: ${srcChip(o.source, true)}</span>` : (o.origin ? `<br><small>Origen de la venta: ${esc(o.origin)}</small>` : '')}<br>
 				${o.phone ? `<a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> · <a href="https://wa.me/57${esc(String(o.phone).replace(/\D/g, '').replace(/^57/, ''))}" target="_blank" rel="noopener">WhatsApp</a><br>` : ''}
 				<a href="mailto:${esc(o.email)}">${esc(o.email)}</a><br>${esc(o.address)}</p>
 				${o.note ? `<p class="bk-g-note"><b>Nota de la clienta:</b> ${esc(o.note)}</p>` : ''}</section>
