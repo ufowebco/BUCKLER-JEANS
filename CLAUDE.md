@@ -686,7 +686,8 @@ Versión actual 0.18.13 → `dist/buckler-core-0.18.13.zip` (`tools/build-plugin
   el bloque "Addi Authorization" (`SetEnvIf Authorization` + RewriteRule E=HTTP_AUTHORIZATION, sin CGIPassAuth ni [L]).
   El aviso de Addi es `/?wc-api=wc_addi_gateway` (responde 401 sin credenciales = vivo). La **ciudad vuelve** al
   checkout (decisión del cliente; Addi la exige): `bk_checkout_hidden_fields()` = solo `postcode`; locale CO `city`
-  "Ciudad o municipio", obligatoria. ronda176.js adaptada.
+  "Ciudad o municipio", obligatoria. ronda176.js adaptada. **Confirmado por el cliente con 0.18.13: Addi ya funciona; la causa era la ciudad
+  oculta** (no volver a ocultar `city` mientras Addi siga activo).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
