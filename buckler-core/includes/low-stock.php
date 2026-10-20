@@ -4,7 +4,7 @@
  * alguna talla). Solo se muestra cuando es verdad: alguna talla disponible tiene existencias gestionadas entre 1 y
  * bk_config( 'low_stock' )['max'] (por defecto 2).
  *
- * - Ficha: recuadro junto al precio con las tallas ("Quedan pocas en talla 8 y 12") y, al elegir una de esas tallas,
+ * - Ficha: recuadro "¡Últimas unidades!" junto al precio (solo ese texto, decisión del cliente 2026-10-20) y, al elegir una de esas tallas,
  *   "¡Solo queda 1!" debajo de los botones (pages.js, con max_qty de las variaciones de Woo).
  * - Tarjetas: etiqueta "Últimas unidades" solo con bk_config( 'low_stock' )['cards'] = true (apagada por defecto:
  *   el cliente la vio muy invasiva en el grid, 2026-10-20).
@@ -93,15 +93,7 @@ function bk_low_stock_pdp() {
 	if ( ! $sizes ) {
 		return;
 	}
-	$ones = count( array_filter( $sizes, static fn( $z ) => 1 === $z['qty'] ) ) === count( $sizes );
-	if ( $ones && 1 === count( $sizes ) ) {
-		$txt = sprintf( __( 'Solo queda 1 en %s.', 'buckler-core' ), bk_low_stock_list( $sizes ) );
-	} elseif ( $ones ) {
-		$txt = sprintf( __( 'Solo queda 1 prenda en cada una: %s.', 'buckler-core' ), bk_low_stock_list( $sizes ) );
-	} else {
-		$txt = sprintf( __( 'Quedan pocas en %s.', 'buckler-core' ), bk_low_stock_list( $sizes ) );
-	}
-	echo '<p class="bk-low-stock" role="note">' . bk_icon_svg( 'lucide:flame', 18 ) . '<span><strong>' . esc_html( bk_low_stock_cfg()['label'] ) . '</strong> ' . esc_html( $txt ) . '</span></p>'; // phpcs:ignore WordPress.Security.EscapeOutput
+	echo '<p class="bk-low-stock" role="note">' . bk_icon_svg( 'lucide:flame', 18 ) . '<span><strong>' . esc_html( bk_low_stock_cfg()['label'] ) . '</strong></span></p>'; // phpcs:ignore WordPress.Security.EscapeOutput
 }
 add_action( 'woocommerce_single_product_summary', 'bk_low_stock_pdp', 11 );
 

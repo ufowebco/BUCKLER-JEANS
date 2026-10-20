@@ -24,7 +24,7 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
   await p.goto(php(`echo get_permalink(${A});`) + '?v=' + Date.now(), { waitUntil: 'networkidle' });
   const box = p.locator('.bk-low-stock');
   ok(await box.count() === 1 && /¡Últimas unidades!/.test(await box.textContent()), `ficha en ¡Sale!: "${(await box.textContent().catch(() => '')).trim()}"`);
-  ok(sizes.length === 2 && new RegExp(`tallas ${sizes[0]} y ${sizes[1]}`).test(await box.textContent()), `nombra las tallas que quedan pocas (${sizes.join(', ')})`);
+  ok(sizes.length === 2 && (await box.textContent()).trim() === '¡Últimas unidades!', `el recuadro dice solo "¡Últimas unidades!" (tallas con pocas: ${sizes.join(', ')})`);
   ok(await p.locator('.bk-size.is-low').count() === 2, 'las 2 tallas con pocas prendas llevan un punto');
   await p.locator(`.bk-size[data-value]`).filter({ hasText: new RegExp(`^${sizes[0]}$`) }).first().click();
   ok(/¡Solo queda 1 en esta talla!/.test(await p.textContent('.bk-size-low')), 'al elegir la talla con 1: "¡Solo queda 1 en esta talla!"');
@@ -52,13 +52,13 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
   // Todas las tallas con 1.
   set(A, '$v->set_stock_quantity(1);');
   await p.goto(php(`echo get_permalink(${A});`) + '?v=' + Date.now(), { waitUntil: 'networkidle' });
-  ok(/Solo queda 1 prenda en cada una: tallas/.test(await p.textContent('.bk-low-stock')), `todas con 1: "${(await p.textContent('.bk-low-stock')).trim()}"`);
+  ok((await p.textContent('.bk-low-stock')).trim() === '¡Últimas unidades!', 'todas con 1: también solo "¡Últimas unidades!"');
 
   // Celular.
   set(A, '$v->set_stock_quantity($i===0?1:10);');
   const m = await (await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })).newPage();
   await m.goto(php(`echo get_permalink(${A});`) + '?v=' + Date.now(), { waitUntil: 'networkidle' });
-  ok(await m.locator('.bk-low-stock').isVisible() && /Solo queda 1 en talla/.test(await m.textContent('.bk-low-stock')) && await m.evaluate(() => document.documentElement.scrollWidth <= 390), 'celular: "Solo queda 1 en talla …" sin desborde');
+  ok(await m.locator('.bk-low-stock').isVisible() && (await m.textContent('.bk-low-stock')).trim() === '¡Últimas unidades!' && await m.evaluate(() => document.documentElement.scrollWidth <= 390), 'celular: "¡Últimas unidades!" sin desborde');
   await m.screenshot({ path: '/tmp/claude-0/bk-local/r1817-movil.png', clip: { x: 0, y: 300, width: 390, height: 700 } });
 
   ok(!errs.length, 'sin errores de JS ' + errs.join(' | '));
