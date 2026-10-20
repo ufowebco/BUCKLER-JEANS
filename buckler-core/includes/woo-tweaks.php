@@ -84,14 +84,14 @@ add_filter(
 );
 
 /**
- * Checkout: sin "Código postal" (decisión del cliente 2026-10-15; en Colombia el envío va con departamento + ciudad +
- * dirección). La ciudad se ocultó en 0.17.6 y volvió en 0.18.13: Addi la exige para aprobar el crédito y las
- * transportadoras la necesitan. Se quitan del formulario (facturación y envío) y del idioma de direcciones de
- * Colombia, para que el script de Woo no los vuelva a mostrar ni exigir al cambiar de país.
- * Volver a mostrarlos: add_filter( 'bk_checkout_hidden_fields', '__return_empty_array' ).
+ * Checkout: campos de dirección para Colombia. La ciudad se ocultó en 0.17.6 y volvió en 0.18.13 (obligatoria: Addi la
+ * exige para aprobar el crédito y las transportadoras la necesitan). El código postal se ocultó en 0.17.6 y volvió en
+ * 0.18.16 como opcional (decisión del cliente 2026-10-20). Lo que se oculte se quita del formulario (facturación y envío)
+ * y del idioma de direcciones de Colombia, para que el script de Woo no lo vuelva a mostrar ni exigir.
+ * Ocultar de nuevo el código postal: add_filter( 'bk_checkout_hidden_fields', fn() => array( 'postcode' ) ).
  */
 function bk_checkout_hidden_fields() {
-	return (array) apply_filters( 'bk_checkout_hidden_fields', array( 'postcode' ) );
+	return (array) apply_filters( 'bk_checkout_hidden_fields', array() );
 }
 
 add_filter(
@@ -99,6 +99,12 @@ add_filter(
 	static function ( $fields ) {
 		foreach ( bk_checkout_hidden_fields() as $f ) {
 			unset( $fields['billing'][ 'billing_' . $f ], $fields['shipping'][ 'shipping_' . $f ] );
+		}
+		// Código postal visible pero opcional.
+		foreach ( array( 'billing', 'shipping' ) as $g ) {
+			if ( isset( $fields[ $g ][ $g . '_postcode' ] ) ) {
+				$fields[ $g ][ $g . '_postcode' ]['required'] = false;
+			}
 		}
 		return $fields;
 	},
@@ -114,6 +120,9 @@ add_filter(
 		// Ciudad visible y obligatoria, con el nombre que se usa en Colombia (Woo en español dice "Población").
 		if ( ! in_array( 'city', bk_checkout_hidden_fields(), true ) ) {
 			$locale['CO']['city'] = array_merge( (array) ( $locale['CO']['city'] ?? array() ), array( 'label' => __( 'Ciudad o municipio', 'buckler-core' ), 'required' => true, 'hidden' => false ) );
+		}
+		if ( ! in_array( 'postcode', bk_checkout_hidden_fields(), true ) ) {
+			$locale['CO']['postcode'] = array_merge( (array) ( $locale['CO']['postcode'] ?? array() ), array( 'label' => __( 'Código postal', 'buckler-core' ), 'required' => false, 'hidden' => false ) );
 		}
 		return $locale;
 	},
