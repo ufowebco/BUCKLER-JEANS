@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.16 → `dist/buckler-core-0.18.16.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.17 → `dist/buckler-core-0.18.17.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -704,6 +704,17 @@ Versión actual 0.18.16 → `dist/buckler-core-0.18.16.zip` (`tools/build-plugin
   vacío por defecto; `billing_/shipping_postcode` `required` false en `woocommerce_checkout_fields` 30 y locale CO
   `postcode` "Código postal", visible y no obligatorio. ronda176.js (10) lo comprueba (también tras elegir departamento
   y con el campo vacío).
+- **0.18.17 (2026-10-20): "¡Últimas unidades!" en ¡Sale!** (`includes/low-stock.php`, siempre cargado;
+  `bk_config('low_stock')` = max 2, only_sale true, label; max 0 lo apaga). Solo cuando es verdad: talla publicada, en
+  stock, con existencias gestionadas entre 1 y max (`bk_low_stock_sizes()`, filtro). Producción (Store API, 2026-10-20):
+  4 de 5 productos en Sale con tallas de 1–2 prendas. Ficha: recuadro naranja en `woocommerce_single_product_summary`
+  11 (re-enganchado en `woocommerce_before_single_product` 2 por BodyCommerce) — "Quedan pocas en tallas 8 y 12" /
+  "Solo queda 1 en talla 8" / "Solo queda 1 prenda en cada una: …"; pages.js marca esas tallas con un punto
+  (`.bk-size.is-low`, `max_qty` de las variaciones) y al elegirlas "¡Solo queda 1 en esta talla!" (`.bk-size-low`,
+  aria-live; `bkPages.i18n.lowMax` vía filtro nuevo `bk_pages_i18n`). Tarjetas: `bk-badge--low` "Últimas unidades"
+  (dato `low` en `bk_card_*`; cachés viejas lo calculan al pintar). Ícono `lucide:flame`. Suite `ronda1817.js` (13).
+  ronda17.js "Carrito y pedido" falla en local porque el producto de prueba quedó agotado por otras suites (igual sin
+  este cambio).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -748,7 +759,7 @@ Versión actual 0.18.16 → `dist/buckler-core-0.18.16.zip` (`tools/build-plugin
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7 = 824 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13 = 837 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

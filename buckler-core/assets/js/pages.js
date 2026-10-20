@@ -113,6 +113,30 @@
 			});
 			cell.prepend(group);
 
+			// ¡Últimas unidades!: aviso bajo los botones al elegir una talla con 1–lowMax prendas (max_qty de Woo).
+			const lowMax = Number(T.lowMax) || 0;
+			let low = null;
+			const lowSync = () => {
+				if (!lowMax) return;
+				const v = variations.find((x) => x.attributes[attr] === select.value && x.is_in_stock);
+				const n = v && Number(v.max_qty) > 0 && Number(v.max_qty) <= lowMax ? Number(v.max_qty) : 0;
+				if (!low) {
+					low = document.createElement('p');
+					low.className = 'bk-size-low';
+					low.setAttribute('aria-live', 'polite');
+					group.after(low);
+				}
+				low.textContent = n ? (n === 1 ? T.lowOne : String(T.lowMany || '').replace('%d', n)) : '';
+				low.hidden = !n;
+			};
+			if (lowMax) {
+				$$('.bk-size', group).forEach((b) => {
+					const v = variations.find((x) => x.attributes[attr] === b.dataset.value && x.is_in_stock);
+					if (v && Number(v.max_qty) > 0 && Number(v.max_qty) <= lowMax) b.classList.add('is-low');
+				});
+				select.addEventListener('change', lowSync);
+			}
+
 			const sync = () => {
 				const btns = $$('.bk-size', group);
 				btns.forEach((b) => {

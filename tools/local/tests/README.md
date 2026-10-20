@@ -7,7 +7,7 @@ Rutas asumidas: `BK_LOCAL=/tmp/claude-0/bk-local` (ajustar en los scripts si cam
 php tools/local/tests/seed-cards.php     # galerías, destacado, oferta, talla agotada
 php tools/local/tests/seed-shop.php      # ~60 productos con nombres/precios/categorías reales
 php tools/local/tests/seed-orders.php    # pedidos de ejemplo, usuaria "gestora" (rol Gestor de tienda)
-cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180 ronda181 ronda182 ronda184 ronda185 ronda186 ronda187 ronda188 ronda189 ronda1812 ronda1814 ronda1815; do NODE_PATH=$(npm root -g) node $t.js; done
+cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180 ronda181 ronda182 ronda184 ronda185 ronda186 ronda187 ronda188 ronda189 ronda1812 ronda1814 ronda1815 ronda1817; do NODE_PATH=$(npm root -g) node $t.js; done
 ```
 
 | Suite | Qué prueba | Comprobaciones |
@@ -44,6 +44,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `ronda1812.js` | Origen de la venta: 8 canales, columna Origen, filtro, detalle con campaña, resumen por canal y enlace a la lista | 9 |
 | `ronda1814.js` | Buscador de Pedidos por el número visible (`_order_number` de un plugin de numeración ≠ ID), con "#", sin confundir un ID interno con el número de otro pedido, pedidos sin número propio por ID, fila en la lista | 7 |
 | `ronda1815.js` | Celular obligatorio en el checkout aunque Woo lo tenga oculto ("Celular", teclado numérico), sin celular no compra, menos de 10 dígitos lo rechaza, +57 300 123 4567 pasa y se guarda | 7 |
+| `ronda1817.js` | "¡Últimas unidades!" en ¡Sale! con 1–2 prendas por talla: recuadro con las tallas, punto en esas tallas, "¡Solo queda 1 / quedan 2 en esta talla!", nada en productos sin rebaja ni con existencias repuestas, etiqueta en la tarjeta, todas con 1, celular | 13 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).
 | `seguridad.js` | Nombres de usuario ocultos a visitantes: REST de usuarios 401, ?author 404, sin sitemap de usuarios, Store API pública, error de acceso genérico, editor con sesión intacto | 7 |

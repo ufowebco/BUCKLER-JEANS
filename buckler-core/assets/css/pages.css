@@ -707,6 +707,14 @@ body.bk-doc .pswp { display: none !important; }
 .bk-sale-notice { display: flex; align-items: flex-start; gap: 8px; margin: 0 0 16px; padding: 10px 14px; border-left: 4px solid var(--bk-sale); border-radius: 0 10px 10px 0; background: #fdf0ee; color: var(--bk-ink); font-size: 14px; font-weight: 600; }
 .bk-sale-notice svg { flex: none; margin-top: 1px; color: var(--bk-sale); }
 .bk-sale-notice.is-checkout { margin: 12px 0; }
+/* ¡Últimas unidades! (prendas de ¡Sale! con 1–2 en alguna talla) */
+.bk-low-stock { display: flex; align-items: flex-start; gap: 8px; margin: 0 0 12px; padding: 10px 14px; border-radius: 10px; background: #fff4e5; color: var(--bk-ink); font-size: 14px; line-height: 1.4; }
+.bk-low-stock svg { flex: none; margin-top: 1px; color: #c2410c; }
+.bk-low-stock strong { color: #9a3412; }
+.bk-size.is-low:not(.is-out) { position: relative; }
+.bk-size.is-low:not(.is-out)::after { content: ""; position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: #c2410c; }
+.bk-size-low { margin: 8px 0 0; color: #9a3412; font-size: 14px; font-weight: 700; }
+.bk-size-low[hidden] { display: none; }
 .bk-disc-home { margin-top: 40px; }
 .bk-disc-home__head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px 20px; align-items: center; margin-bottom: 18px; padding: 18px 22px; border-radius: 18px; background: var(--bk-navy); color: #fff; }
 .bk-disc-home__head .bk-section-title { margin: 0; color: #fff; }

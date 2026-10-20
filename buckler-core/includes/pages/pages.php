@@ -244,7 +244,7 @@ function bk_pages_assets() {
 		'bk-pages',
 		'bkPages',
 		array(
-			'i18n' => array(
+			'i18n' => apply_filters( 'bk_pages_i18n', array(
 				'size'      => __( 'Talla', 'buckler-core' ),
 				'soldOut'   => __( 'agotada', 'buckler-core' ),
 				'chooseSize' => __( 'Elige tu talla', 'buckler-core' ),
@@ -252,7 +252,7 @@ function bk_pages_assets() {
 				'next'      => __( 'Foto siguiente', 'buckler-core' ),
 				'less'      => __( 'Quitar una unidad', 'buckler-core' ),
 				'more'      => __( 'Añadir una unidad', 'buckler-core' ),
-			),
+			) ),
 		)
 	);
 	if ( 'shop' === $route && function_exists( 'bk_shop_assets' ) ) {

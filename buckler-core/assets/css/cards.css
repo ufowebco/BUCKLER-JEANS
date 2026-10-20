@@ -215,6 +215,7 @@
 .bk-badge--new { background: var(--bk-lime); color: var(--bk-navy); }
 .bk-badge--sale { background: var(--bk-sale); color: #fff; }
 .bk-badge--out { background: var(--bk-ink); color: #fff; }
+.bk-badge--low { background: #fff; color: var(--bk-sale); box-shadow: inset 0 0 0 1.5px var(--bk-sale); }
 
 /* Tallas disponibles (al pasar el cursor) */
 .bk-card__sizes {
