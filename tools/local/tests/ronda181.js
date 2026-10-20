@@ -28,6 +28,7 @@ const back = (id, h) => php(`$o=wc_get_order(${id}); $o->set_date_created(time()
     if (!(await c.locator('#billing_email').count())) { console.log('checkout vacío:', c.url(), (await c.locator('.woocommerce-error, .woocommerce-info').allTextContents()).join(' ').replace(/\s+/g, ' ').slice(0, 200)); }
     await c.fill('#billing_email', email); await c.fill('#billing_first_name', 'Paula'); await c.fill('#billing_last_name', 'Pendiente');
     await c.fill('#billing_address_1', 'Cra 43A # 1-50'); await c.fill('#billing_phone', '3001234567');
+    if (await c.locator('#billing_city').count()) await c.fill('#billing_city', 'Medellín');
     if (await c.locator('#billing_id').count()) await c.fill('#billing_id', '1037000111');
     await c.evaluate(() => { const s = document.querySelector('#billing_state'); s.value = s.tagName === 'SELECT' ? [...s.options].find((o) => /Antioquia/.test(o.text)).value : 'Antioquia'; s.dispatchEvent(new Event('change', { bubbles: true })); });
     await c.locator('#billing_email').blur(); await c.waitForTimeout(1800);

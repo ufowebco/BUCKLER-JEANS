@@ -53,6 +53,7 @@ const EMAILS = ['ga4.compra@ejemplo.com', 'ga4.espera@ejemplo.com'];
     await page.goto(`${B}/checkout/`, { waitUntil: 'networkidle' });
     await page.fill('#billing_email', email); await page.fill('#billing_first_name', 'Gina'); await page.fill('#billing_last_name', 'Analytics');
     await page.fill('#billing_address_1', 'Cra 43A # 1-50'); await page.fill('#billing_phone', '300 123 4567');
+    if (await page.locator('#billing_city').count()) await page.fill('#billing_city', 'Medellín');
     if (await page.locator('#billing_id').count()) await page.fill('#billing_id', '1037000111');
     await page.evaluate(() => { const s = document.querySelector('#billing_state'); s.value = s.tagName === 'SELECT' ? [...s.options].find((o) => /Antioquia/.test(o.text)).value : 'Antioquia'; s.dispatchEvent(new Event('change', { bubbles: true })); });
     await page.locator('#billing_email').blur(); await page.waitForTimeout(1800);

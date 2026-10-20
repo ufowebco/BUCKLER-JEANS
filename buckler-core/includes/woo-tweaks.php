@@ -119,3 +119,71 @@ add_filter(
 	},
 	30
 );
+
+/**
+ * Checkout: celular obligatorio (decisión del cliente 2026-10-20). Se fuerza aunque en WooCommerce el campo esté como
+ * "Opcional" u "Oculto" (Personalizar → WooCommerce → Finalizar compra), y se valida que tenga 10 dígitos (acepta
+ * espacios, guiones y el prefijo +57). Desactivar: add_filter( 'bk_checkout_phone_required', '__return_false' ).
+ */
+function bk_checkout_phone_required() {
+	return (bool) apply_filters( 'bk_checkout_phone_required', true );
+}
+
+add_filter(
+	'woocommerce_checkout_fields',
+	static function ( $fields ) {
+		if ( ! bk_checkout_phone_required() ) {
+			return $fields;
+		}
+		$phone = $fields['billing']['billing_phone'] ?? array();
+		$fields['billing']['billing_phone'] = array_merge(
+			array(
+				'type'         => 'tel',
+				'class'        => array( 'form-row-wide' ),
+				'validate'     => array( 'phone' ),
+				'autocomplete' => 'tel',
+				'priority'     => 100,
+			),
+			(array) $phone,
+			array(
+				'label'             => __( 'Celular', 'buckler-core' ),
+				'required'          => true,
+				'placeholder'       => __( 'Ej.: 300 123 4567', 'buckler-core' ),
+				'custom_attributes' => array_merge( (array) ( $phone['custom_attributes'] ?? array() ), array( 'inputmode' => 'tel' ) ),
+			)
+		);
+		return $fields;
+	},
+	40
+);
+
+// El script de direcciones de Woo (address-i18n.js) vuelve a marcar el teléfono como opcional u oculto al cambiar de
+// país o departamento si el idioma de direcciones lo dice así: se corrige también ahí.
+add_filter(
+	'woocommerce_get_country_locale_default',
+	static function ( $locale ) {
+		if ( bk_checkout_phone_required() ) {
+			$locale['phone'] = array_merge( (array) ( $locale['phone'] ?? array() ), array( 'label' => __( 'Celular', 'buckler-core' ), 'required' => true, 'hidden' => false ) );
+		}
+		return $locale;
+	},
+	40
+);
+
+add_action(
+	'woocommerce_after_checkout_validation',
+	static function ( $data, $errors ) {
+		if ( ! bk_checkout_phone_required() || $errors->get_error_message( 'billing_phone_required' ) ) {
+			return;
+		}
+		$digits = preg_replace( '/\D+/', '', (string) ( $data['billing_phone'] ?? '' ) );
+		if ( 12 === strlen( $digits ) && 0 === strpos( $digits, '57' ) ) {
+			$digits = substr( $digits, 2 );
+		}
+		if ( 10 !== strlen( $digits ) ) {
+			$errors->add( 'billing_phone_validation', __( 'Escribe un <strong>celular</strong> de 10 dígitos (por ejemplo 300 123 4567) para avisarte del envío.', 'buckler-core' ), array( 'id' => 'billing_phone' ) );
+		}
+	},
+	10,
+	2
+);
