@@ -104,9 +104,10 @@ function bk_config( $key = null ) {
 				'redirect_404'  => 'home',
 				// Aviso en prendas de ¡Sale! (ficha, carrito, checkout y pedido). Vacío = sin aviso.
 				'sale_notice'   => 'Producto en descuento: no tiene garantía ni cambio.',
-				// "¡Últimas unidades!" (ficha y tarjetas) cuando una talla tiene entre 1 y 'max' prendas. 'only_sale': solo
-				// en ¡Sale! (decisión del cliente 2026-10-20). 'max' 0 lo apaga.
-				'low_stock'     => array( 'max' => 2, 'only_sale' => true, 'label' => '¡Últimas unidades!' ),
+				// "¡Últimas unidades!" en la ficha cuando una talla tiene entre 1 y 'max' prendas. 'only_sale': solo en ¡Sale!
+				// (decisión del cliente 2026-10-20). 'cards': también en las tarjetas del grid (el cliente lo pidió solo en
+				// la ficha). 'max' 0 lo apaga.
+				'low_stock'     => array( 'max' => 2, 'only_sale' => true, 'cards' => false, 'label' => '¡Últimas unidades!' ),
 				'sale_cat'      => 'sale',
 				'sale_page'     => '/sales/',
 				'faq_page'      => '/preguntas-frecuentes/',

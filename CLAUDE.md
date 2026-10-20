@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.17 → `dist/buckler-core-0.18.17.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.18 → `dist/buckler-core-0.18.18.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -715,6 +715,9 @@ Versión actual 0.18.17 → `dist/buckler-core-0.18.17.zip` (`tools/build-plugin
   (dato `low` en `bk_card_*`; cachés viejas lo calculan al pintar). Ícono `lucide:flame`. Suite `ronda1817.js` (13).
   ronda17.js "Carrito y pedido" falla en local porque el producto de prueba quedó agotado por otras suites (igual sin
   este cambio).
+- **0.18.18 (2026-10-20):** decisión del cliente: "Últimas unidades" **solo dentro del producto**, no en el grid (muy
+  invasivo). `bk_config('low_stock')['cards']` false por defecto (true vuelve a poner la etiqueta en las tarjetas).
+  ronda1817.js comprueba que el grid no la muestra.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.

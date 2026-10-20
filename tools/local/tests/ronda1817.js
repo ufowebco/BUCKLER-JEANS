@@ -41,8 +41,8 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
   await p.goto(B + '/shop/?v=' + Date.now(), { waitUntil: 'networkidle' });
   const card = p.locator(`.bk-card:has(a[href="${php(`echo get_permalink(${A});`)}"])`).first();
   const cardB = p.locator(`.bk-card:has(a[href="${php(`echo get_permalink(${B2});`)}"])`).first();
-  ok(await card.locator('.bk-badge--low').count() === 1 && /Últimas unidades/.test(await card.locator('.bk-badge--low').textContent()), 'tarjeta del producto en ¡Sale!: etiqueta "Últimas unidades"');
-  ok(!(await cardB.count()) || await cardB.locator('.bk-badge--low').count() === 0, 'la tarjeta del producto sin rebaja no la lleva');
+  ok(await card.count() === 1 && await card.locator('.bk-badge--low').count() === 0 && await p.locator('.bk-badge--low').count() === 0, 'grid: sin etiqueta "Últimas unidades" (solo dentro del producto, decisión del cliente)');
+  ok(!(await cardB.count()) || await cardB.locator('.bk-badge--low').count() === 0, 'la tarjeta del producto sin rebaja tampoco');
 
   // Si se reponen las existencias, desaparece.
   set(A, '$v->set_stock_quantity(10);');

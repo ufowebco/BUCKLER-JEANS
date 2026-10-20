@@ -6,10 +6,10 @@
  *
  * - Ficha: recuadro junto al precio con las tallas ("Quedan pocas en talla 8 y 12") y, al elegir una de esas tallas,
  *   "¡Solo queda 1!" debajo de los botones (pages.js, con max_qty de las variaciones de Woo).
- * - Tarjetas: etiqueta "Últimas unidades" (product-card.php, dato `low` de bk_card_data(), que se limpia con cada
- *   cambio de existencias).
+ * - Tarjetas: etiqueta "Últimas unidades" solo con bk_config( 'low_stock' )['cards'] = true (apagada por defecto:
+ *   el cliente la vio muy invasiva en el grid, 2026-10-20).
  *
- * Config: bk_config( 'low_stock' ) = { max, only_sale, label }; 'max' 0 lo apaga. Filtro bk_low_stock_sizes.
+ * Config: bk_config( 'low_stock' ) = { max, only_sale, cards, label }; 'max' 0 lo apaga. Filtro bk_low_stock_sizes.
  *
  * @package BucklerCore
  */

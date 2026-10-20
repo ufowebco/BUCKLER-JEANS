@@ -73,7 +73,7 @@ function bk_card_data( $product ) {
 		'sizes'    => $sizes,
 		'line'     => $line,
 		'discount' => $discount,
-		'low'      => function_exists( 'bk_low_stock_sizes' ) && bk_low_stock_sizes( $product ) ? 1 : 0, // ¡Últimas unidades!
+		'low'      => ! empty( bk_config( 'low_stock' )['cards'] ) && function_exists( 'bk_low_stock_sizes' ) && bk_low_stock_sizes( $product ) ? 1 : 0, // ¡Últimas unidades!
 	);
 	set_transient( $key, $data, 12 * HOUR_IN_SECONDS );
 	return $data;
@@ -147,8 +147,9 @@ function bk_product_card( $product, $args = array() ) {
 	if ( $product->is_featured() && $in ) {
 		$badges .= '<span class="bk-badge bk-badge--new">' . esc_html__( 'Nuevo', 'buckler-core' ) . '</span>';
 	}
-	// ¡Últimas unidades! (tarjetas guardadas antes de 0.18.17 no traen el dato: se calcula al pintar).
-	$low = isset( $d['low'] ) ? (int) $d['low'] : ( function_exists( 'bk_low_stock_sizes' ) && bk_low_stock_sizes( $product ) ? 1 : 0 );
+	// ¡Últimas unidades! en la tarjeta: apagado por defecto (decisión del cliente 2026-10-20: muy invasivo en el grid;
+	// solo en la ficha). Encender con bk_config( 'low_stock' )['cards'] = true.
+	$low = ! empty( bk_config( 'low_stock' )['cards'] ) && ( isset( $d['low'] ) ? (int) $d['low'] : ( function_exists( 'bk_low_stock_sizes' ) && bk_low_stock_sizes( $product ) ? 1 : 0 ) );
 	if ( $low && $in ) {
 		$badges .= '<span class="bk-badge bk-badge--low">' . esc_html__( 'Últimas unidades', 'buckler-core' ) . '</span>';
 	}
