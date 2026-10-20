@@ -334,6 +334,43 @@ function bk_g_order_row( $o ) {
 }
 
 /**
+ * Claves donde los plugins de numeración guardan el número visible del pedido (en producción `_order_number` = 3846
+ * mientras el ID interno es otro). Filtro `bk_g_number_keys`.
+ *
+ * @return string[]
+ */
+function bk_g_number_keys() {
+	return (array) apply_filters( 'bk_g_number_keys', array( '_order_number', '_order_number_formatted', '_alg_wc_full_custom_order_number', '_wcj_order_number' ) );
+}
+
+/**
+ * Pedidos cuyo número visible es $num (el que muestra la gestión, `get_order_number()`), venga de un plugin de
+ * numeración o sea el ID. Si el número visible de un pedido es otro (p. ej. ID 3846 pero se ve #3850), ese pedido no
+ * cuenta como coincidencia; solo se usa el ID tal cual cuando nada más coincide.
+ *
+ * @param string $num Dígitos buscados.
+ * @return int[]
+ */
+function bk_g_number_ids( $num ) {
+	$cands = bk_g_meta_ids( bk_g_number_keys(), array( $num ), false, 20 );
+	$by_id = wc_get_order( (int) $num );
+	if ( $by_id ) {
+		$cands[] = (int) $num;
+	}
+	$ids = array();
+	foreach ( array_unique( $cands ) as $id ) {
+		$o = wc_get_order( $id );
+		if ( $o && preg_replace( '/\D/', '', (string) $o->get_order_number() ) === $num ) {
+			$ids[] = (int) $id;
+		}
+	}
+	if ( ! $ids && $by_id ) {
+		$ids[] = (int) $num;
+	}
+	return $ids;
+}
+
+/**
  * Lista de pedidos con filtros.
  *
  * @param WP_REST_Request $r Petición.
@@ -389,10 +426,7 @@ function bk_g_orders( WP_REST_Request $r ) {
 		}
 		if ( ctype_digit( $num ) ) {
 			// Número de pedido o cédula (dígitos): se busca por ambos.
-			$ids = array();
-			if ( wc_get_order( (int) $num ) ) {
-				$ids[] = (int) $num;
-			}
+			$ids = bk_g_number_ids( $num );
 			$ids = array_merge( $ids, bk_g_meta_ids( $f['cedula'], array( $num ), true, 100 ) );
 			if ( $f['consecutivo'] ) {
 				// El consecutivo puede llevar prefijo ("PEDIDO-3841"): LIKE y luego se compara solo la parte numérica.

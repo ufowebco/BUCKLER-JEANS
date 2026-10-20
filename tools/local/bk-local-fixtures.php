@@ -322,3 +322,14 @@ add_action(
 		}
 	}
 );
+
+// Producción: un plugin de numeración guarda el número visible en `_order_number` (3846) y el ID interno es otro.
+add_filter(
+	'woocommerce_order_number',
+	static function ( $number, $order ) {
+		$n = $order ? (string) $order->get_meta( '_order_number' ) : '';
+		return '' !== $n ? $n : $number;
+	},
+	10,
+	2
+);
