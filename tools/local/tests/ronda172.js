@@ -22,7 +22,7 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
   ok(/Lleva 2\+ prendas: −10 % · hasta −15 %/.test(await p.textContent('.bk-announce')), 'barra de anuncios con el descuento por cantidad');
   await p.screenshot({ path: '/tmp/claude-0/bk-local/r172-pdp.png' });
   await p.goto(B + '/product/bermuda-dama-tiro-medio-estilo-vintage/');
-  ok(await p.locator('.bk-sale-notice').count() >= 1 && await p.locator('.bk-disc-box').count() === 0, 'producto de ¡Sale!: aviso "sin garantía" visible y sin descuento por cantidad');
+  ok(await p.locator('.bk-sale-notice').count() >= 1 && await p.locator('.bk-disc-box').count() === 0, 'producto de ¡Sale!: aviso "sin cambio" visible y sin descuento por cantidad');
 
   // Tienda: píldora en las tarjetas (no en las de ¡Sale!).
   await p.goto(B + '/shop/');

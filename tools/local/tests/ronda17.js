@@ -1,6 +1,6 @@
 // Ronda 0.17: rueda del mouse sobre las tarjetas, buscador, San Andrés, 404 → inicio, acceso propio de la gestión,
 // salir sin cambiar de página, Gestor_ADS solo SEO, alerta de etiquetas, Ayuda, Contenido (ACF), Descuentos (campaña y
-// por cantidad, ficha, carrito, pedido), aviso de ¡Sale! sin garantía y correos con el diseño de la marca.
+// por cantidad, ficha, carrito, pedido), aviso de ¡Sale! sin cambio y correos con el diseño de la marca.
 const { chromium } = require('playwright');
 const fs = require('fs');
 const { execSync } = require('child_process');
@@ -138,7 +138,7 @@ const loginG = async (p, u, pw) => { await p.goto(B + '/gestion-tienda/'); await
   const saleUrl = php('foreach(wc_get_product_ids_on_sale() as $i){$x=wc_get_product($i); if($x && $x->is_type("variable") && $x->is_in_stock()){echo $x->get_permalink();break;}}');
   await p.goto(saleUrl);
   const sp = (await p.textContent('.summary .price')).replace(/\s+/g, ' ');
-  ok(await p.locator('.bk-sale-notice').count() === 1 && /no tiene garantía/.test(await p.textContent('.bk-sale-notice')), 'producto de ¡Sale!: aviso "no tiene garantía ni cambio"');
+  ok(await p.locator('.bk-sale-notice').count() === 1 && /no tiene cambio\./.test(await p.textContent('.bk-sale-notice')) && !/garantía/.test(await p.textContent('.bk-sale-notice')), 'producto de ¡Sale!: aviso "no tiene cambio" (sin mencionar garantía)');
   ok(await p.locator('.bk-disc-box').count() === 0 && !/123\.920/.test(sp), 'producto de ¡Sale!: sin campaña (ninguna talla toma el 20 %)');
 
   // Carrito y pedido.
@@ -149,7 +149,7 @@ const loginG = async (p, u, pw) => { await p.goto(B + '/gestion-tienda/'); await
   const cart = (await p.textContent('.woocommerce-cart-form')).replace(/\s+/g, ' ');
   ok(/−25 % por cantidad \(2 prendas\)/.test(cart) && /\$97\.425/.test(cart), 'carrito: 2 prendas → 25 % ($97.425 c/u, mayor que el 20 % de la campaña)');
   ok(/Agrega 2 prendas más y obtén el 30 %/.test(await p.textContent('.bk-disc-hint')), 'carrito: "agrega 2 prendas más y obtén el 30 %"');
-  ok(/Sin garantía ni cambio/.test(cart), 'carrito: la prenda de ¡Sale! dice "sin garantía ni cambio"');
+  ok(/Sin cambio \(producto en descuento\)/.test(cart) && !/garantía/i.test(cart), 'carrito: la prenda de ¡Sale! dice "sin cambio"');
   await p.goto(B + '/checkout/'); await p.waitForSelector('form.checkout');
   await p.fill('#billing_first_name', 'Prueba'); await p.fill('#billing_last_name', 'Ronda17'); await p.fill('#billing_address_1', 'Calle 1 # 2-3'); if (await p.locator('#billing_city').count()) await p.fill('#billing_city', 'Medellín'); await p.fill('#billing_phone', '3001234567'); await p.fill('#billing_email', 'ronda17@ejemplo.com');
   await p.locator('#billing_state').selectOption('CO-SAP').catch(() => {}); await p.waitForTimeout(1500);
@@ -159,7 +159,7 @@ const loginG = async (p, u, pw) => { await p.goto(B + '/gestion-tienda/'); await
   await p.click('#place_order'); await p.waitForURL(/order-received/, { timeout: 20000 }).catch(() => {});
   const oid = (p.url().match(/order-received\/(\d+)/) || [])[1];
   const lines = JSON.parse(php(`$o=wc_get_order(${oid}); $out=[]; foreach($o->get_items() as $i){ $m=[]; foreach($i->get_formatted_meta_data() as $x){ $m[$x->display_key]=wp_strip_all_tags($x->display_value);} $out[]=["q"=>$i->get_quantity(),"t"=>$i->get_total(),"m"=>$m]; } echo json_encode(["l"=>$out,"st"=>$o->get_billing_state()]);`));
-  ok(lines.l[0].t === '194850' && /25 %/.test(lines.l[0].m.Descuento || '') && /Sin garantía/.test(lines.l[1].m['Garantía'] || ''), 'pedido: descuento y "sin garantía" anotados en cada línea');
+  ok(lines.l[0].t === '194850' && /25 %/.test(lines.l[0].m.Descuento || '') && /Sin cambio/.test(lines.l[1].m['Cambios'] || ''), 'pedido: descuento y "sin cambio" anotados en cada línea');
   ok(lines.st === 'CO-SAP', 'pedido con departamento San Andrés (CO-SAP)');
   const m = newOf(before).find(x => x.to === 'ronda17@ejemplo.com');
   const html = m ? fs.readFileSync(`${MAILS}/${m.f.replace('.json', '.html')}`, 'utf8') : '';

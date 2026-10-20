@@ -103,7 +103,7 @@ function bk_config( $key = null ) {
 				// /.well-known/ siguen con 404 real) o '404' = página 404 propia.
 				'redirect_404'  => 'home',
 				// Aviso en prendas de ¡Sale! (ficha, carrito, checkout y pedido). Vacío = sin aviso.
-				'sale_notice'   => 'Producto en descuento: no tiene garantía ni cambio.',
+				'sale_notice'   => 'Producto en descuento: no tiene cambio.',
 				// "¡Últimas unidades!" en la ficha cuando una talla tiene entre 1 y 'max' prendas. 'only_sale': solo en ¡Sale!
 				// (decisión del cliente 2026-10-20). 'cards': también en las tarjetas del grid (el cliente lo pidió solo en
 				// la ficha). 'max' 0 lo apaga.
