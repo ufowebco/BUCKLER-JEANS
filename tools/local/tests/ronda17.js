@@ -138,7 +138,7 @@ const loginG = async (p, u, pw) => { await p.goto(B + '/gestion-tienda/'); await
   const saleUrl = php('foreach(wc_get_product_ids_on_sale() as $i){$x=wc_get_product($i); if($x && $x->is_type("variable") && $x->is_in_stock()){echo $x->get_permalink();break;}}');
   await p.goto(saleUrl);
   const sp = (await p.textContent('.summary .price')).replace(/\s+/g, ' ');
-  ok(await p.locator('.bk-sale-notice').count() === 1 && /no tiene cambio\./.test(await p.textContent('.bk-sale-notice')) && !/garantía/.test(await p.textContent('.bk-sale-notice')), 'producto de ¡Sale!: aviso "no tiene cambio" (sin mencionar garantía)');
+  ok(await p.locator('.bk-sale-notice').count() === 1 && /Productos en SALE: No tienen cambio\./.test(await p.textContent('.bk-sale-notice')) && !/garantía/.test(await p.textContent('.bk-sale-notice')), 'producto de ¡Sale!: aviso "Productos en SALE: No tienen cambio." (sin mencionar garantía)');
   ok(await p.locator('.bk-disc-box').count() === 0 && !/123\.920/.test(sp), 'producto de ¡Sale!: sin campaña (ninguna talla toma el 20 %)');
 
   // Carrito y pedido.
@@ -149,11 +149,11 @@ const loginG = async (p, u, pw) => { await p.goto(B + '/gestion-tienda/'); await
   const cart = (await p.textContent('.woocommerce-cart-form')).replace(/\s+/g, ' ');
   ok(/−25 % por cantidad \(2 prendas\)/.test(cart) && /\$97\.425/.test(cart), 'carrito: 2 prendas → 25 % ($97.425 c/u, mayor que el 20 % de la campaña)');
   ok(/Agrega 2 prendas más y obtén el 30 %/.test(await p.textContent('.bk-disc-hint')), 'carrito: "agrega 2 prendas más y obtén el 30 %"');
-  ok(/Sin cambio \(producto en descuento\)/.test(cart) && !/garantía/i.test(cart), 'carrito: la prenda de ¡Sale! dice "sin cambio"');
+  ok(/Sin cambio \(producto en SALE\)/.test(cart) && !/garantía/i.test(cart), 'carrito: la prenda de ¡Sale! dice "sin cambio"');
   await p.goto(B + '/checkout/'); await p.waitForSelector('form.checkout');
   await p.fill('#billing_first_name', 'Prueba'); await p.fill('#billing_last_name', 'Ronda17'); await p.fill('#billing_address_1', 'Calle 1 # 2-3'); if (await p.locator('#billing_city').count()) await p.fill('#billing_city', 'Medellín'); await p.fill('#billing_phone', '3001234567'); await p.fill('#billing_email', 'ronda17@ejemplo.com');
   await p.locator('#billing_state').selectOption('CO-SAP').catch(() => {}); await p.waitForTimeout(1500);
-  ok(/prendas en descuento/.test(await p.textContent('#order_review')), 'checkout: aviso antes de pagar');
+  ok(/productos en SALE .*no tienen cambio/.test(await p.textContent('#order_review')), 'checkout: aviso antes de pagar');
   const consent = p.locator('#bk_ac_consent'); if (await consent.count()) await consent.check().catch(() => {});
   const before = mails();
   await p.click('#place_order'); await p.waitForURL(/order-received/, { timeout: 20000 }).catch(() => {});

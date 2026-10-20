@@ -1,6 +1,6 @@
 <?php
 /**
- * Aviso "Producto en descuento: no tiene cambio" en las prendas de ¡Sale! (decisión del cliente 2026-10-15; desde
+ * Aviso "Productos en SALE: No tienen cambio." en las prendas de ¡Sale! (decisión del cliente 2026-10-15; desde
  * 2026-10-20 solo "sin cambio": la garantía se mantiene).
  *
  * ¡Sale! = categoría sale_cat (y sus hijas) o precio rebajado propio del producto (bk_disc_is_sale()).
@@ -48,7 +48,7 @@ function bk_sale_notice_pdp() {
  */
 function bk_sale_notice_item( $data, $item ) {
 	if ( isset( $item['data'] ) && $item['data'] instanceof WC_Product && bk_disc_is_sale( $item['data'] ) ) {
-		$data[] = array( 'key' => __( 'Cambios', 'buckler-core' ), 'value' => __( 'Sin cambio (producto en descuento)', 'buckler-core' ) );
+		$data[] = array( 'key' => __( 'Cambios', 'buckler-core' ), 'value' => __( 'Sin cambio (producto en SALE)', 'buckler-core' ) );
 	}
 	return $data;
 }
@@ -63,7 +63,7 @@ function bk_sale_notice_item( $data, $item ) {
 function bk_sale_notice_order_line( $item, $key, $values ) {
 	unset( $key );
 	if ( isset( $values['data'] ) && $values['data'] instanceof WC_Product && bk_disc_is_sale( $values['data'] ) ) {
-		$item->add_meta_data( __( 'Cambios', 'buckler-core' ), __( 'Sin cambio (producto en descuento)', 'buckler-core' ), true );
+		$item->add_meta_data( __( 'Cambios', 'buckler-core' ), __( 'Sin cambio (producto en SALE)', 'buckler-core' ), true );
 	}
 }
 
@@ -82,6 +82,6 @@ function bk_sale_notice_checkout() {
 	}
 	if ( $names ) {
 		/* translators: %s: productos */
-		echo '<p class="bk-sale-notice is-checkout" role="note">' . bk_icon_svg( 'lucide:info', 18 ) . '<span>' . esc_html( sprintf( __( 'Tu pedido incluye prendas en descuento (%s): no tienen cambio.', 'buckler-core' ), implode( ', ', array_unique( $names ) ) ) ) . '</span></p>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		echo '<p class="bk-sale-notice is-checkout" role="note">' . bk_icon_svg( 'lucide:info', 18 ) . '<span>' . esc_html( sprintf( __( 'Tu pedido incluye productos en SALE (%s): no tienen cambio.', 'buckler-core' ), implode( ', ', array_unique( $names ) ) ) ) . '</span></p>'; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 }
