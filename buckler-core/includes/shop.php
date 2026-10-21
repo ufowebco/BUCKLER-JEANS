@@ -91,14 +91,15 @@ function bk_shop_assets() {
 }
 
 /**
- * noindex,follow en URL con filtros u orden (la paginación sí se indexa).
+ * noindex,follow en URL con filtros, orden o ?pg (desde 0.18.24 ?pg=N repite las prendas de las páginas anteriores:
+ * Google solo debe indexar la lista base; los enlaces a las prendas se siguen igual).
  *
  * @param array $robots Directivas.
  * @return array
  */
 function bk_shop_robots( $robots ) {
-	foreach ( array( 'linea', 'prenda', 'talla', 'precio', 'oferta', 'orden' ) as $p ) {
-		if ( isset( $_GET[ $p ] ) && '' !== $_GET[ $p ] ) { // phpcs:ignore WordPress.Security.NonceVerification
+	foreach ( array( 'linea', 'prenda', 'talla', 'precio', 'oferta', 'orden', 'pg' ) as $p ) {
+		if ( isset( $_GET[ $p ] ) && '' !== $_GET[ $p ] && ( 'pg' !== $p || absint( $_GET[ $p ] ) > 1 ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$robots['noindex'] = true;
 			$robots['follow']  = true;
 			unset( $robots['index'] );
@@ -436,7 +437,10 @@ function bk_shop_shortcode( $atts ) {
 	);
 	$total = count( $hits );
 	$shown = min( $total, $pg * BK_SHOP_PER );
-	$page  = array_slice( $hits, ( $pg - 1 ) * BK_SHOP_PER, BK_SHOP_PER );
+	// ?pg=N pinta las prendas 1..N×24 (no solo la página N): al volver atrás desde un producto después de "Ver más", la
+	// lista es la misma que la clienta tenía y el navegador la deja en la misma posición. Antes se pintaba solo la
+	// página N (24 prendas distintas) en la posición de la 48 → quickbacks en celular (Clarity, 2026-10-21).
+	$page  = array_slice( $hits, 0, $shown );
 
 	// Conteos por opción (facetas).
 	$count = static function ( $facet, $test ) use ( $u, $f ) {

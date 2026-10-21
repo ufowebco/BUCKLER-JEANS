@@ -118,8 +118,9 @@
 			try {
 				const res = await fetch(more.href, { credentials: 'same-origin' });
 				const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
-				const items = doc.querySelectorAll(`${SEL} ul.products > li`);
 				const list = shop.querySelector('ul.products');
+				// La respuesta trae la lista completa hasta esa página: se añaden solo las que faltan.
+				const items = [...doc.querySelectorAll(`${SEL} ul.products > li`)].slice(list.children.length);
 				const first = items[0];
 				items.forEach((li) => list.appendChild(document.importNode(li, true)));
 				shop.querySelector('.bk-shop__pager').replaceWith(document.importNode(doc.querySelector(`${SEL} .bk-shop__pager`), true));
