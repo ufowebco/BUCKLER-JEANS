@@ -33,6 +33,16 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
   ok(box.width >= 1270 && box.height >= 890, 'el visor ocupa toda la pantalla');
   await p.waitForFunction(() => { const i = document.querySelector('.bk-lb__slide img'); return i && i.complete && i.naturalWidth > 0; });
   ok(await p.evaluate(() => !document.querySelector('.bk-lb__slide img').src.includes('-600x')), 'carga la foto en tamaño grande');
+  // Producción: fotos de 1200×1800. Se reemplaza por una grande y debe caber entera en la pantalla.
+  const fit = await p.evaluate(async () => {
+    const c = document.createElement('canvas'); c.width = 1200; c.height = 1800; c.getContext('2d').fillRect(0, 0, 1200, 1800);
+    const img = document.querySelector('.bk-lb__slide img'); img.removeAttribute('srcset'); img.src = c.toDataURL('image/jpeg', 0.5);
+    await new Promise((r) => { if (img.complete) r(); else img.onload = r; });
+    const b = img.getBoundingClientRect(), sl = img.parentElement.getBoundingClientRect();
+    const scale = Math.min(b.width / img.naturalWidth, b.height / img.naturalHeight); // object-fit: contain
+    return { painted: [Math.round(img.naturalWidth * scale), Math.round(img.naturalHeight * scale)], box: [Math.round(b.width), Math.round(b.height)], slide: [Math.round(sl.width), Math.round(sl.height)], fit: getComputedStyle(img).objectFit };
+  });
+  ok(fit.fit === 'contain' && fit.box[0] <= fit.slide[0] && fit.box[1] <= fit.slide[1] && fit.painted[1] <= fit.slide[1], `una foto grande (1200×1800) se ajusta a la pantalla al abrir (${fit.painted.join('×')} en ${fit.slide.join('×')})`);
   await p.keyboard.press('ArrowRight'); await p.waitForTimeout(600);
   ok(/^2 de/.test(await p.textContent('.bk-lb__count')), 'flecha derecha → foto 2');
   const img2 = p.locator('.bk-lb__slide').nth(1).locator('img');

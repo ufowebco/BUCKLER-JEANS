@@ -45,7 +45,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `ronda1814.js` | Buscador de Pedidos por el número visible (`_order_number` de un plugin de numeración ≠ ID), con "#", sin confundir un ID interno con el número de otro pedido, pedidos sin número propio por ID, fila en la lista | 7 |
 | `ronda1815.js` | Celular obligatorio en el checkout aunque Woo lo tenga oculto ("Celular", teclado numérico), sin celular no compra, menos de 10 dígitos lo rechaza, +57 300 123 4567 pasa y se guarda | 7 |
 | `ronda1817.js` | "¡Últimas unidades!" en ¡Sale! con 1–2 prendas por talla: recuadro con las tallas, punto en esas tallas, "¡Solo queda 1 / quedan 2 en esta talla!", nada en productos sin rebaja ni con existencias repuestas, etiqueta en la tarjeta, todas con 1, celular | 13 |
-| `ronda1822.js` | Revisión de clics: banners sin enlace → Lo nuevo, visor de fotos (lupa, pantalla completa, foto grande, flechas, zoom y alejar, Esc/×, misma foto al cerrar, botón Ampliar), celular (ayuda, deslizar, Atrás cierra el visor sin salir del producto), áreas de 44 px en la ficha y Mi cuenta | 21 |
+| `ronda1822.js` | Revisión de clics: banners sin enlace → Lo nuevo, visor de fotos (lupa, pantalla completa, foto grande, una de 1200×1800 cabe entera, flechas, zoom y alejar, Esc/×, misma foto al cerrar, botón Ampliar), celular (ayuda, deslizar, Atrás cierra el visor sin salir del producto), áreas de 44 px en la ficha y Mi cuenta | 22 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).
 | `seguridad.js` | Nombres de usuario ocultos a visitantes: REST de usuarios 401, ?author 404, sin sitemap de usuarios, Store API pública, error de acceso genérico, editor con sesión intacto | 7 |

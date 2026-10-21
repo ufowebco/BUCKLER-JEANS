@@ -816,11 +816,13 @@ html.bk-lb-open { overflow: hidden; }
 .bk-lb__track { flex: 1; display: flex; min-height: 0; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior: contain; }
 .bk-lb__track::-webkit-scrollbar { display: none; }
 .bk-lb.is-zoomed .bk-lb__track { overflow-x: hidden; }
-.bk-lb__slide { flex: 0 0 100%; display: grid; place-items: center; scroll-snap-align: center; overflow: hidden; }
-.bk-lb__slide img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in; user-select: none; -webkit-user-drag: none; }
-.bk-lb__slide.is-zoom { display: block; overflow: auto; overscroll-behavior: contain; }
-.bk-lb__slide.is-zoom img { width: 200%; max-width: none; max-height: none; cursor: zoom-out; }
-@media (min-aspect-ratio: 1/1) { .bk-lb__slide.is-zoom img { width: auto; height: 220%; } }
+/* La foto se ajusta a la pantalla (contain) con posición absoluta: con fotos grandes (1200×1800 en producción) un
+   max-height en un hijo de grid no limita el alto y la foto quedaba ampliada al abrir. */
+.bk-lb__slide { position: relative; flex: 0 0 100%; height: 100%; scroll-snap-align: center; overflow: hidden; }
+.bk-lb .bk-lb__slide img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; object-fit: contain; cursor: zoom-in; user-select: none; -webkit-user-drag: none; }
+.bk-lb__slide.is-zoom { overflow: auto; overscroll-behavior: contain; }
+.bk-lb .bk-lb__slide.is-zoom img { position: static; width: 200%; height: auto; cursor: zoom-out; }
+@media (min-aspect-ratio: 1/1) { .bk-lb .bk-lb__slide.is-zoom img { width: auto; height: 220%; } }
 .bk-lb__nav { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%; background: rgb(255 255 255 / .12); color: #fff; font-size: 32px; line-height: 1; cursor: pointer; }
 .bk-lb__nav.is-prev { left: max(12px, env(safe-area-inset-left, 0px)); }
 .bk-lb__nav.is-next { right: max(12px, env(safe-area-inset-right, 0px)); }
