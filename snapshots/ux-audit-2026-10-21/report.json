@@ -1,0 +1,1161 @@
+{
+  "date": "2026-10-21T18:49:12.196Z",
+  "products": {
+    "normal": "https://buckler.com.co/producto/chaqueta-dama-2/"
+  },
+  "pages": [
+    {
+      "name": "Inicio",
+      "path": "/",
+      "vp": "390",
+      "status": 200,
+      "finalUrl": "/",
+      "tLoad": 2946,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "BUCKLER | Moda femenina slim y curvy con envíos gratis en Colombia",
+      "h1": [
+        "Jeans y moda en denim para mujer"
+      ],
+      "cls": 0,
+      "shifts": [],
+      "lcp": 2188,
+      "dcl": 2768,
+      "fakePointer": [
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM CHAQUETA DAMA $ 169.900» — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM FALDA BOTONES DAMA – TI» — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA CAMPANA – FLA» — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM SHORT DAMA – TIRO ALTO » — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – SLO» — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-card",
+        "article.bk-card «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-card",
+        "article.bk-card «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-card",
+        "article.bk-card «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-card",
+        "article.bk-card «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-card"
+      ],
+      "lookGroups": {
+        "img.bk-banner__img — bk-banner__img": 3,
+        "h2.bk-section-title — bk-section-title": 2,
+        "span.bk-badge.bk-badge--new — bk-badge": 8,
+        "span.bk-badge.bk-badge--sale — bk-badge": 4,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 20,
+      "overflowX": false
+    },
+    {
+      "name": "Inicio",
+      "path": "/",
+      "vp": "1440",
+      "status": 200,
+      "finalUrl": "/",
+      "tLoad": 1065,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "BUCKLER | Moda femenina slim y curvy con envíos gratis en Colombia",
+      "h1": [
+        "Jeans y moda en denim para mujer"
+      ],
+      "cls": 0.008,
+      "shifts": [
+        "bk-nav",
+        "bk-search"
+      ],
+      "lcp": 628,
+      "dcl": 1062,
+      "fakePointer": [
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM CHAQUETA DAMA $ 169.900» — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM FALDA BOTONES DAMA – TI» — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA CAMPANA – FLA» — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM SHORT DAMA – TIRO ALTO » — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – SLO» — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-card",
+        "article.bk-card «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-card",
+        "article.bk-card «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-card",
+        "article.bk-card «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-card",
+        "article.bk-card «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-card"
+      ],
+      "lookGroups": {
+        "img.bk-banner__img — bk-banner__img": 3,
+        "h2.bk-section-title — bk-section-title": 2,
+        "span.bk-badge.bk-badge--new — bk-badge": 8,
+        "span.bk-badge.bk-badge--sale — bk-badge": 4,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 20,
+      "overflowX": false
+    },
+    {
+      "name": "Tienda",
+      "path": "/tienda/",
+      "vp": "390",
+      "status": 200,
+      "finalUrl": "/tienda/",
+      "tLoad": 1233,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "Tienda de jeans y ropa en denim para mujer | Buckler Jeans",
+      "h1": [
+        "Tienda"
+      ],
+      "cls": 0,
+      "shifts": [],
+      "lcp": 616,
+      "dcl": 1068,
+      "fakePointer": [
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM CHAQUETA DAMA $ 169.900» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY CHAQUETA DAMA » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM FALDA BOTONES DAMA – TI» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY FALDA BOTONES » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY MINI FALDA DAM» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SET DAMA JACQU» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SET DAMA JACQU» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA CAMPANA – FLA» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA CAMP» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA DAMA –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM SHORT DAMA – TIRO ALTO » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – SLO» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY TORERO DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA ANCHA » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY MINI FALDA DAM» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item"
+      ],
+      "lookGroups": {
+        "span.bk-badge.bk-badge--new — bk-badge": 24,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 24,
+      "overflowX": false
+    },
+    {
+      "name": "Tienda",
+      "path": "/tienda/",
+      "vp": "1440",
+      "status": 200,
+      "finalUrl": "/tienda/",
+      "tLoad": 1023,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "Tienda de jeans y ropa en denim para mujer | Buckler Jeans",
+      "h1": [
+        "Tienda"
+      ],
+      "cls": 0.008,
+      "shifts": [
+        "bk-nav",
+        "bk-search"
+      ],
+      "lcp": 556,
+      "dcl": 1016,
+      "fakePointer": [
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM CHAQUETA DAMA $ 169.900» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY CHAQUETA DAMA » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM FALDA BOTONES DAMA – TI» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY FALDA BOTONES » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY MINI FALDA DAM» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SET DAMA JACQU» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SET DAMA JACQU» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA CAMPANA – FLA» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA CAMP» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA DAMA –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM SHORT DAMA – TIRO ALTO » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – SLO» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY TORERO DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA ANCHA » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY MINI FALDA DAM» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item"
+      ],
+      "lookGroups": {
+        "span.bk-badge.bk-badge--new — bk-badge": 24,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [
+        "input 18×18"
+      ],
+      "hoverOnly": 24,
+      "overflowX": false
+    },
+    {
+      "name": "Línea Slim",
+      "path": "/linea-slim/",
+      "vp": "390",
+      "status": 200,
+      "finalUrl": "/linea-slim/",
+      "tLoad": 1327,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "BUCKLER Línea Slim | Moda slim para mujer con envíos gratis",
+      "h1": [
+        "Línea Slim"
+      ],
+      "cls": 0,
+      "shifts": [],
+      "lcp": 608,
+      "dcl": 1134,
+      "fakePointer": [
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM CHAQUETA DAMA $ 169.900» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM FALDA BOTONES DAMA – TI» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA CAMPANA – FLA» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM SHORT DAMA – TIRO ALTO » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – SLO» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA –CULOTT» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM OVEROL DAMA – BOTA RECT» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM TORERO DAMA – TIRO ALTO» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM SUDADERA BOTA RECTA – C» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM TORERO DAMA – AZUL CLAR» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM BERMUDA DAMA – URBANA D» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA – OXFORD – LI» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DAMA – SET COL» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – MOM FIT C» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM PANTALON BOTA RECTA DAMA - EF» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN AJUSTADO DAMA – SKINNY –» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM SHORT DAMA – TIRO ALTO » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DEPORTIVO DAMA» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DAMA – SET COL» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – MOM FLARE» — bk-grid__item"
+      ],
+      "lookGroups": {
+        "span.bk-badge.bk-badge--new — bk-badge": 14,
+        "span.bk-badge.bk-badge--sale — bk-badge": 5,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 24,
+      "overflowX": false
+    },
+    {
+      "name": "Línea Slim",
+      "path": "/linea-slim/",
+      "vp": "1440",
+      "status": 200,
+      "finalUrl": "/linea-slim/",
+      "tLoad": 928,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "BUCKLER Línea Slim | Moda slim para mujer con envíos gratis",
+      "h1": [
+        "Línea Slim"
+      ],
+      "cls": 0.008,
+      "shifts": [
+        "bk-nav",
+        "bk-search"
+      ],
+      "lcp": 556,
+      "dcl": 920,
+      "fakePointer": [
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM CHAQUETA DAMA $ 169.900» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM FALDA BOTONES DAMA – TI» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA CAMPANA – FLA» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM SHORT DAMA – TIRO ALTO » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – SLO» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA –CULOTT» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM OVEROL DAMA – BOTA RECT» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM TORERO DAMA – TIRO ALTO» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM SUDADERA BOTA RECTA – C» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM TORERO DAMA – AZUL CLAR» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM BERMUDA DAMA – URBANA D» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA – OXFORD – LI» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DAMA – SET COL» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – MOM FIT C» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM PANTALON BOTA RECTA DAMA - EF» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN AJUSTADO DAMA – SKINNY –» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM SHORT DAMA – TIRO ALTO » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DEPORTIVO DAMA» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DAMA – SET COL» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – MOM FLARE» — bk-grid__item"
+      ],
+      "lookGroups": {
+        "span.bk-badge.bk-badge--new — bk-badge": 14,
+        "span.bk-badge.bk-badge--sale — bk-badge": 5,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [
+        "input 18×18"
+      ],
+      "hoverOnly": 24,
+      "overflowX": false
+    },
+    {
+      "name": "Línea Curvy",
+      "path": "/linea-curvy/",
+      "vp": "390",
+      "status": 200,
+      "finalUrl": "/linea-curvy/",
+      "tLoad": 1144,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "BUCKLER Línea Curvy | Moda plus size con envíos gratis en Colombia",
+      "h1": [
+        "Línea Curvy"
+      ],
+      "cls": 0,
+      "shifts": [],
+      "lcp": 636,
+      "dcl": 954,
+      "fakePointer": [
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY CHAQUETA DAMA » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY FALDA BOTONES » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY MINI FALDA DAM» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SET DAMA JACQU» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SET DAMA JACQU» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA CAMP» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA DAMA –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY TORERO DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA ANCHA » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY MINI FALDA DAM» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY OVEROL CON ROT» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA DAMA U» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY OVEROL DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY TORERO DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY OVEROL DAMA BO» — bk-grid__item"
+      ],
+      "lookGroups": {
+        "span.bk-badge.bk-badge--new — bk-badge": 24,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 24,
+      "overflowX": false
+    },
+    {
+      "name": "Línea Curvy",
+      "path": "/linea-curvy/",
+      "vp": "1440",
+      "status": 200,
+      "finalUrl": "/linea-curvy/",
+      "tLoad": 973,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "BUCKLER Línea Curvy | Moda plus size con envíos gratis en Colombia",
+      "h1": [
+        "Línea Curvy"
+      ],
+      "cls": 0.008,
+      "shifts": [
+        "bk-nav",
+        "bk-search"
+      ],
+      "lcp": 532,
+      "dcl": 971,
+      "fakePointer": [
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY CHAQUETA DAMA » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY FALDA BOTONES » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY MINI FALDA DAM» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SET DAMA JACQU» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SET DAMA JACQU» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA CAMP» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA DAMA –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY TORERO DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA ANCHA » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY MINI FALDA DAM» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY OVEROL CON ROT» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA DAMA U» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY OVEROL DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY TORERO DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY OVEROL DAMA BO» — bk-grid__item"
+      ],
+      "lookGroups": {
+        "span.bk-badge.bk-badge--new — bk-badge": 24,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [
+        "input 18×18"
+      ],
+      "hoverOnly": 24,
+      "overflowX": false
+    },
+    {
+      "name": "¡Sale!",
+      "path": "/sales/",
+      "vp": "390",
+      "status": 200,
+      "finalUrl": "/sales/",
+      "tLoad": 1185,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "BUCKLER | Ofertas en moda slim y curvy",
+      "h1": [
+        "¡Sale!"
+      ],
+      "cls": 0,
+      "shifts": [],
+      "lcp": 744,
+      "dcl": 974,
+      "fakePointer": [
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DAMA – SET COL» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM SHORT DAMA – TIRO ALTO » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DEPORTIVO DAMA» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY CONJUNTO DEPOR» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY CONJUNTO DAMA » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DAMA – SET COL» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY FALDA SHORT – » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN AJUSTADO » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN AJUSTADO DAMA – SK» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY BERMUDA DAMA –» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY BERMUDA DAMA –» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN AJUSTADO DAMA – SK» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item"
+      ],
+      "lookGroups": {
+        "span.bk-badge.bk-badge--sale — bk-badge": 24,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 24,
+      "overflowX": false
+    },
+    {
+      "name": "¡Sale!",
+      "path": "/sales/",
+      "vp": "1440",
+      "status": 200,
+      "finalUrl": "/sales/",
+      "tLoad": 997,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "BUCKLER | Ofertas en moda slim y curvy",
+      "h1": [
+        "¡Sale!"
+      ],
+      "cls": 0.008,
+      "shifts": [
+        "bk-nav",
+        "bk-search"
+      ],
+      "lcp": 576,
+      "dcl": 959,
+      "fakePointer": [
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DAMA – SET COL» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM SHORT DAMA – TIRO ALTO » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DEPORTIVO DAMA» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY CONJUNTO DEPOR» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY CONJUNTO DAMA » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DAMA – SET COL» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY FALDA SHORT – » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN AJUSTADO » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN AJUSTADO DAMA – SK» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY BERMUDA DAMA –» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY BERMUDA DAMA –» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN AJUSTADO DAMA – SK» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item"
+      ],
+      "lookGroups": {
+        "span.bk-badge.bk-badge--sale — bk-badge": 24,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [
+        "input 18×18"
+      ],
+      "hoverOnly": 24,
+      "overflowX": false
+    },
+    {
+      "name": "Lo nuevo",
+      "path": "/tienda/?nuevo=1",
+      "vp": "390",
+      "status": 200,
+      "finalUrl": "/tienda/?nuevo=1",
+      "tLoad": 1357,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "Lo nuevo en jeans y denim para mujer | Buckler Jeans",
+      "h1": [
+        "Lo nuevo"
+      ],
+      "cls": 0,
+      "shifts": [],
+      "lcp": 620,
+      "dcl": 1119,
+      "fakePointer": [
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM CHAQUETA DAMA $ 169.900» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY CHAQUETA DAMA » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM FALDA BOTONES DAMA – TI» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY FALDA BOTONES » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY MINI FALDA DAM» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SET DAMA JACQU» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SET DAMA JACQU» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA CAMPANA – FLA» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA CAMP» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA DAMA –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM SHORT DAMA – TIRO ALTO » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – SLO» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY TORERO DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA ANCHA » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY MINI FALDA DAM» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item"
+      ],
+      "lookGroups": {
+        "span.bk-badge.bk-badge--new — bk-badge": 24,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 24,
+      "overflowX": false
+    },
+    {
+      "name": "Lo nuevo",
+      "path": "/tienda/?nuevo=1",
+      "vp": "1440",
+      "status": 200,
+      "finalUrl": "/tienda/?nuevo=1",
+      "tLoad": 1237,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "Lo nuevo en jeans y denim para mujer | Buckler Jeans",
+      "h1": [
+        "Lo nuevo"
+      ],
+      "cls": 0.008,
+      "shifts": [
+        "bk-nav",
+        "bk-search"
+      ],
+      "lcp": 712,
+      "dcl": 1143,
+      "fakePointer": [
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM CHAQUETA DAMA $ 169.900» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY CHAQUETA DAMA » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM FALDA BOTONES DAMA – TI» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY FALDA BOTONES » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY MINI FALDA DAM» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SET DAMA JACQU» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SET DAMA JACQU» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA CAMPANA – FLA» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA CAMP» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA DAMA –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM SHORT DAMA – TIRO ALTO » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY SHORT DAMA – T» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – SLO» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY TORERO DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY BERMUDA ANCHA » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY MINI FALDA DAM» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item"
+      ],
+      "lookGroups": {
+        "span.bk-badge.bk-badge--new — bk-badge": 24,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [
+        "input 18×18"
+      ],
+      "hoverOnly": 24,
+      "overflowX": false
+    },
+    {
+      "name": "Producto",
+      "path": "/producto/chaqueta-dama-2/",
+      "vp": "390",
+      "status": 200,
+      "finalUrl": "/producto/chaqueta-dama-2/",
+      "tLoad": 1227,
+      "sizesReady": 1423,
+      "errs": [],
+      "taps": {
+        "foto": {
+          "urlChange": false,
+          "dialog": false
+        },
+        "comprarSinTalla": "Elige tu talla para continuar."
+      },
+      "title": "Chaqueta dama · Línea Slim · REF 9912 | Buckler Jeans",
+      "h1": [
+        "CHAQUETA DAMA · Línea Slim"
+      ],
+      "cls": 0,
+      "shifts": [],
+      "lcp": 724,
+      "dcl": 1071,
+      "fakePointer": [
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA –CULOTT» — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM SUDADERA BOTA RECTA – C» — bk-card",
+        "article.bk-card «6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA – OXFORD – LI» — bk-card",
+        "article.bk-card «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DAMA – SET COL» — bk-card",
+        "article.bk-card «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-card",
+        "article.bk-card «6 8 10 12 LÍNEA SLIM JEAN CLÁSICO - BOTA AJUSTADA » — bk-card",
+        "article.bk-card «-30 % 6 8 10 12 LÍNEA SLIM JEAN AJUSTADO DAMA – SK» — bk-card",
+        "article.bk-card «-30 % 6 8 10 12 LÍNEA SLIM TORERO DAMA BLACK – LUX» — bk-card"
+      ],
+      "lookGroups": {
+        "p.price — bk-wrap": 1,
+        "h2.bk-section-title — bk-section-title": 3,
+        "h3.bk-desc__title — bk-desc__title": 2,
+        "li.bk-desc__item — bk-desc__item": 8,
+        "li.bk-desc__item.is-origin — bk-desc__item": 1,
+        "span.bk-badge.bk-badge--new — bk-badge": 2,
+        "span.bk-badge.bk-badge--sale — bk-badge": 4,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 8,
+      "overflowX": false
+    },
+    {
+      "name": "Producto",
+      "path": "/producto/chaqueta-dama-2/",
+      "vp": "1440",
+      "status": 200,
+      "finalUrl": "/producto/chaqueta-dama-2/",
+      "tLoad": 945,
+      "sizesReady": 997,
+      "errs": [],
+      "taps": {
+        "foto": {
+          "urlChange": false,
+          "dialog": false
+        },
+        "comprarSinTalla": "Elige tu talla para continuar."
+      },
+      "title": "Chaqueta dama · Línea Slim · REF 9912 | Buckler Jeans",
+      "h1": [
+        "CHAQUETA DAMA · Línea Slim"
+      ],
+      "cls": 0.011,
+      "shifts": [
+        "reset_variations",
+        "single_variation_wrap",
+        "bk-pdp__benefits"
+      ],
+      "lcp": 604,
+      "dcl": 908,
+      "fakePointer": [
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA –CULOTT» — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM SUDADERA BOTA RECTA – C» — bk-card",
+        "article.bk-card «6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA – OXFORD – LI» — bk-card",
+        "article.bk-card «-30 % 6 8 10 12 LÍNEA SLIM CONJUNTO DAMA – SET COL» — bk-card",
+        "article.bk-card «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-card",
+        "article.bk-card «6 8 10 12 LÍNEA SLIM JEAN CLÁSICO - BOTA AJUSTADA » — bk-card",
+        "article.bk-card «-30 % 6 8 10 12 LÍNEA SLIM JEAN AJUSTADO DAMA – SK» — bk-card",
+        "article.bk-card «-30 % 6 8 10 12 LÍNEA SLIM TORERO DAMA BLACK – LUX» — bk-card"
+      ],
+      "lookGroups": {
+        "p.price — bk-wrap": 1,
+        "h2.bk-section-title — bk-section-title": 3,
+        "h3.bk-desc__title — bk-desc__title": 2,
+        "li.bk-desc__item — bk-desc__item": 8,
+        "li.bk-desc__item.is-origin — bk-desc__item": 1,
+        "span.bk-badge.bk-badge--new — bk-badge": 2,
+        "span.bk-badge.bk-badge--sale — bk-badge": 4,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [
+        "a.bk-pdp__twin «¿Buscas tallas 14 a 24? Ver este modelo en Línea C» 382×22"
+      ],
+      "hoverOnly": 8,
+      "overflowX": false
+    },
+    {
+      "name": "Búsqueda",
+      "path": "/?s=jean&post_type=product",
+      "vp": "390",
+      "status": 200,
+      "finalUrl": "/?s=jean&post_type=product",
+      "tLoad": 2351,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "Resultados para \"jean\" | Buckler Jeans",
+      "h1": [
+        "Resultados para \"jean\""
+      ],
+      "cls": 0,
+      "shifts": [],
+      "lcp": 1768,
+      "dcl": 2157,
+      "fakePointer": [
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA CAMPANA – FLA» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA CAMP» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – SLO» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA –CULOTT» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA – OXFORD – LI» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – MOM FIT C» — bk-grid__item",
+        "li.bk-grid__item.product «14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «14 16 18 20 22 24 LÍNEA CURVY PANTALON BOTA RECTA » — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM PANTALON BOTA RECTA DAMA - EF» — bk-grid__item",
+        "li.bk-grid__item.product «14 16 18 20 22 24 LÍNEA CURVY JEAN AJUSTADO DAMA –» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN AJUSTADO DAMA – SKINNY –» — bk-grid__item"
+      ],
+      "lookGroups": {
+        "span.bk-badge.bk-badge--new — bk-badge": 14,
+        "span.bk-badge.bk-badge--sale — bk-badge": 3,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 24,
+      "overflowX": false
+    },
+    {
+      "name": "Búsqueda",
+      "path": "/?s=jean&post_type=product",
+      "vp": "1440",
+      "status": 200,
+      "finalUrl": "/?s=jean&post_type=product",
+      "tLoad": 1130,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {
+        "fotoTarjeta": "abre el producto"
+      },
+      "title": "Resultados para \"jean\" | Buckler Jeans",
+      "h1": [
+        "Resultados para \"jean\""
+      ],
+      "cls": 0.008,
+      "shifts": [
+        "bk-nav",
+        "bk-search"
+      ],
+      "lcp": 552,
+      "dcl": 952,
+      "fakePointer": [
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA CAMPANA – FLA» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA CAMP» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO –» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – SLO» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA –CULOTT» — bk-grid__item",
+        "li.bk-grid__item.product «NUEVO 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA – OXFORD – LI» — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 6 8 10 12 LÍNEA SLIM JEAN BOTA ANCHA DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN BOTA ANCH» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN HOLGADO DAMA – MOM FIT C» — bk-grid__item",
+        "li.bk-grid__item.product «14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO DAMA – » — bk-grid__item",
+        "li.bk-grid__item.product «-30 % 14 16 18 20 22 24 LÍNEA CURVY JEAN HOLGADO D» — bk-grid__item",
+        "li.bk-grid__item.product «14 16 18 20 22 24 LÍNEA CURVY PANTALON BOTA RECTA » — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM PANTALON BOTA RECTA DAMA - EF» — bk-grid__item",
+        "li.bk-grid__item.product «14 16 18 20 22 24 LÍNEA CURVY JEAN AJUSTADO DAMA –» — bk-grid__item",
+        "li.bk-grid__item.product «6 8 10 12 LÍNEA SLIM JEAN AJUSTADO DAMA – SKINNY –» — bk-grid__item"
+      ],
+      "lookGroups": {
+        "span.bk-badge.bk-badge--new — bk-badge": 14,
+        "span.bk-badge.bk-badge--sale — bk-badge": 3,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [
+        "input 18×18"
+      ],
+      "hoverOnly": 24,
+      "overflowX": false
+    },
+    {
+      "name": "Carrito vacío",
+      "path": "/carrito/",
+      "vp": "390",
+      "status": 200,
+      "finalUrl": "/carrito/",
+      "tLoad": 2643,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {},
+      "title": "Carrito - Buckler Jeans by Denimblue",
+      "h1": [
+        "Tu carrito"
+      ],
+      "cls": 0,
+      "shifts": [
+        "on",
+        "I"
+      ],
+      "lcp": 2788,
+      "dcl": 2638,
+      "fakePointer": [
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM CHAQUETA DAMA $ 169.900» — bk-card",
+        "article.bk-card «NUEVO 14 16 18 20 22 24 LÍNEA CURVY CHAQUETA DAMA » — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM FALDA BOTONES DAMA – TI» — bk-card",
+        "article.bk-card «NUEVO 14 16 18 20 22 24 LÍNEA CURVY FALDA BOTONES » — bk-card"
+      ],
+      "lookGroups": {
+        "h2.bk-section-title — bk-section-title": 1,
+        "span.bk-badge.bk-badge--new — bk-badge": 4,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 4,
+      "overflowX": false
+    },
+    {
+      "name": "Carrito vacío",
+      "path": "/carrito/",
+      "vp": "1440",
+      "status": 200,
+      "finalUrl": "/carrito/",
+      "tLoad": 3048,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {},
+      "title": "Carrito - Buckler Jeans by Denimblue",
+      "h1": [
+        "Tu carrito"
+      ],
+      "cls": 0,
+      "shifts": [],
+      "lcp": 2380,
+      "dcl": 2418,
+      "fakePointer": [
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM CHAQUETA DAMA $ 169.900» — bk-card",
+        "article.bk-card «NUEVO 14 16 18 20 22 24 LÍNEA CURVY CHAQUETA DAMA » — bk-card",
+        "article.bk-card «NUEVO 6 8 10 12 LÍNEA SLIM FALDA BOTONES DAMA – TI» — bk-card",
+        "article.bk-card «NUEVO 14 16 18 20 22 24 LÍNEA CURVY FALDA BOTONES » — bk-card"
+      ],
+      "lookGroups": {
+        "h2.bk-section-title — bk-section-title": 1,
+        "span.bk-badge.bk-badge--new — bk-badge": 4,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 4,
+      "overflowX": false
+    },
+    {
+      "name": "Mi cuenta",
+      "path": "/mi-cuenta/",
+      "vp": "390",
+      "status": 200,
+      "finalUrl": "/mi-cuenta/",
+      "tLoad": 1974,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {},
+      "title": "Mi cuenta - Buckler Jeans by Denimblue",
+      "h1": [
+        "Ingresa a tu cuenta"
+      ],
+      "cls": 0,
+      "shifts": [],
+      "lcp": 1636,
+      "dcl": 1870,
+      "fakePointer": [],
+      "lookGroups": {
+        "h2 — bk-login__aside": 1,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [
+        "button.show-password-input «Mostrar contraseña» 22×22",
+        "input.woocommerce-form__input.woocommerce-form__input-checkbox 20×20",
+        "a «Escríbenos por WhatsApp» 174×22"
+      ],
+      "hoverOnly": 0,
+      "overflowX": false
+    },
+    {
+      "name": "Mi cuenta",
+      "path": "/mi-cuenta/",
+      "vp": "1440",
+      "status": 200,
+      "finalUrl": "/mi-cuenta/",
+      "tLoad": 2187,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {},
+      "title": "Mi cuenta - Buckler Jeans by Denimblue",
+      "h1": [
+        "Ingresa a tu cuenta"
+      ],
+      "cls": 0.008,
+      "shifts": [
+        "bk-nav",
+        "bk-search"
+      ],
+      "lcp": 1404,
+      "dcl": 1834,
+      "fakePointer": [],
+      "lookGroups": {
+        "h2 — bk-login__aside": 1,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [
+        "button.show-password-input «Mostrar contraseña» 22×22",
+        "input.woocommerce-form__input.woocommerce-form__input-checkbox 20×20",
+        "a «Escríbenos por WhatsApp» 174×22"
+      ],
+      "hoverOnly": 0,
+      "overflowX": false
+    },
+    {
+      "name": "Preguntas frecuentes",
+      "path": "/preguntas-frecuentes/",
+      "vp": "390",
+      "status": 200,
+      "finalUrl": "/preguntas-frecuentes/",
+      "tLoad": 1001,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {},
+      "title": "Preguntas frecuentes - Buckler Jeans by Denimblue",
+      "h1": [
+        "Preguntas frecuentes"
+      ],
+      "cls": 0,
+      "shifts": [],
+      "lcp": 564,
+      "dcl": 786,
+      "fakePointer": [],
+      "lookGroups": {
+        "h2 — bk-faq__group": 5,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 0,
+      "overflowX": false
+    },
+    {
+      "name": "Preguntas frecuentes",
+      "path": "/preguntas-frecuentes/",
+      "vp": "1440",
+      "status": 200,
+      "finalUrl": "/preguntas-frecuentes/",
+      "tLoad": 965,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {},
+      "title": "Preguntas frecuentes - Buckler Jeans by Denimblue",
+      "h1": [
+        "Preguntas frecuentes"
+      ],
+      "cls": 0.008,
+      "shifts": [
+        "bk-nav",
+        "bk-search"
+      ],
+      "lcp": 492,
+      "dcl": 963,
+      "fakePointer": [],
+      "lookGroups": {
+        "h2 — bk-faq__group": 5,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [
+        "a tapado por summary «¿Por qué no he recibido respuesta inmediata?»"
+      ],
+      "small": [],
+      "hoverOnly": 0,
+      "overflowX": false
+    },
+    {
+      "name": "Política de envío",
+      "path": "/politica-empresa/politica-de-envio/",
+      "vp": "390",
+      "status": 200,
+      "finalUrl": "/politica-empresa/politica-de-envio/",
+      "tLoad": 2034,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {},
+      "title": "Política de envío  – Buckler Jeans by Denimblue",
+      "h1": [
+        "Política de envío"
+      ],
+      "cls": 0,
+      "shifts": [],
+      "lcp": 1604,
+      "dcl": 2029,
+      "fakePointer": [],
+      "lookGroups": {
+        "h2 — bk-side-nav": 1,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 0,
+      "overflowX": false
+    },
+    {
+      "name": "Política de envío",
+      "path": "/politica-empresa/politica-de-envio/",
+      "vp": "1440",
+      "status": 200,
+      "finalUrl": "/politica-empresa/politica-de-envio/",
+      "tLoad": 847,
+      "sizesReady": null,
+      "errs": [],
+      "taps": {},
+      "title": "Política de envío  – Buckler Jeans by Denimblue",
+      "h1": [
+        "Política de envío"
+      ],
+      "cls": 0.008,
+      "shifts": [
+        "bk-nav",
+        "bk-search"
+      ],
+      "lcp": 456,
+      "dcl": 773,
+      "fakePointer": [],
+      "lookGroups": {
+        "h2 — bk-side-nav": 1,
+        "h2.bk-footer__title — bk-footer__title": 4
+      },
+      "covered": [],
+      "small": [],
+      "hoverOnly": 0,
+      "overflowX": false
+    }
+  ],
+  "links": [],
+  "linksChecked": 109
+}
