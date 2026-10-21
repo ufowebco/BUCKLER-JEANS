@@ -72,3 +72,4 @@ lucide:circle-dot
 lucide:wallet
 lucide:store
 lucide:flame
+lucide:zoom-in

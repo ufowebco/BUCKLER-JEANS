@@ -128,7 +128,7 @@ function bk_picture( $pc_id, $mo_id, $priority, $alt, $sizes = '100vw' ) {
 }
 
 /**
- * [bk_hero autoplay="6" link_default=""]
+ * [bk_hero autoplay="6"]. Banners sin enlace en ACF llevan a bk_config( 'banner_link' ) ('' = sin enlace).
  *
  * @param array $atts Atributos.
  * @return string
@@ -167,6 +167,10 @@ function bk_shortcode_hero( $atts ) {
 			'mo'   => $mo_id,
 			'link' => $map['link'] ? bk_link_url( $row[ $map['link'] ] ?? '' ) : '',
 		);
+		// Un banner sin enlace es un toque perdido (dead click en Clarity): lleva a "Lo nuevo" por defecto.
+		if ( '' === $slides[ count( $slides ) - 1 ]['link'] && '' !== (string) bk_config( 'banner_link' ) ) {
+			$slides[ count( $slides ) - 1 ]['link'] = home_url( (string) bk_config( 'banner_link' ) );
+		}
 	}
 	if ( ! $slides ) {
 		return '';

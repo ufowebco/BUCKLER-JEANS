@@ -252,6 +252,10 @@ function bk_pages_assets() {
 				'next'      => __( 'Foto siguiente', 'buckler-core' ),
 				'less'      => __( 'Quitar una unidad', 'buckler-core' ),
 				'more'      => __( 'Añadir una unidad', 'buckler-core' ),
+				'lbTitle'   => __( 'Fotos del producto', 'buckler-core' ),
+				'lbClose'   => __( 'Cerrar fotos', 'buckler-core' ),
+				'lbZoom'    => __( 'Toca la foto para acercar', 'buckler-core' ),
+				'lbOf'      => __( '%1$d de %2$d', 'buckler-core' ),
 			) ),
 		)
 	);
@@ -764,7 +768,7 @@ function bk_pdp_gallery() {
 		<?php echo $badge; // phpcs:ignore WordPress.Security.EscapeOutput ?>
 		<div class="bk-pg__track" tabindex="0" role="region" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: producto */ __( 'Fotos de %s', 'buckler-core' ), $name ) ); ?>">
 			<?php foreach ( $ids as $i => $id ) : ?>
-				<figure class="bk-pg__slide" id="bk-pg-<?php echo (int) $i; ?>">
+				<figure class="bk-pg__slide" id="bk-pg-<?php echo (int) $i; ?>" data-bk-full="<?php echo esc_url( (string) wp_get_attachment_image_url( $id, 'full' ) ); ?>" data-bk-full-srcset="<?php echo esc_attr( (string) wp_get_attachment_image_srcset( $id, 'full' ) ); ?>">
 					<?php
 					$bk_img = bk_img_add_srcset(
 						wp_get_attachment_image(
@@ -796,6 +800,9 @@ function bk_pdp_gallery() {
 				</figure>
 			<?php endif; ?>
 		</div>
+		<?php if ( $ids ) : ?>
+			<button type="button" class="bk-pg__zoom" data-bk-zoom aria-label="<?php esc_attr_e( 'Ampliar foto', 'buckler-core' ); ?>"><?php echo bk_icon_svg( 'lucide:zoom-in', 20 ); // phpcs:ignore ?></button>
+		<?php endif; ?>
 		<?php if ( $total > 1 ) : ?>
 			<button type="button" class="bk-pg__nav is-prev" data-dir="-1" aria-label="<?php esc_attr_e( 'Foto anterior', 'buckler-core' ); ?>"><?php echo bk_icon_svg( 'lucide:chevron-left', 22 ); // phpcs:ignore ?></button>
 			<button type="button" class="bk-pg__nav is-next" data-dir="1" aria-label="<?php esc_attr_e( 'Foto siguiente', 'buckler-core' ); ?>"><?php echo bk_icon_svg( 'lucide:chevron-right', 22 ); // phpcs:ignore ?></button>

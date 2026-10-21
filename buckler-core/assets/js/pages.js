@@ -72,6 +72,98 @@
 		window.addEventListener('load', () => idle(() => load(1)), { once: true });
 	});
 
+	/* --- Visor de fotos: tocar la foto la abre a pantalla completa con zoom ------------- */
+	// En Clarity las fotos de la ficha sumaban "dead clicks": la gente las toca para ver la tela de cerca.
+	$$('[data-bk-pg]').forEach((pg) => {
+		const figs = $$('.bk-pg__slide[data-bk-full]', pg);
+		if (!figs.length) return;
+		const dlg = document.createElement('dialog');
+		dlg.className = 'bk-lb';
+		dlg.setAttribute('aria-label', T.lbTitle || 'Fotos del producto');
+		dlg.innerHTML = `<div class="bk-lb__bar"><span class="bk-lb__count" aria-live="polite"></span><span class="bk-lb__hint">${T.lbZoom || ''}</span><button type="button" class="bk-lb__close" aria-label="${T.lbClose || 'Cerrar'}">×</button></div><div class="bk-lb__track" tabindex="-1"></div>${figs.length > 1 ? `<button type="button" class="bk-lb__nav is-prev" aria-label="${T.prev || 'Foto anterior'}">‹</button><button type="button" class="bk-lb__nav is-next" aria-label="${T.next || 'Foto siguiente'}">›</button>` : ''}`;
+		const track = dlg.querySelector('.bk-lb__track');
+		figs.forEach((f, i) => {
+			const slide = document.createElement('div');
+			slide.className = 'bk-lb__slide';
+			const img = document.createElement('img');
+			img.alt = (f.querySelector('img') || {}).alt || '';
+			img.decoding = 'async';
+			img.dataset.src = f.dataset.bkFull;
+			if (f.dataset.bkFullSrcset) img.dataset.srcset = f.dataset.bkFullSrcset;
+			img.sizes = '100vw';
+			img.draggable = false;
+			// Si un tamaño del srcset no existe en el servidor, se usa la foto original.
+			img.addEventListener('error', () => { if (img.srcset) { img.removeAttribute('srcset'); img.src = f.dataset.bkFull; } });
+			slide.appendChild(img);
+			track.appendChild(slide);
+			slide.dataset.i = String(i);
+		});
+		document.body.appendChild(dlg);
+		const slides = $$('.bk-lb__slide', track);
+		const count = dlg.querySelector('.bk-lb__count');
+		const fill = (k) => { const im = slides[k] && slides[k].querySelector('img[data-src]'); if (im) { if (im.dataset.srcset) im.srcset = im.dataset.srcset; im.src = im.dataset.src; im.removeAttribute('data-src'); } };
+		const cur = () => Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+		const label = () => { const i = cur(); count.textContent = (T.lbOf || '%1$d de %2$d').replace('%1$d', i + 1).replace('%2$d', slides.length); fill(i); fill(i + 1); fill(i - 1); };
+		const unzoom = () => { slides.forEach((sl) => sl.classList.remove('is-zoom')); dlg.classList.remove('is-zoomed'); };
+		const goto = (i, smooth) => { unzoom(); const n = Math.max(0, Math.min(slides.length - 1, i)); track.scrollTo({ left: n * track.clientWidth, behavior: smooth && !reduce ? 'smooth' : 'auto' }); label(); };
+		let pushed = false;
+		const open = (i) => {
+			if (dlg.open) return;
+			dlg.showModal();
+			document.documentElement.classList.add('bk-lb-open');
+			requestAnimationFrame(() => goto(i, false));
+			// El botón Atrás del celular cierra el visor en vez de salir del producto.
+			try { history.pushState({ bkLb: 1 }, ''); pushed = true; } catch (e) { pushed = false; }
+			if (window.bkTrack) window.bkTrack('bk_photo_zoom', { index: i + 1 });
+		};
+		const close = (fromPop) => {
+			if (!dlg.open) return;
+			const i = cur();
+			unzoom();
+			dlg.close();
+			document.documentElement.classList.remove('bk-lb-open');
+			const gt = pg.querySelector('.bk-pg__track');
+			if (gt) gt.scrollTo({ left: i * gt.clientWidth, behavior: 'auto' });
+			if (pushed && !fromPop) { pushed = false; history.back(); }
+			pushed = false;
+		};
+		window.addEventListener('popstate', () => { if (dlg.open) { pushed = false; close(true); } });
+		dlg.addEventListener('cancel', (e) => { e.preventDefault(); close(false); });
+		dlg.querySelector('.bk-lb__close').addEventListener('click', () => close(false));
+		$$('.bk-lb__nav', dlg).forEach((b) => b.addEventListener('click', () => goto(cur() + (b.classList.contains('is-next') ? 1 : -1), true)));
+		dlg.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowRight') { e.preventDefault(); goto(cur() + 1, true); }
+			if (e.key === 'ArrowLeft') { e.preventDefault(); goto(cur() - 1, true); }
+		});
+		let raf = 0;
+		track.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(label); }, { passive: true });
+		// Tocar la foto: acerca al doble en el punto tocado; volver a tocar: aleja. Con zoom se arrastra para mirar.
+		slides.forEach((sl) => {
+			const img = sl.querySelector('img');
+			sl.addEventListener('click', (e) => {
+				if (e.target !== img) { close(false); return; } // Tocar fuera de la foto cierra.
+				const r = img.getBoundingClientRect();
+				const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+				const on = !sl.classList.contains('is-zoom');
+				unzoom();
+				if (on) {
+					sl.classList.add('is-zoom');
+					dlg.classList.add('is-zoomed');
+					requestAnimationFrame(() => { sl.scrollLeft = px * sl.scrollWidth - sl.clientWidth / 2; sl.scrollTop = py * sl.scrollHeight - sl.clientHeight / 2; });
+				}
+			});
+		});
+		// Abrir: tocar una foto de la galería o el botón "Ampliar foto".
+		figs.forEach((f, i) => {
+			const img = f.querySelector('img');
+			if (!img) return;
+			f.classList.add('is-zoomable');
+			img.addEventListener('click', () => open(i));
+		});
+		const zb = pg.querySelector('[data-bk-zoom]');
+		if (zb) zb.addEventListener('click', () => { const gt = pg.querySelector('.bk-pg__track'); open(gt ? Math.min(figs.length - 1, Math.round(gt.scrollLeft / Math.max(1, gt.clientWidth))) : 0); });
+	});
+
 	/* --- Tallas: el <select> de WooCommerce se muestra como botones (radiogroup) ---- */
 	$$('form.variations_form').forEach((form) => {
 		let variations = [];

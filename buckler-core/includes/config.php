@@ -103,6 +103,8 @@ function bk_config( $key = null ) {
 				// /.well-known/ siguen con 404 real) o '404' = página 404 propia.
 				'redirect_404'  => 'home',
 				// Aviso en prendas de ¡Sale! (ficha, carrito, checkout y pedido). Vacío = sin aviso.
+				// Destino de los banners del inicio que no tienen enlace en ACF (dead clicks en Clarity, 2026-10-21).
+				'banner_link'   => '/tienda/?nuevo=1',
 				'sale_notice'   => 'Productos en SALE: No tienen cambio.',
 				// "¡Últimas unidades!" en la ficha cuando una talla tiene entre 1 y 'max' prendas. 'only_sale': solo en ¡Sale!
 				// (decisión del cliente 2026-10-20). 'cards': también en las tarjetas del grid (el cliente lo pidió solo en
