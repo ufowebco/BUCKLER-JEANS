@@ -183,7 +183,7 @@ body.bk-doc .woocommerce button.button:is(.disabled, :disabled, [disabled]):hove
 .bk-pg__track::-webkit-scrollbar { display: none; }
 .bk-pg__slide { flex: 0 0 100%; margin: 0; scroll-snap-align: start; aspect-ratio: 2 / 3; }
 .bk-pg__slide img, .bk-pg__slide video { display: block; width: 100%; height: 100%; object-fit: cover; }
-.bk-pg__slide video { background: #000; object-fit: contain; cursor: pointer; }
+.bk-pg__slide video { background: #000; object-fit: contain; }
 .bk-pg__slide.is-video { position: relative; }
 .bk-pg__slide.is-video.is-paused::after { content: ""; position: absolute; inset: 50% auto auto 50%; width: 64px; height: 64px; border-radius: 50%; background: rgb(26 57 85 / .75) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fff'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E") center / 30px no-repeat; transform: translate(-50%, -50%); pointer-events: none; }
 .bk-pg__badge { position: absolute; z-index: 2; top: 14px; left: 14px; padding: 4px 12px; border-radius: 99px; background: var(--bk-lime); color: var(--bk-navy); font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }

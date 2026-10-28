@@ -14,7 +14,7 @@
 		const track = pg.querySelector('.bk-pg__track');
 		const slides = $$('.bk-pg__slide', track);
 		const thumbs = $$('.bk-pg__thumb', pg);
-		if (!track || slides.length < 2) return;
+		if (!track || !slides.length) return;
 		const current = () => Math.round(track.scrollLeft / track.clientWidth);
 		const go = (i) => {
 			const n = Math.max(0, Math.min(slides.length - 1, i));
@@ -38,24 +38,68 @@
 			const v = sl.querySelector('video[data-poster]');
 			if (v) { v.poster = v.dataset.poster; v.removeAttribute('data-poster'); }
 		};
-		// Video: se reproduce solo (silenciado, en bucle, sin controles) al llegar a él; tocarlo lo pausa.
-		let userPaused = false;
+		// Video: siempre silenciado, en bucle y sin controles; se reproduce solo al llegar a él (decisión del cliente:
+		// tocarlo no lo pausa). Si el navegador bloquea el arranque (ahorro de batería, datos, la página aún no tuvo
+		// interacción) o la descarga se queda quieta, se reintenta: al cargar datos, al volver a la pestaña, al primer
+		// toque en la página y cada 2 s mientras se ve. Teclado: Espacio/Enter pausa (WCAG 2.2.2).
+		const vids = $$('video', track);
+		let kbPaused = false;
+		const visible = (v) => {
+			const s = v.closest('.bk-pg__slide');
+			const r = s.getBoundingClientRect();
+			return slides.indexOf(s) === current() && r.bottom > 0 && r.top < window.innerHeight && !document.hidden;
+		};
+		const kick = (v) => {
+			if (!v || kbPaused || !visible(v)) return;
+			v.muted = true;
+			v.defaultMuted = true;
+			v.playsInline = true;
+			if (v.preload !== 'auto') v.preload = 'auto';
+			if (v.readyState === 0 && v.networkState !== 2) v.load();
+			if (v.paused) v.play().catch(() => {});
+		};
 		const sync = (i) => {
 			load(i); load(i + 1);
 			slides.forEach((s, k) => {
 				const v = s.querySelector('video');
 				if (!v) return;
-				if (k === i && !reduce && !userPaused) v.play().catch(() => {});
-				else if (k !== i && !v.paused) v.pause();
+				if (k === i) kick(v);
+				else if (!v.paused) v.pause();
 			});
 		};
-		$$('video', track).forEach((v) => {
-			const toggle = () => { if (v.paused) { userPaused = false; v.play().catch(() => {}); } else { userPaused = true; v.pause(); } };
-			v.addEventListener('click', toggle);
-			v.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
-			v.addEventListener('play', () => v.closest('.bk-pg__slide').classList.remove('is-paused'));
-			v.addEventListener('pause', () => v.closest('.bk-pg__slide').classList.add('is-paused'));
+		vids.forEach((v) => {
+			const slide = v.closest('.bk-pg__slide');
+			v.addEventListener('click', () => { kbPaused = false; kick(v); });
+			v.addEventListener('keydown', (e) => {
+				if (e.key !== ' ' && e.key !== 'Enter') return;
+				e.preventDefault();
+				if (v.paused) { kbPaused = false; kick(v); } else { kbPaused = true; v.pause(); }
+			});
+			v.addEventListener('play', () => slide.classList.remove('is-paused'));
+			v.addEventListener('pause', () => slide.classList.add('is-paused'));
+			['loadeddata', 'canplay'].forEach((ev) => v.addEventListener(ev, () => kick(v)));
+			// Descarga atascada: se vuelve a pedir el archivo.
+			let stuck = 0;
+			['stalled', 'error'].forEach((ev) => v.addEventListener(ev, () => {
+				clearTimeout(stuck);
+				stuck = setTimeout(() => { if (v.paused && visible(v)) { v.load(); kick(v); } }, 3000);
+			}));
 		});
+		if (vids.length) {
+			const all = () => vids.forEach(kick);
+			['pointerdown', 'touchstart', 'keydown', 'scroll'].forEach((ev) => window.addEventListener(ev, all, { passive: true }));
+			document.addEventListener('visibilitychange', all);
+			window.addEventListener('pageshow', all);
+			setInterval(all, 2000);
+			if ('IntersectionObserver' in window) {
+				const io = new IntersectionObserver((es) => es.forEach((e) => {
+					if (e.isIntersecting) kick(e.target); else if (!e.target.paused) e.target.pause();
+				}), { threshold: 0.25 });
+				vids.forEach((v) => io.observe(v));
+			}
+			// El video puede ser la primera diapositiva: se arranca sin esperar al deslizamiento.
+			sync(current());
+		}
 		thumbs.forEach((b) => ['pointerenter', 'focus'].forEach((ev) => b.addEventListener(ev, () => load(Number(b.dataset.go)), { passive: true })));
 		let raf = 0;
 		let last = 0;

@@ -784,7 +784,8 @@ function bk_pdp_gallery() {
 						),
 						$id,
 						'woocommerce_single',
-						'(max-width: 900px) 100vw, 50vw'
+						'(max-width: 900px) 100vw, 50vw',
+						2 / 3
 					);
 					// Fotos 2..n: se descargan solo cuando la persona se acerca a ellas (pages.js). El navegador
 					// trataría la carga diferida nativa como "cerca" en un carrusel horizontal y las bajaría todas.
@@ -794,7 +795,7 @@ function bk_pdp_gallery() {
 			<?php endforeach; ?>
 			<?php if ( $video ) : ?>
 				<figure class="bk-pg__slide is-video" id="bk-pg-<?php echo count( $ids ); ?>">
-					<video muted playsinline loop preload="none" data-poster="<?php echo esc_url( $poster ); ?>" tabindex="0" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: producto */ __( 'Video de %s. Se reproduce solo; toca para pausar.', 'buckler-core' ), $name ) ); ?>">
+					<video muted playsinline loop preload="none" data-poster="<?php echo esc_url( $poster ); ?>" tabindex="0" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: producto */ __( 'Video de %s. Se reproduce solo, sin sonido.', 'buckler-core' ), $name ) ); ?>">
 						<source src="<?php echo esc_url( $video['url'] ); ?>" type="<?php echo esc_attr( $video['mime'] ); ?>">
 					</video>
 				</figure>

@@ -115,7 +115,7 @@ function bk_ratio_srcset( $id, $ratio, $max = 1300 ) {
  * @param string $sizes Atributo sizes.
  * @return string
  */
-function bk_img_add_srcset( $html, $id, $size, $sizes ) {
+function bk_img_add_srcset( $html, $id, $size, $sizes, $frame = 0.0 ) {
 	unset( $size );
 	if ( ! $html ) {
 		return $html;
@@ -124,7 +124,15 @@ function bk_img_add_srcset( $html, $id, $size, $sizes ) {
 		return $html;
 	}
 	$ratio = (int) $w[1] / (int) $h[1];
-	$set   = bk_ratio_srcset( $id, $ratio );
+	$max   = 1300;
+	// Foto más ancha que el marco (p. ej. horizontal 3:2 en un marco vertical 2:3 con object-fit: cover): se pinta
+	// a lo alto del marco, así que ocupa ratio/frame veces su ancho. Se agranda sizes en esa proporción y se admiten
+	// los tamaños grandes (hasta el original); si no, el navegador bajaba 1280 px y la estiraba ×2,25 (borrosa).
+	if ( $frame > 0 && $ratio > $frame * 1.05 ) {
+		$sizes = bk_scale_sizes( $sizes, $ratio / $frame );
+		$max   = 4000;
+	}
+	$set = bk_ratio_srcset( $id, $ratio, $max );
 	// Del srcset original se conservan solo los tamaños con la misma proporción (el nombre trae -ANCHOxALTO).
 	$keep = array();
 	if ( preg_match( '/\ssrcset="([^"]*)"/', $html, $orig ) ) {
@@ -148,6 +156,32 @@ function bk_img_add_srcset( $html, $id, $size, $sizes ) {
 	}
 	$html = preg_replace( '/\ssizes="[^"]*"/', '', $html );
 	return preg_replace( '/<img /', '<img srcset="' . esc_attr( $set ) . '" sizes="' . esc_attr( $sizes ) . '" ', $html, 1 );
+}
+
+/**
+ * Multiplica los anchos de un atributo sizes ("(max-width: 900px) 100vw, 50vw" × 2,25 → "… 225vw, 113vw").
+ *
+ * @param string $sizes  Atributo sizes.
+ * @param float  $factor Factor.
+ * @return string
+ */
+function bk_scale_sizes( $sizes, $factor ) {
+	return implode(
+		', ',
+		array_map(
+			static function ( $part ) use ( $factor ) {
+				// Solo el último valor de cada parte es el ancho (la condición entre paréntesis no se toca).
+				return preg_replace_callback(
+					'/(\d+(?:\.\d+)?)(vw|px)\s*$/',
+					static function ( $m ) use ( $factor ) {
+						return (int) ceil( (float) $m[1] * $factor ) . $m[2];
+					},
+					trim( $part )
+				);
+			},
+			explode( ',', (string) $sizes )
+		)
+	);
 }
 
 /**

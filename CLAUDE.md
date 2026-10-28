@@ -134,7 +134,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.24 → `dist/buckler-core-0.18.24.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.25 → `dist/buckler-core-0.18.25.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -755,6 +755,16 @@ Versión actual 0.18.24 → `dist/buckler-core-0.18.24.zip` (`tools/build-plugin
   lista y volvía a salir. Ahora `?pg=N` pinta 1..N×24 (acumulado) y shop.js añade solo las que faltan; `pg` > 1 lleva
   noindex,follow (`bk_shop_robots`). Dead clicks de Inicio/fichas = banners sin enlace y fotos sin zoom (ya en
   0.18.22/23). Suite `ronda1824.js` (8).
+- **0.18.25 (2026-10-28):** fotos borrosas en la ficha (p. ej. /producto/mini-falda-dama-efecto-cuero-color-cafe-oscuro/):
+  fotos **horizontales** (1920×1280) en el marco 2:3 con `object-fit: cover` se pintan a lo alto → ocupan 2,25× el ancho
+  del marco, pero `sizes` decía 50vw y el srcset llegaba a 1280 px → estiradas ×2,7 (el visor las veía bien con
+  contain). `bk_img_add_srcset(..., $frame)` (galería y tarjetas pasan 2/3): si la foto es más ancha que el marco,
+  `bk_scale_sizes()` multiplica sizes por ratio/marco y el srcset admite hasta el original (max 4000). Fotos 2:3 sin
+  cambio. **Videos** (decisión del cliente: siempre sin audio, tocar NO pausa): pages.js `kick()` fuerza muted/
+  playsInline/preload auto y reintenta al bloquearse el arranque (ahorro de batería/datos) — en loadeddata/canplay,
+  primer toque/scroll, visibilitychange/pageshow, IntersectionObserver y cada 2 s mientras se ve; `stalled`/`error` →
+  `load()` a los 3 s; ya no respeta reduced-motion; Espacio/Enter con teclado sí pausa (WCAG 2.2.2). Galería con una
+  sola diapositiva (solo video) también arranca. Suite `ronda1825.js` (13).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -799,7 +809,7 @@ Versión actual 0.18.24 → `dist/buckler-core-0.18.24.zip` (`tools/build-plugin
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8 = 867 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13 = 880 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
