@@ -836,6 +836,15 @@ Versión actual 0.18.25 → `dist/buckler-core-0.18.25.zip` (`tools/build-plugin
 - Dashboard en `/gestion-tienda/`.
 
 ## Pendiente del cliente
-- Código de los snippets actuales (favorito→NUEVO, vaciar carrito a la hora, descontar stock en
-  pendiente de pago, búsqueda de pedidos por cédula, checkbox “impreso”).
+- ~~Código de los snippets~~ → leídos con UfoWeb Ops el 2026-10-30 (50 de Admin Site Enhancements, copia en
+  `snapshots/snippets-2026-10-30/`). Claves: 3057 sesión Woo 50/60 min (carrito se vacía a la hora); 3034 descuenta
+  stock en `woocommerce_order_status_pending` (con los recordatorios de 0.18.1 un pendiente retiene unidades hasta 48 h);
+  2792 destacado → "Nuevo"; 2472 búsqueda por `_billing_id`/`billing_id` (la gestión ya busca); 2456 `_impreso_status`;
+  3879 `_despachado_status`; 2467/2461 cédula y notas en WCDN; 3037 teléfono obligatorio a prioridad 9999 con etiqueta
+  "Teléfono" (pisa "Celular") + `woocommerce_form_field_optional_label` vacío (quita "(opcional)"); 2843 fuerza
+  is_on_sale si precio < regular (era para YayPricing, ya borrado: marca "Oferta" en productos con campaña de
+  descuento); 1296 contador `_conteo_visitas_woo` (escribe meta en cada vista de ficha); 4884 Inventario rápido (admin,
+  usa `$product->save()`: compatible). Los snippets de Divi/BodyCommerce/Xootix (slider grid, hover, atributos grid,
+  video, ajax páginas, filtros, carrito flotante, paginación, guía tallas en pestaña, slider home) no aparecen en las
+  páginas limpias. 2883 "CONSECUTIVO PEDIDOS" es borrador vacío.
 - Lista de plugins que se pueden desactivar tras cada fase.

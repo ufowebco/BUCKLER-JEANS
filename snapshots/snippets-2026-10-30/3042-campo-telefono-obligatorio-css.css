@@ -1,0 +1,12 @@
+/* 1. Ocultar la palabra (opcional) del teléfono */
+label[for="billing_phone"] .optional {
+    display: none !important;
+}
+
+/* 2. Inyectar el asterisco rojo al final de la etiqueta */
+label[for="billing_phone"]::after {
+    content: "*";
+    color: #aa0000; /* Puedes cambiar "red" por un código hexadecimal como #ff0000 si prefieres */
+    font-weight: bold;
+    margin-left: 4px;
+}

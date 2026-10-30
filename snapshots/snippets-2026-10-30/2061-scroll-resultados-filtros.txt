@@ -1,0 +1,17 @@
+jQuery(document).ready(function($) {
+
+    // Escuchar el momento exacto en que WooCommerce Product Filters termina de filtrar
+    $(document).on('wpf_ajax_success', function() {
+        
+        var $contenedorTienda = $('.et_pb_shop'); // Selecciona la grilla de Divi
+        
+        if ($contenedorTienda.length) {
+            // Desplazamiento suave hacia el inicio del módulo de tienda
+            $('html, body').animate({
+                scrollTop: $contenedorTienda.offset().top - 120 // -120px para que el menú flotante no tape los productos
+            }, 200); // 600 milisegundos de transición suave
+        }
+        
+    });
+
+});

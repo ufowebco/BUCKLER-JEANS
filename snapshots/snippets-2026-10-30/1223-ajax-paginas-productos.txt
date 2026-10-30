@@ -1,0 +1,45 @@
+jQuery(document).ready(function($) {
+    
+    // 1. Extraemos el motor AJAX a una función para poder reutilizarlo
+    function cargarGrillaAjax(urlDestino, actualizarHistorial) {
+        var $contenedorTienda = $('.et_pb_shop'); // Seleccionar la grilla de Divi
+        
+        // Efecto visual: Poner los productos un poco transparentes
+        $contenedorTienda.css('opacity', '0.5');
+        
+        // Llamada AJAX para traer los productos
+        $.get(urlDestino, function(data) {
+            var nuevaGrilla = $(data).find('.et_pb_shop').html();
+            
+            // Reemplazar contenido y restaurar opacidad
+            $contenedorTienda.html(nuevaGrilla).css('opacity', '1');
+            
+            // Subir la pantalla suavemente
+            $('html, body').animate({
+                scrollTop: $contenedorTienda.offset().top - 100
+            }, 500);
+            
+            // Avisarle a Themify que terminamos
+            $(document).trigger('wpf_ajax_success');
+            
+            // LA MAGIA: Actualizar la URL de la barra del navegador silenciosamente
+            if (actualizarHistorial) {
+                window.history.pushState({ path: urlDestino }, '', urlDestino);
+            }
+        });
+    }
+
+    // 2. Interceptar los clics en los números de página de Divi
+    $(document).on('click', '.et_pb_shop .woocommerce-pagination a', function(e) {
+        e.preventDefault(); 
+        var urlPagina = $(this).attr('href'); 
+        cargarGrillaAjax(urlPagina, true); // True = dile al navegador que cambie la URL
+    });
+
+    // 3. EL BLINDAJE: Detectar cuando el usuario presiona "Atrás" o "Adelante" en el navegador
+    $(window).on('popstate', function() {
+        // Al retroceder, leemos la URL en la que el usuario "aterrizó" y la cargamos por AJAX
+        cargarGrillaAjax(window.location.href, false); // False = no reescribir la historia, ya estamos retrocediendo
+    });
+
+});

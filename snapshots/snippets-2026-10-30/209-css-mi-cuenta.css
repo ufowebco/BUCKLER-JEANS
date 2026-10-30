@@ -1,0 +1,211 @@
+/* ==========================================================================
+   2. MENÚ DE NAVEGACIÓN (SIDEBAR)
+   ========================================================================== */
+.woocommerce-MyAccount-navigation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    border: 1px solid #f0f0f0;
+}
+
+.woocommerce-MyAccount-navigation ul li {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.3s ease;
+}
+
+.woocommerce-MyAccount-navigation ul li:last-child {
+    border-bottom: none;
+}
+
+.woocommerce-MyAccount-navigation ul li a {
+    display: flex;
+    align-items: center;
+    padding: 18px 24px;
+    color: #000000; /* Texto negro */
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Efecto Hover y Estado Activo del Menú */
+.woocommerce-MyAccount-navigation ul li:hover,
+.woocommerce-MyAccount-navigation ul li.is-active {
+    background-color: #263953; /* Azul oscuro */
+}
+
+.woocommerce-MyAccount-navigation ul li a:hover,
+.woocommerce-MyAccount-navigation ul li.is-active a {
+    color: #e4ec6a; /* Amarillo lima */
+    padding-left: 30px; /* Pequeño salto visual */
+}
+
+/* ==========================================================================
+   3. CONTENIDO PRINCIPAL Y TIPOGRAFÍA
+   ========================================================================== */
+.woocommerce-MyAccount-content {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    color: #000000; /* Texto negro */
+    border: 1px solid #f0f0f0;
+}
+
+.woocommerce-MyAccount-content p {
+    color: #000000;
+}
+
+/* Enlaces de texto general */
+.woocommerce-MyAccount-content a {
+    color: #263953;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.woocommerce-MyAccount-content a:hover {
+    color: #000000;
+    border-bottom: 2px solid #e4ec6a;
+}
+
+/* ==========================================================================
+   4. BOTONES GLOBALES DE LA CUENTA
+   ========================================================================== */
+.woocommerce-account .woocommerce-MyAccount-content .button,
+.woocommerce-account .woocommerce-MyAccount-content button.button {
+    background-color: #263953;
+    color: #e4ec6a;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.woocommerce-account .woocommerce-MyAccount-content .button:hover,
+.woocommerce-account .woocommerce-MyAccount-content button.button:hover {
+    background-color: #000000;
+    color: #e4ec6a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(38, 57, 83, 0.2);
+}
+
+/* ==========================================================================
+   5. TABLAS DE PEDIDOS Y DESCARGAS
+   ========================================================================== */
+.woocommerce table.shop_table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #eaeaea;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.woocommerce table.shop_table thead th {
+    background-color: #263953;
+    color: #e4ec6a;
+    padding: 18px;
+    text-align: left;
+    font-weight: 600;
+    border: none;
+}
+
+.woocommerce table.shop_table tbody td {
+    padding: 18px;
+    background: #ffffff;
+    color: #000000; /* Texto negro en las tablas */
+    border-top: 1px solid #eaeaea;
+    vertical-align: middle;
+}
+
+/* Botón "Ver" dentro de la tabla de pedidos */
+.woocommerce table.shop_table td .button {
+    background-color: transparent;
+    color: #263953;
+    border: 2px solid #263953;
+    padding: 6px 16px;
+    border-radius: 6px;
+}
+
+.woocommerce table.shop_table td .button:hover {
+    background-color: #e4ec6a;
+    color: #263953;
+    border-color: #e4ec6a;
+}
+
+/* ==========================================================================
+   6. FORMULARIOS E INPUTS
+   ========================================================================== */
+.woocommerce form .form-row input.input-text,
+.woocommerce form .form-row textarea {
+    background-color: #f9f9f9;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    padding: 14px 18px;
+    color: #000000;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.woocommerce form .form-row input.input-text:focus,
+.woocommerce form .form-row textarea:focus {
+    outline: none;
+    border-color: #263953;
+    box-shadow: 0 0 0 3px rgba(38, 57, 83, 0.1);
+    background-color: #ffffff;
+}
+
+.woocommerce form .form-row label {
+    color: #000000;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* ==========================================================================
+   7. MENSAJES DE ALERTA E INFORMACIÓN
+   ========================================================================== */
+.woocommerce-message, 
+.woocommerce-info {
+    background-color: #f4f6f8;
+    color: #000000;
+    border-top: 4px solid #263953;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.woocommerce-message::before, 
+.woocommerce-info::before {
+    color: #263953;
+}
+
+/* ==========================================================================
+   FIX: ELIMINAR ESPACIADO FANTASMA DEL MENÚ LATERAL
+   ========================================================================== */
+
+/* Quitar padding/margin del contenedor principal del menú */
+.woocommerce-account .woocommerce-MyAccount-navigation {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+/* Quitar el padding por defecto que los temas aplican a las listas (ul) */
+.woocommerce-account .woocommerce-MyAccount-navigation ul {
+    padding: 0 !important;
+    margin: 0 !important;
+}

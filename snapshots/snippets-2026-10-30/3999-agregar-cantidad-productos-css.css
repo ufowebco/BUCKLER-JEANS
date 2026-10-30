@@ -1,0 +1,59 @@
+/* 1. Contenedor principal forma de píldora */
+.woocommerce .quantity {
+    display: inline-flex !important;
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 50px; /* Esto le da la forma redondeada de los extremos */
+    padding: 5px 15px;
+    width: fit-content;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03); /* Sombra muy sutil para dar volumen */
+}
+
+/* 2. Ocultar las flechas por defecto que traen los navegadores para los números */
+.woocommerce .quantity input[type="number"]::-webkit-inner-spin-button,
+.woocommerce .quantity input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.woocommerce .quantity input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* 3. Estilo del número central */
+.woocommerce .quantity input.qty {
+    border: none !important;
+    background: transparent !important;
+    text-align: center !important;
+    font-weight: bold;
+    color: #1a425c; /* Mismo color de tu texto anterior */
+    width: 40px !important;
+    font-size: 16px;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+}
+
+/* 4. Estilo de los botones + y - */
+.woocommerce .quantity .plus,
+.woocommerce .quantity .minus,
+.woocommerce .quantity .qty_button {
+    background: transparent !important;
+    border: none !important;
+    color: #333333;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+/* Efecto al pasar el ratón por encima de los botones */
+.woocommerce .quantity .plus:hover,
+.woocommerce .quantity .minus:hover,
+.woocommerce .quantity .qty_button:hover {
+    color: #000000;
+    transform: scale(1.1);
+}

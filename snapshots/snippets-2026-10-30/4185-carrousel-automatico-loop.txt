@@ -1,0 +1,70 @@
+window.addEventListener('load', function() {
+    const sliders = document.querySelectorAll('.listoiconosslider');
+    
+    sliders.forEach(slider => {
+        // Encontramos inteligentemente la pista (track) que contiene los iconos
+        const firstModule = slider.querySelector('.et_pb_module') || slider.children[0];
+        if (!firstModule) return;
+        
+        const track = firstModule.parentElement;
+        // Ocultamos lo que sale de la pantalla en la fila principal
+        slider.style.overflow = 'hidden';
+        
+        // Forzamos a la columna a ser una sola línea recta
+        track.style.display = 'flex';
+        track.style.flexWrap = 'nowrap';
+        track.style.width = 'max-content';
+        // Guardamos los iconos originales antes de clonar
+        const originalItems = Array.from(track.children);
+        const originalCount = originalItems.length;
+        if (originalCount === 0) return;
+        // Evitamos que los iconos se encojan
+        originalItems.forEach(item => {
+            if (item.style) item.style.flexShrink = '0';
+        });
+        // 1. Medir cuánto ocupa un grupo completo de iconos originales
+        const firstItem = originalItems[0];
+        const lastItem = originalItems[originalCount - 1];
+        const setWidth = lastItem.getBoundingClientRect().right - firstItem.getBoundingClientRect().left;
+        
+        if (setWidth <= 0) return;
+        // 2. Clonación masiva inteligente: Calculamos cuántas copias se necesitan para 
+        // llenar el doble de la pantalla del usuario (así nunca se le acaba la pista)
+        const screenWidth = window.innerWidth;
+        const copiesNeeded = Math.ceil((screenWidth * 2) / setWidth) + 2; 
+        for (let i = 0; i < copiesNeeded; i++) {
+            originalItems.forEach(item => {
+                const clone = item.cloneNode(true);
+                track.appendChild(clone);
+            });
+        }
+        // 3. Medición láser: Calculamos la distancia exacta entre el Grupo 1 y el Grupo 2.
+        // Este es el secreto para el loop infinito perfecto.
+        const firstClone = track.children[originalCount];
+        const resetPoint = firstClone.getBoundingClientRect().left - firstItem.getBoundingClientRect().left;
+        // 4. El motor de movimiento continuo
+        let position = 0;
+        const speed = 0.4; // Velocidad de movimiento (ajusta a tu gusto)
+        let isPaused = false;
+        function animate() {
+            if (!isPaused) {
+                position -= speed;
+                
+                // Cuando el desplazamiento supera la distancia exacta del primer grupo, 
+                // le restamos ese tramo (conservando el excedente) en vez de forzar a 0.
+                // Así no se pierde ningún píxel y el loop es perfecto, sin saltos.
+                if (Math.abs(position) >= resetPoint) {
+                    position += resetPoint; 
+                }
+                
+                track.style.transform = `translate3d(${position}px, 0, 0)`;
+            }
+            requestAnimationFrame(animate);
+        }
+        // 5. Pausa al pasar el ratón
+        slider.addEventListener('mouseenter', () => isPaused = true);
+        slider.addEventListener('mouseleave', () => isPaused = false);
+        // ¡Arrancar!
+        requestAnimationFrame(animate);
+    });
+});

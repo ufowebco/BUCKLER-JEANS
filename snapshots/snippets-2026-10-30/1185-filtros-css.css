@@ -1,0 +1,26 @@
+/*FILTOS DE BUSQUEDA*/
+
+.wpf_item .wpf_item_name{
+	color: #263953 !important;
+}
+
+.wpf_item label{
+	font-size: 14px !important;
+}
+
+@media (max-width: 767px) {
+    .woocommerce .woocommerce-ordering select {
+        margin-bottom: 20px !important;
+    }
+}
+
+/*CSS - CARRITO*/
+
+.xoo-wsc-body a{
+	font-size: 15px !important;
+	line-height: 0.5 !important;
+}
+
+a.xoo-wsc-ft-btn:not(.btn):not(.button){
+	border-radius: 10px !important;
+}

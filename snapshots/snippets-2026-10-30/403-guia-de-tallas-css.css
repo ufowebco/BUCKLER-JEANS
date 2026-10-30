@@ -1,0 +1,15 @@
+/* Configuración base de la imagen */
+#imagen-zoom-dinamico {
+    transition: transform 0.15s ease-out; /* Transición rápida para que no se sienta lenta */
+    transform-origin: center center;
+    will-change: transform; /* Optimiza el rendimiento del navegador */
+}
+
+/* Cambia el cursor a una lupa y aplica el zoom al pasar el mouse */
+#contenedor-zoom-guia {
+    cursor: zoom-in;
+}
+
+#contenedor-zoom-guia:hover #imagen-zoom-dinamico {
+    transform: scale(1.5); /* Aquí controlas el zoom: 2 es el doble de tamaño, 2.5 es más cerca, etc. */
+}

@@ -1,0 +1,7 @@
+.main-gallery-video:after{
+	display: none !important;
+}
+
+.main-gallery-video:before{
+	display: none !important;
+}

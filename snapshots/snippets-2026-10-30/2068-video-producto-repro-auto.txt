@@ -1,0 +1,50 @@
+jQuery(document).ready(function($) {
+
+    // Función encargada de dar Play o Pausa según la posición
+    function autoPlayVideoGaleria() {
+        $('.woocommerce-product-gallery__image').each(function() {
+            var $video = $(this).find('video')[0]; // Seleccionamos el reproductor de video
+            
+            if ($video) {
+                // Si la imagen actual tiene la clase de "activa"
+                if ($(this).hasClass('flex-active-slide')) {
+                    var promesa = $video.play();
+                    // Capturador de seguridad por si el navegador se pone estricto
+                    if (promesa !== undefined) {
+                        promesa.catch(function(error) {
+                            console.log("Esperando interacción del usuario para reproducir");
+                        });
+                    }
+                } else {
+                    // BONIFICACIÓN: Si el cliente pasa a la siguiente foto, pausamos el video.
+                    // Esto evita que siga sonando/consumiendo datos y CPU en segundo plano.
+                    $video.pause();
+                }
+            }
+        });
+    }
+
+    // 1. Revisar al cargar la página (por si el video está en la posición número 1)
+    setTimeout(autoPlayVideoGaleria, 500);
+
+    // 2. El Vigía: Observar cada vez que el cliente desliza el dedo o hace clic en una flecha
+    var galeriaContenedor = document.querySelector('.woocommerce-product-gallery');
+    
+    if (galeriaContenedor) {
+        var observador = new MutationObserver(function(mutaciones) {
+            mutaciones.forEach(function(mutacion) {
+                // Si el sistema cambió de diapositiva (cambió la clase), revisamos el video
+                if (mutacion.attributeName === "class") {
+                    autoPlayVideoGaleria();
+                }
+            });
+        });
+
+        observador.observe(galeriaContenedor, {
+            attributes: true, 
+            subtree: true, 
+            attributeFilter: ['class'] // Solo observamos cambios de clase para no saturar el navegador
+        });
+    }
+
+});

@@ -1,0 +1,25 @@
+/* Paginación WooCommerce - Inactiva */
+.woocommerce nav.woocommerce-pagination ul li a,
+.woocommerce nav.woocommerce-pagination ul li span {
+    background: #f2f2f2 !important;
+    color: #263953 !important;
+    border: none !important;
+}
+
+/* Página activa */
+.woocommerce nav.woocommerce-pagination ul li span.current {
+    background: #263953 !important;
+    color: #e4ec6a !important;
+}
+
+/* Hover */
+.woocommerce nav.woocommerce-pagination ul li a:hover {
+    background: #263953 !important;
+    color: #e4ec6a !important;
+}
+
+.woocommerce nav.woocommerce-pagination ul li a,
+.woocommerce nav.woocommerce-pagination ul li span {
+    border-radius: 1px !important;
+    padding: 10px 14px !important;
+}

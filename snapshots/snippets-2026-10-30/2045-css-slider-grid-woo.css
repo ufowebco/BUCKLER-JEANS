@@ -1,0 +1,66 @@
+.woo-loop-galeria-contenedor {
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px; /* Ajusta a tu gusto */
+}
+
+/* El carrusel nativo */
+.woo-loop-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory; /* Hace que la foto se detenga exacto en el centro */
+    scrollbar-width: none; /* Oculta la barra en Firefox */
+    -ms-overflow-style: none; /* Oculta la barra en IE */
+}
+.woo-loop-slider::-webkit-scrollbar {
+    display: none; /* Oculta la barra en Chrome/Safari */
+}
+
+.woo-loop-slider img {
+    flex: 0 0 100%;
+    width: 100%;
+    object-fit: cover;
+    scroll-snap-align: start;
+	border-radius: 10px !important;
+}
+
+/* Diseño de las flechas */
+.woo-loop-flechas {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none; /* Permite que el enlace del producto siga funcionando por debajo */
+}
+
+.woo-loop-flechas span {
+    pointer-events: auto;
+    /* 1. MAYOR TRANSPARENCIA: Cambiamos 0.8 a 0.4 (40% de opacidad) */
+    background: rgba(255, 255, 255, 0.4); 
+    color: #1b1c1d; 
+    cursor: pointer;
+    margin: 0 5px;
+    font-size: 16px;
+    
+    /* 2. EL CÍRCULO PERFECTO: Forzamos el mismo ancho y alto */
+    width: 38px; 
+    height: 38px;
+    border-radius: 50%;
+    
+    /* 3. CENTRADO EXACTO: Usamos flexbox para que la flecha quede en todo el centro del círculo */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    
+    user-select: none;
+    transition: all 0.3s ease;
+    /* Sombra un poco más suave para acompañar la transparencia */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+	
+}
+
+.woo-loop-slider {
+    overscroll-behavior-x: contain;
+}

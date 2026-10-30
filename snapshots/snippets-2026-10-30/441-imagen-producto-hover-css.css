@@ -1,0 +1,33 @@
+/* 1. Preparar el contenedor nativo de Divi para que soporte capas superpuestas */
+.et_pb_shop .product .et_shop_image,
+.et_pb_shop .product a.woocommerce-LoopProduct-link {
+    position: relative;
+    display: block;
+    overflow: hidden;
+}
+
+/* 2. Configurar la imagen secundaria: invisible por defecto y colocada encima */
+.et_pb_shop .product img.imagen-hover-divi {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Evita que las fotos de distinto tamaño se deformen */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease-in-out;
+    z-index: 2;
+    margin: 0 !important;
+	border-radius: 10px !important;
+}
+
+/* 3. El efecto Hover: Revelar la imagen al pasar el mouse por el producto */
+.et_pb_shop .product:hover img.imagen-hover-divi {
+    opacity: 1;
+    visibility: visible;
+}
+
+.bodycommerce-sale-badge{
+    z-index: 1000 !important;
+}

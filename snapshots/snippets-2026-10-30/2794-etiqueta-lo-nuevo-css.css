@@ -1,0 +1,20 @@
+/* Estilo para la etiqueta "Nuevo" sobre la imagen */
+.etiqueta-nuevo-woo {
+    position: absolute;
+    top: 10px;
+    right: 10px; /* Cambia a 'left: 10px' si prefieres que aparezca a la izquierda */
+    background-color: #263953; /* Color de fondo (puedes cambiarlo por tu color de marca) */
+    color: #ffffff; /* Color del texto */
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 10px;
+    z-index: 99;
+    pointer-events: none;
+}
+
+/* Asegura el correcto posicionamiento absoluto dentro de la tarjeta del producto */
+.woocommerce ul.products li.product {
+    position: relative;
+}
