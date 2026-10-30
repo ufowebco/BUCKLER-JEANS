@@ -30,6 +30,15 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
   guardar, papelera, respaldo, respaldos, opciones, limpiar, registro, ping). Misma clave del MCP (proxy). Ping OK 1.0.0.
 - Reglas: respaldo antes de cambios grandes; nunca publicar; limpiar opciones solo con autorización; verificar con
   Playwright 1440/390. Instalar buckler-core por aquí solo cuando el cliente lo pida (hasta ahora lo instala él).
+- Permisos (2026-10-30): plugins `ufoweb-ops,buckler-core`; tipos `post,page,product,politica-empresa,pregunta-frecuente`;
+  publicar vacío; meta `_seopress_,_bk_,texto_politica,_texto_politica,respuesta_pregunta_frecuente,_respuesta_pregunta_frecuente`.
+- Diagnóstico 2026-10-30: WP 7.1.4, PHP 8.4.27, LiteSpeed, OPcache on (75,9 % aciertos), sin caché de objetos, DISABLE_WP_CRON
+  + cron-job.org OK, autoload 388 KB, 6.725 transitorios, **WP_DEBUG + WP_DEBUG_LOG activos con debug.log de 1,35 GB**
+  (solo Deprecated de PayU Latam y Rapyd en cada petición). 24 plugins activos, 0 inactivos: BodyCommerce, Divi Engine,
+  YayPricing, Jetpack, Xootix, FiboSearch, Themify, CleanTalk, Divi Essential ya **borrados** (quedan sus opciones:
+  yaypricing/yaydp, jetpack (80), wpf_, wopb, xoo-wsc, dgwt_wcas, bodycommerce, widget_themify-wpf; y crons huérfanos
+  wcal_clear_carts, dnext_essential_daily_license_check, yaydp_clear_cache, jetpack_*). Admin Site Enhancements Pro
+  activo con Code Snippets (`asenha_code_snippet`): probable lugar de los snippets pendientes.
 
 ## Estado actual del sitio (diagnóstico 2026-10-14)
 - Tema: Divi 5 + tema hijo `buckler` (los snippets PHP viven ahí o en un plugin de snippets: **no son
