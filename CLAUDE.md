@@ -38,7 +38,8 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
   publicar vacío; meta `_seopress_,_bk_,texto_politica,_texto_politica,respuesta_pregunta_frecuente,_respuesta_pregunta_frecuente`.
 - Diagnóstico 2026-10-30: WP 7.1.4, PHP 8.4.27, LiteSpeed, OPcache on (75,9 % aciertos), sin caché de objetos, DISABLE_WP_CRON
   + cron-job.org OK, autoload 388 KB, 6.725 transitorios, **WP_DEBUG + WP_DEBUG_LOG activos con debug.log de 1,35 GB**
-  (solo Deprecated de PayU Latam y Rapyd en cada petición). 24 plugins activos, 0 inactivos: BodyCommerce, Divi Engine,
+  (solo Deprecated de PayU Latam y Rapyd en cada petición) → **resuelto 2026-10-30**: WP_DEBUG/WP_DEBUG_LOG en false y
+  debug.log borrado (para investigar un error: encenderlos un rato; `log` devuelve 404 mientras estén apagados). 24 plugins activos, 0 inactivos: BodyCommerce, Divi Engine,
   YayPricing, Jetpack, Xootix, FiboSearch, Themify, CleanTalk, Divi Essential ya **borrados** (quedan sus opciones:
   yaypricing/yaydp, jetpack (80), wpf_, wopb, xoo-wsc, dgwt_wcas, bodycommerce, widget_themify-wpf; y crons huérfanos
   wcal_clear_carts, dnext_essential_daily_license_check, yaydp_clear_cache, jetpack_*). Admin Site Enhancements Pro
