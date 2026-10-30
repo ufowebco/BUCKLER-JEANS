@@ -196,3 +196,33 @@ add_action(
 	10,
 	2
 );
+
+/*
+ * Inventario de pedidos cancelados o fallidos (hallazgo 2026-10-30). Un snippet de producción ("Descontar inventario -
+ * pendientes de pago") llama a wc_reduce_stock_levels() al pasar a "Pendiente": descuenta las prendas y marca cada
+ * línea (_reduced_stock), pero no pone la marca del pedido (_order_stock_reduced) que WooCommerce revisa antes de
+ * devolverlas. Resultado: al cancelarse sin pagar, las prendas no volvían al inventario. Justo antes de que WooCommerce
+ * lo revise (prioridad 10) se pone esa marca si alguna línea sigue descontada; wc_increase_stock_levels() borra
+ * _reduced_stock al devolver, así que nunca se devuelve dos veces. Filtro bk_restore_stock_fix para apagarlo.
+ */
+foreach ( array( 'cancelled', 'failed' ) as $bk_st ) {
+	add_action(
+		'woocommerce_order_status_' . $bk_st,
+		static function ( $order_id ) {
+			if ( ! apply_filters( 'bk_restore_stock_fix', true ) ) {
+				return;
+			}
+			$o = wc_get_order( $order_id );
+			if ( ! $o || $o->get_data_store()->get_stock_reduced( $order_id ) ) {
+				return;
+			}
+			foreach ( $o->get_items() as $item ) {
+				if ( (float) $item->get_meta( '_reduced_stock', true ) > 0 ) {
+					$o->get_data_store()->set_stock_reduced( $order_id, true );
+					return;
+				}
+			}
+		},
+		5
+	);
+}

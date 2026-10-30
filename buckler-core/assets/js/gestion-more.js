@@ -462,7 +462,7 @@
 			], 'Al cancelar, las unidades vuelven al stock. La clienta recibe el correo de ese estado si está activo (míralo en Correos).'),
 			task('Pedidos pendientes de pago (recordatorios)', ['g-pago-pendiente'], [
 				'Abre el pedido en <b>Pendiente de pago</b>: el recuadro <b>Pago pendiente</b> muestra qué recordatorios salieron y cuándo sale el siguiente.',
-				'Automático: a la clienta le llega un correo a la hora y otro a las 24 horas con el botón para pagar ese mismo pedido. Si a las 48 horas no paga, el pedido se cancela solo y las prendas vuelven al inventario.',
+				'Automático: a la clienta le llega un correo a la hora y otro a las 12 horas con el botón para pagar ese mismo pedido. Si a las 24 horas no paga, el pedido se cancela solo y las prendas vuelven al inventario.',
 				'<b>Enviar recordatorio ahora</b> abre la vista previa y lo envía cuando confirmas (espera 30 minutos desde el pedido: puede estar pagando).',
 				'<b>Copiar enlace de pago</b> para mandárselo por WhatsApp.',
 				'<b>Detener automáticos</b> si hablaste con ella y quieres esperar (no se cancela solo); <b>Reanudar</b> los vuelve a activar.',

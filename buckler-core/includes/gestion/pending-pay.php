@@ -1,11 +1,13 @@
 <?php
 /**
  * Recordatorios de pago (decisión del cliente 2026-10-16): pedido creado en el checkout que sigue en "Pendiente de
- * pago" (o "Fallido") → correo a la 1 h y a las 24 h con el enlace para pagar ese mismo pedido; si a las 48 h sigue
+ * pago" (o "Fallido") → correo a la 1 h y a las 12 h con el enlace para pagar ese mismo pedido; si a las 24 h sigue
  * sin pagar, se cancela solo (las unidades vuelven al stock). Sin cupón. Desde el pedido en la gestión también se
  * puede enviar a mano (con vista previa) o detener los automáticos.
+ * 2026-10-30: cancelación de 48 h a 24 h (decisión del cliente): un snippet de producción descuenta el inventario al
+ * crear el pedido pendiente, así que las prendas quedaban apartadas 48 h.
  *
- * Tiempos en bk_config('pending_pay') = { remind: [1, 24], cancel: 48 } (horas desde que se creó el pedido).
+ * Tiempos en bk_config('pending_pay') = { remind: [1, 12], cancel: 24 } (horas desde que se creó el pedido).
  * Action Scheduler, grupo "buckler-pp": bk_pp_send [pedido, paso] y bk_pp_cancel [pedido].
  *
  * @package BucklerCore
@@ -23,8 +25,8 @@ const BK_PP_GROUP = 'buckler-pp';
 function bk_pp_cfg() {
 	$c = (array) bk_config( 'pending_pay' );
 	return array(
-		'remind'   => array_values( array_map( 'intval', (array) ( $c['remind'] ?? array( 1, 24 ) ) ) ),
-		'cancel'   => (int) ( $c['cancel'] ?? 48 ),
+		'remind'   => array_values( array_map( 'intval', (array) ( $c['remind'] ?? array( 1, 12 ) ) ) ),
+		'cancel'   => (int) ( $c['cancel'] ?? 24 ),
 		'statuses' => (array) apply_filters( 'bk_pp_statuses', array( 'pending', 'failed' ) ),
 	);
 }
@@ -94,6 +96,44 @@ function bk_pp_track( $order ) {
 	$o->update_meta_data( '_bk_pp_sched', time() );
 	$o->save_meta_data();
 }
+
+/**
+ * Al cambiar los tiempos, los pedidos que ya estaban esperando pago se reprograman con los nuevos (una sola vez por
+ * combinación de tiempos). Los pasos que ya vencieron salen en unos minutos; un recordatorio ya enviado no se repite.
+ */
+add_action(
+	'init',
+	static function () {
+		if ( ! function_exists( 'as_schedule_single_action' ) ) {
+			return;
+		}
+		$cfg = bk_pp_cfg();
+		$sig = implode( '-', $cfg['remind'] ) . '/' . $cfg['cancel'];
+		if ( get_option( 'bk_pp_timing' ) === $sig ) {
+			return;
+		}
+		update_option( 'bk_pp_timing', $sig, false );
+		$ids = wc_get_orders(
+			array(
+				'status'       => $cfg['statuses'],
+				'limit'        => 300,
+				'return'       => 'ids',
+				'date_created' => '>' . ( time() - 7 * DAY_IN_SECONDS ),
+			)
+		);
+		foreach ( $ids as $id ) {
+			$o = wc_get_order( $id );
+			if ( ! $o || ! $o->get_meta( '_bk_pp_sched' ) || 'yes' === $o->get_meta( '_bk_pp_stopped' ) ) {
+				continue;
+			}
+			bk_pp_unschedule( $id );
+			$o->delete_meta_data( '_bk_pp_sched' );
+			$o->save_meta_data();
+			bk_pp_track( $o );
+		}
+	},
+	30
+);
 
 /**
  * Quita lo programado de un pedido.

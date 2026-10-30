@@ -1,4 +1,4 @@
-// 0.18.1: recordatorios de pago (1 h y 24 h) y cancelación a las 48 h de pedidos pendientes de pago; envío a mano,
+// 0.18.1: recordatorios de pago (1 h y 12 h) y cancelación a las 24 h (desde 0.18.26) de pedidos pendientes de pago; envío a mano,
 // detener y reanudar desde la gestión; carrito abandonado "Pendiente de pago" → Compró / cancelado sin pagar.
 const { chromium } = require('playwright');
 const { execSync } = require('child_process');
@@ -42,7 +42,7 @@ const back = (id, h) => php(`$o=wc_get_order(${id}); $o->set_date_created(time()
   const id1 = await checkout('paula.pendiente@ejemplo.com');
   ok(id1 && php(`echo wc_get_order(${id1})->get_status();`) === 'pending', `pedido creado en el checkout queda "Pendiente de pago" (#${id1})`);
   const s1 = sched(id1);
-  ok(s1.includes(`bk_pp_send|${id1},1`) && s1.includes(`bk_pp_send|${id1},2`) && s1.includes(`bk_pp_cancel|${id1}`), `programados: recordatorio 1 h, 24 h y cancelación 48 h (${s1.length})`);
+  ok(s1.includes(`bk_pp_send|${id1},1`) && s1.includes(`bk_pp_send|${id1},2`) && s1.includes(`bk_pp_cancel|${id1}`), `programados: recordatorio 1 h, 12 h y cancelación 24 h (${s1.length})`);
   const rows = JSON.parse(execSync('php /tmp/claude-0/bk-local/t/run.php rows').toString());
   const row1 = rows.find((r) => r.email === 'paula.pendiente@ejemplo.com');
   ok(row1 && row1.status === 'awaiting' && +row1.order_id === id1, `carrito abandonado: pasa a "Pendiente de pago" con el pedido (${row1 && row1.status})`);
@@ -68,7 +68,7 @@ const back = (id, h) => php(`$o=wc_get_order(${id}); $o->set_date_created(time()
   const openOrder = async (id) => { await g.goto('about:blank'); await g.goto(`${B}/gestion-tienda/#pedidos`); await g.waitForSelector('.bk-g-orders'); await g.fill('#bk-g-of [name=q]', String(id)); await g.waitForTimeout(1800); await g.click(`[data-order="${id}"]`); await g.waitForSelector('#bk-g-payrem'); };
   await openOrder(id1);
   const tl = await g.textContent('#bk-g-payrem');
-  ok(/Pago pendiente/.test(tl) && /Recordatorio automático 1/.test(tl) && /Recordatorio automático 2/.test(tl) && /Cancelación si no paga/.test(tl), 'detalle: "Pago pendiente" con lo enviado y lo que sigue (24 h y cancelación)');
+  ok(/Pago pendiente/.test(tl) && /Recordatorio automático 1/.test(tl) && /Recordatorio automático 2/.test(tl) && /Cancelación si no paga/.test(tl), 'detalle: "Pago pendiente" con lo enviado y lo que sigue (12 h y cancelación)');
   ok(await g.locator('.bk-g-ship').count() === 0, 'mientras no pague no se muestra el envío de guía');
   await g.click('[data-pp="preview"]'); await g.waitForSelector('.bk-g-pppv iframe');
   ok(/Último aviso/.test(await g.textContent('.bk-g-pppv')), 'vista previa antes de enviar (como ya recibió uno, va el último aviso con la fecha de cancelación)');
@@ -103,11 +103,11 @@ const back = (id, h) => php(`$o=wc_get_order(${id}); $o->set_date_created(time()
   const row1b = JSON.parse(execSync('php /tmp/claude-0/bk-local/t/run.php rows').toString()).find((r) => +r.order_id === id1);
   ok(row1b && row1b.status === 'converted', `carrito: de "Pendiente de pago" a "Compró" (${row1b && row1b.status})`);
 
-  // 6. A las 48 h sin pagar: se cancela solo y las unidades vuelven.
+  // 6. A las 24 h sin pagar: se cancela solo y las unidades vuelven.
   const stockBefore = +php('echo wc_get_product(24)->get_stock_quantity();');
-  back(id2, 49);
+  back(id2, 25);
   php(`bk_pp_cancel(${id2});`);
-  ok(php(`echo wc_get_order(${id2})->get_status();`) === 'cancelled', 'a las 48 h sin pagar: pedido cancelado automáticamente');
+  ok(php(`echo wc_get_order(${id2})->get_status();`) === 'cancelled', 'a las 24 h sin pagar: pedido cancelado automáticamente');
   ok(/Cancelado automáticamente/.test(php(`echo implode(" | ", wp_list_pluck(wc_get_order_notes(["order_id"=>${id2}]), "content"));`)), 'nota en el pedido explicando la cancelación');
   const row2 = JSON.parse(execSync('php /tmp/claude-0/bk-local/t/run.php rows').toString()).find((r) => +r.order_id === id2);
   ok(row2 && row2.status === 'unpaid', `carrito: "Pedido cancelado sin pagar" (${row2 && row2.status})`);

@@ -352,13 +352,13 @@
 		</form>`;
 	};
 
-	// Pedido sin pagar: recordatorios automáticos (1 h y 24 h), cancelación (48 h), enviar a mano, detener, enlace de pago.
+	// Pedido sin pagar: recordatorios automáticos (1 h y 12 h), cancelación (24 h), enviar a mano, detener, enlace de pago.
 	const payremHtml = (o) => {
 		const p = o.payrem;
 		if (!p) return '';
 		const li = (x, done) => `<li class="${done ? 'is-done' : x.cancel ? 'is-cancel' : ''}">${done ? C.icons.check : (x.cancel ? C.icons.x : C.icons.clock)}<span>${esc(x.label)}</span><small>${esc(x.date)}</small></li>`;
 		return `<section class="bk-g-payrem" id="bk-g-payrem" data-id="${o.id}"><h3>${C.icons.card} ${p.unpaid ? 'Pago pendiente' : 'Recordatorios de pago'}</h3>
-			<p class="bk-g-hint">${p.unpaid ? (p.stopped ? 'La clienta aún no paga. Los recordatorios y la cancelación automática están <b>detenidos</b>.' : 'La clienta aún no paga. Recibe un recordatorio a la hora y otro a las 24 horas; si no paga, el pedido se cancela solo y las prendas vuelven al inventario.') : (p.cancelled ? `Cancelado automáticamente el ${esc(p.cancelled)} por falta de pago.` : 'El pedido ya no está pendiente de pago.')}</p>
+			<p class="bk-g-hint">${p.unpaid ? (p.stopped ? 'La clienta aún no paga. Los recordatorios y la cancelación automática están <b>detenidos</b>.' : 'La clienta aún no paga. Recibe un recordatorio a la hora y otro a las 12 horas; si a las 24 horas no paga, el pedido se cancela solo y las prendas vuelven al inventario.') : (p.cancelled ? `Cancelado automáticamente el ${esc(p.cancelled)} por falta de pago.` : 'El pedido ya no está pendiente de pago.')}</p>
 			${p.sent.length || p.next.length ? `<ol class="bk-g-pptl">${p.sent.map((x) => li(x, true)).join('')}${p.next.map((x) => li(x, false)).join('')}</ol>` : ''}
 			${p.unpaid ? `<div class="bk-g-dactions">
 				<button type="button" class="bk-g-btn" data-pp="preview" ${p.can_send ? '' : 'disabled'}>${C.icons.eye || ''} Enviar recordatorio ahora</button>
