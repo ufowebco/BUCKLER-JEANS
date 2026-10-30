@@ -147,18 +147,124 @@
 	window.addEventListener('hashchange', route);
 
 	/* --- Resumen ------------------------------------------------------------------- */
+	const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+
+	// Meta diaria de ventas (pedidos pagados): hoy frente a la meta + los últimos 10 días, con mensajes de ánimo.
+	const DAYS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+	const dayLabel = (iso, today) => {
+		if (iso === today) return 'Hoy';
+		const dt = new Date(`${iso}T12:00:00`);
+		return `${DAYS[dt.getDay()]} ${dt.getDate()}`;
+	};
+	// En la gráfica: día de la semana y número en dos piezas (en el celular van una debajo de la otra).
+	const dayHtml = (iso, today) => {
+		const [a, n] = dayLabel(iso, today).split(' ');
+		return n ? `<span>${esc(a)}</span> ${esc(n)}` : esc(a);
+	};
+	const goalMessage = (n, goal) => {
+		const left = goal - n;
+		if (n >= goal * 1.5) return `¡Día récord! Van ${n} ventas, ${n - goal} por encima de la meta. 🚀`;
+		if (n > goal) return `¡Meta superada! ${n} ventas hoy, ${n - goal} más de lo planeado. 🎉`;
+		if (n === goal) return `¡Meta cumplida! ${goal} de ${goal}… y el día sigue. 🎉`;
+		if (n === 0) return `¡Arranquemos! La primera de las ${goal} ventas de hoy está por llegar.`;
+		if (n >= goal * 0.75) return `¡Casi! Solo ${plural(left, 'venta', 'ventas')} para la meta. 💪`;
+		if (n >= goal * 0.5) return `¡Más de la mitad! Faltan ${plural(left, 'venta', 'ventas')}.`;
+		return `Vamos en camino: ${plural(n, 'venta', 'ventas')}, faltan ${left} para la meta.`;
+	};
+	function goalCard(g) {
+		const goal = Math.max(1, Number(g.goal) || 15);
+		const days = g.days || [];
+		const today = days.find((x) => x.date === g.today) || { count: 0, total: '' };
+		const past = days.filter((x) => x.date !== g.today);
+		const pct = Math.min(100, Math.round((today.count / goal) * 100));
+		const met = past.filter((x) => x.count >= goal).length;
+		const avg = past.length ? past.reduce((a, x) => a + x.count, 0) / past.length : 0;
+		const best = days.reduce((a, x) => (x.count > a.count ? x : a), { count: -1 });
+		// Racha: días seguidos con la meta cumplida, contando hacia atrás desde ayer (y hoy si ya se cumplió).
+		let streak = today.count >= goal ? 1 : 0;
+		for (let i = past.length - 1; i >= 0 && past[i].count >= goal; i--) streak++;
+		const max = Math.max(goal, ...days.map((x) => x.count)) * 1.15;
+		const goalPos = goal / max;
+		return `<section class="bk-g-card bk-g-goal${today.count >= goal ? ' is-met' : ''}" aria-labelledby="bk-g-goal-h">
+			<div class="bk-g-goal__head">
+				<h2 id="bk-g-goal-h">Meta del día <small>(${plural(goal, 'venta', 'ventas')} pagadas)</small></h2>
+				<button type="button" class="bk-g-link" data-goal-edit aria-expanded="false" aria-controls="bk-g-goal-form">Cambiar meta</button>
+			</div>
+			<form id="bk-g-goal-form" class="bk-g-goal__form" data-goal-form novalidate hidden>
+				<label for="bk-g-goal-n">Ventas pagadas al día</label>
+				<input id="bk-g-goal-n" type="number" min="1" max="1000" step="1" inputmode="numeric" value="${goal}" required>
+				<button type="submit" class="bk-g-btn">Guardar meta</button>
+				<p class="bk-g-goal__err" role="alert"></p>
+			</form>
+			<div class="bk-g-goal__today">
+				<div class="bk-g-goal__ring" style="--p:${pct}" role="img" aria-label="Hoy: ${today.count} de ${goal} ventas (${pct} %)">
+					<b>${today.count}</b><span>de ${goal}</span>
+				</div>
+				<div class="bk-g-goal__msg">
+					<p class="bk-g-goal__big">${esc(goalMessage(today.count, goal))}</p>
+					<div class="bk-g-goal__bar" aria-hidden="true"><i style="--w:${pct}%"></i></div>
+					<p class="bk-g-hint">${today.total ? `Hoy: ${esc(today.total)}. ` : ''}${today.count < goal ? `Para llegar faltan <b>${goal - today.count}</b>.` : 'Todo lo que entre hoy suma al récord.'}</p>
+				</div>
+			</div>
+			<div class="bk-g-goal__subrow">
+				<h3 class="bk-g-goal__sub">Últimos ${days.length} días</h3>
+				<ul class="bk-g-goal__legend" aria-hidden="true"><li class="is-line">Meta ${goal}</li><li class="is-met">Meta cumplida</li><li class="is-today">Hoy</li></ul>
+			</div>
+			<div class="bk-g-goal__plot" style="--goal:${goalPos.toFixed(3)}"><ol class="bk-g-goal__chart" aria-label="Ventas por día frente a la meta de ${goal}">
+				${days.map((x) => `<li class="${x.count >= goal ? 'is-met' : ''}${x.date === g.today ? ' is-today' : ''}">
+					<span class="bk-g-goal__col" style="--h:${((x.count / max) * 100).toFixed(1)}%"><i></i><b>${x.count}</b></span>
+					<span class="bk-g-goal__day" aria-hidden="true">${dayHtml(x.date, g.today)}</span>
+					<span class="bk-g-sr">${esc(dayLabel(x.date, g.today))}: ${plural(x.count, 'venta', 'ventas')}${x.count >= goal ? ', meta cumplida' : `, faltaron ${goal - x.count}`}</span>
+				</li>`).join('')}
+			</ol><span class="bk-g-goal__line" aria-hidden="true"></span></div>
+			<ul class="bk-g-goal__stats">
+				<li><b>${met} de ${past.length}</b><span>días con la meta cumplida</span></li>
+				<li><b>${avg.toLocaleString('es-CO', { maximumFractionDigits: 1 })}</b><span>ventas al día en promedio</span></li>
+				<li><b>${streak ? plural(streak, 'día', 'días') : '—'}</b><span>${streak ? 'seguidos cumpliendo la meta' : 'racha: cumple la meta hoy para empezar una'}</span></li>
+				<li><b>${best.count > 0 ? best.count : '—'}</b><span>${best.count > 0 ? `mejor día (${esc(dayLabel(best.date, g.today))})` : 'mejor día'}</span></li>
+			</ul>
+		</section>`;
+	}
+
+	// Cambiar la meta: formulario en línea dentro de la tarjeta.
+	document.addEventListener('click', (e) => {
+		const b = e.target.closest('[data-goal-edit]');
+		if (!b) return;
+		const f = document.querySelector('[data-goal-form]');
+		if (!f) return;
+		f.hidden = !f.hidden;
+		b.setAttribute('aria-expanded', String(!f.hidden));
+		if (!f.hidden) f.querySelector('input').focus();
+	});
+	document.addEventListener('submit', async (e) => {
+		const f = e.target.closest('[data-goal-form]');
+		if (!f) return;
+		e.preventDefault();
+		const n = parseInt(f.querySelector('input').value, 10);
+		const err = f.querySelector('.bk-g-goal__err');
+		if (!(n >= 1 && n <= 1000)) { err.textContent = 'Escribe un número entre 1 y 1000.'; return; }
+		const btn = f.querySelector('button');
+		btn.disabled = true;
+		try {
+			await api('goal', { method: 'POST', body: { goal: n } });
+			forget('summary');
+			viewSummary();
+		} catch (x) { err.textContent = x.message; btn.disabled = false; }
+	});
+
 	async function viewSummary() {
 		const seq = viewSeq;
 		const paint = (d) => {
 			if (seq !== viewSeq) return;
 			main.innerHTML = `<h1 class="bk-g-h1">Resumen</h1>
 				<div class="bk-g-kpis">
-					<div class="bk-g-kpi"><span>Ventas de hoy</span><b>${esc(d.today.total)}</b><small>${d.today.count} pedidos pagados</small></div>
-					<div class="bk-g-kpi"><span>Ventas del mes</span><b>${esc(d.month.total)}</b><small>${d.month.count} pedidos pagados</small></div>
+					<div class="bk-g-kpi"><span>Ventas de hoy</span><b>${esc(d.today.total)}</b><small>${plural(d.today.count, 'pedido pagado', 'pedidos pagados')}</small></div>
+					<div class="bk-g-kpi"><span>Ventas del mes</span><b>${esc(d.month.total)}</b><small>${plural(d.month.count, 'pedido pagado', 'pedidos pagados')}</small></div>
 					<a class="bk-g-kpi is-link" href="#pedidos?status=processing"><span>Por despachar</span><b>${d.pending.processing}</b><small>En proceso</small></a>
 					<a class="bk-g-kpi is-link" href="#pedidos?status=on-hold"><span>En espera</span><b>${d.pending['on-hold']}</b><small>Revisar pago</small></a>
 					<a class="bk-g-kpi is-link" href="#pedidos?status=pending"><span>Pendientes de pago</span><b>${d.pending.pending}</b><small>Sin pagar aún</small></a>
 				</div>
+				${d.goal ? goalCard(d.goal) : ''}
 				${d.sources?.length ? `<section class="bk-g-card"><h2>¿De dónde vienen las ventas? <small>(este mes, pedidos pagados)</small></h2>
 					<ul class="bk-g-srcs">${d.sources.map((x) => `<li><a href="#pedidos?source=${esc(x.key)}">${srcChip({ key: x.key, label: x.label })}<span class="bk-g-srcs__bar"><i style="--w:${Math.max(2, x.pct)}%"></i></span><b>${esc(x.total)}</b><small>${x.count} pedido${x.count === 1 ? '' : 's'} · ${x.pct} %</small></a></li>`).join('')}</ul>
 					<p class="bk-g-hint">Se toma de lo que WooCommerce registra en cada compra (enlace de la campaña, buscador, red social o sitio de donde llegó la clienta). "Sin dato": pedidos de antes de activar el registro o con bloqueadores de anuncios.</p></section>` : ''}

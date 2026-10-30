@@ -154,7 +154,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.26 → `dist/buckler-core-0.18.26.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.27 → `dist/buckler-core-0.18.27.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -793,6 +793,15 @@ Versión actual 0.18.26 → `dist/buckler-core-0.18.26.zip` (`tools/build-plugin
   no devolvía nada al cancelar/fallar. woo-tweaks.php pone la marca en `woocommerce_order_status_cancelled|failed`
   prioridad 5 si alguna línea sigue descontada (filtro `bk_restore_stock_fix`). Snippets 2843/2846/2864 (YayPricing) y
   3037/3042 (teléfono) pasados a borrador con UfoWeb Ops (el checkout ya mostraba "Celular *"). Suite `ronda1826.js` (15).
+- **0.18.27 (2026-10-30): meta diaria de ventas en el Resumen** (pedido del cliente: la meta de la empresa es 15 ventas
+  al día). `includes/gestion/daily-goal.php`: `bk_g_daily_goal()` (opción `bk_g_daily_goal`, por defecto
+  `bk_config('daily_goal')` o 15, filtro), `bk_g_daily_sales(10)` (pedidos pagados por día de creación en la zona del
+  sitio; HPOS: una consulta de fecha+total), `bk_g_goal_data()` → `goal` dentro de `bk_g_summary` (transitorio 5 min,
+  se borra con cada pedido); `POST bk/v1/gestion/goal` (bk_g_can, 1–1000). gestion.js `goalCard()`: anillo "N de 15",
+  mensaje de ánimo según avance (arranquemos / en camino / más de la mitad / casi / cumplida / superada / récord), barra,
+  gráfica de 10 días (barras gris < meta, navy ≥ meta, lima hoy; línea punteada de la meta con `--goal` fracción y
+  `--day` alto de etiquetas; leyenda arriba), promedio, días cumplidos, racha y mejor día; "Cambiar meta" = formulario
+  en línea (`novalidate`, error en línea, sin alert). "1 pedidos pagados" → singular/plural. Suite `ronda1827.js` (27).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -837,7 +846,7 @@ Versión actual 0.18.26 → `dist/buckler-core-0.18.26.zip` (`tools/build-plugin
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15 = 895 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 27 = 922 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

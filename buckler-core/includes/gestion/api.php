@@ -296,6 +296,7 @@ function bk_g_summary() {
 		'pending' => $pending,
 		'low'     => $low,
 		'sources' => function_exists( 'bk_g_source_summary' ) ? bk_g_source_summary( $month ) : array(),
+		'goal'    => function_exists( 'bk_g_goal_data' ) ? bk_g_goal_data() : null,
 	);
 	set_transient( 'bk_g_summary', $data, 5 * MINUTE_IN_SECONDS );
 	return rest_ensure_response( $data );
