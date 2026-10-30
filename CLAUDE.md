@@ -25,6 +25,12 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
 - Cliente: `python3 tools/mcp.py ping | tools --names | call <tool> '<json>' | pull <page_id> | rest [/ruta]`.
 - `audit_site` es de solo lectura (no lleva dry_run). `set_primary_menu` sí admite `dry_run`.
 
+## UfoWeb Ops (operaciones remotas, desde 2026-10-30)
+- `python3 tools/ufo_ops.py --base=https://buckler.com.co <acción>` (estado, log, purgar, instalar <zip>, leer, listar,
+  guardar, papelera, respaldo, respaldos, opciones, limpiar, registro, ping). Misma clave del MCP (proxy). Ping OK 1.0.0.
+- Reglas: respaldo antes de cambios grandes; nunca publicar; limpiar opciones solo con autorización; verificar con
+  Playwright 1440/390. Instalar buckler-core por aquí solo cuando el cliente lo pida (hasta ahora lo instala él).
+
 ## Estado actual del sitio (diagnóstico 2026-10-14)
 - Tema: Divi 5 + tema hijo `buckler` (los snippets PHP viven ahí o en un plugin de snippets: **no son
   accesibles por MCP**; pedir el código al cliente).
