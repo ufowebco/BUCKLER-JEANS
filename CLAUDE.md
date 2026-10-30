@@ -29,7 +29,11 @@ construye y prueba en local; el despliegue se hace al final, en un solo paso pla
 - `python3 tools/ufo_ops.py --base=https://buckler.com.co <acción>` (estado, log, purgar, instalar <zip>, leer, listar,
   guardar, papelera, respaldo, respaldos, opciones, limpiar, registro, ping). Misma clave del MCP (proxy). Ping OK 1.0.0.
 - Reglas: respaldo antes de cambios grandes; nunca publicar; limpiar opciones solo con autorización; verificar con
-  Playwright 1440/390. Instalar buckler-core por aquí solo cuando el cliente lo pida (hasta ahora lo instala él).
+  Playwright 1440/390. **Decisión del cliente 2026-10-30: "siempre instala tú"** → cada versión nueva de buckler-core se
+  instala con `instalar dist/buckler-core-<v>.zip` (respaldo antes; el upgrader ya purga la caché: comprobar que el HTML
+  traiga `?ver=<v>` y `X-Litespeed-Cache: hit`), luego Playwright 1440/390 + `log` sin errores nuevos. `purgar` devuelve
+  `litespeed:false` (no hay plugin LSCache; la purga va por cabeceras de buckler-core). Chromium de Playwright no trae
+  H.264: el video no arranca ahí, se verifica que se pida reproducir (`play()`). 0.18.26 instalada así el 2026-10-30.
 - Permisos (2026-10-30): plugins `ufoweb-ops,buckler-core`; tipos `post,page,product,politica-empresa,pregunta-frecuente`;
   publicar vacío; meta `_seopress_,_bk_,texto_politica,_texto_politica,respuesta_pregunta_frecuente,_respuesta_pregunta_frecuente`.
 - Diagnóstico 2026-10-30: WP 7.1.4, PHP 8.4.27, LiteSpeed, OPcache on (75,9 % aciertos), sin caché de objetos, DISABLE_WP_CRON
