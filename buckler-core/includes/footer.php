@@ -127,7 +127,7 @@ function bk_shortcode_footer( $atts ) {
 		<ul class="bk-perks" aria-label="<?php esc_attr_e( 'Beneficios', 'buckler-core' ); ?>">
 			<li><?php echo bk_icon_svg( 'lucide:truck', 28 ); // phpcs:ignore ?><span><strong><?php esc_html_e( 'Envíos gratis', 'buckler-core' ); ?></strong><?php esc_html_e( 'a todo el país', 'buckler-core' ); ?></span></li>
 			<li><?php echo bk_icon_svg( 'lucide:credit-card', 28 ); // phpcs:ignore ?><span><strong><?php esc_html_e( 'Paga con Addi', 'buckler-core' ); ?></strong><?php esc_html_e( '3 cuotas con 0 % de interés', 'buckler-core' ); ?></span></li>
-			<li><?php echo bk_icon_svg( 'lucide:shield-check', 28 ); // phpcs:ignore ?><span><strong><?php esc_html_e( 'Pago seguro', 'buckler-core' ); ?></strong><?php esc_html_e( 'Wompi, Bold y Addi', 'buckler-core' ); ?></span></li>
+			<li><?php echo bk_icon_svg( 'lucide:shield-check', 28 ); // phpcs:ignore ?><span><strong><?php esc_html_e( 'Pago seguro', 'buckler-core' ); ?></strong><?php esc_html_e( 'Wompi, Bold y Rapyd', 'buckler-core' ); ?></span></li>
 			<li><?php echo bk_icon_svg( 'lucide:map-pin', 28 ); // phpcs:ignore ?><span><strong><?php esc_html_e( 'Hecho en Medellín', 'buckler-core' ); ?></strong><?php esc_html_e( 'desde 1986', 'buckler-core' ); ?></span></li>
 		</ul>
 
