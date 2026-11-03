@@ -51,7 +51,7 @@ function bk_config( $key = null ) {
 				'announcements' => array(
 					'Envíos gratis a todo el país',
 					'Paga con Addi: 3 cuotas sin interés',
-					'Paga con Wompi, Rapyd o Bold',
+					'Paga con Wompi, Bold o Addi',
 					'Envíos a San Andrés con costo adicional',
 					'Prendas en descuento sin cambio',
 				),
@@ -78,7 +78,6 @@ function bk_config( $key = null ) {
 					array( '/wp-content/uploads/2026/08/Medios-de-Pago-Denim-Blue-Buckler-1.webp', 'Addi' ),
 					array( '/wp-content/uploads/2026/09/Medios-de-Pago-El-Santuario-del-Mueble-13-1-1.webp', 'Bold' ),
 					array( '/wp-content/uploads/2026/08/Medios-de-Pago-Denim-Blue-Buckler-3.webp', 'Wompi' ),
-					array( '/wp-content/uploads/2026/08/Medios-de-Pago-Denim-Blue-Buckler-2.webp', 'Rapyd' ),
 					array( '/wp-content/uploads/2026/08/Medios-de-Pago-Denim-Blue-Buckler-5.webp', 'Bancolombia' ),
 					array( '/wp-content/uploads/2026/08/Medios-de-Pago-Denim-Blue-Buckler-9.webp', 'Nequi' ),
 					array( '/wp-content/uploads/2026/08/Medios-de-Pago-Denim-Blue-Buckler-10.webp', 'Daviplata' ),
