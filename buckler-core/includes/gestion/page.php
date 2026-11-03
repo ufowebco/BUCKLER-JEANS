@@ -379,7 +379,10 @@ function bk_g_render( $early = false ) {
 			'product' => html_entity_decode( $ver( 'assets/js/gestion-product.js' ) ),
 			'extra'   => html_entity_decode( $ver( 'assets/js/gestion-extra.js' ) ),
 			'more'    => html_entity_decode( $ver( 'assets/js/gestion-more.js' ) ),
+			'manual'  => html_entity_decode( $ver( 'assets/js/gestion-manual.js' ) ),
 		),
+		'coStates'       => function_exists( 'WC' ) && WC()->countries ? (array) WC()->countries->get_states( 'CO' ) : array(),
+		'manualPayments' => function_exists( 'bk_gm_payments' ) ? bk_gm_payments() : array(),
 		'boot'     => array( 'summary' => is_array( $summary ) ? $summary : null ),
 		'icons'    => array_map( static fn( $n ) => bk_icon_svg( $n, 20 ), array(
 			'home'    => 'lucide:package',

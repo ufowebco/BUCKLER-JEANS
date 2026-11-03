@@ -161,6 +161,8 @@ function bk_g_history( $o ) {
 			$label = 'Cancelado automáticamente: sin pago ' . $val . ' h después del pedido';
 		} elseif ( 'cliente' === $ev ) {
 			$label = 'Datos de la clienta editados: ' . $val;
+		} elseif ( 'manual' === $ev ) {
+			$label = 'Pedido creado a mano (' . $val . '); prendas reservadas';
 		} else {
 			continue;
 		}

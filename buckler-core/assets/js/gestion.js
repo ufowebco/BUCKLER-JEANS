@@ -128,6 +128,13 @@
 			loadScript('product').then(() => { if (seq === viewSeq) window.bkGProduct.view(sub, new URLSearchParams(query)); }).catch((e) => { main.innerHTML = `<p class="bk-g-error">${esc(e.message)}</p>`; });
 			return;
 		}
+		// Pedido manual (#pedidos/nuevo): gestion-manual.js.
+		if (valid === 'pedidos' && sub[0] === 'nuevo') {
+			const seq = viewSeq;
+			if (!window.bkGManual) main.innerHTML = '<div class="bk-g-loading">Cargando…</div>';
+			loadScript('manual').then(() => { if (seq === viewSeq) window.bkGManual.view(); }).catch((e) => { main.innerHTML = `<p class="bk-g-error">${esc(e.message)}</p>`; });
+			return;
+		}
 		// Descuentos, Contenido y Ayuda: gestion-more.js.
 		if (['descuentos', 'contenido', 'ayuda'].includes(valid)) {
 			const seq = viewSeq;
@@ -294,7 +301,7 @@
 		if (hp.get('status')) oState.status = hp.get('status');
 		if (hp.has('source')) { oState.source = hp.get('source'); oState.page = 1; }
 		main.innerHTML = `<div class="bk-g-h1row"><h1 class="bk-g-h1">Pedidos</h1>
-				<div class="bk-g-refresh"><small id="bk-g-oupd" aria-live="polite"></small><button type="button" class="bk-g-btn" data-orders-refresh>${C.icons.refresh || ''} Buscar pedidos nuevos</button></div></div>
+				<div class="bk-g-refresh"><small id="bk-g-oupd" aria-live="polite"></small><button type="button" class="bk-g-btn" data-orders-refresh>${C.icons.refresh || ''} Buscar pedidos nuevos</button><a class="bk-g-btn" href="#pedidos/nuevo">${C.icons.plus} Nuevo pedido</a></div></div>
 			<form class="bk-g-filters" id="bk-g-of" role="search">
 				<label class="bk-g-search"><span class="bk-g-sr">Buscar pedidos</span>${C.icons.search}
 					<input type="search" name="q" value="${esc(oState.q)}" placeholder="Número, consecutivo, cédula, nombre, correo o celular" autocomplete="off"></label>
@@ -958,6 +965,6 @@
 	});
 
 	// API para gestion-product.js (editor de productos).
-	window.bkGApp = { C, api, esc, $, $$, toast, busy, main, route, seq: () => viewSeq, openPreview, closePreview, previewHtml, fillFrame, getCached, fetchFresh, forget, showOrder, pager, qs };
+	window.bkGApp = { C, api, esc, $, $$, toast, busy, main, route, seq: () => viewSeq, openPreview, closePreview, previewHtml, fillFrame, getCached, fetchFresh, forget, showOrder, closeDrawer: () => { if (!drawer.hidden) closeDrawer(); }, pager, qs };
 	route();
 })();
