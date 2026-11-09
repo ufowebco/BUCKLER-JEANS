@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.30 → `dist/buckler-core-0.18.30.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.31 → `dist/buckler-core-0.18.31.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -823,6 +823,15 @@ Versión actual 0.18.30 → `dist/buckler-core-0.18.30.zip` (`tools/build-plugin
   dos veces). Estado ≠ pending con `update_status()`; correos de cliente processing/on-hold silenciados salvo `notify`.
   Historial `manual`. El panel lateral de un pedido se cierra al abrir el formulario (`bkGApp.closeDrawer`); en el
   celular la barra de guardar va encima de las pestañas. Suite `ronda1830.js` (32). Corrección: ronda1827 tiene 25.
+- **0.18.31 (2026-11-09): "Editar guía"** (pedido del cliente: a veces el número cambia o quedó mal; aprobado con
+  capturas antes de instalar). Con guía enviada, el detalle muestra el resumen + botón `[data-ship-edit]` "Editar guía"
+  y `#bk-g-shipform` empieza `hidden` (antes quedaba abierto con "Reenviar correo"); "Cancelar" (`data-ship-cancel`)
+  lo cierra y hace reset. shipping.php: si ya había `_bk_tracking` y cambia transportadora o número → `$fixed` =
+  guía anterior: `bk_ship_email(..., $fixed)` pone asunto "Guía corregida de tu pedido #N" (local: "llega hoy") y el
+  recuadro "Corregimos los datos de tu envío… ya no es válida" en `order-shipped.php` (`$vars['fixed']`); la meta suma
+  `edits` y `prev`; historial `guia_edit` y nota "Guía corregida: A → B". Mismos datos = reenvío normal sin aviso
+  (no cuenta como corrección). La vista previa devuelve `fixed` (botón "Confirmar y enviar guía corregida a…").
+  Icono `edit` (lucide:pencil). Suite `ronda1831.js` (23); envio.js adaptada.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -867,7 +876,7 @@ Versión actual 0.18.30 → `dist/buckler-core-0.18.30.zip` (`tools/build-plugin
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32 = 952 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23 = 975 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
