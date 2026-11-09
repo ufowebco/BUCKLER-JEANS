@@ -153,6 +153,8 @@ function bk_g_history( $o ) {
 			$label = $checks[ $ev ][ 'yes' === $val ? 0 : 1 ];
 		} elseif ( 'guia' === $ev ) {
 			$label = 'Guía de envío enviada: ' . trim( ( $e['carrier'] ?? '' ) . ' ' . $val );
+		} elseif ( 'guia_edit' === $ev ) {
+			$label = 'Guía corregida y reenviada: ' . $val;
 		} elseif ( 'archivo' === $ev ) {
 			$label = $val;
 		} elseif ( 'pago_recordatorio' === $ev ) {

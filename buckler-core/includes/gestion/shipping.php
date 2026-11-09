@@ -136,11 +136,15 @@ function bk_ship_handle( WP_REST_Request $r ) {
 		return $in;
 	}
 	list( $carrier, $number ) = $in;
-	$mail                     = bk_ship_email( $o, $carrier, $number );
-	$to                       = $o->get_billing_email();
+	// Corrección: ya se había enviado una guía y ahora cambia la transportadora o el número. El correo lo avisa
+	// ("la guía anterior ya no es válida"). Con los mismos datos es un reenvío normal.
+	$prev  = bk_ship_get( $o );
+	$fixed = $prev && ( $prev['carrier'] !== $carrier || (string) $prev['number'] !== $number ) ? $prev : null;
+	$mail  = bk_ship_email( $o, $carrier, $number, $fixed );
+	$to    = $o->get_billing_email();
 
 	if ( ! rest_sanitize_boolean( $r['confirm'] ) ) {
-		return rest_ensure_response( array( 'to' => $to, 'subject' => $mail['subject'], 'html' => $mail['html'] ) );
+		return rest_ensure_response( array( 'to' => $to, 'subject' => $mail['subject'], 'html' => $mail['html'], 'fixed' => (bool) $fixed ) );
 	}
 	if ( ! is_email( $to ) ) {
 		return new WP_Error( 'bk_email', 'El pedido no tiene un correo válido.', array( 'status' => 400 ) );
@@ -151,24 +155,38 @@ function bk_ship_handle( WP_REST_Request $r ) {
 	if ( $f['despachado'] ) {
 		$o->update_meta_data( $f['despachado'], 'yes' ); // Guía enviada = despachado.
 	}
-	$o->update_meta_data(
-		BK_TRACKING_META,
-		array(
-			'carrier' => $carrier,
-			'number'  => $number,
-			'date'    => current_time( 'mysql' ),
-			'sent_by' => $user,
-		)
+	$track = array(
+		'carrier' => $carrier,
+		'number'  => $number,
+		'date'    => current_time( 'mysql' ),
+		'sent_by' => $user,
 	);
+	$name  = bk_carriers()[ $carrier ]['name'];
+	$label = static fn( $c, $n ) => trim( ( bk_carriers()[ $c ]['name'] ?? $c ) . ' ' . ( $n ? $n : '(entrega local, sin guía)' ) );
+	if ( $fixed ) {
+		$track['edits'] = (int) ( $prev['edits'] ?? 0 ) + 1;
+		$track['prev']  = array( 'carrier' => $prev['carrier'], 'number' => (string) $prev['number'] );
+	} elseif ( $prev && ! empty( $prev['edits'] ) ) {
+		$track['edits'] = (int) $prev['edits'];
+	}
+	$o->update_meta_data( BK_TRACKING_META, $track );
 	if ( function_exists( 'bk_g_log' ) ) {
-		bk_g_log( $o, 'guia', $number ? $number : 'sin guía (entrega local)', array( 'carrier' => bk_carriers()[ $carrier ]['name'] ) );
+		if ( $fixed ) {
+			bk_g_log( $o, 'guia_edit', $label( $prev['carrier'], $prev['number'] ) . ' → ' . $label( $carrier, $number ) );
+		} else {
+			bk_g_log( $o, 'guia', $number ? $number : 'sin guía (entrega local)', array( 'carrier' => $name ) );
+		}
 	}
 	$o->save();
 
 	$sent = bk_ship_mail( $to, $mail['subject'], $mail['html'] );
-	$name = bk_carriers()[ $carrier ]['name'];
-	/* translators: 1: transportadora, 2: guía, 3: correo, 4: usuario */
-	$o->add_order_note( sprintf( 'Guía %1$s %2$s. Correo "pedido enviado" %3$s por %4$s.', $name, $number ? $number : '(entrega local, sin guía)', $sent ? 'enviado a ' . $to : 'NO se pudo enviar', $user ) );
+	if ( $fixed ) {
+		/* translators: 1: guía anterior, 2: guía nueva, 3: correo, 4: usuario */
+		$o->add_order_note( sprintf( 'Guía corregida: %1$s → %2$s. Correo con la guía corregida %3$s por %4$s.', $label( $prev['carrier'], $prev['number'] ), $label( $carrier, $number ), $sent ? 'enviado a ' . $to : 'NO se pudo enviar', $user ) );
+	} else {
+		/* translators: 1: transportadora, 2: guía, 3: correo, 4: usuario */
+		$o->add_order_note( sprintf( 'Guía %1$s %2$s. Correo "pedido enviado" %3$s por %4$s.', $name, $number ? $number : '(entrega local, sin guía)', $sent ? 'enviado a ' . $to : 'NO se pudo enviar', $user ) );
+	}
 
 	if ( rest_sanitize_boolean( $r['complete'] ) && 'completed' !== $o->get_status() ) {
 		// Sin el correo estándar de "pedido completado": la clienta ya recibió el de envío.
@@ -230,9 +248,10 @@ function bk_ship_mail( $to, $subject, $html ) {
  * @param WC_Order $o       Pedido.
  * @param string   $carrier Transportadora.
  * @param string   $number  Guía.
+ * @param array|null $fixed Guía anterior { carrier, number } si este correo corrige una ya enviada.
  * @return array{subject:string,html:string}
  */
-function bk_ship_email( $o, $carrier, $number ) {
+function bk_ship_email( $o, $carrier, $number, $fixed = null ) {
 	$c     = bk_carriers()[ $carrier ];
 	$items = array();
 	foreach ( $o->get_items() as $item ) {
@@ -254,6 +273,11 @@ function bk_ship_email( $o, $carrier, $number ) {
 		'track'    => bk_ship_url( $carrier, $number ),
 		'has_link' => '' !== $c['track'],
 		'local'    => ! empty( $c['local'] ),
+		// Corrección de una guía ya enviada: transportadora y número anteriores (para avisar que ya no sirven).
+		'fixed'    => $fixed ? array(
+			'carrier' => bk_carriers()[ $fixed['carrier'] ]['name'] ?? (string) $fixed['carrier'],
+			'guide'   => (string) ( $fixed['number'] ?? '' ),
+		) : null,
 		'items'    => $items,
 		'address'  => wp_strip_all_tags( str_replace( array( '<br/>', '<br>' ), "\n", (string) $addr ) ),
 		'account'  => $o->get_customer_id() ? wc_get_endpoint_url( 'view-order', $o->get_id(), wc_get_page_permalink( 'myaccount' ) ) : '',
@@ -270,6 +294,10 @@ function bk_ship_email( $o, $carrier, $number ) {
 		? sprintf( __( 'Tu pedido #%s llega hoy', 'buckler-core' ), $o->get_order_number() )
 		/* translators: %s: número de pedido */
 		: sprintf( __( 'Tu pedido #%s ha sido enviado', 'buckler-core' ), $o->get_order_number() );
+	if ( $fixed && empty( $c['local'] ) ) {
+		/* translators: %s: número de pedido */
+		$subject = sprintf( __( 'Guía corregida de tu pedido #%s', 'buckler-core' ), $o->get_order_number() );
+	}
 	return array(
 		'subject' => $subject,
 		'html'    => (string) ob_get_clean(),

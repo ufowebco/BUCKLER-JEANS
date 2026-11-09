@@ -487,8 +487,13 @@ code { font-size: 13px; background: #f1f4f6; padding: 2px 6px; border-radius: 4p
 .bk-g-ship form { display: grid; gap: 10px; }
 .bk-g-ship .bk-g-row2 { grid-template-columns: 1fr 1fr; }
 .bk-g-ship input:not([type="checkbox"]), .bk-g-ship select { width: 100%; }
-.bk-g-shipped { padding: 10px 12px; border-radius: 10px; background: #e6f4ec; color: var(--g-ok); }
+.bk-g-shipped { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 10px 12px; border-radius: 10px; background: #e6f4ec; color: var(--g-ok); }
+.bk-g-shipped p { margin: 0; }
 .bk-g-shipped small { display: block; color: var(--g-mute); }
+.bk-g-shipped .bk-g-btn { min-height: 44px; background: #fff; }
+.bk-g-ship form[hidden] { display: none; }
+.bk-g-ship .bk-g-shipped + form { margin-top: 12px; }
+.bk-g-shipbtns { display: flex; flex-wrap: wrap; gap: 8px; }
 .bk-g-formerr { margin: 0; color: var(--g-bad); font-weight: 700; }
 .bk-g-trk { display: flex !important; align-items: center; gap: 4px; margin-top: 4px; }
 .bk-g-trk svg { width: 14px; height: 14px; }

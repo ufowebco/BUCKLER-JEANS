@@ -69,7 +69,7 @@ const login = async (p, u, pw) => { await p.goto(B + '/ingreso/?redirect_to=' + 
   ok(/2401-ABC-889/.test(await p.textContent('.bk-g-shipped')), 'detalle muestra la guía guardada');
   ok(/Guía Servientrega 2401-ABC-889/.test(await p.textContent('.bk-g-notes')), 'nota en el pedido');
   ok(/Complet/.test(await p.textContent('.bk-g-drawer__panel')), 'pedido pasa a Completado');
-  ok(/Reenviar/.test(await p.textContent('#bk-g-shipform button[type="submit"]')), 'botón cambia a "Reenviar correo"');
+  ok(await p.locator('[data-ship-edit]').isVisible() && await p.locator('#bk-g-shipform').isHidden(), 'con la guía enviada: botón "Editar guía" y formulario cerrado');
   await p.keyboard.press('Escape'); await p.waitForTimeout(300);
   await p.selectOption('select[name="status"]', 'all'); await p.waitForTimeout(1200);
   ok(/Servientrega/.test(await p.locator(`tr:has([data-order="${id}"]) .bk-g-trk`).textContent().catch(() => '')), 'indicador de envío en la lista');
@@ -105,7 +105,8 @@ const login = async (p, u, pw) => { await p.goto(B + '/ingreso/?redirect_to=' + 
   const m = await (await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, storageState: await ctx.storageState() })).newPage();
   m.on('pageerror', e => errs.push(e.message));
   await m.goto(B + '/gestion-tienda/#pedidos'); await m.waitForSelector('.bk-g-orders [data-order]');
-  await m.locator(`[data-order="${id}"]`).first().click(); await m.waitForSelector('#bk-g-shipform');
+  await m.locator(`[data-order="${id}"]`).first().click(); await m.waitForSelector('[data-ship-edit]');
+  await m.click('[data-ship-edit]'); // El pedido ya tiene guía: el formulario se abre con "Editar guía".
   await m.click('#bk-g-shipform button[type="submit"]'); await m.waitForSelector('#bk-g-preview:not([hidden]) .bk-g-pvframe'); await m.waitForTimeout(600);
   const box = await m.locator('.bk-g-preview__box').boundingBox();
   ok(box && box.width >= 380, 'móvil: vista previa a pantalla completa');

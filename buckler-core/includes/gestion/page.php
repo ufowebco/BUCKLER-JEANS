@@ -395,6 +395,7 @@ function bk_g_render( $early = false ) {
 			'truck'   => 'lucide:truck',
 			'mail'    => 'lucide:mail',
 			'plus'    => 'lucide:plus',
+			'edit'    => 'lucide:pencil',
 			'image'   => 'lucide:image-plus',
 			'video'   => 'lucide:video',
 			'edit'    => 'lucide:pencil',

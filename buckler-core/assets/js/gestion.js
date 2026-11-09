@@ -518,9 +518,12 @@
 
 	/* --- Guía de envío ------------------------------------------------------------ */
 	const isLocal = (k) => !!k && (C.carriersLocal || []).includes(k);
-	const shipHtml = (o) => `<section class="bk-g-ship"><h3>${C.icons.truck} Enviar guía de envío</h3>
-		${o.tracking ? `<p class="bk-g-shipped">Enviado con <b>${esc(C.carriers[o.tracking.carrier] || o.tracking.carrier)}</b> · ${o.tracking.number ? `guía <b>${esc(o.tracking.number)}</b>` : 'entrega local (sin guía)'}<small>${esc(o.tracking.date)}${o.tracking.sent_by ? ` · ${esc(o.tracking.sent_by)}` : ''}</small></p>` : ''}
-		<form id="bk-g-shipform" data-id="${o.id}" novalidate>
+	// Con guía ya enviada: resumen + "Editar guía" (el formulario se abre para corregir y reenviar el correo).
+	const shipHtml = (o) => `<section class="bk-g-ship"><h3>${C.icons.truck} ${o.tracking ? 'Guía de envío' : 'Enviar guía de envío'}</h3>
+		${o.tracking ? `<div class="bk-g-shipped"><p>Enviado con <b>${esc(C.carriers[o.tracking.carrier] || o.tracking.carrier)}</b> · ${o.tracking.number ? `guía <b>${esc(o.tracking.number)}</b>` : 'entrega local (sin guía)'}<small>${esc(o.tracking.date)}${o.tracking.sent_by ? ` · ${esc(o.tracking.sent_by)}` : ''}${o.tracking.edits ? ` · corregida ${o.tracking.edits === 1 ? '1 vez' : `${o.tracking.edits} veces`}` : ''}</small></p>
+			<button type="button" class="bk-g-btn is-ghost is-small" data-ship-edit aria-expanded="false" aria-controls="bk-g-shipform">${C.icons.edit || ''} Editar guía</button></div>` : ''}
+		<form id="bk-g-shipform" data-id="${o.id}" novalidate ${o.tracking ? 'hidden' : ''}>
+			${o.tracking ? '<p class="bk-g-hint">Corrige la transportadora o el número. La clienta recibe un correo nuevo que le avisa que <b>la guía anterior ya no es válida</b>. Si no cambias nada, se reenvía el mismo correo.</p>' : ''}
 			<div class="bk-g-row2">
 				<label><span>Transportadora</span><select name="carrier" required><option value="">Elige…</option>${Object.entries(C.carriers).map(([k, v]) => `<option value="${k}" ${o.tracking?.carrier === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></label>
 				<label data-ship-number ${isLocal(o.tracking?.carrier) ? 'hidden' : ''}><span>Número de guía</span><input name="number" required inputmode="text" autocomplete="off" value="${esc(o.tracking?.number || '')}" placeholder="Ej.: 2401234567"></label>
@@ -528,7 +531,10 @@
 			<p class="bk-g-hint" data-ship-local ${isLocal(o.tracking?.carrier) ? '' : 'hidden'}>Entrega local (domicilios Medellín y área metropolitana): no necesita número de guía. La clienta recibe el correo "Tu pedido llega hoy".</p>
 			${o.status !== 'completed' ? '<label class="bk-g-switch"><input type="checkbox" name="complete" checked><span>Marcar como Completado (sin el correo estándar de WooCommerce)</span></label>' : ''}
 			<p class="bk-g-formerr" role="alert" hidden></p>
-			<button type="submit" class="bk-g-btn">${C.icons.mail} ${o.tracking ? 'Reenviar correo' : 'Ver correo antes de enviar'}</button>
+			<div class="bk-g-shipbtns">
+				<button type="submit" class="bk-g-btn">${C.icons.mail} Ver correo antes de enviar</button>
+				${o.tracking ? '<button type="button" class="bk-g-btn is-ghost" data-ship-cancel>Cancelar</button>' : ''}
+			</div>
 		</form></section>`;
 
 	const pv = $('#bk-g-preview');
@@ -817,15 +823,30 @@
 			return;
 		}
 
+		// "Editar guía": abre o cierra el formulario de corrección.
+		const editShip = t.closest('[data-ship-edit], [data-ship-cancel]');
+		if (editShip) {
+			const f = $('#bk-g-shipform');
+			const btn = $('[data-ship-edit]');
+			if (!f || !btn) return;
+			const open = editShip.hasAttribute('data-ship-edit') && f.hidden;
+			f.hidden = !open;
+			btn.setAttribute('aria-expanded', String(open));
+			if (open) (isLocal(f.carrier.value) ? f.carrier : f.number).focus();
+			else { f.reset(); f.carrier.dispatchEvent(new Event('change', { bubbles: true })); btn.focus(); }
+			return;
+		}
+
 		const confirmShip = t.closest('[data-ship-confirm]');
 		if (confirmShip) {
 			await busy(confirmShip, async () => {
 				if (!pendingShip) return;
 				const o = await api(`orders/${pendingShip.id}/shipment`, { method: 'POST', body: { ...pendingShip.body, confirm: true } });
+				const fixed = pendingShip.fixed;
 				pendingShip = null;
 				closePreview();
 				setOrder(o);
-				toast(`Correo enviado a ${o.email}`);
+				toast(fixed ? `Guía corregida. Correo enviado a ${o.email}` : `Correo enviado a ${o.email}`);
 				loadOrders();
 			});
 			return;
@@ -942,9 +963,9 @@
 			await busy(form.querySelector('button[type="submit"]'), async () => {
 				const d = await api(`orders/${form.dataset.id}/shipment`, { method: 'POST', body });
 				openPreview(previewHtml(d, `<button type="button" class="bk-g-btn is-ghost" data-pv-close>Volver a editar</button>
-					<button type="button" class="bk-g-btn" data-pv-focus data-ship-confirm>${C.icons.check} Confirmar y enviar a ${esc(d.to)}</button>`));
+					<button type="button" class="bk-g-btn" data-pv-focus data-ship-confirm>${C.icons.check} ${d.fixed ? 'Confirmar y enviar guía corregida a' : 'Confirmar y enviar a'} ${esc(d.to)}</button>`));
 				fillFrame(d.html);
-				pendingShip = { id: form.dataset.id, body };
+				pendingShip = { id: form.dataset.id, body, fixed: !!d.fixed };
 			});
 		}
 		if (form.id === 'bk-g-shiptest') {

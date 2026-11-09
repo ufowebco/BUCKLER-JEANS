@@ -18,6 +18,7 @@ $mute = '#5b6773';
 $font = "Manrope, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
 $hi   = $vars['name'] ? $vars['name'] . ', tu' : 'Tu';
 $local = ! empty( $vars['local'] ); // Entrega local: sin número de guía ni rastreo.
+$fixed = ! empty( $vars['fixed'] ) ? $vars['fixed'] : null; // Corrige una guía ya enviada.
 ?>
 <!doctype html>
 <html lang="es">
@@ -37,7 +38,7 @@ $local = ! empty( $vars['local'] ); // Entrega local: sin número de guía ni ra
 </style>
 </head>
 <body style="margin:0;padding:0;background:#eef1f4;">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;"><?php echo esc_html( $local ? 'Tu pedido llega hoy a tu dirección con nuestro domiciliario. ¡Quédate pendiente!' : 'Va con ' . $vars['carrier'] . ', guía ' . $vars['guide'] . '. Aquí tienes cómo rastrearlo.' ); ?>&#8199;&#847;&#8199;&#847;&#8199;&#847;</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;"><?php echo esc_html( ( $fixed ? 'Corregimos la guía de tu pedido. ' : '' ) . ( $local ? 'Tu pedido llega hoy a tu dirección con nuestro domiciliario. ¡Quédate pendiente!' : 'Va con ' . $vars['carrier'] . ', guía ' . $vars['guide'] . '. Aquí tienes cómo rastrearlo.' ) ); ?>&#8199;&#847;&#8199;&#847;&#8199;&#847;</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef1f4;">
 <tr><td align="center" style="padding:24px 12px;">
 	<table role="presentation" class="bk-w" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;background:#ffffff;border-radius:14px;overflow:hidden;">
@@ -53,6 +54,19 @@ $local = ! empty( $vars['local'] ); // Entrega local: sin número de guía ni ra
 		</tr>
 		<tr>
 			<td style="padding:16px 32px 4px;" class="bk-p">
+				<?php if ( $fixed ) : ?>
+				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 18px;"><tr>
+					<td style="padding:14px 16px;border-radius:10px;background:#fff4e0;border:1px solid #f0c98a;font:400 15px/1.55 <?php echo esc_attr( $font ); ?>;color:#5c3900;">
+						<strong style="display:block;margin-bottom:2px;color:#5c3900;">Corregimos los datos de tu envío</strong>
+						<?php if ( $fixed['guide'] ) : ?>
+						La guía que te enviamos antes (<?php echo esc_html( $fixed['carrier'] . ' ' . $fixed['guide'] ); ?>) <strong>ya no es válida</strong>. <?php echo $local ? 'Tu pedido llega con nuestro domiciliario.' : 'Usa la de este correo para rastrear tu pedido.'; ?>
+						<?php else : ?>
+						Te habíamos dicho que llegaba con <?php echo esc_html( $fixed['carrier'] ); ?>; el envío cambió. <?php echo $local ? '' : 'Usa la guía de este correo para rastrear tu pedido.'; ?>
+						<?php endif; ?>
+						Disculpa la confusión.
+					</td>
+				</tr></table>
+				<?php endif; ?>
 				<h1 class="bk-h1" style="margin:0 0 12px;font:800 28px/1.2 <?php echo esc_attr( $font ); ?>;color:<?php echo esc_attr( $ink ); ?>;"><?php echo esc_html( $hi . ( $local ? ' pedido llega hoy' : ' pedido ya va en camino' ) ); ?></h1>
 				<?php if ( $local ) : ?>
 				<p style="margin:0 0 12px;font:400 16px/1.6 <?php echo esc_attr( $font ); ?>;color:<?php echo esc_attr( $mute ); ?>;">
