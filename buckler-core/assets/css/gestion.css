@@ -1280,3 +1280,10 @@ code { padding: 1px 5px; border-radius: 4px; background: #eef1f4; font-size: .9e
 	/* La barra de pestañas va fija abajo: la barra de guardar queda justo encima. */
 	.bk-gm-foot { bottom: calc(var(--bk-g-tabs-h, 68px) + env(safe-area-inset-bottom)); }
 }
+
+/* Video del producto: avance de la optimización antes de subirlo. */
+.bk-gp-vopt { display: grid; gap: 8px; padding: 16px; border: 1px dashed var(--g-line, #d5dbe1); border-radius: 12px; }
+.bk-gp-vopt p { margin: 0; }
+.bk-gp-vopt progress { width: 100%; height: 10px; accent-color: var(--g-navy, #1a3955); }
+.bk-gp-vopt__hint { color: var(--g-mute); font-size: 13px; }
+.bk-gp-vopt .bk-g-btn { justify-self: start; }

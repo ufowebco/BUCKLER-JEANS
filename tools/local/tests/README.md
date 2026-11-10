@@ -7,7 +7,7 @@ Rutas asumidas: `BK_LOCAL=/tmp/claude-0/bk-local` (ajustar en los scripts si cam
 php tools/local/tests/seed-cards.php     # galerías, destacado, oferta, talla agotada
 php tools/local/tests/seed-shop.php      # ~60 productos con nombres/precios/categorías reales
 php tools/local/tests/seed-orders.php    # pedidos de ejemplo, usuaria "gestora" (rol Gestor de tienda)
-cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180 ronda181 ronda182 ronda184 ronda185 ronda186 ronda187 ronda188 ronda189 ronda1812 ronda1814 ronda1815 ronda1817 ronda1822 ronda1824 ronda1825 ronda1826 ronda1827 ronda1830 ronda1831; do NODE_PATH=$(npm root -g) node $t.js; done
+cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180 ronda181 ronda182 ronda184 ronda185 ronda186 ronda187 ronda188 ronda189 ronda1812 ronda1814 ronda1815 ronda1817 ronda1822 ronda1824 ronda1825 ronda1826 ronda1827 ronda1830 ronda1831 ronda1832; do NODE_PATH=$(npm root -g) node $t.js; done
 ```
 
 | Suite | Qué prueba | Comprobaciones |
@@ -52,6 +52,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `ronda1827.js` | Meta diaria en el Resumen: 15 por defecto, ventas pagadas por día (pendientes no cuentan), anillo de hoy, 10 barras con línea de meta a la altura correcta, días cumplidos, mensajes de ánimo según avance, cambiar meta en línea (guardada, validada sin alertas), celular sin días montados ni números tapados, usuario solo SEO sin permiso | 25 |
 | `ronda1830.js` | Pedido manual: botón en Pedidos, buscar por REF y nombre, tallas con lo que queda (agotadas bloqueadas), cantidad tope, precio especial, envío, validaciones en línea, crea "Pendiente de pago" con inventario reservado y marca, origen "Creado a mano", sin recordatorios automáticos, nota e historial, cancelar devuelve, pagado sin doble descuento, correo solo si se pide, errores de stock por la API, celular (botón encima de las pestañas), solo SEO sin permiso | 32 |
 | `ronda1831.js` | "Editar guía": botón tras enviar la guía (formulario cerrado), abrir con datos actuales, cancelar, corregir número (asunto "Guía corregida", aviso con la guía anterior, nota, historial, meta prev/edits), reenvío sin cambios sin aviso, cambio de transportadora, paso a entrega local, celular | 23 |
+| `ronda1832.js` | Video de producto optimizado en el navegador antes de subir (VP9 en la prueba): ajustes, carga diferida, video liviano tal cual, respaldo si no se puede convertir, avance y Cancelar, 1080×1920 a 30 cuadros sin audio y faststart, rotación del celular, MOV, apagado por filtro, celular | 21 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).
 | `seguridad.js` | Nombres de usuario ocultos a visitantes: REST de usuarios 401, ?author 404, sin sitemap de usuarios, Store API pública, error de acceso genérico, editor con sesión intacto | 7 |

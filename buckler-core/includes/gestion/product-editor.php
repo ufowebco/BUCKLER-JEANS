@@ -147,6 +147,7 @@ function bk_gp_form_meta() {
 			'allCats'  => bk_gp_cat_tree(),
 			'maxImage' => bk_gp_max_size( 'image' ),
 			'maxVideo' => bk_gp_max_size( 'video' ),
+			'videoOpt' => bk_gp_video_opt(),
 		)
 	);
 }
@@ -718,6 +719,40 @@ function bk_gp_clean_html( $html ) {
 function bk_gp_max_size( $kind ) {
 	$own = 'video' === $kind ? 80 * MB_IN_BYTES : 15 * MB_IN_BYTES;
 	return (int) min( $own, wp_max_upload_size() );
+}
+
+/**
+ * Optimización del video de producto en el navegador de quien lo sube (antes de enviarlo): se reduce al lado corto
+ * `side`, a `bitrate` bits por segundo y `fps` cuadros, sin audio (la tienda lo reproduce en silencio). Si el
+ * navegador no puede convertir, se sube el original. `on` false lo apaga.
+ *
+ * - min: por debajo de ese peso (bytes) el video se sube tal cual.
+ * - max_source: peso máximo del video original que se acepta para convertir.
+ *
+ * @return array<string,mixed>
+ */
+function bk_gp_video_opt() {
+	$o = (array) apply_filters(
+		'bk_gp_video_opt',
+		array(
+			'on'         => true,
+			'side'       => 1080,
+			'bitrate'    => 3000000,
+			'fps'        => 30,
+			'codecs'     => array( 'avc' ),
+			'min'        => 4 * MB_IN_BYTES,
+			'max_source' => 600 * MB_IN_BYTES,
+		)
+	);
+	return array(
+		'on'        => ! empty( $o['on'] ),
+		'side'      => max( 360, (int) $o['side'] ),
+		'bitrate'   => max( 500000, (int) $o['bitrate'] ),
+		'fps'       => max( 15, (int) $o['fps'] ),
+		'codecs'    => array_values( array_map( 'strval', (array) $o['codecs'] ) ),
+		'min'       => max( 0, (int) $o['min'] ),
+		'maxSource' => max( 0, (int) $o['max_source'] ),
+	);
 }
 
 /**

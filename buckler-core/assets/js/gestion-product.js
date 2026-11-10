@@ -110,8 +110,8 @@
 	const videoHtml = () => st.video ? `<div class="bk-gp-video">
 			<video src="${esc(st.video.url)}" muted playsinline controls preload="metadata" width="160"></video>
 			<button type="button" class="bk-g-btn is-ghost is-small" data-video-del>${C.icons.trash} Quitar video</button></div>`
-		: `<label class="bk-gp-drop is-row">${C.icons.video}<span>Agregar video</span><small>MP4 · máx. ${mb(meta.maxVideo)} · se muestra en la galería de la ficha</small>
-			<input type="file" name="video" accept="video/mp4" class="bk-g-sr"></label>`;
+		: `<label class="bk-gp-drop is-row">${C.icons.video}<span>Agregar video</span><small>${vopt().on ? 'MP4 o MOV · se optimiza solo al subirlo (más liviano y sin audio)' : `MP4 · máx. ${mb(meta.maxVideo)}`} · se muestra en la galería de la ficha</small>
+			<input type="file" name="video" accept="${vopt().on ? 'video/mp4,video/quicktime,.mp4,.mov,.m4v' : 'video/mp4'}" class="bk-g-sr"></label>`;
 
 	const discount = () => {
 		const r = Number(digits(st.regular)); const s = Number(digits(st.sale));
@@ -360,13 +360,72 @@
 		}
 	}
 
+	/* Video: se optimiza en el navegador antes de subirlo (vendor/bk-video-opt.js, carga diferida). Si el navegador no
+	   puede convertirlo, se sube el original como siempre. */
+	const vopt = () => meta.videoOpt || {};
+	const mb1 = (b) => `${(b / 1048576).toFixed(b < 10485760 ? 1 : 0).replace('.', ',')} MB`;
+	let voptJs = null;
+	const loadVideoOpt = () => voptJs || (voptJs = new Promise((ok, fail) => {
+		if (window.bkVideoOptimize) { ok(); return; }
+		const el = document.createElement('script');
+		el.src = C.js.videoOpt;
+		el.onload = ok;
+		el.onerror = () => { voptJs = null; fail(new Error('load')); };
+		document.head.appendChild(el);
+	}));
+	let videoJob = null;
+
+	async function optimizeVideo(file, box) {
+		const o = vopt();
+		box.innerHTML = `<div class="bk-gp-vopt" role="status">
+			<p><strong>Optimizando video…</strong> <span data-vopt-pct>0 %</span></p>
+			<progress max="100" value="0" aria-label="Avance de la optimización del video"></progress>
+			<p class="bk-gp-vopt__hint">Lo estamos dejando más liviano para que cargue rápido en la tienda. No cierres esta pestaña.</p>
+			<button type="button" class="bk-g-btn is-ghost is-small" data-vopt-cancel>Cancelar</button></div>`;
+		const ctl = new AbortController();
+		videoJob = ctl;
+		try {
+			await loadVideoOpt();
+			const d = await window.bkVideoOptimize(file, { side: o.side, bitrate: o.bitrate, fps: o.fps, codecs: o.codecs, signal: ctl.signal }, (p) => {
+				const n = Math.min(100, Math.round(p * 100));
+				const bar = box.querySelector('progress');
+				if (bar) { bar.value = n; box.querySelector('[data-vopt-pct]').textContent = `${n} %`; }
+			});
+			return d.file;
+		} finally { videoJob = null; }
+	}
+
 	async function addVideo(file) {
-		if (file.type !== 'video/mp4') { toast('El video debe ser MP4.', 'err'); return; }
-		if (file.size > meta.maxVideo) { toast(`El video pesa más de ${mb(meta.maxVideo)}.`, 'err'); return; }
+		const o = vopt();
+		const isMp4 = file.type === 'video/mp4' || /\.(mp4|m4v)$/i.test(file.name);
+		const isMov = file.type === 'video/quicktime' || /\.mov$/i.test(file.name);
+		if (!isMp4 && !(o.on && isMov)) { toast(o.on ? 'El video debe ser MP4 o MOV.' : 'El video debe ser MP4.', 'err'); return; }
+		const top = o.on ? Math.max(o.maxSource || 0, meta.maxVideo) : meta.maxVideo;
+		if (file.size > top) { toast(`El video pesa más de ${mb(top)}.`, 'err'); return; }
 		const box = $('#bk-gp-video');
-		box.innerHTML = '<p class="bk-g-loading">Subiendo video…</p>';
 		st.uploading++;
-		try { const d = await upload(file); st.video = { id: d.id, url: d.url }; dirty = true; } catch (e) { toast(e.message, 'err'); }
+		let send = file;
+		let note = '';
+		try {
+			if (o.on && (file.size > (o.min || 0) || !isMp4)) {
+				try {
+					const small = await optimizeVideo(file, box);
+					if (small.size < file.size * 0.9 || !isMp4) {
+						send = small;
+						note = `Video optimizado: de ${mb1(file.size)} a ${mb1(small.size)}.`;
+					}
+				} catch (e) {
+					if (e.code === 'cancel') throw e;
+					if (!isMp4) throw new Error('Este navegador no pudo convertir el video. Súbelo en MP4 o prueba desde Chrome.');
+				}
+			}
+			if (send.size > meta.maxVideo) throw new Error(`El video pesa más de ${mb(meta.maxVideo)}. Redúcelo antes de subirlo.`);
+			if ($('#bk-gp-video')) $('#bk-gp-video').innerHTML = '<p class="bk-g-loading">Subiendo video…</p>';
+			const d = await upload(send);
+			st.video = { id: d.id, url: d.url };
+			dirty = true;
+			if (note) toast(note);
+		} catch (e) { if (e.code !== 'cancel') toast(e.message, 'err'); }
 		st.uploading--;
 		if ($('#bk-gp-video')) $('#bk-gp-video').innerHTML = videoHtml();
 	}
@@ -465,6 +524,7 @@
 			($('[data-img-del]') || $('[name="photos"]'))?.focus();
 			return;
 		}
+		if (t.closest('[data-vopt-cancel]')) { videoJob?.abort(); return; }
 		if (t.closest('[data-video-del]')) {
 			st.video = null;
 			dirty = true;

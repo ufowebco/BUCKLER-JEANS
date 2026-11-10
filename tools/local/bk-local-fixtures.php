@@ -333,3 +333,13 @@ add_filter(
 	10,
 	2
 );
+
+// Optimizador de video (0.18.32): el Chromium de pruebas no codifica H.264; la opción bk_test_video_opt (JSON, p. ej.
+// {"codecs":["vp9"],"min":1000000}) ajusta bk_gp_video_opt() para probar la mecánica con VP9.
+add_filter(
+	'bk_gp_video_opt',
+	static function ( $o ) {
+		$t = json_decode( (string) get_option( 'bk_test_video_opt' ), true );
+		return is_array( $t ) ? array_merge( $o, $t ) : $o;
+	}
+);
