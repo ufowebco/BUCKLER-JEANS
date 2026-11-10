@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.32 → `dist/buckler-core-0.18.32.zip` (en producción sigue 0.18.31) (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.32 → `dist/buckler-core-0.18.32.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -832,7 +832,7 @@ Versión actual 0.18.32 → `dist/buckler-core-0.18.32.zip` (en producción sigu
   `edits` y `prev`; historial `guia_edit` y nota "Guía corregida: A → B". Mismos datos = reenvío normal sin aviso
   (no cuenta como corrección). La vista previa devuelve `fixed` (botón "Confirmar y enviar guía corregida a…").
   Icono `edit` (lucide:pencil). Suite `ronda1831.js` (23); envio.js adaptada.
-- **0.18.32 (2026-11-10, empaquetada; instalar solo tras aprobación del cliente): video de producto optimizado al subir**
+- **0.18.32 (2026-11-10, aprobada e instalada): video de producto optimizado al subir**
   (pedido del cliente: los videos pesan mucho; medido en producción: 24 videos, promedio 31,8 MB, máx. 54,9 MB, 4K
   vertical a 10 Mbps con audio que la web no usa). Se convierte **en el navegador de quien lo sube** (el hosting no
   tiene ffmpeg): `assets/js/vendor/bk-video-opt.js` (Mediabunny 1.65.2, MPL-2.0, WebCodecs; 397 KB, carga diferida solo al
