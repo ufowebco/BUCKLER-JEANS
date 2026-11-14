@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.33 → `dist/buckler-core-0.18.33.zip` (en producción 0.18.32) (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.33 → `dist/buckler-core-0.18.33.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -844,7 +844,7 @@ Versión actual 0.18.33 → `dist/buckler-core-0.18.33.zip` (en producción 0.18
   H.264): MP4 se sube tal cual; MOV → aviso. Los videos ya subidos NO cambian. El Chromium de pruebas no codifica
   H.264: la suite usa VP9 con la opción de fixture `bk_test_video_opt`; **H.264 real solo lo puede probar el cliente**.
   En local `wp_max_upload_size()` = 2 MB. Suite `ronda1832.js` (21; correr sola, nunca dos a la vez).
-- **0.18.33 (2026-11-14, empaquetada; instalar tras aprobación del cliente):**
+- **0.18.33 (2026-11-14, aprobada e instalada):**
   - Editor de productos: el interruptor **Nuevo** marca/desmarca al instante "LÍNEA NUEVA" y "NUEVO – línea" en "Todas
     las categorías" y al revés (`newIds` por línea en `product-form`, `setNew()` en gestion-product.js). El guardado ya
     las quitaba; solo la lista no lo reflejaba (el cliente lo hacía dos veces).
