@@ -76,7 +76,7 @@
 
 	// Todas las categorías de la tienda (árbol). Se sincroniza con "Prenda" y con la línea.
 	const treeHtml = () => `<details class="bk-gp-tree"><summary>Todas las categorías <small>(${st.all_cats.length} marcadas)</small></summary>
-		<p class="bk-g-hint">Marca o desmarca cualquier categoría de la tienda. "Nuevo" y "¡Sale!" también se ajustan solos al cambiar el interruptor Nuevo o el precio rebajado.</p>
+		<p class="bk-g-hint">Marca o desmarca cualquier categoría de la tienda. Al apagar o encender <b>Nuevo</b> se quitan o ponen solas "LÍNEA NUEVA" y "NUEVO" de la línea; "¡Sale!" se ajusta con el precio rebajado.</p>
 		<ul>${meta.allCats.map((c) => `<li style="--d:${c.depth}"><label class="bk-gp-tcat"><input type="checkbox" name="all_cats" value="${c.id}" ${st.all_cats.includes(c.id) ? 'checked' : ''}><span>${esc(c.name)}</span><small>${c.count}</small></label></li>`).join('')}</ul></details>`;
 	const setTree = (id, on) => {
 		const i = st.all_cats.indexOf(id);
@@ -86,6 +86,16 @@
 		if (box) box.checked = on;
 		const sum = document.querySelector('#bk-gp .bk-gp-tree summary small');
 		if (sum) sum.textContent = `(${st.all_cats.length} marcadas)`;
+	};
+
+	// Interruptor Nuevo ⇄ categorías "LÍNEA NUEVA" + "NUEVO – línea": se marcan/desmarcan juntas al instante.
+	const newIds = (line = st.line) => (meta.lines[line]?.newIds || []).map(Number);
+	const setNew = (on) => {
+		st.is_new = on;
+		const sw = document.querySelector('#bk-gp [name="is_new"]');
+		if (sw) sw.checked = on;
+		Object.keys(meta.lines).forEach((l) => newIds(l).forEach((id) => setTree(id, false)));
+		if (on) newIds().forEach((id) => setTree(id, true));
 	};
 
 	const imagesHtml = () => `<ul class="bk-gp-imgs" aria-label="Fotos del producto">
@@ -448,6 +458,7 @@
 			prev.forEach((id) => setTree(id, false));
 			readForm();
 			setTree(meta.lines[st.line].term, true);
+			if (st.is_new) setNew(true);
 			st.cats = [];
 			st.sizes = {};
 			$('#bk-gp-cats').innerHTML = catsHtml();
@@ -455,8 +466,10 @@
 			$('#bk-gp-sku-h').textContent = meta.lines[st.line].suffix ? `En ${meta.lines[st.line].label} la REF termina en${meta.lines[st.line].suffix} (ej.: 816${meta.lines[st.line].suffix}).` : 'Debe ser única. El mismo modelo en Curvy lleva PLUS al final.';
 		}
 		if (t.name === 'cats') setTree(Number(t.value), t.checked);
+		if (t.name === 'is_new') setNew(t.checked);
 		if (t.name === 'all_cats') {
 			setTree(Number(t.value), t.checked);
+			if (newIds().includes(Number(t.value)) && t.checked !== st.is_new) setNew(t.checked);
 			const chip = f.querySelector(`[name="cats"][value="${t.value}"]`);
 			if (chip) chip.checked = t.checked;
 		}

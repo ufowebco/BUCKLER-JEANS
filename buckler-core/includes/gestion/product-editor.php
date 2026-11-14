@@ -137,6 +137,7 @@ function bk_gp_form_meta() {
 			'label'  => $l['label'],
 			'note'   => $l['sizes'],
 			'suffix' => $l['sku_suffix'] ?? '',
+			'newIds' => bk_gp_new_ids( $slug ),
 			'sizes'  => array_map( static fn( $t ) => array( 'slug' => $t->slug, 'name' => $t->name ), bk_gp_sizes( $slug ) ),
 			'cats'   => array_map( static fn( $t ) => array( 'id' => $t->term_id, 'name' => bk_nice_label( $t->name ) ), bk_gp_children( $slug ) ),
 		);
