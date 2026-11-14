@@ -2,7 +2,9 @@
  * Gestión de tienda: pedido manual (#pedidos/nuevo). Para clientas especiales o ventas por WhatsApp: se eligen las
  * prendas (buscador por nombre o REF, tallas con lo que queda), los datos de la clienta, el medio de pago y el estado.
  * Al guardar, el pedido descuenta el inventario (las prendas quedan reservadas).
- * Depende de window.bkGApp (gestion.js). Datos: bk/v1/gestion/manual/products, orders/manual.
+ * También "Cambiar prendas" de un pedido (#pedidos/prendas/ID): quitar, cambiar talla o agregar prendas; al confirmar
+ * se pregunta si cada prenda que sale vuelve al inventario y se avisa si el total cambia (sin correo a la clienta).
+ * Depende de window.bkGApp (gestion.js). Datos: bk/v1/gestion/manual/products, orders/manual, orders/{id}/items.
  */
 (() => {
 	'use strict';
@@ -13,7 +15,11 @@
 
 	const money = (n) => `$${Math.round(Number(n) || 0).toLocaleString('es-CO')}`;
 	const digits = (v) => String(v ?? '').replace(/\D/g, '');
-	let lines = []; // { id, name, size, sku, img, qty, price, base, stock }
+	let lines = []; // { id, name, size, sku, img, qty, price, base, stock, max, item?, origQty? }
+	let mode = 'new'; // 'new' = pedido manual · 'edit' = cambiar prendas de un pedido
+	let edit = null; // { id, number, total, shipping, holds }
+	let removed = []; // Líneas del pedido que salen (modo edit).
+	let pending = null; // Vista previa del cambio (modo edit).
 	let found = [];
 	let timer = 0;
 	let reqSeq = 0;
@@ -24,10 +30,14 @@
 		['processing', 'Pagado', 'Queda "En proceso", listo para despachar.'],
 	];
 
-	const leaveGuard = (e) => { if (lines.length) { e.preventDefault(); e.returnValue = ''; } };
+	const changed = () => mode === 'edit' ? (removed.length > 0 || lines.some((l) => !l.item || l.qty !== l.origQty)) : lines.length > 0;
+	const leaveGuard = (e) => { if (changed()) { e.preventDefault(); e.returnValue = ''; } };
 
 	function view() {
 		A.closeDrawer?.(); // Si venía de ver un pedido, el panel lateral no queda encima del formulario.
+		mode = 'new';
+		edit = null;
+		removed = [];
 		lines = [];
 		found = [];
 		window.addEventListener('beforeunload', leaveGuard);
@@ -82,7 +92,10 @@
 	}
 
 	const stockText = (s) => (s.stock === null ? 'disponible' : s.stock === 0 ? 'agotada' : `quedan ${s.stock}`);
-	const inCart = (id) => lines.filter((l) => l.id === id).reduce((a, l) => a + l.qty, 0);
+	// Unidades de esa talla que salen del inventario por este formulario (en un cambio, las que el pedido ya tenía
+	// apartadas no cuentan).
+	const inCart = (id) => lines.filter((l) => l.id === id).reduce((a, l) => a + (l.item && edit?.holds ? Math.max(0, l.qty - l.origQty) : l.qty), 0);
+	const lineMax = (l) => (l.max === undefined ? l.stock : l.max);
 
 	function paintResults() {
 		const box = $('#bk-gm-results');
@@ -102,25 +115,35 @@
 	function paintLines() {
 		const box = $('#bk-gm-lines');
 		if (!box) return;
-		if (!lines.length) { box.innerHTML = '<p class="bk-g-empty bk-gm-empty">Todavía no hay prendas en el pedido.</p>'; return; }
-		box.innerHTML = `<h3 class="bk-gm-sub">En el pedido</h3><ul class="bk-gm-lines">${lines.map((l, i) => `<li class="bk-gm-line">
+		if (!lines.length && !removed.length) { box.innerHTML = '<p class="bk-g-empty bk-gm-empty">Todavía no hay prendas en el pedido.</p>'; return; }
+		box.innerHTML = `<h3 class="bk-gm-sub">${mode === 'edit' ? 'Queda en el pedido' : 'En el pedido'}</h3>` + (lines.length ? '' : '<p class="bk-g-empty bk-gm-empty">El pedido debe quedar con al menos una prenda.</p>') + `<ul class="bk-gm-lines">${lines.map((l, i) => `<li class="bk-gm-line">
 			${l.img ? `<img src="${esc(l.img)}" alt="" width="44" height="44">` : '<span class="bk-gm-noimg" aria-hidden="true"></span>'}
-			<div class="bk-gm-line__name"><b>${esc(l.name)}</b><small>Talla ${esc(l.size)}${l.sku ? ` · REF ${esc(l.sku)}` : ''}${l.stock !== null ? ` · quedan ${l.stock}` : ''}</small></div>
-			<label class="bk-gm-price"><span>Precio c/u</span><input inputmode="numeric" data-price="${i}" value="${Math.round(l.price).toLocaleString('es-CO')}" aria-label="Precio de ${esc(l.name)} talla ${esc(l.size)}"></label>
+			<div class="bk-gm-line__name"><b>${esc(l.name)}</b><small>Talla ${esc(l.size)}${l.sku ? ` · REF ${esc(l.sku)}` : ''}${l.item ? ' · ya estaba en el pedido' : (l.stock !== null ? ` · quedan ${l.stock}` : '')}</small>
+				${l.item && l.sku ? `<button type="button" class="bk-gm-swap" data-swap="${i}">Cambiar talla o prenda</button>` : ''}</div>
+			${l.item ? `<div class="bk-gm-price"><span>Precio c/u</span><b>${money(l.price)}</b></div>` : `<label class="bk-gm-price"><span>Precio c/u</span><input inputmode="numeric" data-price="${i}" value="${Math.round(l.price).toLocaleString('es-CO')}" aria-label="Precio de ${esc(l.name)} talla ${esc(l.size)}"></label>`}
 			<div class="bk-gm-qty" role="group" aria-label="Cantidad de ${esc(l.name)} talla ${esc(l.size)}">
 				<button type="button" data-qty="${i}" data-d="-1" aria-label="Quitar una">−</button><output>${l.qty}</output>
-				<button type="button" data-qty="${i}" data-d="1" aria-label="Agregar una" ${l.stock !== null && l.qty >= l.stock ? 'disabled' : ''}>+</button></div>
+				<button type="button" data-qty="${i}" data-d="1" aria-label="Agregar una" ${lineMax(l) !== null && l.qty >= lineMax(l) ? 'disabled' : ''}>+</button></div>
 			<b class="bk-gm-sum">${money(l.price * l.qty)}</b>
 			<button type="button" class="bk-gm-del" data-del="${i}" aria-label="Quitar ${esc(l.name)} talla ${esc(l.size)} del pedido">${C.icons.trash || '×'}</button>
-		</li>`).join('')}</ul>`;
+		</li>`).join('')}</ul>${removed.length ? `<h3 class="bk-gm-sub">Sale del pedido</h3><ul class="bk-gm-lines bk-gm-out">${removed.map((l, i) => `<li class="bk-gm-line is-out">
+			${l.img ? `<img src="${esc(l.img)}" alt="" width="44" height="44">` : '<span class="bk-gm-noimg" aria-hidden="true"></span>'}
+			<div class="bk-gm-line__name"><b>${esc(l.name)}</b><small>Talla ${esc(l.size)} · ${l.origQty} prenda${l.origQty === 1 ? '' : 's'}</small></div>
+			<button type="button" class="bk-g-btn is-ghost is-small" data-undo="${i}">Deshacer</button></li>`).join('')}</ul>` : ''}`;
 	}
 
 	function paintTotal() {
 		const box = $('#bk-gm-total');
 		if (!box) return;
 		const sub = lines.reduce((a, l) => a + l.price * l.qty, 0);
-		const ship = Number(digits($('#bk-gm [name=shipping]')?.value)) || 0;
+		const ship = mode === 'edit' ? edit.shipping : Number(digits($('#bk-gm [name=shipping]')?.value)) || 0;
 		const n = lines.reduce((a, l) => a + l.qty, 0);
+		if (mode === 'edit') {
+			const nt = sub + ship;
+			const same = Math.abs(nt - edit.total) < 1;
+			box.innerHTML = `<span>${n} prenda${n === 1 ? '' : 's'}${ship ? ` · Envío ${money(ship)}` : ''}</span>${same ? `<b>Total ${money(nt)}</b>` : `<b>Total ${money(edit.total)} → ${money(nt)}</b>`}`;
+			return;
+		}
 		box.innerHTML = n ? `<span>${n} prenda${n === 1 ? '' : 's'} · Subtotal ${money(sub)}${ship ? ` · Envío ${money(ship)}` : ' · Envío gratis'}</span><b>Total ${money(sub + ship)}</b>` : '';
 	}
 
@@ -128,7 +151,7 @@
 
 	function syncNotify() {
 		const f = $('#bk-gm');
-		if (!f) return;
+		if (!f || mode === 'edit') return;
 		const st = f.querySelector('[name=status]:checked')?.value;
 		const ok = /\S+@\S+\.\S+/.test(f.email.value) && st !== 'pending';
 		f.notify.disabled = !ok;
@@ -184,7 +207,7 @@
 			const s = p && p.sizes.find((x) => String(x.id) === add.dataset.add);
 			if (!s) return;
 			const cur = lines.find((l) => l.id === s.id);
-			if (cur) { if (s.stock === null || cur.qty < s.stock) cur.qty++; } else lines.push({ id: s.id, name: p.name, size: s.label, sku: p.sku, img: p.img, qty: 1, price: s.price, base: s.price, stock: s.stock });
+			if (cur) { if (lineMax(cur) === null || cur.qty < lineMax(cur)) cur.qty++; } else lines.push({ id: s.id, name: p.name, size: s.label, sku: p.sku, img: p.img, qty: 1, price: s.price, base: s.price, stock: s.stock });
 			showErr('');
 			paint();
 			// Aviso solo para lectores de pantalla: la prenda ya se ve en "En el pedido" (un aviso visual tapaba el botón).
@@ -197,19 +220,45 @@
 			const l = lines[Number(q.dataset.qty)];
 			if (!l) return;
 			l.qty += Number(q.dataset.d);
-			if (l.qty < 1) lines.splice(Number(q.dataset.qty), 1);
-			else if (l.stock !== null && l.qty > l.stock) l.qty = l.stock;
+			if (l.qty < 1) { lines.splice(Number(q.dataset.qty), 1); if (l.item) { l.qty = l.origQty; removed.push(l); } }
+			else if (lineMax(l) !== null && l.qty > lineMax(l)) l.qty = lineMax(l);
 			paint();
 			return;
 		}
 		const del = e.target.closest('[data-del]');
-		if (del) { lines.splice(Number(del.dataset.del), 1); paint(); $('#bk-gm-q')?.focus(); }
+		if (del) {
+			const [l] = lines.splice(Number(del.dataset.del), 1);
+			if (l?.item) { l.qty = l.origQty; removed.push(l); }
+			paint();
+			$('#bk-gm-q')?.focus();
+			return;
+		}
+		const undo = e.target.closest('[data-undo]');
+		if (undo) { const [l] = removed.splice(Number(undo.dataset.undo), 1); if (l) lines.push(l); paint(); return; }
+		const swap = e.target.closest('[data-swap]');
+		if (swap) {
+			// Cambio de talla: la prenda sale del pedido y se buscan sus otras tallas para elegir la nueva.
+			const i = Number(swap.dataset.swap);
+			const l = lines[i];
+			if (!l) return;
+			lines.splice(i, 1);
+			l.qty = l.origQty;
+			removed.push(l);
+			const q2 = $('#bk-gm-q');
+			q2.value = l.sku;
+			search(l.sku);
+			paint();
+			q2.focus();
+			const live = $('#bk-gm-live');
+			if (live) live.textContent = `${l.name} talla ${l.size} sale del pedido. Elige la talla o prenda nueva en los resultados.`;
+		}
 	});
 	document.addEventListener('submit', async (e) => {
 		const f = e.target.closest('#bk-gm');
 		if (!f) return;
 		e.preventDefault();
 		showErr('');
+		if (mode === 'edit') { reviewEdit(); return; }
 		if (!lines.length) { showErr('Agrega al menos una prenda.', 'items'); return; }
 		if (!f.first_name.value.trim()) { showErr('Escribe el nombre de la clienta.', 'first_name'); return; }
 		let ph = digits(f.phone.value);
@@ -247,7 +296,115 @@
 			btn.removeAttribute('aria-busy');
 		}
 	});
-	window.addEventListener('hashchange', () => { if (!location.hash.startsWith('#pedidos/nuevo')) window.removeEventListener('beforeunload', leaveGuard); });
+	window.addEventListener('hashchange', () => { if (mode === 'new' && !location.hash.startsWith('#pedidos/nuevo')) window.removeEventListener('beforeunload', leaveGuard); });
 
-	window.bkGManual = { view };
+	/* --- Cambiar prendas de un pedido -------------------------------------------------------- */
+	async function editItems(id) {
+		A.closeDrawer?.();
+		mode = 'edit';
+		lines = [];
+		removed = [];
+		found = [];
+		pending = null;
+		main.innerHTML = '<div class="bk-g-loading">Cargando prendas del pedido…</div>';
+		let d;
+		try { d = await api(`orders/${id}/items`); } catch (x) { main.innerHTML = `<p class="bk-g-error">${esc(x.message)}</p><p><a class="bk-g-link" href="#pedidos">← Volver a pedidos</a></p>`; return; }
+		if (mode !== 'edit' || !location.hash.startsWith(`#pedidos/prendas/${id}`)) return;
+		edit = { id: d.id, number: d.number, total: d.total, shipping: d.shipping, holds: d.holds };
+		lines = d.lines.map((l) => ({ ...l, origQty: l.qty, base: l.price, max: l.stock === null ? null : (d.holds ? l.qty + l.stock : l.stock) }));
+		window.addEventListener('beforeunload', leaveGuard);
+		main.innerHTML = `<div class="bk-g-h1row"><h1 class="bk-g-h1">Cambiar prendas · Pedido #${esc(d.number)}</h1><a class="bk-g-link" href="#pedidos" data-back="${d.id}">← Volver al pedido</a></div>
+			<p class="bk-g-hint bk-gm-lead">Quita, cambia de talla o agrega prendas. Antes de guardar te mostramos el resumen: ahí eliges si cada prenda que sale <b>vuelve al inventario</b> y ves si cambia el valor. No se envía correo a la clienta.</p>
+			<form class="bk-gm is-edit" id="bk-gm" novalidate>
+				<section class="bk-g-card" aria-labelledby="bk-gm-h1">
+					<h2 id="bk-gm-h1">Prendas</h2>
+					<div id="bk-gm-lines"></div>
+					<h3 class="bk-gm-sub">Agregar una prenda o talla</h3>
+					<label class="bk-g-search bk-gm-search"><span class="bk-g-sr">Buscar prenda por nombre o REF</span>${C.icons.search}
+						<input type="search" id="bk-gm-q" placeholder="Busca por nombre o REF (ej. 9898, falda, flare)" autocomplete="off" aria-describedby="bk-gm-qhint"></label>
+					<p class="bk-g-hint" id="bk-gm-qhint">Toca una talla para agregarla. Las tallas agotadas no se pueden elegir.</p>
+					<div class="bk-gm-results" id="bk-gm-results" aria-live="polite"></div>
+					<p class="bk-g-sr" id="bk-gm-live" role="status" aria-live="polite"></p>
+				</section>
+				<div class="bk-gm-foot">
+					<div class="bk-gm-total" id="bk-gm-total" aria-live="polite"></div>
+					<p class="bk-gm-err" role="alert" id="bk-gm-err"></p>
+					<button type="submit" class="bk-g-btn" id="bk-gm-save">Revisar cambio</button>
+				</div>
+			</form>
+			<dialog class="bk-gm-dlg" id="bk-gm-dlg" aria-labelledby="bk-gm-dlgt"></dialog>`;
+		paint();
+	}
+
+	const editBody = () => lines.map((l) => (l.item ? { item: l.item, qty: l.qty } : { id: l.id, qty: l.qty, price: l.price !== l.base ? l.price : '' }));
+
+	async function reviewEdit() {
+		if (!changed()) { showErr('No hay cambios en las prendas.', 'items'); return; }
+		if (!lines.length) { showErr('El pedido debe quedar con al menos una prenda. Si la clienta no se lleva nada, cancela el pedido.', 'items'); return; }
+		const btn = $('#bk-gm-save');
+		btn.disabled = true;
+		btn.setAttribute('aria-busy', 'true');
+		try {
+			pending = await api(`orders/${edit.id}/items`, { method: 'POST', body: { lines: editBody(), confirm: false } });
+			openConfirm(pending);
+		} catch (x) { showErr(x.message, x.field); }
+		btn.disabled = false;
+		btn.removeAttribute('aria-busy');
+	}
+
+	function openConfirm(p) {
+		const dlg = $('#bk-gm-dlg');
+		const up = p.diff > 0;
+		const alert = Math.abs(p.diff) >= 1 ? `<div class="bk-gm-alert" role="alert">${C.icons.info || ''}<p><b>El valor del pedido va a cambiar: de ${esc(p.old_money)} a ${esc(p.new_money)}.</b>
+			${up ? `La clienta debe pagar <b>${esc(p.diff_money)}</b> más.` : `Hay que devolverle <b>${esc(p.diff_money)}</b> a la clienta.`}</p></div>` : '';
+		dlg.innerHTML = `<form method="dialog" class="bk-gm-dlg__in" id="bk-gm-dlgf">
+			<h2 id="bk-gm-dlgt">Confirmar cambio · Pedido #${esc(edit.number)}</h2>
+			${p.out.length ? `<h3>Sale del pedido</h3><ul class="bk-gm-chg">${p.out.map((x) => `<li><b>${x.qty} × ${esc(x.label)}</b>
+				${x.back ? `<label class="bk-gm-check"><input type="checkbox" name="restock" value="${x.item}" checked><span>Vuelve al inventario${x.back < x.qty ? ` (${x.back} de ${x.qty})` : ''} <small>Desmárcalo si la prenda llegó dañada o no regresa.</small></span></label>`
+					: '<small>Esta prenda no se había descontado del inventario: no hay nada que devolver.</small>'}</li>`).join('')}</ul>` : ''}
+			${p.in.length ? `<h3>Entra al pedido</h3><ul class="bk-gm-chg">${p.in.map((x) => `<li><b>${x.qty} × ${esc(x.label)}</b>${p.holds ? '<small>Se descuenta del inventario al confirmar.</small>' : ''}</li>`).join('')}</ul>` : ''}
+			${alert}
+			<p class="bk-g-hint">${alert ? '' : `El total sigue igual: ${esc(p.new_money)}. `}No se envía correo a la clienta.</p>
+			<p class="bk-gm-err" role="alert" id="bk-gm-dlgerr"></p>
+			<div class="bk-gm-dlg__btns"><button type="button" class="bk-g-btn is-ghost" data-dlg-close>Volver</button>
+				<button type="button" class="bk-g-btn" data-dlg-ok>Confirmar cambio</button></div></form>`;
+		dlg.showModal();
+		dlg.querySelector('[data-dlg-ok]').focus();
+	}
+
+	async function confirmEdit(btn) {
+		const dlg = $('#bk-gm-dlg');
+		const restock = {};
+		(pending?.out || []).forEach((x) => { const c = dlg.querySelector(`[name=restock][value="${x.item}"]`); restock[x.item] = !!c?.checked; });
+		btn.disabled = true;
+		btn.setAttribute('aria-busy', 'true');
+		try {
+			const d = await api(`orders/${edit.id}/items`, { method: 'POST', body: { lines: editBody(), restock, confirm: true } });
+			const id = edit.id;
+			lines = [];
+			removed = [];
+			window.removeEventListener('beforeunload', leaveGuard);
+			dlg.close();
+			A.forget('orders');
+			A.forget('summary');
+			toast(`Prendas cambiadas · Total ${d.new_money}`);
+			location.hash = '#pedidos';
+			setTimeout(() => A.showOrder(id), 300);
+		} catch (x) {
+			$('#bk-gm-dlgerr').textContent = x.message;
+			btn.disabled = false;
+			btn.removeAttribute('aria-busy');
+		}
+	}
+
+	document.addEventListener('click', (e) => {
+		if (e.target.closest('#bk-gm-dlg [data-dlg-close]')) { $('#bk-gm-dlg').close(); $('#bk-gm-save')?.focus(); return; }
+		const ok = e.target.closest('#bk-gm-dlg [data-dlg-ok]');
+		if (ok) { confirmEdit(ok); return; }
+		const back = e.target.closest('[data-back]');
+		if (back && mode === 'edit') { const id = back.dataset.back; setTimeout(() => A.showOrder(id), 300); }
+	});
+	window.addEventListener('hashchange', () => { if (!location.hash.startsWith('#pedidos/prendas/')) { if (mode === 'edit') window.removeEventListener('beforeunload', leaveGuard); } });
+
+	window.bkGManual = { view, editItems };
 })();

@@ -643,6 +643,7 @@ function bk_g_order( WP_REST_Request $r ) {
 				'address'     => wp_strip_all_tags( str_replace( '<br/>', ', ', $o->get_formatted_shipping_address() ? $o->get_formatted_shipping_address() : $o->get_formatted_billing_address() ) ),
 				'note'        => $o->get_customer_note(),
 				'items'       => $items,
+				'items_edit'  => function_exists( 'bk_goi_editable' ) && bk_goi_editable( $o ),
 				'subtotal'    => bk_g_money( $o->get_subtotal() ),
 				'shipping'    => bk_g_money( $o->get_shipping_total() ),
 				'discount'    => (float) $o->get_discount_total() > 0 ? '−' . bk_g_money( $o->get_discount_total() ) : '',

@@ -1287,3 +1287,24 @@ code { padding: 1px 5px; border-radius: 4px; background: #eef1f4; font-size: .9e
 .bk-gp-vopt progress { width: 100%; height: 10px; accent-color: var(--g-navy, #1a3955); }
 .bk-gp-vopt__hint { color: var(--g-mute); font-size: 13px; }
 .bk-gp-vopt .bk-g-btn { justify-self: start; }
+
+/* Cambiar prendas de un pedido (#pedidos/prendas/ID). */
+.bk-gm-swap { display: inline-flex; align-items: center; min-height: 32px; margin-top: 4px; padding: 0; border: 0; background: none; color: var(--g-navy); font: inherit; font-size: 13px; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.bk-gm-line.is-out { grid-template-columns: 44px minmax(0, 1fr) auto; grid-template-areas: none; background: #fbeeee; }
+.bk-gm-line.is-out > * { grid-area: auto; }
+.bk-gm-line.is-out b { text-decoration: line-through; color: var(--g-mute); }
+.bk-gm-dlg { width: min(560px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 0; border-radius: 16px; box-shadow: 0 20px 60px rgb(16 32 47 / .3); color: var(--g-ink); }
+.bk-gm-dlg::backdrop { background: rgb(16 32 47 / .5); }
+.bk-gm-dlg__in { display: grid; gap: 10px; padding: 22px; }
+.bk-gm-dlg h2 { margin: 0; font-size: 19px; color: var(--g-navy); }
+.bk-gm-dlg h3 { margin: 8px 0 0; font-size: 14px; }
+.bk-gm-chg { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.bk-gm-chg li { display: grid; gap: 2px; padding: 10px 12px; border-radius: 10px; background: #f6f8fa; }
+.bk-gm-chg small { color: var(--g-mute); }
+.bk-gm-chg .bk-gm-check { margin-top: 4px; min-height: 0; }
+.bk-gm-alert { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border: 1px solid #f0c36d; border-radius: 12px; background: #fff7e6; color: #5c3b00; }
+.bk-gm-alert svg { flex: none; margin-top: 2px; color: var(--g-warn); }
+.bk-gm-alert p { margin: 0; }
+.bk-gm-dlg__btns { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+@media (max-width: 520px) { .bk-gm-dlg__btns .bk-g-btn { flex: 1 1 100%; justify-content: center; } }
+.bk-gm-chg .bk-gm-check small { display: block; }

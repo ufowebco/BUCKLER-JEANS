@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.32 → `dist/buckler-core-0.18.32.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.33 → `dist/buckler-core-0.18.33.zip` (en producción 0.18.32) (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -844,6 +844,23 @@ Versión actual 0.18.32 → `dist/buckler-core-0.18.32.zip` (`tools/build-plugin
   H.264): MP4 se sube tal cual; MOV → aviso. Los videos ya subidos NO cambian. El Chromium de pruebas no codifica
   H.264: la suite usa VP9 con la opción de fixture `bk_test_video_opt`; **H.264 real solo lo puede probar el cliente**.
   En local `wp_max_upload_size()` = 2 MB. Suite `ronda1832.js` (21; correr sola, nunca dos a la vez).
+- **0.18.33 (2026-11-14, empaquetada; instalar tras aprobación del cliente):**
+  - Editor de productos: el interruptor **Nuevo** marca/desmarca al instante "LÍNEA NUEVA" y "NUEVO – línea" en "Todas
+    las categorías" y al revés (`newIds` por línea en `product-form`, `setNew()` en gestion-product.js). El guardado ya
+    las quitaba; solo la lista no lo reflejaba (el cliente lo hacía dos veces).
+  - **Cambiar prendas de un pedido** (pedido del cliente: cambios de talla/prenda; decisión: el total se actualiza, sin
+    correo a la clienta, alerta solo si el valor cambia). `includes/gestion/order-items.php`: `GET/POST
+    gestion/orders/{id}/items` (lines[{item, qty} | {id, qty, price?}], restock{item: bool}, confirm). Detalle del pedido
+    → "Cambiar prendas" (`items_edit`, no en cancelado/reembolsado/fallido) → `#pedidos/prendas/ID` (gestion-manual.js
+    `editItems`, mismo buscador del pedido manual; "Cambiar talla o prenda" pasa la línea a "Sale del pedido" y busca su
+    REF; Deshacer). "Revisar cambio" → `<dialog>`: sale (casilla "Vuelve al inventario", marcada) / entra / alerta
+    "El valor del pedido va a cambiar: de X a Y. La clienta debe pagar Z más | Hay que devolverle Z". Inventario por la
+    marca `_reduced_stock` de cada línea: solo vuelve lo que se había descontado; la marca se ajusta (cancelar después
+    devuelve solo lo que sigue en el pedido); lo nuevo se descuenta si el pedido ya tenía su inventario descontado
+    (`bk_goi_holds_stock`: marca del pedido o de alguna línea, el snippet 3034 solo marca líneas). Líneas que siguen
+    conservan su precio por unidad; nuevas al precio de la tienda (o el escrito). Nota + historial `prendas`.
+  - Suite `ronda1833.js` (31). Tras un reset del entorno: `seed-cards/shop/orders.php` y fixtures de fotos/video en
+    `/tmp/claude-0/bk-local/fixtures` (malo.txt, foto1-3.jpg, grande.jpg, video.mp4); gestion.js usa el pedido 464 fijo.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -888,7 +905,7 @@ Versión actual 0.18.32 → `dist/buckler-core-0.18.32.zip` (`tools/build-plugin
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21 = 996 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 24, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31 = 1027 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

@@ -129,10 +129,11 @@
 			return;
 		}
 		// Pedido manual (#pedidos/nuevo): gestion-manual.js.
-		if (valid === 'pedidos' && sub[0] === 'nuevo') {
+		// Cambiar prendas de un pedido (#pedidos/prendas/ID): mismo archivo.
+		if (valid === 'pedidos' && (sub[0] === 'nuevo' || (sub[0] === 'prendas' && sub[1]))) {
 			const seq = viewSeq;
 			if (!window.bkGManual) main.innerHTML = '<div class="bk-g-loading">Cargando…</div>';
-			loadScript('manual').then(() => { if (seq === viewSeq) window.bkGManual.view(); }).catch((e) => { main.innerHTML = `<p class="bk-g-error">${esc(e.message)}</p>`; });
+			loadScript('manual').then(() => { if (seq === viewSeq) { if (sub[0] === 'prendas') window.bkGManual.editItems(Number(sub[1])); else window.bkGManual.view(); } }).catch((e) => { main.innerHTML = `<p class="bk-g-error">${esc(e.message)}</p>`; });
 			return;
 		}
 		// Descuentos, Contenido y Ayuda: gestion-more.js.
@@ -500,7 +501,7 @@
 				${o.phone ? `<a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> · <a href="https://wa.me/57${esc(String(o.phone).replace(/\D/g, '').replace(/^57/, ''))}" target="_blank" rel="noopener">WhatsApp</a><br>` : ''}
 				<a href="mailto:${esc(o.email)}">${esc(o.email)}</a><br>${esc(o.address)}</p>
 				${o.note ? `<p class="bk-g-note"><b>Nota de la clienta:</b> ${esc(o.note)}</p>` : ''}</section>
-			<section><h3>Productos</h3><ul class="bk-g-items">${o.items.map((i) => `<li>${i.image ? `<img src="${esc(i.image)}" alt="" width="48" height="48">` : '<span></span>'}
+			<section><div class="bk-g-cust__head"><h3>Productos</h3>${o.items_edit ? `<a class="bk-g-btn is-ghost is-small" href="#pedidos/prendas/${o.id}" data-items-edit>${C.icons.edit} Cambiar prendas</a>` : ''}</div><ul class="bk-g-items">${o.items.map((i) => `<li>${i.image ? `<img src="${esc(i.image)}" alt="" width="48" height="48">` : '<span></span>'}
 				<div><b>${esc(i.name)}</b><small>${esc(i.meta)}${i.sku ? ` · REF ${esc(i.sku)}` : ''}</small></div><span>×${i.qty}</span><b>${esc(i.total)}</b></li>`).join('')}</ul>
 				<dl class="bk-g-totals"><div><dt>Subtotal</dt><dd>${esc(o.subtotal)}</dd></div>${o.discount ? `<div><dt>Descuento</dt><dd>${esc(o.discount)}</dd></div>` : ''}<div><dt>Envío</dt><dd>${esc(o.shipping)}</dd></div><div class="is-total"><dt>Total</dt><dd>${esc(o.total)}</dd></div></dl>
 				<p><small>Pago: ${esc(o.payment)}</small></p></section>
