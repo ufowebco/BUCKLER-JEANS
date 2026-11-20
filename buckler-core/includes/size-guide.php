@@ -23,8 +23,8 @@ defined( 'ABSPATH' ) || exit;
 function bk_size_guide_defaults() {
 	return array(
 		'tables' => array(
-			'linea-slim'  => array( array( '6', 64, 68, 92, 96 ), array( '8', 69, 73, 97, 101 ), array( '10', 74, 78, 102, 106 ), array( '12', 79, 83, 107, 111 ), array( '14', 84, 88, 112, 116 ) ),
-			'linea-curvy' => array( array( '14', 84, 88, 112, 116 ), array( '16', 89, 94, 117, 122 ), array( '18', 95, 100, 123, 128 ), array( '20', 101, 106, 129, 134 ), array( '22', 107, 112, 135, 140 ), array( '24', 113, 118, 141, 146 ) ),
+			'linea-slim'  => array( array( '6', 64, 68, 92, 96 ), array( '8', 69, 73, 98, 102 ), array( '10', 74, 78, 103, 107 ), array( '12', 79, 83, 108, 112 ) ),
+			'linea-curvy' => array( array( '14', 88, 92, 113, 125 ), array( '16', 92, 96, 126, 130 ), array( '18', 96, 100, 130, 134 ), array( '20', 100, 104, 134, 138 ), array( '22', 104, 108, 138, 142 ), array( '24', 108, 112, 142, 146 ) ),
 		),
 		'note'   => 'Nuestras prendas son de Índigo Stretch, un denim con elasticidad: la tabla es una guía aproximada. Si estás entre dos tallas, guíate por la cadera.',
 		'sil'    => array(
@@ -75,8 +75,16 @@ function bk_size_guide_data() {
 	if ( ! is_array( $opt ) ) {
 		return $def;
 	}
-	$out           = $def;
-	$out['tables'] = isset( $opt['tables'] ) && is_array( $opt['tables'] ) ? $opt['tables'] + $def['tables'] : $def['tables'];
+	$out    = $def;
+	$tables = isset( $opt['tables'] ) && is_array( $opt['tables'] ) ? $opt['tables'] : array();
+	// Tablas guardadas que siguen idénticas a los valores originales anteriores (2026-10-16): toman las medidas
+	// nuevas del cliente (2026-11-20). Las que alguien editó a mano se respetan.
+	foreach ( bk_size_guide_old_tables() as $line => $rows ) {
+		if ( isset( $tables[ $line ] ) && bk_size_guide_rows_key( $tables[ $line ] ) === bk_size_guide_rows_key( $rows ) ) {
+			unset( $tables[ $line ] );
+		}
+	}
+	$out['tables'] = $tables + $def['tables'];
 	$out['note']   = isset( $opt['note'] ) ? (string) $opt['note'] : $def['note'];
 	if ( isset( $opt['sil'] ) && is_array( $opt['sil'] ) ) {
 		$base = array_column( $def['sil'], null, 'k' );
@@ -89,6 +97,33 @@ function bk_size_guide_data() {
 		$out['sil'] = $sil ? $sil : $def['sil'];
 	}
 	return $out;
+}
+
+/**
+ * Medidas originales anteriores (transcritas de las imágenes ACF el 2026-10-16), para reconocer tablas guardadas
+ * sin cambios y pasarlas a las medidas nuevas.
+ *
+ * @return array<string,array>
+ */
+function bk_size_guide_old_tables() {
+	return array(
+		'linea-slim'  => array( array( '6', 64, 68, 92, 96 ), array( '8', 69, 73, 97, 101 ), array( '10', 74, 78, 102, 106 ), array( '12', 79, 83, 107, 111 ), array( '14', 84, 88, 112, 116 ) ),
+		'linea-curvy' => array( array( '14', 84, 88, 112, 116 ), array( '16', 89, 94, 117, 122 ), array( '18', 95, 100, 123, 128 ), array( '20', 101, 106, 129, 134 ), array( '22', 107, 112, 135, 140 ), array( '24', 113, 118, 141, 146 ) ),
+	);
+}
+
+/**
+ * Huella de una tabla (talla y números normalizados) para comparar sin importar tipos.
+ *
+ * @param mixed $rows Filas.
+ * @return string
+ */
+function bk_size_guide_rows_key( $rows ) {
+	$out = array();
+	foreach ( (array) $rows as $r ) {
+		$out[] = implode( '|', array_map( static fn( $v ) => is_numeric( $v ) ? (string) ( 0 + $v ) : trim( (string) $v ), array_values( (array) $r ) ) );
+	}
+	return implode( ';', $out );
 }
 
 /**
