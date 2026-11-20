@@ -332,15 +332,27 @@
 			$$('tr.is-match', box).forEach((tr) => tr.classList.remove('is-match'));
 			if (!(w > 30) && !(h > 30)) { out.textContent = out.dataset.empty || out.textContent; return; }
 			const rw = w > 30 ? pick(w, 1, 2) : null, rh = h > 30 ? pick(h, 3, 4) : null;
-			if ((w > 30 && !rw) || (h > 30 && !rh)) { out.textContent = 'Escríbenos por WhatsApp y te asesoramos con tu talla.'; return; }
-			const r = [rw, rh].filter(Boolean).sort((x, y) => rows.indexOf(y) - rows.indexOf(x))[0];
+			// Medidas por encima de la tabla: se muestra la talla más grande como la más cercana y WhatsApp para confirmar
+			// (antes solo decía "Escríbenos por WhatsApp" y la clienta se quedaba sin talla).
+			const over = (w > 30 && !rw) || (h > 30 && !rh);
+			const r = over ? rows[rows.length - 1] : [rw, rh].filter(Boolean).sort((x, y) => rows.indexOf(y) - rows.indexOf(x))[0];
 			const size = r[0];
 			const inLines = [...new Set(rows.filter((x) => x[0] === size).map((x) => x[5]))];
-			out.innerHTML = `Tu talla: <b>${size}</b> <span>· ${inLines.map((l) => names[l] || l).join(' o ')}</span>`;
+			const lineTxt = inLines.map((l) => names[l] || l).join(' o ');
+			if (over) {
+				const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+				const meas = [w > 30 ? `cintura ${f.w.value.trim()} cm` : '', h > 30 ? `cadera ${f.h.value.trim()} cm` : ''].filter(Boolean).join(' y ');
+				const msg = `Hola, quiero confirmar mi talla${f.dataset.product ? ` para ${f.dataset.product}` : ''}. Mis medidas: ${meas}. La guía me sugiere la talla ${size} (${lineTxt}).`;
+				out.innerHTML = `<span class="bk-sg__near">Tu talla más cercana: <b>${esc(size)}</b> <span>· ${esc(lineTxt)}</span></span>
+					<small class="bk-sg__over">Tus medidas están por encima de nuestra tabla. Escríbenos y te confirmamos si te queda bien.</small>
+					${f.dataset.wa ? `<a class="bk-sg__wa" href="${esc(f.dataset.wa)}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">Confirmar mi talla por WhatsApp</a>` : ''}`;
+			} else {
+				out.innerHTML = `Tu talla: <b>${size}</b> <span>· ${lineTxt}</span>`;
+			}
 			const own = box.querySelector('[role="tab"][aria-selected="true"]');
 			if (own && !inLines.includes(own.dataset.bkSgTab)) box.querySelector(`[data-bk-sg-tab="${inLines[0]}"]`)?.click();
 			$$(`tr[data-size="${CSS.escape(size)}"]`, box).forEach((tr) => tr.classList.add('is-match'));
-			if (window.bkTrack) window.bkTrack('bk_size_finder', { size });
+			if (window.bkTrack) window.bkTrack('bk_size_finder', { size, over });
 		};
 		out.dataset.empty = out.textContent;
 		f.addEventListener('input', run);

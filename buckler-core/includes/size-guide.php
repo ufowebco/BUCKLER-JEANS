@@ -311,7 +311,7 @@ function bk_size_guide_html( $product ) {
 			. '<header><h2 id="bk-size-guide-t">' . bk_icon_svg( 'lucide:ruler', 22 ) . esc_html__( 'Guía de tallas', 'buckler-core' ) . '</h2>' . $x . '</header>'
 			. ( count( $tables ) > 1 ? '<div class="bk-sg__tabs" role="tablist" aria-label="' . esc_attr__( 'Línea', 'buckler-core' ) . '">' . $tabs . '</div>' : '' )
 			. $pans
-			. '<form class="bk-sg__finder" data-bk-sg-finder data-sizes="' . esc_attr( wp_json_encode( $all ) ) . '" data-lines="' . esc_attr( wp_json_encode( $labels ) ) . '" novalidate>'
+			. '<form class="bk-sg__finder" data-bk-sg-finder data-sizes="' . esc_attr( wp_json_encode( $all ) ) . '" data-lines="' . esc_attr( wp_json_encode( $labels ) ) . '" data-wa="' . esc_url( 'https://wa.me/' . rawurlencode( (string) bk_config( 'whatsapp' ) ) ) . '" data-product="' . esc_attr( $product->get_name() . ( $product->get_sku() ? ' (REF ' . $product->get_sku() . ')' : '' ) ) . '" novalidate>'
 			. '<h3>' . esc_html__( 'Encuentra tu talla', 'buckler-core' ) . '</h3><div class="bk-sg__row">'
 			. '<label for="bk-sg-w">' . esc_html__( 'Cintura (cm)', 'buckler-core' ) . '<input id="bk-sg-w" name="w" inputmode="decimal" autocomplete="off" placeholder="' . esc_attr__( 'Ej.: 92', 'buckler-core' ) . '"></label>'
 			. '<label for="bk-sg-h">' . esc_html__( 'Cadera (cm)', 'buckler-core' ) . '<input id="bk-sg-h" name="h" inputmode="decimal" autocomplete="off" placeholder="' . esc_attr__( 'Ej.: 120', 'buckler-core' ) . '"></label>'

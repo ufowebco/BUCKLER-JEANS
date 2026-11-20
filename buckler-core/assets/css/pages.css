@@ -274,6 +274,10 @@ body.bk-doc .woocommerce button.button:is(.disabled, :disabled, [disabled]):hove
 .bk-sg__out { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 46px; margin: 0; padding: 8px 14px; border-radius: 10px; background: #fff; font-weight: 700; }
 .bk-sg__out b { font-size: 20px; color: var(--bk-navy); }
 .bk-sg__out span { font-weight: 500; color: var(--bk-mute); }
+.bk-sg__out .bk-sg__near { flex-basis: 100%; color: inherit; font-weight: 700; }
+.bk-sg__out .bk-sg__over { flex-basis: 100%; font-weight: 500; color: var(--bk-mute); font-size: 13px; line-height: 1.4; }
+.bk-sg__wa { display: inline-flex; align-items: center; min-height: 44px; margin-top: 2px; padding: 0 16px; border-radius: 999px; background: #1a7f45; color: #fff; font-weight: 800; font-size: 14px; text-decoration: none; }
+.bk-sg__wa:hover, .bk-sg__wa:focus-visible { background: #12643a; color: #fff; }
 @media (max-width: 560px) { .bk-sg__row { grid-template-columns: 1fr 1fr; } .bk-sg__out { grid-column: 1 / -1; } }
 .bk-sg__measure { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 18px; align-items: center; }
 .bk-sg__measure ol { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
@@ -833,3 +837,6 @@ html.bk-lb-open { overflow: hidden; }
 body.bk-doc .bk-woo--account.is-guest .show-password-input { display: grid; place-items: center; box-sizing: border-box; width: 44px; height: 44px; padding: 0; right: 2px; border: 0; background: transparent; color: var(--bk-navy); }
 body.bk-doc .woocommerce-form__label-for-checkbox { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
 .bk-login__aside a:not(.bk-btn) { display: inline-flex; align-items: center; min-height: 44px; }
+/* "Tu talla más cercana" + WhatsApp: a lo ancho bajo las medidas (no cabe en la columna del resultado). */
+.bk-sg__out:has(.bk-sg__wa) { grid-column: 1 / -1; padding: 12px 14px; }
+.bk-sg__wa { white-space: nowrap; }
