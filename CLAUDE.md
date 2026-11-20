@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.34 → `dist/buckler-core-0.18.34.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.35 → `dist/buckler-core-0.18.35.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -869,6 +869,15 @@ Versión actual 0.18.34 → `dist/buckler-core-0.18.34.zip` (`tools/build-plugin
   `bk_size_guide_old_tables()` + `bk_size_guide_rows_key()`: una tabla guardada en la opción `bk_size_guide` que siga
   idéntica a los valores originales anteriores toma las medidas nuevas al leer (las editadas a mano se respetan).
   ronda187.js 26.
+- **0.18.35 (2026-11-20, aprobada e instalada): "Pedidos de esta clienta"** en el detalle del pedido (pedido del cliente:
+  relacionar los pedidos por cédula o correo). `includes/gestion/customer-orders.php`: `GET gestion/orders/{id}/related`
+  (se pide aparte, `relatedHtml()` en gestion.js con memo). Coincidencias **directas** con el pedido abierto (no en
+  cadena, para no mezclar personas que comparten celular): cédula (`bk_g_meta_ids` con `bk_g_fields()['cedula']`, con y
+  sin puntos), correo (`billing_email`, sin importar mayúsculas), celular (`bk_gco_phone_ids`: SQL sobre
+  `wc_order_addresses` / `_billing_phone` limpiando espacios, guiones, +, puntos y paréntesis, termina en los 10
+  dígitos). Respuesta: count (incluye el abierto), paid (`is_paid`), paid_total, since, orders[{id, number, date,
+  status, label, total, items, match[]}] (límite `bk_gco_limit` 60). UI: resumen en 3 tarjetas + filas que abren el
+  pedido (`data-order`) con "Coincide por …"; sin otros → "Es la primera compra". Suite `ronda1834.js` (14).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -913,7 +922,7 @@ Versión actual 0.18.34 → `dist/buckler-core-0.18.34.zip` (`tools/build-plugin
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 26, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31 = 1029 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 26, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31, ronda 0.18.35 14 = 1043 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
