@@ -861,7 +861,7 @@ Versión actual 0.18.34 → `dist/buckler-core-0.18.34.zip` (`tools/build-plugin
     conservan su precio por unidad; nuevas al precio de la tienda (o el escrito). Nota + historial `prendas`.
   - Suite `ronda1833.js` (31). Tras un reset del entorno: `seed-cards/shop/orders.php` y fixtures de fotos/video en
     `/tmp/claude-0/bk-local/fixtures` (malo.txt, foto1-3.jpg, grande.jpg, video.mp4); gestion.js usa el pedido 464 fijo.
-- **0.18.34 (2026-11-20): guía de tallas con medidas nuevas del cliente** (fotos con correcciones a mano). Slim: solo
+- **0.18.34 (2026-11-20, instalada y verificada en producción): guía de tallas con medidas nuevas del cliente** (fotos con correcciones a mano). Slim: solo
   cadera — 8: 98–102, 10: 103–107, 12: 108–112 (6 igual 92–96; cadera 97 queda entre 6 y 8 y el buscador da 8); **sin
   talla 14 en Slim** (6 a 12). Curvy: 14 88–92/113–125, 16 92–96/126–130, 18 96–100/130–134, 20 100–104/134–138,
   22 104–108/138–142, 24 108–112/142–146 (bordes compartidos → "Encuentra tu talla" da la más pequeña). 14 cadera
