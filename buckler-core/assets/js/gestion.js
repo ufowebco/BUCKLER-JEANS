@@ -483,6 +483,36 @@
 		</section>`;
 	};
 
+	// Pedidos de la misma clienta (misma cédula, correo o celular). Se piden aparte: el detalle abre igual de rápido.
+	const MATCH = { cedula: 'cédula', correo: 'correo', celular: 'celular' };
+	const relatedBody = (d) => {
+		if (!d.orders.length) return '<p class="bk-g-hint">Es la <b>primera compra</b> de esta clienta (no hay otros pedidos con su cédula, correo o celular).</p>';
+		return `<ul class="bk-g-relstats">
+				<li><b>${d.count}</b><span>pedidos en total</span></li>
+				<li><b>${esc(d.paid_total)}</b><span>pagado en ${d.paid} pedido${d.paid === 1 ? '' : 's'}</span></li>
+				${d.since ? `<li><b>${esc(d.since)}</b><span>primera compra</span></li>` : ''}</ul>
+			<ul class="bk-g-rellist">${d.orders.map((x) => `<li><button type="button" class="bk-g-relrow" data-order="${x.id}">
+				<span class="bk-g-relrow__n">#${esc(x.number)}</span>
+				<span class="bk-g-relrow__d">${esc(x.date)} · ${x.items} prenda${x.items === 1 ? '' : 's'}<small>Coincide por ${x.match.map((m) => MATCH[m] || m).join(', ')}</small></span>
+				<span class="bk-g-pill is-${esc(x.status)}">${esc(x.label)}</span>
+				<b class="bk-g-relrow__t">${esc(x.total)}</b></button></li>`).join('')}</ul>`;
+	};
+	const relatedHtml = (o) => {
+		const key = `orders/${o.id}/related`;
+		const d = getCached(key);
+		if (!d) {
+			setTimeout(() => fetchFresh(key).then((r) => {
+				const box = document.querySelector(`#bk-g-rel[data-id="${o.id}"] .bk-g-rel__body`);
+				if (box) { box.innerHTML = relatedBody(r); box.closest('#bk-g-rel').querySelector('h3 small').textContent = r.orders.length ? `(${r.count})` : ''; }
+			}).catch(() => {
+				const box = document.querySelector(`#bk-g-rel[data-id="${o.id}"] .bk-g-rel__body`);
+				if (box) box.innerHTML = '<p class="bk-g-hint">No se pudo cargar el historial de la clienta.</p>';
+			}), 0);
+		}
+		return `<section class="bk-g-rel" id="bk-g-rel" data-id="${o.id}" aria-live="polite"><h3>Pedidos de esta clienta <small>${d && d.orders.length ? `(${d.count})` : ''}</small></h3>
+			<div class="bk-g-rel__body">${d ? relatedBody(d) : '<p class="bk-g-hint">Buscando otros pedidos con la misma cédula, correo o celular…</p>'}</div></section>`;
+	};
+
 	const orderHtml = (o) => `
 		<header class="bk-g-dhead"><div><h2 id="bk-g-dtitle">Pedido #${esc(o.number)}</h2><small>${esc(o.date)}${o.consecutivo ? ` · Consecutivo ${esc(o.consecutivo)}` : ''}</small></div>
 			<button type="button" class="bk-g-icon" data-close aria-label="Cerrar">${C.icons.x}</button></header>
@@ -501,6 +531,7 @@
 				${o.phone ? `<a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> · <a href="https://wa.me/57${esc(String(o.phone).replace(/\D/g, '').replace(/^57/, ''))}" target="_blank" rel="noopener">WhatsApp</a><br>` : ''}
 				<a href="mailto:${esc(o.email)}">${esc(o.email)}</a><br>${esc(o.address)}</p>
 				${o.note ? `<p class="bk-g-note"><b>Nota de la clienta:</b> ${esc(o.note)}</p>` : ''}</section>
+			${relatedHtml(o)}
 			<section><div class="bk-g-cust__head"><h3>Productos</h3>${o.items_edit ? `<a class="bk-g-btn is-ghost is-small" href="#pedidos/prendas/${o.id}" data-items-edit>${C.icons.edit} Cambiar prendas</a>` : ''}</div><ul class="bk-g-items">${o.items.map((i) => `<li>${i.image ? `<img src="${esc(i.image)}" alt="" width="48" height="48">` : '<span></span>'}
 				<div><b>${esc(i.name)}</b><small>${esc(i.meta)}${i.sku ? ` · REF ${esc(i.sku)}` : ''}</small></div><span>×${i.qty}</span><b>${esc(i.total)}</b></li>`).join('')}</ul>
 				<dl class="bk-g-totals"><div><dt>Subtotal</dt><dd>${esc(o.subtotal)}</dd></div>${o.discount ? `<div><dt>Descuento</dt><dd>${esc(o.discount)}</dd></div>` : ''}<div><dt>Envío</dt><dd>${esc(o.shipping)}</dd></div><div class="is-total"><dt>Total</dt><dd>${esc(o.total)}</dd></div></dl>

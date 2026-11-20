@@ -99,6 +99,7 @@ add_action(
 			require_once BK_DIR . 'includes/gestion/daily-goal.php';
 			require_once BK_DIR . 'includes/gestion/manual-order.php';
 			require_once BK_DIR . 'includes/gestion/order-items.php';
+			require_once BK_DIR . 'includes/gestion/customer-orders.php';
 			require_once BK_DIR . 'includes/gestion/page.php';
 			require_once BK_DIR . 'includes/gestion/login.php';
 			require_once BK_DIR . 'includes/gestion/admin-link.php';
