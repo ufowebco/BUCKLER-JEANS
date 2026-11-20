@@ -1,4 +1,4 @@
-// 0.18.7: guía de tallas y siluetas en texto (dos botones, dos ventanas), "Encuentra tu talla", siluetas dibujadas con
+// 0.18.7: guía de tallas y siluetas en texto (dos botones, dos ventanas), asesoría por WhatsApp (antes "Encuentra tu talla"), siluetas dibujadas con
 // "Este modelo" detectado por el nombre, y editor en Gestión → Contenido → Guía de tallas.
 const { chromium } = require('playwright');
 const { execSync } = require('child_process');
@@ -28,29 +28,14 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
   ok(sel === 'linea-curvy' && await p.locator('#bk-sg-linea-curvy').isVisible() && await p.locator('#bk-sg-linea-slim').isHidden(), 'abre en la pestaña de la línea del producto (Curvy)');
   const rows = await p.$$eval('#bk-sg-linea-curvy tbody tr', (x) => x.map((r) => [...r.children].map((c) => c.textContent).join(' ').replace(/\s+/g, ' ').trim()));
   ok(rows.length === 6 && rows[1] === '16 92 – 96 cm 126 – 130 cm', `tabla Curvy en texto (${rows.length} tallas: ${rows[1]})`);
-  await p.fill('#bk-sg-w', '92'); await p.fill('#bk-sg-h', '128');
-  ok(/Tu talla: 16/.test(await p.textContent('[data-bk-sg-out]')) && await p.locator('#bk-sg-linea-curvy tr.is-match').getAttribute('data-size') === '16', 'Encuentra tu talla: cintura 92 y cadera 128 → 16, resaltada en la tabla');
-  await p.fill('#bk-sg-w', '70'); await p.fill('#bk-sg-h', '100');
-  ok(/Tu talla: 8/.test(await p.textContent('[data-bk-sg-out]')) && await p.locator('#bk-sg-linea-slim').isVisible() && await p.getAttribute('[data-bk-sg-tab="linea-slim"]', 'aria-selected') === 'true', 'medidas de Slim → talla 8 y cambia sola a la pestaña Línea Slim');
-  await p.fill('#bk-sg-w', '90'); await p.fill('#bk-sg-h', '118');
-  ok(/Tu talla: 14/.test(await p.textContent('[data-bk-sg-out]')) && !/Slim/.test(await p.textContent('[data-bk-sg-out]')), 'talla 14: solo en Línea Curvy (2026-11-20: Slim llega hasta la 12)');
   ok(await p.locator('#bk-sg-linea-slim tbody tr').count() === 4, 'tabla Slim con 4 tallas (6 a 12)');
-  await p.fill('#bk-sg-w', ''); await p.fill('#bk-sg-h', '97');
-  ok(/Tu talla: 8/.test(await p.textContent('[data-bk-sg-out]')), 'cadera 97 (entre la 6 y la 8) → talla 8');
-  // Medidas por encima de la tabla (2026-11-20): talla más cercana + WhatsApp con las medidas.
-  await p.fill('#bk-sg-w', '115'); await p.fill('#bk-sg-h', '');
-  const ov = await p.textContent('[data-bk-sg-out]');
-  const wa = await p.getAttribute('[data-bk-sg-out] .bk-sg__wa', 'href');
-  ok(/Tu talla más cercana: 24/.test(ov) && /por encima de nuestra tabla/.test(ov), 'cintura 115 (más que la tabla) → "Tu talla más cercana: 24" con aviso');
-  ok(/^https:\/\/wa\.me\/\d+\?text=/.test(wa || '') && /cintura%20115%20cm/.test(wa) && /talla%2024/.test(wa), 'botón de WhatsApp con las medidas y la talla en el mensaje');
-  await p.fill('#bk-sg-w', '100'); await p.fill('#bk-sg-h', '150');
-  ok(/más cercana: 24/.test(await p.textContent('[data-bk-sg-out]')) && /cadera%20150%20cm/.test(await p.getAttribute('[data-bk-sg-out] .bk-sg__wa', 'href')), 'cadera 150 → también la más cercana (24) y WhatsApp');
-  await p.locator('[data-bk-sg-out]').scrollIntoViewIfNeeded();
-  await p.screenshot({ path: '/tmp/claude-0/sg-over-' + (p.viewportSize().width) + '.png' });
-  await p.fill('#bk-sg-w', '70'); await p.fill('#bk-sg-h', '100');
-  ok(/Tu talla: 8/.test(await p.textContent('[data-bk-sg-out]')) && await p.locator('[data-bk-sg-out] .bk-sg__wa').count() === 0, 'medidas dentro de la tabla: talla normal, sin botón de WhatsApp');
-  await p.fill('#bk-sg-w', '150');
-  ok(/WhatsApp/.test(await p.textContent('[data-bk-sg-out]')), 'medida fuera de la tabla: invita a WhatsApp');
+  // 2026-11-20 (decisión del cliente): sin "Encuentra tu talla"; en su lugar, asesoría por WhatsApp.
+  ok(await p.locator('#bk-size-guide [data-bk-sg-finder], #bk-sg-w, #bk-sg-h').count() === 0, 'sin campos para escribir medidas ("Encuentra tu talla" quitado)');
+  const help = await p.textContent('#bk-size-guide .bk-sg__help');
+  const wa = await p.getAttribute('#bk-size-guide .bk-sg__help .bk-sg__wa', 'href');
+  ok(/asesoría con tu talla/.test(help) && /^https:\/\/wa\.me\/\d+\?text=/.test(wa || '') && /asesor%C3%ADa/.test(wa) && /REF/.test(decodeURIComponent(wa)), 'recuadro "¿Necesitas asesoría con tu talla?" con WhatsApp (mensaje con el producto y su REF)');
+  await p.locator('#bk-size-guide .bk-sg__help').scrollIntoViewIfNeeded();
+  await p.screenshot({ path: '/tmp/claude-0/sg-help-' + p.viewportSize().width + '.png' });
   ok(/Cintura/.test(await p.textContent('#bk-size-guide .bk-sg__measure')) && /Índigo Stretch/.test(await p.textContent('#bk-size-guide .bk-sg__note')), 'cómo medirte + nota del Índigo Stretch');
   await p.keyboard.press('Escape');
   ok(await p.locator('#bk-size-guide[open]').count() === 0, 'Esc cierra la ventana');

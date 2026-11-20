@@ -266,6 +266,10 @@ body.bk-doc .woocommerce button.button:is(.disabled, :disabled, [disabled]):hove
 .bk-sg__table tbody th { width: 22%; font-size: 16px; font-weight: 800; }
 .bk-sg__table tbody tr:last-child > * { border-bottom: 0; }
 .bk-sg__table tr.is-match > * { background: var(--bk-lime); }
+.bk-sg__help { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; padding: 16px; border-radius: 14px; background: var(--bk-denim); }
+.bk-sg__help > svg { flex: none; margin-top: 2px; color: #1a7f45; }
+.bk-sg__help h3 { margin: 0 0 4px; }
+.bk-sg__help p { margin: 0 0 10px; }
 .bk-sg__finder { margin-top: 18px; padding: 16px; border-radius: 14px; background: var(--bk-denim); }
 .bk-sg__finder h3 { margin: 0 0 10px; }
 .bk-sg__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 1.2fr); gap: 10px; align-items: end; }

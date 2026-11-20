@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.36 → `dist/buckler-core-0.18.36.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.37 → `dist/buckler-core-0.18.37.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -886,6 +886,12 @@ Versión actual 0.18.36 → `dist/buckler-core-0.18.36.zip` (`tools/build-plugin
   `bk_config('whatsapp')`, mensaje con producto + REF (`data-product`), medidas y talla sugerida; layout.js ya lo
   cuenta como `bk_whatsapp_click`). `bk_size_finder` lleva `over`. CSS `.bk-sg__over` (no `__note`: choca con la nota
   de la guía) y `.bk-sg__out:has(.bk-sg__wa)` a ancho completo. ronda187.js 30.
+- **0.18.37 (2026-11-20, instalada): guía de tallas sin "Encuentra tu talla"** (decisión del cliente: quitar el
+  buscador por medidas y dejar solo la información + WhatsApp para asesoría). En el lugar del formulario,
+  `.bk-sg__help`: ícono de WhatsApp, "¿Necesitas asesoría con tu talla?", "Escríbenos por WhatsApp con tus medidas…" y
+  botón "Pedir asesoría por WhatsApp" (`bk_whatsapp_url()` con mensaje "Hola, necesito asesoría con mi talla para
+  {producto} (REF …). Mis medidas son: cintura __ cm y cadera __ cm."). Tablas, "¿Cómo medirte?" y nota sin cambios.
+  El código del buscador en pages.js queda sin uso (no encuentra `[data-bk-sg-finder]`). ronda187.js 23.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -930,7 +936,7 @@ Versión actual 0.18.36 → `dist/buckler-core-0.18.36.zip` (`tools/build-plugin
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 30, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31, ronda 0.18.35 14 = 1047 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 23, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31, ronda 0.18.35 14 = 1040 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

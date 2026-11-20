@@ -311,11 +311,10 @@ function bk_size_guide_html( $product ) {
 			. '<header><h2 id="bk-size-guide-t">' . bk_icon_svg( 'lucide:ruler', 22 ) . esc_html__( 'Guía de tallas', 'buckler-core' ) . '</h2>' . $x . '</header>'
 			. ( count( $tables ) > 1 ? '<div class="bk-sg__tabs" role="tablist" aria-label="' . esc_attr__( 'Línea', 'buckler-core' ) . '">' . $tabs . '</div>' : '' )
 			. $pans
-			. '<form class="bk-sg__finder" data-bk-sg-finder data-sizes="' . esc_attr( wp_json_encode( $all ) ) . '" data-lines="' . esc_attr( wp_json_encode( $labels ) ) . '" data-wa="' . esc_url( 'https://wa.me/' . rawurlencode( (string) bk_config( 'whatsapp' ) ) ) . '" data-product="' . esc_attr( $product->get_name() . ( $product->get_sku() ? ' (REF ' . $product->get_sku() . ')' : '' ) ) . '" novalidate>'
-			. '<h3>' . esc_html__( 'Encuentra tu talla', 'buckler-core' ) . '</h3><div class="bk-sg__row">'
-			. '<label for="bk-sg-w">' . esc_html__( 'Cintura (cm)', 'buckler-core' ) . '<input id="bk-sg-w" name="w" inputmode="decimal" autocomplete="off" placeholder="' . esc_attr__( 'Ej.: 92', 'buckler-core' ) . '"></label>'
-			. '<label for="bk-sg-h">' . esc_html__( 'Cadera (cm)', 'buckler-core' ) . '<input id="bk-sg-h" name="h" inputmode="decimal" autocomplete="off" placeholder="' . esc_attr__( 'Ej.: 120', 'buckler-core' ) . '"></label>'
-			. '<p class="bk-sg__out" aria-live="polite" data-bk-sg-out>' . esc_html__( 'Escribe tus medidas', 'buckler-core' ) . '</p></div></form>'
+			// Asesoría por WhatsApp (decisión del cliente 2026-11-20: sin "Encuentra tu talla"; la clienta elige con la tabla).
+			. '<div class="bk-sg__help">' . bk_icon_svg( 'simple-icons:whatsapp', 22 ) . '<div><h3>' . esc_html__( '¿Necesitas asesoría con tu talla?', 'buckler-core' ) . '</h3>'
+			. '<p>' . esc_html__( 'Escríbenos por WhatsApp con tus medidas de cintura y cadera y te ayudamos a elegir.', 'buckler-core' ) . '</p>'
+			. '<a class="bk-sg__wa" href="' . esc_url( bk_whatsapp_url( sprintf( /* translators: %s: producto */ __( 'Hola, necesito asesoría con mi talla para %s. Mis medidas son: cintura __ cm y cadera __ cm.', 'buckler-core' ), $product->get_name() . ( $product->get_sku() ? ' (REF ' . $product->get_sku() . ')' : '' ) ) ) ) . '" target="_blank" rel="noopener">' . esc_html__( 'Pedir asesoría por WhatsApp', 'buckler-core' ) . '</a></div></div>'
 			. '<h3>' . esc_html__( '¿Cómo medirte?', 'buckler-core' ) . '</h3><div class="bk-sg__measure">' . bk_size_guide_body_svg() . '<ol>'
 			. '<li><span>1</span><p><b>' . esc_html__( 'Cintura', 'buckler-core' ) . '</b>' . esc_html__( 'Rodea con la cinta métrica la parte más angosta de tu cintura, sin apretar ni dejar holgura.', 'buckler-core' ) . '</p></li>'
 			. '<li><span>2</span><p><b>' . esc_html__( 'Cadera', 'buckler-core' ) . '</b>' . esc_html__( 'Rodea el cuerpo por la zona más ancha de la cadera, con los pies juntos.', 'buckler-core' ) . '</p></li></ol></div>'
