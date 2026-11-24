@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.39 → `dist/buckler-core-0.18.39.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.40 → `dist/buckler-core-0.18.40.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -908,6 +908,19 @@ Versión actual 0.18.39 → `dist/buckler-core-0.18.39.zip` (`tools/build-plugin
   "91–124" con el 124 encerrado: se dejó 120–124 (lo escrito en la columna); el cliente confirmó 120–124 el 2026-11-24.
   `bk_size_guide_old_tables()` admite varias versiones por línea (`'linea-curvy@2'` = medidas de 0.18.34) y las
   tablas guardadas idénticas a cualquiera de ellas toman las nuevas. Slim sin cambios. ronda187.js 23.
+- **0.18.40 (2026-11-24, aprobada e instalada): cuenta regresiva de campañas (Black Friday)** (pedido del cliente: −25 %
+  en toda la tienda menos ¡Sale! del 26 al 30 de noviembre, termina el 30 a las 11:59 p. m., "más impactante con
+  contador"). `includes/discount-countdown.php` (con `discounts`): campaña con `countdown` (casilla "Cuenta regresiva en
+  toda la web" en Gestión → Descuentos) y `pre_days` 0–14 ("Anunciarla antes de empezar", por defecto 3) →
+  `bk_cd_campaign()` (fase pre|live entre `start_ts - pre_days` y `end_ts`). Lugares: franja negra bajo el header
+  (`do_action('bk_after_header', $route)` en document.php; no en inicio, checkout ni la página de ¡Sale!), bloque
+  grande en el inicio (`bk_home_after_hero`, con botón "Comprar con descuento"), banner en tienda/líneas/filtros
+  (`bk_shop_before_bar`, no en ¡Sale!), recuadro en la ficha (summary 11, re-enganchado por BodyCommerce; antes:
+  "Este producto quedará desde $X"). El contador lo calcula el navegador (`data-start`/`data-end` en ms, script
+  inline en wp_footer): cambia de fase y se oculta solo al terminar aunque la página venga de la caché de 10 h;
+  `bk_disc_schedule` también vacía la caché al empezar el anuncio. Con countdown, `bk_disc_pdp_box` no repite la línea
+  lima de la campaña y la sección del inicio pasa a compacta. Fixture `bk_test_now` (filtro `bk_disc_now`). Suite
+  `ronda1840.js` (20). **La campaña la crea el cliente en Gestión → Descuentos.**
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -952,7 +965,7 @@ Versión actual 0.18.39 → `dist/buckler-core-0.18.39.zip` (`tools/build-plugin
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, seguridad 0.18.38 9, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 23, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31, ronda 0.18.35 14 = 1049 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, seguridad 0.18.38 9, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 23, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31, ronda 0.18.35 14, ronda 0.18.40 20 = 1069 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
