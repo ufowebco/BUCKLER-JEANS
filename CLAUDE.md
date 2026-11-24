@@ -905,7 +905,7 @@ Versión actual 0.18.39 → `dist/buckler-core-0.18.39.zip` (`tools/build-plugin
 - **0.18.39 (2026-11-24, instalada): medidas nuevas de la Línea Curvy** (foto del cliente con correcciones a mano).
   14: 90–94 / 120–124 · 16: 95–99 / 125–129 · 18: 100–104 / 130–134 · 20: 105–109 / 135–139 · 22: 110–114 / 140–144 ·
   24: 115–119 / 145–149 (cintura / cadera, cm; ya sin bordes compartidos). Al margen de la talla 14 había una nota
-  "91–124" con el 124 encerrado: se dejó 120–124 (lo escrito en la columna) y se le preguntó al cliente.
+  "91–124" con el 124 encerrado: se dejó 120–124 (lo escrito en la columna); el cliente confirmó 120–124 el 2026-11-24.
   `bk_size_guide_old_tables()` admite varias versiones por línea (`'linea-curvy@2'` = medidas de 0.18.34) y las
   tablas guardadas idénticas a cualquiera de ellas toman las nuevas. Slim sin cambios. ronda187.js 23.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
