@@ -343,3 +343,6 @@ add_filter(
 		return is_array( $t ) ? array_merge( $o, $t ) : $o;
 	}
 );
+
+// Descuentos: simular otra fecha/hora para ver una campaña programada (opción bk_test_now = timestamp).
+add_filter( 'bk_disc_now', static fn( $t ) => (int) get_option( 'bk_test_now' ) ? (int) get_option( 'bk_test_now' ) : $t );
