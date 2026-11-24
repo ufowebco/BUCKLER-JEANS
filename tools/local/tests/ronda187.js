@@ -27,7 +27,7 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
   const sel = await p.getAttribute('#bk-size-guide [role="tab"][aria-selected="true"]', 'data-bk-sg-tab');
   ok(sel === 'linea-curvy' && await p.locator('#bk-sg-linea-curvy').isVisible() && await p.locator('#bk-sg-linea-slim').isHidden(), 'abre en la pestaña de la línea del producto (Curvy)');
   const rows = await p.$$eval('#bk-sg-linea-curvy tbody tr', (x) => x.map((r) => [...r.children].map((c) => c.textContent).join(' ').replace(/\s+/g, ' ').trim()));
-  ok(rows.length === 6 && rows[1] === '16 92 – 96 cm 126 – 130 cm', `tabla Curvy en texto (${rows.length} tallas: ${rows[1]})`);
+  ok(rows.length === 6 && rows[1] === '16 95 – 99 cm 125 – 129 cm', `tabla Curvy en texto (${rows.length} tallas: ${rows[1]})`);
   ok(await p.locator('#bk-sg-linea-slim tbody tr').count() === 4, 'tabla Slim con 4 tallas (6 a 12)');
   // 2026-11-20 (decisión del cliente): sin "Encuentra tu talla"; en su lugar, asesoría por WhatsApp.
   ok(await p.locator('#bk-size-guide [data-bk-sg-finder], #bk-sg-w, #bk-sg-h').count() === 0, 'sin campos para escribir medidas ("Encuentra tu talla" quitado)');

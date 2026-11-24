@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.38 → `dist/buckler-core-0.18.38.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.39 → `dist/buckler-core-0.18.39.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -902,6 +902,12 @@ Versión actual 0.18.38 → `dist/buckler-core-0.18.38.zip` (`tools/build-plugin
   de usuario (`author` + enlace a /wp/v2/users/N) → `bk_sec_rest_authors()` (`rest_prepare_{tipo}` de todos los tipos
   REST). Pendiente (no se puede desde el plugin: archivos estáticos): `readme.html` y `license.txt` públicos (revelan
   que es WordPress); borrarlos por FTP/administrador de archivos. Suite `seguridad2.js` (9).
+- **0.18.39 (2026-11-24, instalada): medidas nuevas de la Línea Curvy** (foto del cliente con correcciones a mano).
+  14: 90–94 / 120–124 · 16: 95–99 / 125–129 · 18: 100–104 / 130–134 · 20: 105–109 / 135–139 · 22: 110–114 / 140–144 ·
+  24: 115–119 / 145–149 (cintura / cadera, cm; ya sin bordes compartidos). Al margen de la talla 14 había una nota
+  "91–124" con el 124 encerrado: se dejó 120–124 (lo escrito en la columna) y se le preguntó al cliente.
+  `bk_size_guide_old_tables()` admite varias versiones por línea (`'linea-curvy@2'` = medidas de 0.18.34) y las
+  tablas guardadas idénticas a cualquiera de ellas toman las nuevas. Slim sin cambios. ronda187.js 23.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
