@@ -23,6 +23,7 @@ $bk_head = bk_pages_clean_head( (string) ob_get_clean() );
 <body <?php body_class( array( 'bk-doc', 'bk-doc--' . $bk_route ) ); ?>>
 <?php wp_body_open(); ?>
 <?php echo do_shortcode( '[bk_header]' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+<?php do_action( 'bk_after_header', $bk_route ); // Franja de campaña con cuenta regresiva (includes/discount-countdown.php). ?>
 <main id="main-content" class="bk-main bk-main--<?php echo esc_attr( $bk_route ); ?>" tabindex="-1">
 	<?php include BK_DIR . 'templates/pages/' . $bk_route . '.php'; ?>
 </main>

@@ -127,7 +127,7 @@
 		const end = new Date(start); end.setDate(end.getDate() + 7); end.setHours(23, 59, 0, 0);
 		const base = { id: '', name: '', active: true, start: fmtLocal(start), end: fmtLocal(end), scope: 'all', cats: [], products: [], products_info: [], exclude_sale: true };
 		return kind === 'campana'
-			? { ...base, pct: 20, badge: '', bar: true, home: true, featured: [], featured_info: [] }
+			? { ...base, pct: 20, badge: '', bar: true, home: true, countdown: true, pre_days: 3, featured: [], featured_info: [] }
 			: { ...base, name: 'Compra más y ahorra', tiers: [{ min: 2, pct: 10 }, { min: 3, pct: 15 }, { min: 4, pct: 20 }], count: 'cart' };
 	};
 
@@ -202,7 +202,9 @@
 					${camp ? `<section class="bk-g-card"><h2>Cómo se destaca</h2>
 						<label class="bk-gp-field"><span>Etiqueta en las tarjetas (opcional)</span><input name="badge" maxlength="18" value="${esc(F.badge || '')}" placeholder="Ej.: BLACK FRIDAY"><small>Además del "−${pctTxt(F.pct || 0)} %". Máximo 18 letras.</small></label>
 						<label class="bk-g-switch"><input type="checkbox" name="bar" ${F.bar ? 'checked' : ''}><span>Anuncio en la barra verde de arriba</span></label>
-						<label class="bk-g-switch"><input type="checkbox" name="home" ${F.home ? 'checked' : ''}><span>Sección destacada en el inicio con cuenta regresiva</span></label>
+						<label class="bk-g-switch"><input type="checkbox" name="home" ${F.home ? 'checked' : ''}><span>Sección con las prendas de la oferta en el inicio</span></label>
+						<label class="bk-g-switch"><input type="checkbox" name="countdown" ${F.countdown ? 'checked' : ''}><span><b>Cuenta regresiva en toda la web</b> (fondo negro): franja bajo el menú, bloque grande en el inicio, banner en la tienda y recuadro en cada producto</span></label>
+						<label class="bk-gp-field bk-gd-pre"><span>Anunciarla antes de empezar</span><select name="pre_days">${[0, 1, 2, 3, 5, 7, 10, 14].map((n) => `<option value="${n}" ${Number(F.pre_days ?? 3) === n ? 'selected' : ''}>${n ? `${n} día${n === 1 ? '' : 's'} antes ("Empieza en…")` : 'No, solo mientras dura'}</option>`).join('')}</select><small>Durante la campaña el contador cambia solo a "Termina en…" y al terminar desaparece.</small></label>
 						${pickHtml('featured', 'Productos destacados de la oferta (opcional, máx. 12)', 'Si no eliges, se muestran los más nuevos de la campaña.')}
 					</section>` : ''}
 					<section class="bk-g-card bk-gp-actions">
@@ -226,7 +228,7 @@
 		F.cats = $$('[name="cats"]:checked', f).map((c) => Number(c.value));
 		F.exclude_sale = f.exclude_sale.checked;
 		if (F.kind === 'campana') {
-			F.pct = f.pct.value; F.badge = f.badge.value.trim(); F.bar = f.bar.checked; F.home = f.home.checked;
+			F.pct = f.pct.value; F.badge = f.badge.value.trim(); F.bar = f.bar.checked; F.home = f.home.checked; F.countdown = f.countdown.checked; F.pre_days = Number(f.pre_days.value);
 		} else {
 			F.count = f.querySelector('[name="count"]:checked')?.value || 'cart';
 			readTiers();

@@ -70,6 +70,7 @@ add_action(
 		}
 		require_once BK_DIR . 'includes/catalog.php';
 		require_once BK_DIR . 'includes/discounts.php';
+		require_once BK_DIR . 'includes/discount-countdown.php';
 		require_once BK_DIR . 'includes/sale-notice.php';
 		require_once BK_DIR . 'includes/low-stock.php';
 		require_once BK_DIR . 'includes/emails.php';

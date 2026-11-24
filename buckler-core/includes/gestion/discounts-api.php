@@ -170,6 +170,8 @@ function bk_gd_save( WP_REST_Request $r ) {
 		$rule['badge']    = mb_substr( trim( sanitize_text_field( (string) ( $in['badge'] ?? '' ) ) ), 0, 18 );
 		$rule['bar']      = ! isset( $in['bar'] ) || rest_sanitize_boolean( $in['bar'] );
 		$rule['home']     = ! isset( $in['home'] ) || rest_sanitize_boolean( $in['home'] );
+		$rule['countdown'] = ! empty( $in['countdown'] ) && rest_sanitize_boolean( $in['countdown'] );
+		$rule['pre_days']  = max( 0, min( 14, (int) ( $in['pre_days'] ?? 3 ) ) );
 		$rule['featured'] = array_slice( array_values( array_filter( array_map( 'absint', (array) ( $in['featured'] ?? array() ) ), static fn( $p ) => $p && wc_get_product( $p ) ) ), 0, 12 );
 	} else {
 		$tiers = array();

@@ -22,6 +22,7 @@ foreach ( $bk_lines as $bk_slug => $bk_l ) {
 $bk_sale = function_exists( 'wc_get_product_ids_on_sale' ) ? wc_get_product_ids_on_sale() : array();
 ?>
 <?php echo do_shortcode( '[bk_hero autoplay="6"]' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+<?php do_action( 'bk_home_after_hero' ); // Bloque de campaña con cuenta regresiva. ?>
 
 <section class="bk-wrap bk-home-intro">
 	<h1><?php esc_html_e( 'Jeans y moda en denim para mujer', 'buckler-core' ); ?></h1>

@@ -563,8 +563,10 @@ function bk_disc_pdp_box() {
 	if ( ! $c && ! $qty ) {
 		return;
 	}
-	echo '<div class="bk-disc-box">';
-	if ( $c ) {
+	// Con cuenta regresiva, la ficha ya muestra el recuadro negro de la campaña (discount-countdown.php).
+	$camp = $c && ! ( ! empty( $c['countdown'] ) && function_exists( 'bk_cd_campaign' ) && bk_cd_campaign() );
+	ob_start();
+	if ( $camp ) {
 		printf(
 			'<p class="bk-disc-box__camp"><strong>%1$s</strong> <span>%2$s</span></p>',
 			esc_html( sprintf( '−%s %% · %s', bk_disc_num( $c['pct'] ), $c['name'] ) ),
@@ -586,7 +588,10 @@ function bk_disc_pdp_box() {
 		/* translators: 1: cómo se cuenta, 2: fecha */
 		echo '</ul><small>' . esc_html( sprintf( __( '%1$s · hasta el %2$s · no se suma a otras promociones.', 'buckler-core' ), $how, bk_disc_date( (int) $r['end_ts'] - 1 ) ) ) . '</small></div>';
 	}
-	echo '</div>';
+	$html = ob_get_clean();
+	if ( '' !== trim( $html ) ) {
+		echo '<div class="bk-disc-box">' . $html . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput
+	}
 }
 
 /**
@@ -684,6 +689,17 @@ function bk_disc_home_section() {
 		return;
 	}
 	$left = max( 0, (int) ceil( ( (int) $c['end_ts'] - bk_disc_now() ) / DAY_IN_SECONDS ) );
+	if ( ! empty( $c['countdown'] ) ) {
+		// Con cuenta regresiva el bloque grande ya va arriba (discount-countdown.php): aquí solo las prendas.
+		?>
+		<section class="bk-wrap bk-disc-home is-compact" aria-labelledby="bk-disc-t">
+			<div class="bk-section-head"><h2 id="bk-disc-t" class="bk-section-title"><?php echo esc_html( sprintf( /* translators: %s: campaña */ __( 'Prendas en %s', 'buckler-core' ), $c['name'] ) ); ?></h2>
+				<a class="bk-section-more" href="<?php echo esc_url( add_query_arg( 'oferta', '1', wc_get_page_permalink( 'shop' ) ) ); ?>"><?php esc_html_e( 'Ver todo en oferta', 'buckler-core' ); ?> <?php echo bk_icon_svg( 'lucide:arrow-right', 16 ); // phpcs:ignore ?></a></div>
+			<?php echo do_shortcode( '[bk_productos ids="' . esc_attr( implode( ',', array_slice( $ids, 0, 8 ) ) ) . '" limite="8"]' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+		</section>
+		<?php
+		return;
+	}
 	?>
 	<section class="bk-wrap bk-disc-home" aria-labelledby="bk-disc-t">
 		<div class="bk-disc-home__head">
@@ -733,7 +749,11 @@ function bk_disc_schedule() {
 	$now = time();
 	$ts  = array();
 	foreach ( array_merge( bk_disc_data( true )['campaigns'], bk_disc_data()['qty'] ) as $r ) {
-		foreach ( array( (int) ( $r['start_ts'] ?? 0 ), (int) ( $r['end_ts'] ?? 0 ) ) as $t ) {
+		$marks = array( (int) ( $r['start_ts'] ?? 0 ), (int) ( $r['end_ts'] ?? 0 ) );
+		if ( ! empty( $r['countdown'] ) && function_exists( 'bk_cd_show_ts' ) ) {
+			$marks[] = bk_cd_show_ts( $r ); // Empieza el anuncio con cuenta regresiva: vaciar la caché de páginas.
+		}
+		foreach ( $marks as $t ) {
 			if ( $t > $now ) {
 				$ts[ $t ] = true;
 			}

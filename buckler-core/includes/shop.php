@@ -493,6 +493,7 @@ function bk_shop_shortcode( $atts ) {
 			<?php endif; ?>
 			<?php if ( $ctx['desc'] ) : ?><div class="bk-shop__desc"><?php echo wp_kses_post( $ctx['desc'] ); ?></div><?php endif; ?>
 		</div>
+		<?php do_action( 'bk_shop_before_bar', $ctx ); // Banner de campaña con cuenta regresiva. ?>
 
 		<div class="bk-shop__bar">
 			<button type="button" class="bk-shop__filter-btn" aria-controls="<?php echo esc_attr( $uid ); ?>-filters" aria-expanded="false">
