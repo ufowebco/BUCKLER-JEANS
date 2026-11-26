@@ -1128,3 +1128,6 @@ html.bk-sc-open .bk-fcart { visibility: hidden; }
 .bk-drawer__promo > span {
 	font-size: 13px;
 }
+
+/* Cupón de reseñas: no aplica en SALE ni con campañas (0.18.41). */
+.bk-promo-rule { display: block; margin-top: 2px; font-size: 11.5px; line-height: 1.35; font-weight: 600; opacity: .8; }

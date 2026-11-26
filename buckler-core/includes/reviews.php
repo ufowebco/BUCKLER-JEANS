@@ -70,6 +70,9 @@ function bk_review_promo( $context = '' ) {
 		<div class="bk-promo__body">
 			<p class="bk-promo__title"><?php echo esc_html( bk_review_promo_title() ); ?></p>
 			<p class="bk-promo__text"><?php echo esc_html( $text ); ?></p>
+			<?php if ( $inc && function_exists( 'bk_coupon_rule_text' ) ) : ?>
+				<p class="bk-promo__rule"><?php echo esc_html( bk_coupon_rule_text() ); ?></p>
+			<?php endif; ?>
 		</div>
 		<div class="bk-promo__actions">
 			<a class="bk-btn" href="<?php echo esc_url( (string) bk_config( 'review_url' ) ); ?>" target="_blank" rel="noopener"><?php echo bk_icon_svg( 'simple-icons:google', 16 ); // phpcs:ignore ?><?php esc_html_e( 'Calificar en Google', 'buckler-core' ); ?></a>

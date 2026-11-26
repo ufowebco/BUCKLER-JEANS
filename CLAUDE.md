@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.40 → `dist/buckler-core-0.18.40.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.41 → `dist/buckler-core-0.18.41.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -921,6 +921,17 @@ Versión actual 0.18.40 → `dist/buckler-core-0.18.40.zip` (`tools/build-plugin
   `bk_disc_schedule` también vacía la caché al empezar el anuncio. Con countdown, `bk_disc_pdp_box` no repite la línea
   lima de la campaña y la sección del inicio pasa a compacta. Fixture `bk_test_now` (filtro `bk_disc_now`). Suite
   `ronda1840.js` (20). **La campaña la crea el cliente en Gestión → Descuentos.**
+- **0.18.41 (2026-11-26, urgente, instalada): cupones no acumulables** (pedido del cliente: el 10 % por reseña de Google
+  no aplica con Black Friday ni en SALE). El cupón de la reseña es un cupón de Woo que el equipo entrega por WhatsApp
+  (no hay código fijo) → la regla vale para **todos los cupones** (`includes/coupon-rules.php`, siempre cargado;
+  excepción por cupón con el filtro `bk_coupon_blocked`): `bk_coupon_block_reason()` = 'sale' (`bk_disc_is_sale`) o
+  'campaign' (campaña vigente con el módulo discounts). Por producto: `woocommerce_coupon_is_valid_for_product` falso;
+  todos: `woocommerce_coupon_get_items_to_apply` sin esas prendas (el fijo al carrito se reparte solo entre las
+  permitidas); si no queda ninguna, excepción con el motivo en `woocommerce_coupon_is_valid_for_excluded_items` (11.1+,
+  Woo rechazaba antes con "not applicable") y `woocommerce_coupon_is_valid`: "Este cupón no aplica en productos en
+  SALE." / "…no se suma a Black Friday: tus prendas ya tienen el descuento." / "…en SALE ni con Black Friday.". Aviso
+  `bk_coupon_rule_text()` en la promo de reseñas (`.bk-promo__rule`) y en la tarjeta del menú (`.bk-promo-rule`).
+  Suite `ronda1841.js` (9).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -965,7 +976,7 @@ Versión actual 0.18.40 → `dist/buckler-core-0.18.40.zip` (`tools/build-plugin
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, seguridad 0.18.38 9, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 23, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31, ronda 0.18.35 14, ronda 0.18.40 20 = 1069 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, seguridad 0.18.38 9, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 23, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31, ronda 0.18.35 14, ronda 0.18.40 20, ronda 0.18.41 9 = 1078 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

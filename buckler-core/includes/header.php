@@ -118,7 +118,7 @@ function bk_review_menu_card( $class ) {
 	return '<a class="' . esc_attr( $class ) . '" href="' . esc_url( (string) bk_config( 'review_url' ) ) . '" target="_blank" rel="noopener">'
 		. bk_icon_svg( 'simple-icons:google', 18 )
 		. '<strong>' . esc_html__( 'Califícanos en Google', 'buckler-core' ) . '</strong>'
-		. '<span>' . esc_html( $sub ) . '<span class="bk-sr-only"> ' . esc_html__( '(abre en una pestaña nueva)', 'buckler-core' ) . '</span></span></a>';
+		. '<span>' . esc_html( $sub ) . ( bk_review_promo_incentive() && function_exists( 'bk_coupon_rule_text' ) ? '<small class="bk-promo-rule">' . esc_html( bk_coupon_rule_text() ) . '</small>' : '' ) . '<span class="bk-sr-only"> ' . esc_html__( '(abre en una pestaña nueva)', 'buckler-core' ) . '</span></span></a>';
 }
 
 /**

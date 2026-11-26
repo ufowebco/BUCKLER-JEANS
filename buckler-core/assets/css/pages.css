@@ -679,6 +679,7 @@ body.bk-doc .woocommerce-variation-price .price { font-size: 22px; }
 .bk-promo__icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--bk-navy); color: var(--bk-lime); }
 .bk-promo__title { margin: 0 0 4px; font-size: 18px; font-weight: 800; line-height: 1.3; }
 .bk-promo__text { margin: 0; font-size: 14px; line-height: 1.5; }
+.bk-promo__rule { margin: 4px 0 0; font-size: 12.5px; line-height: 1.4; font-weight: 600; opacity: .85; }
 .bk-promo__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .bk-promo .bk-btn { gap: 8px; min-height: 44px; padding: 0 18px; font-size: 14px; }
 .bk-promo .bk-btn.is-ghost { background: transparent; }
