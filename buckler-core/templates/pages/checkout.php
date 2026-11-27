@@ -13,6 +13,7 @@ $bk_received = function_exists( 'is_order_received_page' ) && is_order_received_
 	<?php bk_route_crumbs(); ?>
 	<h1 class="bk-page-title"><?php echo $bk_received ? esc_html__( '¡Gracias por tu compra!', 'buckler-core' ) : esc_html__( 'Finalizar compra', 'buckler-core' ); ?></h1>
 	<?php if ( $bk_received ) : ?>
+		<?php echo function_exists( 'bk_acc_thanks_html' ) ? bk_acc_thanks_html() : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- Crear cuenta después de pagar. ?>
 		<?php echo bk_review_promo( 'thanks' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 	<?php endif; ?>
 	<?php if ( ! $bk_received ) : ?>

@@ -165,6 +165,8 @@ function bk_g_history( $o ) {
 			$label = 'Datos de la clienta editados: ' . $val;
 		} elseif ( 'prendas' === $ev ) {
 			$label = 'Cambio de prendas: ' . $val;
+		} elseif ( 'acceso' === $ev ) {
+			$label = 'Acceso a Mi cuenta: ' . $val;
 		} elseif ( 'manual' === $ev ) {
 			$label = 'Pedido creado a mano (' . $val . '); prendas reservadas';
 		} else {

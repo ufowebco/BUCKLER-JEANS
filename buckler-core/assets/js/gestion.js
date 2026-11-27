@@ -513,6 +513,34 @@
 			<div class="bk-g-rel__body">${d ? relatedBody(d) : '<p class="bk-g-hint">Buscando otros pedidos con la misma cédula, correo o celular…</p>'}</div></section>`;
 	};
 
+	// Cuenta de la clienta: enviar el acceso (enlace para crear su contraseña, 72 h) o copiarlo para WhatsApp.
+	const accBody = (a, id) => {
+		if (!a.valid) return '<p class="bk-g-hint">El pedido no tiene un correo válido. Corrígelo con "Editar datos" para poder enviar el acceso.</p>';
+		if (a.staff) return '<p class="bk-g-hint">Ese correo es de una cuenta del equipo.</p>';
+		const st = { none: ['is-cancelled', 'Sin cuenta'], pending: ['is-on-hold', 'Cuenta creada · falta su contraseña'], active: ['is-completed', 'Ya tiene cuenta'] }[a.status] || ['', a.status];
+		return `<p class="bk-g-acc__state"><span class="bk-g-pill ${st[0]}">${esc(st[1])}</span>${a.sent ? `<small>Acceso ${a.sent.how === 'enlace' ? 'copiado' : 'enviado'} el ${esc(a.sent.date)}${a.sent.by ? ` · ${esc(a.sent.by)}` : ''}${a.expires ? ` · el enlace vence el ${esc(a.expires)}` : ''}</small>` : ''}</p>
+			<p class="bk-g-hint">${a.status === 'active' ? 'Si olvidó su contraseña, envíale un enlace para crear una nueva.' : `Le llega un correo con un enlace para crear su contraseña (sirve una vez y vence en ${a.hours} h). Si no tiene cuenta, se crea con su correo y todos sus pedidos.`}</p>
+			<div class="bk-g-dactions"><button type="button" class="bk-g-btn" data-acc-send="${id}">${C.icons.send} ${a.status === 'active' ? 'Enviar enlace de contraseña' : (a.sent ? 'Reenviar acceso' : 'Enviar acceso a su cuenta')}</button>
+				<button type="button" class="bk-g-btn is-ghost" data-acc-link="${id}">${C.icons.copy} Copiar enlace para WhatsApp</button>
+				<button type="button" class="bk-g-btn is-ghost is-small" data-acc-preview="${id}">${C.icons.eye} Ver correo</button></div>
+			<div class="bk-g-acc__out" aria-live="polite"></div>`;
+	};
+	const accountHtml = (o) => {
+		const key = `orders/${o.id}/account`;
+		const a = getCached(key);
+		if (!a) {
+			setTimeout(() => fetchFresh(key).then((r) => {
+				const box = document.querySelector(`#bk-g-acc[data-id="${o.id}"] .bk-g-acc__body`);
+				if (box) box.innerHTML = accBody(r, o.id);
+			}).catch(() => {
+				const box = document.querySelector(`#bk-g-acc[data-id="${o.id}"] .bk-g-acc__body`);
+				if (box) box.innerHTML = '<p class="bk-g-hint">No se pudo revisar la cuenta de la clienta.</p>';
+			}), 0);
+		}
+		return `<section class="bk-g-acc" id="bk-g-acc" data-id="${o.id}"><h3>${C.icons.key || ''} Cuenta de la clienta</h3>
+			<div class="bk-g-acc__body">${a ? accBody(a, o.id) : '<p class="bk-g-hint">Revisando si tiene cuenta…</p>'}</div></section>`;
+	};
+
 	const orderHtml = (o) => `
 		<header class="bk-g-dhead"><div><h2 id="bk-g-dtitle">Pedido #${esc(o.number)}</h2><small>${esc(o.date)}${o.consecutivo ? ` · Consecutivo ${esc(o.consecutivo)}` : ''}</small></div>
 			<button type="button" class="bk-g-icon" data-close aria-label="Cerrar">${C.icons.x}</button></header>
@@ -531,6 +559,7 @@
 				${o.phone ? `<a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> · <a href="https://wa.me/57${esc(String(o.phone).replace(/\D/g, '').replace(/^57/, ''))}" target="_blank" rel="noopener">WhatsApp</a><br>` : ''}
 				<a href="mailto:${esc(o.email)}">${esc(o.email)}</a><br>${esc(o.address)}</p>
 				${o.note ? `<p class="bk-g-note"><b>Nota de la clienta:</b> ${esc(o.note)}</p>` : ''}</section>
+			${accountHtml(o)}
 			${relatedHtml(o)}
 			<section><div class="bk-g-cust__head"><h3>Productos</h3>${o.items_edit ? `<a class="bk-g-btn is-ghost is-small" href="#pedidos/prendas/${o.id}" data-items-edit>${C.icons.edit} Cambiar prendas</a>` : ''}</div><ul class="bk-g-items">${o.items.map((i) => `<li>${i.image ? `<img src="${esc(i.image)}" alt="" width="48" height="48">` : '<span></span>'}
 				<div><b>${esc(i.name)}</b><small>${esc(i.meta)}${i.sku ? ` · REF ${esc(i.sku)}` : ''}</small></div><span>×${i.qty}</span><b>${esc(i.total)}</b></li>`).join('')}</ul>
@@ -790,6 +819,34 @@
 			return;
 		}
 
+		const acc = t.closest('[data-acc-send], [data-acc-link], [data-acc-preview]');
+		if (acc) {
+			const id = Number(acc.dataset.accSend || acc.dataset.accLink || acc.dataset.accPreview);
+			const out = acc.closest('.bk-g-acc').querySelector('.bk-g-acc__out');
+			const action = acc.matches('[data-acc-send]') ? 'send' : (acc.matches('[data-acc-link]') ? 'link' : 'preview');
+			busy(acc, async () => {
+				const r = await api(`orders/${id}/account`, { method: 'POST', body: { action } });
+				if (action === 'preview') {
+					out.innerHTML = `<dl class="bk-g-pvmeta"><div><dt>Para</dt><dd>${esc(r.to)}</dd></div><div><dt>Asunto</dt><dd>${esc(r.subject)}</dd></div></dl><iframe class="bk-g-pvframe" title="Vista previa del correo de acceso" sandbox=""></iframe>`;
+					$('iframe', out).srcdoc = r.html;
+					return;
+				}
+				memo.set(`orders/${id}/account`, r.state);
+				const body = acc.closest('.bk-g-acc__body');
+				body.innerHTML = accBody(r.state, id);
+				const box = body.querySelector('.bk-g-acc__out');
+				if (action === 'link') {
+					let copied = false;
+					try { await navigator.clipboard.writeText(r.url); copied = true; } catch (e) { /* sin permiso: queda el campo para copiar a mano */ }
+					box.innerHTML = `<label class="bk-g-field"><span>${copied ? 'Enlace copiado. Pégalo en WhatsApp:' : 'Copia este enlace y envíalo por WhatsApp:'}</span><input type="text" readonly value="${esc(r.url)}" onfocus="this.select()"></label><small class="bk-g-hint">Vence el ${esc(r.expires)} y sirve una sola vez.</small>`;
+					toast(copied ? 'Enlace copiado' : 'Enlace listo para copiar');
+				} else {
+					toast('Acceso enviado por correo');
+				}
+				forget(`orders/${id}`);
+			});
+			return;
+		}
 		const ce = t.closest('[data-cust-edit], [data-cust-cancel]');
 		if (ce) {
 			const f = $('#bk-g-custform'); const btn = $('[data-cust-edit]');

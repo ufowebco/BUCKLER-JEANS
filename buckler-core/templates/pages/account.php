@@ -14,7 +14,7 @@ $bk_guest = ! is_user_logged_in();
 	<?php if ( $bk_guest ) : ?>
 		<div class="bk-login">
 			<div class="bk-login__main">
-				<h1 class="bk-page-title"><?php echo is_wc_endpoint_url( 'lost-password' ) ? esc_html__( 'Recupera tu contraseña', 'buckler-core' ) : esc_html__( 'Ingresa a tu cuenta', 'buckler-core' ); ?></h1>
+				<h1 class="bk-page-title"><?php echo is_wc_endpoint_url( 'lost-password' ) ? esc_html__( 'Recupera tu contraseña', 'buckler-core' ) : ( isset( $_GET['crear'] ) || isset( $_POST['register'] ) ? esc_html__( 'Crea tu cuenta', 'buckler-core' ) : esc_html__( 'Ingresa a tu cuenta', 'buckler-core' ) ); // phpcs:ignore WordPress.Security.NonceVerification ?></h1>
 				<p class="bk-lead"><?php esc_html_e( 'Revisa tus pedidos, sigue tu envío y compra más rápido.', 'buckler-core' ); ?></p>
 				<?php echo do_shortcode( '[woocommerce_my_account]' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 				<p class="bk-login__help">
@@ -32,9 +32,7 @@ $bk_guest = ! is_user_logged_in();
 					<li><?php echo bk_icon_svg( 'lucide:rotate-ccw', 22 ); // phpcs:ignore ?><span><strong><?php esc_html_e( 'Volver a pedir', 'buckler-core' ); ?></strong><?php esc_html_e( 'Repite una compra anterior en un clic.', 'buckler-core' ); ?></span></li>
 					<li><?php echo bk_icon_svg( 'lucide:lock', 22 ); // phpcs:ignore ?><span><strong><?php esc_html_e( 'Cuidar tus datos', 'buckler-core' ); ?></strong><?php esc_html_e( 'Cambia tu correo o contraseña cuando quieras.', 'buckler-core' ); ?></span></li>
 				</ul>
-				<?php if ( 'yes' === get_option( 'woocommerce_enable_signup_and_login_from_checkout' ) && 'yes' !== get_option( 'woocommerce_enable_myaccount_registration' ) ) : ?>
-					<p class="bk-login__note"><?php esc_html_e( '¿Aún no tienes cuenta? Puedes crearla al finalizar tu compra.', 'buckler-core' ); ?></p>
-				<?php endif; ?>
+				<p class="bk-login__note"><?php esc_html_e( '¿Aún no tienes cuenta? Créala aquí o al terminar tu compra: tus pedidos anteriores con el mismo correo aparecerán en ella.', 'buckler-core' ); ?></p>
 				<a class="bk-btn is-ghost" href="<?php echo esc_url( wc_get_page_permalink( 'shop' ) ); ?>"><?php esc_html_e( 'Ir a la tienda', 'buckler-core' ); ?></a>
 			</aside>
 		</div>

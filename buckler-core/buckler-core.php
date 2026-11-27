@@ -73,6 +73,7 @@ add_action(
 		require_once BK_DIR . 'includes/discount-countdown.php';
 		require_once BK_DIR . 'includes/sale-notice.php';
 		require_once BK_DIR . 'includes/coupon-rules.php';
+		require_once BK_DIR . 'includes/accounts.php';
 		require_once BK_DIR . 'includes/low-stock.php';
 		require_once BK_DIR . 'includes/emails.php';
 		if ( bk_on( 'cards' ) ) {
@@ -102,6 +103,7 @@ add_action(
 			require_once BK_DIR . 'includes/gestion/manual-order.php';
 			require_once BK_DIR . 'includes/gestion/order-items.php';
 			require_once BK_DIR . 'includes/gestion/customer-orders.php';
+			require_once BK_DIR . 'includes/gestion/customer-access.php';
 			require_once BK_DIR . 'includes/gestion/page.php';
 			require_once BK_DIR . 'includes/gestion/login.php';
 			require_once BK_DIR . 'includes/gestion/admin-link.php';

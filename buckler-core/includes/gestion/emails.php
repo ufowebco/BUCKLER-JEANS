@@ -103,6 +103,9 @@ function bk_gm_list() {
 			);
 		}
 	}
+	if ( function_exists( 'bk_gca_email' ) ) {
+		$list[] = array( 'id' => 'bk:access', 'title' => 'Tu cuenta está lista (crear contraseña)', 'group' => 'Clienta', 'when' => sprintf( 'Se envía desde el pedido con "Enviar acceso a su cuenta" o en el envío masivo a clientas que ya compraron. El enlace vence a las %d h.', (int) bk_acc_cfg()['hours'] ), 'enabled' => true, 'source' => 'buckler-core' );
+	}
 	if ( function_exists( 'bk_ac_build_email' ) ) {
 		$s = bk_ac_settings();
 		foreach ( array( 1, 2, 3 ) as $step ) {
@@ -166,6 +169,14 @@ function bk_gm_build( $id, $order ) {
 			return new WP_Error( 'bk_no_orders', 'Necesitas al menos un pedido para la vista previa.', array( 'status' => 400 ) );
 		}
 		$mail = bk_pp_email( $o, (int) $m[1] );
+		return array( 'subject' => $mail['subject'], 'to' => $o->get_billing_email(), 'html' => $mail['html'] );
+	}
+	if ( 'bk:access' === $id && function_exists( 'bk_gca_email' ) ) {
+		if ( ! $o ) {
+			return new WP_Error( 'bk_no_orders', 'Necesitas al menos un pedido para la vista previa.', array( 'status' => 400 ) );
+		}
+		$u    = get_user_by( 'email', strtolower( (string) $o->get_billing_email() ) );
+		$mail = bk_gca_email( $u ? $u : null, home_url( '/' . bk_acc_cfg()['slug'] . '/?vista=previa' ), $o );
 		return array( 'subject' => $mail['subject'], 'to' => $o->get_billing_email(), 'html' => $mail['html'] );
 	}
 	if ( preg_match( '/^bk:ac([123])$/', $id, $m ) ) {

@@ -77,6 +77,7 @@
 		const groups = [['Clienta', 'Correos a la clienta'], ['Tienda', 'Avisos a la tienda']];
 		main.innerHTML = `<h1 class="bk-g-h1">Correos</h1>
 			<p class="bk-g-hint">Mira cómo le llega cada correo a la clienta con un pedido real y envíate pruebas. La vista previa no envía nada.${mail.settings ? ` Textos y remitente: <a href="${esc(mail.settings)}" target="_blank" rel="noopener">WooCommerce → Ajustes → Correos</a>.` : ''}</p>
+			<section class="bk-g-accbulk" id="bk-g-accbulk" aria-live="polite"><div class="bk-g-loading">Revisando clientas sin cuenta…</div></section>
 			<div class="bk-g-mail">
 				<div class="bk-g-mail__list">
 					<label class="bk-g-field"><span>Pedido de ejemplo</span><select id="bk-g-morder">${mail.orders.map((o) => `<option value="${o.id}">${esc(o.label)}</option>`).join('') || '<option value="0">Sin pedidos</option>'}</select></label>
@@ -87,6 +88,36 @@
 			</div>`;
 		const first = $('[data-mail]');
 		if (first && matchMedia('(min-width: 900px)').matches) showMail(first.dataset.mail);
+		loadBulk();
+	}
+
+	/* --- Acceso a Mi cuenta para clientas que ya compraron (envío masivo) --------- */
+	let bulkTimer = 0;
+	const bulkHtml = (b) => {
+		const r = b.run;
+		const running = r && r.running;
+		const prog = r ? Math.round(((r.sent + r.failed) / Math.max(1, r.total)) * 100) : 0;
+		return `<div class="bk-g-accbulk__head"><span class="bk-g-accbulk__icon">${C.icons.key || ''}</span><div>
+				<h2>Acceso a Mi cuenta para clientas que ya compraron</h2>
+				<p class="bk-g-hint">Les llega el correo "Tu cuenta está lista" con un enlace para crear su contraseña (sirve una vez y vence en ${b.hours} h). La cuenta se crea con su correo y ahí ven todos sus pedidos. Solo a clientas con pedidos pagados que aún no tienen cuenta; a ninguna se le envía dos veces.</p></div></div>
+			${running ? `<div class="bk-g-accbulk__run"><p><b>Enviando…</b> ${r.sent} de ${r.total} enviados${r.failed ? ` · ${r.failed} sin enviar` : ''} · termina hacia el ${esc(r.eta)}</p>
+				<div class="bk-g-accbulk__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${prog}" aria-label="Progreso del envío"><i style="width:${prog}%"></i></div>
+				<small>Se envían ${b.batch} correos cada ${b.minutes} minutos para no saturar el correo de la tienda. Puedes cerrar esta página.</small>
+				<button type="button" class="bk-g-btn is-ghost is-small" data-bulk-stop>Detener envío</button></div>`
+			: `<div class="bk-g-accbulk__stats"><div><b>${b.pending}</b><span>clienta${b.pending === 1 ? '' : 's'} sin cuenta</span></div><div><b>${b.invited}</b><span>ya recibieron el acceso</span></div></div>
+				${r && !r.running ? `<p class="bk-g-hint">Último envío: ${r.sent} de ${r.total} enviados${r.failed ? ` (${r.failed} sin enviar)` : ''} · ${esc(r.started)}${r.by ? ` · ${esc(r.by)}` : ''}${r.stopped ? ' · detenido' : ''}.</p>` : ''}
+				${b.pending ? `<div class="bk-g-accbulk__go" id="bk-g-bulkgo"><button type="button" class="bk-g-btn" data-bulk-ask>${C.icons.send} Enviar acceso a ${b.pending} clienta${b.pending === 1 ? '' : 's'}</button></div>` : '<p class="bk-g-hint">No hay clientas pendientes: todas tienen cuenta o ya recibieron el acceso.</p>'}`}`;
+	};
+	async function loadBulk() {
+		clearTimeout(bulkTimer);
+		const box = $('#bk-g-accbulk');
+		if (!box) return;
+		try {
+			const b = await api('access/bulk');
+			if (!$('#bk-g-accbulk')) return;
+			box.innerHTML = bulkHtml(b);
+			if (b.run && b.run.running) bulkTimer = setTimeout(loadBulk, 30000);
+		} catch (e) { box.innerHTML = `<p class="bk-g-hint">${esc(e.message)}</p>`; }
 	}
 
 	async function showMail(id) {
@@ -389,6 +420,25 @@
 	 * ========================================================================== */
 	document.addEventListener('click', async (e) => {
 		const t = e.target;
+		const ask = t.closest('[data-bulk-ask]');
+		if (ask) {
+			const n = ask.textContent.match(/\d+/)?.[0] || '';
+			$('#bk-g-bulkgo').innerHTML = `<p class="bk-g-accbulk__confirm" role="alert"><b>¿Enviar el acceso a ${n} clienta${n === '1' ? '' : 's'}?</b> Cada una recibe un solo correo. Empieza ya y sigue por tandas.</p>
+				<button type="button" class="bk-g-btn" data-bulk-start>Sí, enviar</button> <button type="button" class="bk-g-btn is-ghost" data-bulk-cancel>Cancelar</button>`;
+			$('[data-bulk-start]').focus();
+			return;
+		}
+		if (t.closest('[data-bulk-cancel]')) { loadBulk(); return; }
+		const go = t.closest('[data-bulk-start], [data-bulk-stop]');
+		if (go) {
+			busy(go, async () => {
+				const b = await api('access/bulk', { method: 'POST', body: { action: go.matches('[data-bulk-start]') ? 'start' : 'stop' } });
+				$('#bk-g-accbulk').innerHTML = bulkHtml(b);
+				toast(go.matches('[data-bulk-start]') ? 'Envío iniciado' : 'Envío detenido');
+				if (b.run && b.run.running) bulkTimer = setTimeout(loadBulk, 30000);
+			});
+			return;
+		}
 		const m = t.closest('[data-mail]');
 		if (m && m.matches('button')) { showMail(m.dataset.mail); return; }
 		if (t.closest('[data-carts-refresh]')) {
