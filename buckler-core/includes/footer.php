@@ -124,6 +124,7 @@ function bk_shortcode_footer( $atts ) {
 	ob_start();
 	?>
 	<div class="bk-footer">
+		<?php do_action( 'bk_footer_top' ); // Modo Navidad: saludo. ?>
 		<ul class="bk-perks" aria-label="<?php esc_attr_e( 'Beneficios', 'buckler-core' ); ?>">
 			<li><?php echo bk_icon_svg( 'lucide:truck', 28 ); // phpcs:ignore ?><span><strong><?php esc_html_e( 'Envíos gratis', 'buckler-core' ); ?></strong><?php esc_html_e( 'a todo el país', 'buckler-core' ); ?></span></li>
 			<li><?php echo bk_icon_svg( 'lucide:credit-card', 28 ); // phpcs:ignore ?><span><strong><?php esc_html_e( 'Paga con Addi', 'buckler-core' ); ?></strong><?php esc_html_e( '3 cuotas con 0 % de interés', 'buckler-core' ); ?></span></li>

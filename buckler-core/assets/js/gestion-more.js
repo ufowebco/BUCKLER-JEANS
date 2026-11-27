@@ -281,12 +281,13 @@
 	let P = null; // Políticas / preguntas.
 
 	async function viewContent(sub) {
-		const tab = ['banners', 'guia', 'politicas', 'preguntas'].includes(sub[0]) ? sub[0] : 'banners';
+		const tab = ['banners', 'guia', 'politicas', 'preguntas', 'temporada'].includes(sub[0]) ? sub[0] : 'banners';
 		main.innerHTML = `<h1 class="bk-g-h1">Contenido</h1>
-			<nav class="bk-g-subtabs" aria-label="Contenido">${[['banners', 'Banners'], ['guia', 'Guía de tallas'], ['politicas', 'Políticas'], ['preguntas', 'Preguntas frecuentes']].map(([k, l]) => `<a href="#contenido/${k}" ${tab === k ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>
+			<nav class="bk-g-subtabs" aria-label="Contenido">${[['banners', 'Banners'], ['guia', 'Guía de tallas'], ['politicas', 'Políticas'], ['preguntas', 'Preguntas frecuentes'], ['temporada', 'Temporada']].map(([k, l]) => `<a href="#contenido/${k}" ${tab === k ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>
 			<div id="bk-gc"><div class="bk-g-loading">Cargando…</div></div>`;
 		const seq = A.seq();
 		try {
+			if (tab === 'temporada') { const d = await api('season'); if (seq === A.seq()) paintSeason(d); }
 			if (tab === 'banners') { B = await api('content/banners'); if (seq === A.seq()) paintBanners(); }
 			if (tab === 'guia') { G = await api('content/guide'); if (seq === A.seq()) paintGuide(); }
 			if (tab === 'politicas' || tab === 'preguntas') {
@@ -296,6 +297,25 @@
 				if (sub[1]) paintPostForm(sub[1]); else paintPosts();
 			}
 		} catch (e) { $('#bk-gc').innerHTML = err(e); }
+	}
+
+	// Modo Navidad: automático (fechas), siempre encendido o apagado.
+	function paintSeason(d) {
+		const opt = (v, t, h) => `<label class="bk-gs-opt"><input type="radio" name="mode" value="${v}" ${d.mode === v ? 'checked' : ''}><span><b>${t}</b><small>${h}</small></span></label>`;
+		$('#bk-gc').innerHTML = `<form id="bk-gseason" class="bk-g-card" novalidate><h2>🎄 Modo Navidad</h2>
+			<p class="bk-g-hint">Gorro en el logo, luces bajo el menú, nieve suave, franja roja de "¡Felices fiestas!", bloque de regalos en el inicio y recuadro "¿Es un regalo?" en las fichas. El diseño de la tienda no cambia.</p>
+			<p class="bk-gs-state"><span class="bk-g-pill ${d.on ? 'is-completed' : 'is-cancelled'}">${d.on ? 'Activo ahora' : 'Apagado ahora'}</span></p>
+			<fieldset class="bk-gs-opts"><legend class="bk-g-sr">Cuándo se muestra</legend>
+				${opt('auto', 'Automático', `Del ${esc(d.start)} al ${esc(d.end)}. Se prende y se apaga solo.`)}
+				${opt('on', 'Siempre encendido', 'Se ve desde ya hasta que lo cambies.')}
+				${opt('off', 'Apagado', 'No se muestra, aunque estemos en temporada.')}</fieldset>
+			<button class="bk-g-btn" type="submit">Guardar</button></form>`;
+		$('#bk-gseason').addEventListener('submit', (e) => {
+			e.preventDefault();
+			const btn = e.currentTarget.querySelector('[type="submit"]');
+			const mode = new FormData(e.currentTarget).get('mode');
+			A.busy(btn, async () => { const r = await api('season', { method: 'POST', body: { mode } }); paintSeason(r); A.toast(r.on ? 'Modo Navidad activo' : 'Guardado: modo Navidad apagado ahora'); });
+		});
 	}
 
 	function paintBanners() {

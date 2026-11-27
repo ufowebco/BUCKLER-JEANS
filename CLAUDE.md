@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.46 → `dist/buckler-core-0.18.46.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.47 → `dist/buckler-core-0.18.47.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -971,6 +971,20 @@ Versión actual 0.18.46 → `dist/buckler-core-0.18.46.zip` (`tools/build-plugin
     (`wc_get_is_paid_statuses`), customer_id 0 y sin cuenta (SQL HPOS / posts), sin repetir (`bk_acc_bulk_done` md5 del
     correo); cola en `bk_acc_bulk`, tandas de 20 cada 10 min (Action Scheduler `bk_acc_bulk_tick`, grupo buckler-acc,
     filtro `bk_acc_bulk_cfg`; fixture `bk_test_acc_bulk_batch`). Suite `ronda1846.js` (40).
+- **0.18.47 (2026-11-27, aprobada con capturas e instalada): modo Navidad** del 1 de diciembre (12:00 a. m.) al 6 de
+  enero (11:59 p. m.), hora del sitio. `includes/xmas.php` (siempre cargado; solo en las páginas limpias) +
+  `assets/css/xmas.css` (todo con `body.bk-xmas`): gorro rediseñado (SVG con degradado, peluche ondulado y pompón, en
+  data URI con "#" codificado como %23) en `.bk-logo a::after` (left −1.6 %, top −30 %, ancho 16,5 %, rotado −12°) y en
+  `.bk-fcart::before`; `.bk-bar` con padding-top 8 px (18 px ≥861) para que la franja no corte el gorro; franja de
+  anuncios roja #c8102e con "🎄 ¡Felices fiestas!" primero (`array_unshift` en header.php: `bk_config()` se calcula
+  antes de 'wp'); guirnalda en `.bk-bar::before/::after` (dos capas SVG, la 2.ª titila); nieve CSS en `body::after`
+  (se apaga con reduced-motion); nieve en `.bk-card__media::before`; bloque `.bk-xmas-home` en `bk_home_after_hero`
+  (no sale con campaña con cuenta regresiva); `.bk-xmas-gift` en la ficha (summary 12, re-enganchado); saludo
+  `.bk-xmas-ft` con el gancho nuevo `bk_footer_top` y nieve en `.bk-footer::before`. `bk_xmas_on()`: opción
+  `bk_xmas_mode` auto|on|off (Gestión → Contenido → Temporada, `GET/POST bk/v1/gestion/season`), `bk_xmas_window()`
+  (filtro `bk_xmas_dates`), `bk_xmas_now()` (filtro; fixture `bk_test_now`). Action Scheduler `bk_xmas_flush` (grupo
+  buckler-xmas) vacía la caché al empezar y al terminar. **El archivo de fixtures se COPIA a mu-plugins: tras editar
+  `tools/local/bk-local-fixtures.php` hay que copiarlo.** Suite `ronda1847.js` (21).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -1015,7 +1029,7 @@ Versión actual 0.18.46 → `dist/buckler-core-0.18.46.zip` (`tools/build-plugin
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, seguridad 0.18.38 9, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 23, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31, ronda 0.18.35 14, ronda 0.18.40 20, ronda 0.18.41 9, ronda 0.18.42/43 6, ronda 0.18.46 40 = 1124 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, seguridad 0.18.38 9, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 23, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31, ronda 0.18.35 14, ronda 0.18.40 20, ronda 0.18.41 9, ronda 0.18.42/43 6, ronda 0.18.46 40, ronda 0.18.47 21 = 1145 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.

@@ -349,3 +349,6 @@ add_filter( 'bk_disc_now', static fn( $t ) => (int) get_option( 'bk_test_now' ) 
 
 // Cuentas (0.18.46): tanda del envío masivo de accesos desde la opción bk_test_acc_bulk_batch.
 add_filter( 'bk_acc_bulk_cfg', static function ( $c ) { $n = (int) get_option( 'bk_test_acc_bulk_batch' ); if ( $n ) { $c['batch'] = $n; } return $c; } );
+
+// Modo Navidad (0.18.47): misma fecha simulada que los descuentos (opción bk_test_now).
+add_filter( 'bk_xmas_now', static fn( $t ) => (int) get_option( 'bk_test_now' ) ? (int) get_option( 'bk_test_now' ) : $t );

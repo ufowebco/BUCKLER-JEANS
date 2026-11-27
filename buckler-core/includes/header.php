@@ -157,6 +157,9 @@ function bk_shortcode_header( $atts ) {
 	$cart  = function_exists( 'wc_get_cart_url' ) ? wc_get_cart_url() : bk_url( '/carrito/' );
 	$acct  = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : bk_url( '/mi-cuenta/' );
 	$msgs  = (array) bk_config( 'announcements' );
+	if ( function_exists( 'bk_xmas_on' ) && bk_xmas_on() ) { // Modo Navidad: saludo primero.
+		array_unshift( $msgs, __( '🎄 ¡Felices fiestas!', 'buckler-core' ) );
+	}
 	if ( function_exists( 'bk_review_promo_on' ) && bk_review_promo_on() ) {
 		$msgs[] = array( bk_review_promo_incentive() ? sprintf( /* translators: %s: descuento */ __( 'Califica en Google y gana %s', 'buckler-core' ), ( (array) bk_config( 'review_promo' ) )['discount'] ?? '10 %' ) : __( 'Califícanos en Google', 'buckler-core' ), (string) bk_config( 'review_url' ) );
 	}

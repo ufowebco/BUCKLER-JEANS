@@ -1352,3 +1352,11 @@ code { padding: 1px 5px; border-radius: 4px; background: #eef1f4; font-size: .9e
 .bk-g-accbulk__bar { height: 10px; border-radius: 99px; background: #e8ecef; overflow: hidden; }
 .bk-g-accbulk__bar i { display: block; height: 100%; background: #1a3955; border-radius: 99px; }
 .bk-g-accbulk__confirm { margin: 0 0 10px; padding: 10px 12px; border-radius: 10px; background: #fff8e1; }
+
+/* Contenido → Temporada (modo Navidad, 0.18.47) */
+.bk-gs-opts { display: grid; gap: 10px; margin: 14px 0 16px; padding: 0; border: 0; }
+.bk-gs-opt { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1.5px solid var(--g-line); border-radius: 12px; cursor: pointer; }
+.bk-gs-opt:has(input:checked) { border-color: var(--g-navy); background: #f4f7fa; }
+.bk-gs-opt input { margin-top: 3px; }
+.bk-gs-opt span { display: flex; flex-direction: column; }
+.bk-gs-opt small { color: var(--g-mute); }
