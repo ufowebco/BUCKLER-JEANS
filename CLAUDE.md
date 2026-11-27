@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.41 → `dist/buckler-core-0.18.41.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.42 → `dist/buckler-core-0.18.42.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -932,6 +932,11 @@ Versión actual 0.18.41 → `dist/buckler-core-0.18.41.zip` (`tools/build-plugin
   SALE." / "…no se suma a Black Friday: tus prendas ya tienen el descuento." / "…en SALE ni con Black Friday.". Aviso
   `bk_coupon_rule_text()` en la promo de reseñas (`.bk-promo__rule`) y en la tarjeta del menú (`.bk-promo-rule`).
   Suite `ronda1841.js` (9).
+- **0.18.42 (2026-11-27, instalada; documento CAMBIOS_WEB del cliente):** el bloque de la campaña con cuenta regresiva
+  va **primero en el inicio, antes de los banners** (`do_action('bk_home_top')` en home.php; `bk_cd_home` engancha ahí;
+  `bk_home_after_hero` queda libre). Barra de anuncios con el texto **siempre centrado** (`.bk-announce__item`
+  text-align center, padding 0 10px; los sellos con justify-content center). Punto 3 (etiquetas de las tarjetas tapan a
+  la modelo): opciones A/B/C mostradas al cliente con vista previa sobre producción, pendiente de elección.
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.

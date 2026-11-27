@@ -21,8 +21,9 @@ foreach ( $bk_lines as $bk_slug => $bk_l ) {
 }
 $bk_sale = function_exists( 'wc_get_product_ids_on_sale' ) ? wc_get_product_ids_on_sale() : array();
 ?>
+<?php do_action( 'bk_home_top' ); // Bloque de campaña con cuenta regresiva: lo primero del inicio (pedido del cliente 2026-11-27). ?>
 <?php echo do_shortcode( '[bk_hero autoplay="6"]' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
-<?php do_action( 'bk_home_after_hero' ); // Bloque de campaña con cuenta regresiva. ?>
+<?php do_action( 'bk_home_after_hero' ); ?>
 
 <section class="bk-wrap bk-home-intro">
 	<h1><?php esc_html_e( 'Jeans y moda en denim para mujer', 'buckler-core' ); ?></h1>

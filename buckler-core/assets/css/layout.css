@@ -115,7 +115,8 @@
 .bk-announce__item {
 	flex: 0 0 calc(100% / var(--per));
 	min-width: 0;
-	padding-right: 20px;
+	padding: 0 10px; /* Texto siempre centrado en su espacio (pedido del cliente 2026-11-27). */
+	text-align: center;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -124,6 +125,7 @@
 .bk-announce__item.is-badge {
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	gap: 6px;
 }
 
