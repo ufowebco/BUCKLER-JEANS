@@ -193,8 +193,9 @@
 /* Etiquetas */
 .bk-card__badges {
 	position: absolute;
-	top: 10px;
-	left: 10px;
+	top: 8px;
+	left: 8px;
+	right: 8px;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -203,9 +204,13 @@
 }
 
 .bk-badge {
-	padding: 4px 9px;
+	max-width: 100%;
+	padding: 3px 7px;
 	border-radius: 5px;
-	font-size: 11px;
+	font-size: 10px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	font-weight: 800;
 	letter-spacing: .06em;
 	line-height: 1.2;
@@ -267,6 +272,16 @@
 	flex-direction: column;
 	gap: 3px;
 }
+
+.bk-card__meta {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+	color: var(--bk-mute);
+}
+
+.bk-card__new { color: var(--bk-navy); font-weight: 800; }
 
 .bk-card__line {
 	font-size: 11px;
@@ -351,3 +366,5 @@
 	}
 }
 .bk-badge--camp { background: var(--bk-navy); color: var(--bk-lime); }
+.bk-badge--deal { background: #0b0b0c; color: #fff; }
+.bk-badge--deal b { color: var(--bk-lime); font-weight: 800; }

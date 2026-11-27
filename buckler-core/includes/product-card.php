@@ -139,14 +139,18 @@ function bk_product_card( $product, $args = array() ) {
 		$badges .= '<span class="bk-badge bk-badge--out">' . esc_html__( 'Agotado', 'buckler-core' ) . '</span>';
 	} elseif ( $d['discount'] > 0 ) {
 		/* translators: %d: porcentaje */
-		$badges .= '<span class="bk-badge bk-badge--sale">' . esc_html( sprintf( __( '-%d %%', 'buckler-core' ), $d['discount'] ) ) . '</span>';
+		// Una sola etiqueta pequeña para no tapar a la modelo (decisión del cliente 2026-11-27, opción A):
+		// con campaña "−25 % · BLACK FRIDAY" en negro; sin campaña, "−X %" en rojo.
+		/* translators: %d: porcentaje */
+		$pct = esc_html( sprintf( __( '-%d %%', 'buckler-core' ), $d['discount'] ) );
 		if ( $camp && ! empty( $camp['badge'] ) ) {
-			$badges .= '<span class="bk-badge bk-badge--camp">' . esc_html( $camp['badge'] ) . '</span>';
+			$badges .= '<span class="bk-badge bk-badge--sale bk-badge--deal"><b>' . $pct . '</b> · ' . esc_html( $camp['badge'] ) . '</span>';
+		} else {
+			$badges .= '<span class="bk-badge bk-badge--sale">' . $pct . '</span>';
 		}
 	}
-	if ( $product->is_featured() && $in ) {
-		$badges .= '<span class="bk-badge bk-badge--new">' . esc_html__( 'Nuevo', 'buckler-core' ) . '</span>';
-	}
+	// NUEVO va debajo de la foto, junto a la línea ("LÍNEA CURVY · NUEVO"), no sobre la modelo.
+	$is_new = $product->is_featured() && $in;
 	// ¡Últimas unidades! en la tarjeta: apagado por defecto (decisión del cliente 2026-10-20: muy invasivo en el grid;
 	// solo en la ficha). Encender con bk_config( 'low_stock' )['cards'] = true.
 	$low = ! empty( bk_config( 'low_stock' )['cards'] ) && ( isset( $d['low'] ) ? (int) $d['low'] : ( function_exists( 'bk_low_stock_sizes' ) && bk_low_stock_sizes( $product ) ? 1 : 0 ) );
@@ -188,7 +192,9 @@ function bk_product_card( $product, $args = array() ) {
 			<?php if ( $sizes_vis && $in ) : ?><div class="bk-card__sizes" aria-hidden="true"><?php echo $sizes_vis; // phpcs:ignore ?></div><?php endif; ?>
 		</div>
 		<div class="bk-card__body">
-			<?php if ( $d['line'] ) : ?><span class="bk-card__line"><?php echo esc_html( $d['line'] ); ?></span><?php endif; ?>
+			<?php if ( $d['line'] || $is_new ) : ?>
+				<span class="bk-card__meta"><?php if ( $d['line'] ) : ?><span class="bk-card__line"><?php echo esc_html( $d['line'] ); ?></span><?php endif; ?><?php if ( $is_new ) : ?><span class="bk-card__new"><?php echo $d['line'] ? ' · ' : ''; ?><?php esc_html_e( 'Nuevo', 'buckler-core' ); ?></span><?php endif; ?></span>
+			<?php endif; ?>
 			<<?php echo esc_html( $heading ); ?> class="bk-card__title"><a class="bk-card__link" href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $name ); ?></a></<?php echo esc_html( $heading ); ?>>
 			<span class="bk-card__price"><?php echo wp_kses_post( $product->get_price_html() ); ?></span>
 			<?php echo $addi; // phpcs:ignore ?>

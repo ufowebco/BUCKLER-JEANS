@@ -21,7 +21,7 @@ const ok = (c, m) => console.log((c ? 'OK   ' : 'FAIL ') + m);
       ok(await card.locator('.bk-card__dots i.on').evaluate(el => [...el.parentNode.children].indexOf(el)) === 1, 'flecha → foto 2');
       ok(p.url().endsWith('/shop/'), 'la flecha no navega (sin dead click ni salto)');
       const flare = p.locator('[data-bk-card]', { hasText: 'FLARE' });
-      ok(await flare.locator('.bk-badge--new').count() === 1, 'producto destacado muestra NUEVO');
+      ok(await flare.locator('.bk-card__new').count() === 1, 'producto destacado muestra NUEVO');
       ok((await flare.locator('.bk-card__sizes .is-off').allTextContents()).join() === '18', 'talla 18 tachada (agotada)');
       ok(await p.locator('[data-bk-card]', { hasText: 'SHORT' }).locator('.bk-badge--sale').textContent() === '-12 %', 'descuento -12 % en el short');
       const sr = await flare.locator('.bk-sr-only').textContent();
