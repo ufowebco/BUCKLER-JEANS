@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.47 → `dist/buckler-core-0.18.47.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.48 → `dist/buckler-core-0.18.48.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -985,6 +985,14 @@ Versión actual 0.18.47 → `dist/buckler-core-0.18.47.zip` (`tools/build-plugin
   (filtro `bk_xmas_dates`), `bk_xmas_now()` (filtro; fixture `bk_test_now`). Action Scheduler `bk_xmas_flush` (grupo
   buckler-xmas) vacía la caché al empezar y al terminar. **El archivo de fixtures se COPIA a mu-plugins: tras editar
   `tools/local/bk-local-fixtures.php` hay que copiarlo.** Suite `ronda1847.js` (21).
+- **0.18.48 (2026-11-27, instalada): banners nuevos del inicio** (banners.rar del cliente, "marcados por orden": 3
+  banners PC 1920×1080 + móvil 1200×1200, PNG de 2–3 MB → WebP calidad 84, 95–145 KB, en `assets/banners/2026-11/`).
+  `includes/banner-import.php` (con gestion, después de content.php): importador de una sola vez por lote (`bk_bi_batch()`,
+  id `2026_11`): en `init` pone la opción `bk_banner_import_2026_11` = queued y encola Action Scheduler
+  `bk_banner_import` (grupo buckler-banners) → `media_handle_sideload` (reanudable, `bk_banner_import_ids_2026_11`),
+  alt = texto de la imagen, guarda las filas anteriores en `bk_banners_prev_2026_11` y reemplaza el repeater con
+  `bk_gc_banners_save()` (mismo guardado de Gestión → Contenido → Banners; purga la caché). Enlaces: 1 → /tienda/?nuevo=1,
+  2 y 3 → /tienda/. Estado final `done` o `error: …`. **Banners 2 y 3 hablan del 25 % / descuento (Black Friday).**
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
