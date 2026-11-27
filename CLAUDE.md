@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.48 → `dist/buckler-core-0.18.48.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.49 → `dist/buckler-core-0.18.49.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -993,6 +993,13 @@ Versión actual 0.18.48 → `dist/buckler-core-0.18.48.zip` (`tools/build-plugin
   alt = texto de la imagen, guarda las filas anteriores en `bk_banners_prev_2026_11` y reemplaza el repeater con
   `bk_gc_banners_save()` (mismo guardado de Gestión → Contenido → Banners; purga la caché). Enlaces: 1 → /tienda/?nuevo=1,
   2 y 3 → /tienda/. Estado final `done` o `error: …`. **Banners 2 y 3 hablan del 25 % / descuento (Black Friday).**
+- **0.18.49 (2026-11-27, instalada):** tras 0.18.48 el inicio seguía mostrando los banners viejos para todas
+  (`X-Litespeed-Cache: hit` sin parámetros; mis revisiones con `?v=` saltaban la caché y no lo vieron): la orden de
+  vaciar enviada desde la tarea de Action Scheduler no le llegó a LiteSpeed. `bk_cache_send_purge()` y
+  `bk_cache_send_pending()` tratan como "segundo plano" también la ejecución de Action Scheduler
+  (`did_action('action_scheduler_before_execute') > did_action('action_scheduler_after_execute')`) → queda
+  `bk_cache_purge_pending` para la siguiente visita que pase por PHP. Afecta también a `bk_xmas_flush` y `bk_disc_tick`.
+  **Verificar siempre la URL sin parámetros** (`curl -s https://buckler.com.co/` y mirar `X-Litespeed-Cache`).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.

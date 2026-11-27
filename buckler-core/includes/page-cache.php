@@ -161,7 +161,10 @@ function bk_cache_send_purge( $what ) {
 	} else {
 		$tags[ $what ] = true;
 	}
-	if ( headers_sent() || wp_doing_cron() || 'cli' === PHP_SAPI ) {
+	// Tareas en segundo plano (cron, Action Scheduler, consola): la cabecera no le llega a LiteSpeed (se comprobó en
+	// producción el 2026-11-27 con el importador de banners) → queda pendiente para la siguiente visita que pase por PHP.
+	$background = wp_doing_cron() || 'cli' === PHP_SAPI || ( did_action( 'action_scheduler_before_execute' ) > did_action( 'action_scheduler_after_execute' ) );
+	if ( headers_sent() || $background ) {
 		if ( $all ) {
 			update_option( 'bk_cache_purge_pending', time(), false );
 		}
@@ -220,7 +223,8 @@ function bk_cache_warm() {
  * Limpieza pendiente (cambios hechos en tareas programadas).
  */
 function bk_cache_send_pending() {
-	if ( get_option( 'bk_cache_purge_pending' ) && ! headers_sent() && ! wp_doing_cron() && 'cli' !== PHP_SAPI ) {
+	$background = wp_doing_cron() || 'cli' === PHP_SAPI || ( did_action( 'action_scheduler_before_execute' ) > did_action( 'action_scheduler_after_execute' ) );
+	if ( get_option( 'bk_cache_purge_pending' ) && ! headers_sent() && ! $background ) {
 		header( 'X-LiteSpeed-Purge: *' );
 		delete_option( 'bk_cache_purge_pending' );
 		bk_cache_schedule_warm();
