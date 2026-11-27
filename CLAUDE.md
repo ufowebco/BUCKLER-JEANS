@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.43 → `dist/buckler-core-0.18.43.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.44 → `dist/buckler-core-0.18.44.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -941,6 +941,8 @@ Versión actual 0.18.43 → `dist/buckler-core-0.18.43.zip` (`tools/build-plugin
   bk-badge--deal` negra "<b>−25 %</b> · BLACK FRIDAY" (porcentaje lima); sin campaña "−X %" roja; Agotado igual.
   **NUEVO sale de la foto** → `.bk-card__meta` = `.bk-card__line` + `.bk-card__new` ("LÍNEA CURVY · NUEVO", navy).
   Etiquetas 10 px, padding 3px 7px, sin salto de línea. cards.js busca `.bk-card__new`. Suite `ronda1842.js` (6).
+- **0.18.44 (2026-11-27, aprobada con vista previa e instalada):** "NUEVO" bajo la foto vuelve a ser la **etiqueta lima**
+  (fondo lima, texto navy, 10 px) al lado de la línea, sin el "·" (`.bk-card__meta` flex con gap 8px).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.

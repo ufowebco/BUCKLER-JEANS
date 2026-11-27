@@ -193,7 +193,7 @@ function bk_product_card( $product, $args = array() ) {
 		</div>
 		<div class="bk-card__body">
 			<?php if ( $d['line'] || $is_new ) : ?>
-				<span class="bk-card__meta"><?php if ( $d['line'] ) : ?><span class="bk-card__line"><?php echo esc_html( $d['line'] ); ?></span><?php endif; ?><?php if ( $is_new ) : ?><span class="bk-card__new"><?php echo $d['line'] ? ' · ' : ''; ?><?php esc_html_e( 'Nuevo', 'buckler-core' ); ?></span><?php endif; ?></span>
+				<span class="bk-card__meta"><?php if ( $d['line'] ) : ?><span class="bk-card__line"><?php echo esc_html( $d['line'] ); ?></span><?php endif; ?><?php if ( $is_new ) : ?><span class="bk-card__new"><?php esc_html_e( 'Nuevo', 'buckler-core' ); ?></span><?php endif; ?></span>
 			<?php endif; ?>
 			<<?php echo esc_html( $heading ); ?> class="bk-card__title"><a class="bk-card__link" href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $name ); ?></a></<?php echo esc_html( $heading ); ?>>
 			<span class="bk-card__price"><?php echo wp_kses_post( $product->get_price_html() ); ?></span>
