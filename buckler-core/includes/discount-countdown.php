@@ -26,7 +26,7 @@ add_action(
 			return;
 		}
 		add_action( 'bk_after_header', 'bk_cd_strip' );
-		add_action( 'bk_home_top', 'bk_cd_home' );
+		add_action( 'bk_home_after_hero', 'bk_cd_home' );
 		add_action( 'bk_shop_before_bar', 'bk_cd_shop' );
 		add_action( 'woocommerce_single_product_summary', 'bk_cd_pdp', 11 );
 		add_action( 'woocommerce_before_single_product', static function () {

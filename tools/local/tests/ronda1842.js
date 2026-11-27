@@ -12,7 +12,7 @@ const php = (code) => execSync(`php -r '$_SERVER["HTTP_HOST"]="localhost:8899"; 
   await p.clock.install({ time: new Date('2026-11-27T10:00:00-05:00') });
   await p.goto(B + '/');
   const order = await p.evaluate(() => { const cd = document.querySelector('.bk-cd--hero'), h = document.querySelector('.bk-hero'); return cd && h ? !!(cd.compareDocumentPosition(h) & Node.DOCUMENT_POSITION_FOLLOWING) : null; });
-  ok(order === true, 'inicio: el bloque de Black Friday va antes del banner');
+  ok(order === false, 'inicio: el bloque de Black Friday va después de los banners');
   ok(await p.evaluate(() => getComputedStyle(document.querySelector('.bk-announce__item')).textAlign) === 'center', 'barra de anuncios centrada');
   await p.goto(B + '/shop/');
   const cards = await p.evaluate(() => [...document.querySelectorAll('.bk-card:not(.is-out)')].map((c) => ({ badges: c.querySelectorAll('.bk-card__badges .bk-badge').length, deal: c.querySelector('.bk-badge--deal')?.textContent.trim() || '', newOnPhoto: !!c.querySelector('.bk-card__media .bk-card__new, .bk-card__media .bk-badge--new'), newBody: !!c.querySelector('.bk-card__body .bk-card__new') })));
