@@ -157,7 +157,7 @@ cada módulo activo añade `bk-m-{clave}` al body (CSS/JS invasivo scoped a esa 
 clicks, banners, cards, shop, sidecart, gestion, video, sku_ref, abandoned, pages, cache, adminmenu, stats, discounts, emails. `define('BK_MODULES_ALL', true)` enciende todo
 (solo staging/local). Sin módulos de front no se encola nada. El detector de videos (Herramientas) funciona
 siempre: sirve para leer la clave real en producción con todo apagado.
-Versión actual 0.18.45 → `dist/buckler-core-0.18.45.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
+Versión actual 0.18.46 → `dist/buckler-core-0.18.46.zip` (`tools/build-plugin.sh`, valida versión + lint PHP/JS).
 - `[bk_hero autoplay="6"]`: carrusel a ancho completo con el repeater ACF `banners_pagina_inicio`
   (opciones). Los subcampos PC/móvil/enlace se detectan desde la definición ACF (nombre o etiqueta).
   `<picture>`: PC 1920×1080 (16:9), móvil 1200×1200 (1:1), corte 767 px. Pausa al hover/foco y botón de pausa.
@@ -945,6 +945,32 @@ Versión actual 0.18.45 → `dist/buckler-core-0.18.45.zip` (`tools/build-plugin
   (fondo lima, texto navy, 10 px) al lado de la línea, sin el "·" (`.bk-card__meta` flex con gap 8px).
 - **0.18.45 (2026-11-27, instalada):** el cliente se equivocó con el orden → **banners otra vez arriba** y el bloque de
   Black Friday debajo (`bk_cd_home` en `bk_home_after_hero`; `bk_home_top` queda libre). ronda1842.js adaptada.
+- **0.18.46 (2026-11-27, aprobada con capturas e instalada): cuentas de clientas** (pedido del cliente: registrarse al
+  comprar y dar acceso a clientas antiguas). `includes/accounts.php` (siempre cargado; filtro `bk_accounts_config`: hours
+  72, slug `crear-contrasena`, min 8):
+  - **Después de pagar** (`bk_acc_thanks_html()` en templates/pages/checkout.php): `<dialog id="bk-acc-pop">` que se abre
+    a los 1,5 s (una vez por pedido, sessionStorage) + recuadro `.bk-acc-card`; `POST bk/v1/account/signup` {order, key,
+    password} (la clave del pedido es la prueba; pedidos ≤ 7 días; límite 10 intentos FALLIDOS/h por IP) →
+    `bk_acc_create_user()` (wp_insert_user rol customer con `wc_create_new_customer_username`, direcciones del pedido en
+    WC_Customer, cédula en user meta, sin el correo de cuenta nueva de Woo) + `wc_set_customer_auth_cookie`. Correo con
+    cuenta → "Ya tienes una cuenta · Iniciar sesión". Formulario con `data-bk-allow-resubmit` y botón `data-bk-multi`
+    (core.js bloqueaba el 2.º envío rápido). Evento dataLayer `sign_up`.
+  - **Mi cuenta**: registro forzado (`pre_option_woocommerce_enable_myaccount_registration` yes, generate_password no,
+    generate_username yes) y plantilla propia `templates/woocommerce/myaccount/form-login.php` (pestañas Ingresar / Crear
+    cuenta, `?crear=1`, mismos nonces/ganchos de Woo); mínimo 8 en `woocommerce_process_registration_errors`.
+  - Pedidos de invitada → cuenta: `bk_acc_link_orders()` (`wc_update_new_customer_past_orders`, nunca cuentas del equipo)
+    en `woocommerce_created_customer`, `wp_login` (rol customer; marca `_bk_acc_active`) y al crear la contraseña.
+  - **/crear-contrasena/?u=ID&k=TOKEN** (`bk_acc_route` en parse_request 0, página propia sin tema, no-cache, noindex):
+    `bk_acc_make_link()` guarda solo el HMAC (`_bk_acc_tok`) + `_bk_acc_exp` (72 h); cada enlace nuevo anula el anterior;
+    un solo uso; contraseña + repetir; entra a Mi cuenta con `?bk_bienvenida=1`. Vencido → "Este enlace ya no funciona".
+  - Gestión (`includes/gestion/customer-access.php`): detalle del pedido → "Cuenta de la clienta" (`GET/POST
+    gestion/orders/{id}/account` action preview|send|link; estados none | pending [`_bk_acc_source` gestion sin
+    `_bk_acc_active`] | active; staff rechazado), correo `templates/emails/account-access.php` ("Tu cuenta está lista",
+    `bk_gca_email`, sin contraseña), meta `_bk_acc_sent` en el pedido, historial `acceso`, plantilla `bk:access` en Correos.
+    **Envío masivo** en Correos (`GET/POST gestion/access/bulk` start|stop): clientas con pedidos pagados
+    (`wc_get_is_paid_statuses`), customer_id 0 y sin cuenta (SQL HPOS / posts), sin repetir (`bk_acc_bulk_done` md5 del
+    correo); cola en `bk_acc_bulk`, tandas de 20 cada 10 min (Action Scheduler `bk_acc_bulk_tick`, grupo buckler-acc,
+    filtro `bk_acc_bulk_cfg`; fixture `bk_test_acc_bulk_batch`). Suite `ronda1846.js` (40).
 - Gestión de tienda (`includes/gestion/`, módulo gestion) en **/gestion-tienda/** (decisión del cliente):
   página independiente (no carga tema/Divi), login requerido, capacidad `bk_gestion` (rol `bk_gestor`
   "Gestor de tienda", también admin y shop_manager; se crea al guardar módulos). La gestora no entra a wp-admin.
@@ -989,7 +1015,7 @@ Versión actual 0.18.45 → `dist/buckler-core-0.18.45.zip` (`tools/build-plugin
   oficial, sin wordpress.org) + HPOS + checkout clásico + productos/tallas reales. Los correos se guardan
   en `uploads/bk-mails/`. El admin React de Woo no se compila (avisos rojos solo en local).
   Tema local `tools/local/theme-bk-classic` (clásico, imita Divi) para que Woo use plantillas clásicas.
-  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, seguridad 0.18.38 9, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 23, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31, ronda 0.18.35 14, ronda 0.18.40 20, ronda 0.18.41 9, ronda 0.18.42/43 6 = 1084 OK).
+  Suites Playwright en `tools/local/tests/` (shop 25, cards 23, sidecart 16, carritos abandonados 21, gestión 36, envío 27, productos 53, páginas de tienda 13, páginas limpias 100, administrador del menú 34, seguridad 7, seguridad 0.18.38 9, gestión 0.16 61, SEO 18, ronda 0.17 60, ronda 0.17.1 29, ronda 0.17.3/0.17.4 18, pedidos nuevos 10, ronda 0.17.6 11, ronda 0.17.7 32, ronda 0.17.8 18, ronda 0.17.9 17, ronda 0.18.0 36, ronda 0.18.1 31, ronda 0.18.2 12, ronda 0.18.4 16, ronda 0.18.5 9, ronda 0.18.6 18, ronda 0.18.7 23, ronda 0.18.8 19, ronda 0.18.11 7, ronda 0.18.12 9, ronda 0.18.14 7, ronda 0.18.15 7, ronda 0.18.17 13, ronda 0.18.22 22, ronda 0.18.24 8, ronda 0.18.25 13, ronda 0.18.26 15, ronda 0.18.27 25, ronda 0.18.30 32, ronda 0.18.31 23, ronda 0.18.32 21, ronda 0.18.33 31, ronda 0.18.35 14, ronda 0.18.40 20, ronda 0.18.41 9, ronda 0.18.42/43 6, ronda 0.18.46 40 = 1124 OK).
 
 ## Decisiones del cliente
 - 2026-10-14: propuesta de diseño **aprobada**.
