@@ -160,9 +160,10 @@ function bk_gco_related( WP_REST_Request $r ) {
 }
 
 /**
- * Cuántos pedidos tiene cada clienta en todo su historial (para el numerito de la lista de Pedidos, 0.18.52).
- * Mismo criterio que "Pedidos de esta clienta": cédula, correo o celular iguales al del pedido, incluido él; sin
- * papelera ni borradores del checkout. Clientas repetidas en la página se calculan una sola vez.
+ * Cuántos pedidos DESPACHADOS tiene cada clienta en todo su historial (numerito de la lista de Pedidos; 0.18.52,
+ * solo despachados desde 0.18.53 por decisión del cliente). Clienta = mismo criterio que "Pedidos de esta clienta"
+ * (cédula, correo o celular iguales al del pedido, incluido él). Despachado = check "Despachado" marcado
+ * (bk_g_fields()['despachado']) o pedido Completado. Clientas repetidas en la página se calculan una sola vez.
  *
  * @param WC_Order[] $orders Pedidos de la página.
  * @return array<int,int> id del pedido => total de pedidos de esa clienta.
@@ -190,16 +191,26 @@ function bk_gco_counts( $orders ) {
 	if ( ! $all ) {
 		return array();
 	}
-	// Solo pedidos reales (una consulta para toda la página).
+	// Despachados: check "Despachado" marcado o estado Completado (dos consultas para toda la página).
 	$hpos = class_exists( \Automattic\WooCommerce\Utilities\OrderUtil::class ) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
 	$ph   = implode( ',', array_fill( 0, count( $all ), '%d' ) );
 	$sql  = $hpos
-		? "SELECT id FROM {$wpdb->prefix}wc_orders WHERE id IN ({$ph}) AND type = 'shop_order' AND status NOT IN ('trash','wc-checkout-draft','checkout-draft','draft','auto-draft')"
-		: "SELECT ID FROM {$wpdb->posts} WHERE ID IN ({$ph}) AND post_type = 'shop_order' AND post_status NOT IN ('trash','wc-checkout-draft','checkout-draft','draft','auto-draft')";
+		? "SELECT id FROM {$wpdb->prefix}wc_orders WHERE id IN ({$ph}) AND type = 'shop_order' AND status = 'wc-completed'"
+		: "SELECT ID FROM {$wpdb->posts} WHERE ID IN ({$ph}) AND post_type = 'shop_order' AND post_status = 'wc-completed'";
 	$ok   = array_flip( array_map( 'intval', (array) $wpdb->get_col( $wpdb->prepare( $sql, $all ) ) ) ); // phpcs:ignore WordPress.DB
-	$out  = array();
+	$key  = (string) ( bk_g_fields()['despachado'] ?? '' );
+	if ( '' !== $key ) {
+		$vph  = implode( ',', array_fill( 0, count( BK_G_TRUE ), '%s' ) );
+		$sql  = $hpos
+			? "SELECT m.order_id FROM {$wpdb->prefix}wc_orders_meta m JOIN {$wpdb->prefix}wc_orders o ON o.id = m.order_id WHERE m.order_id IN ({$ph}) AND m.meta_key = %s AND LOWER(m.meta_value) IN ({$vph}) AND o.type = 'shop_order' AND o.status NOT IN ('trash','wc-checkout-draft','wc-cancelled','wc-refunded','wc-failed')"
+			: "SELECT m.post_id FROM {$wpdb->postmeta} m JOIN {$wpdb->posts} p ON p.ID = m.post_id WHERE m.post_id IN ({$ph}) AND m.meta_key = %s AND LOWER(m.meta_value) IN ({$vph}) AND p.post_type = 'shop_order' AND p.post_status NOT IN ('trash','wc-checkout-draft','wc-cancelled','wc-refunded','wc-failed')";
+		foreach ( (array) $wpdb->get_col( $wpdb->prepare( $sql, array_merge( $all, array( $key ), BK_G_TRUE ) ) ) as $id ) { // phpcs:ignore WordPress.DB
+			$ok[ (int) $id ] = true;
+		}
+	}
+	$out = array();
 	foreach ( $sets as $id => $ids ) {
-		$out[ $id ] = max( 1, count( array_filter( $ids, static fn( $x ) => isset( $ok[ $x ] ) ) ) );
+		$out[ $id ] = count( array_filter( $ids, static fn( $x ) => isset( $ok[ $x ] ) ) );
 	}
 	return $out;
 }

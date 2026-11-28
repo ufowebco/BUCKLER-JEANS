@@ -62,7 +62,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `ronda1847.js` | Modo Navidad: apagado el 27 nov, se prende el 1 dic y se apaga el 7 ene, franja roja, gorro (sin quedar bajo la franja), luces, bloque del inicio, nieve en tarjetas, regalo en la ficha, pie, reducir movimiento, 390 px, interruptor de la gestión (auto / encendido / apagado) | 21 |
 | `ronda1850.js` | "Faltan por marcar" junto a Pedidos (números = servidor, filtrar, marcar baja el número, "Ver todos", enlace directo, 390 px) + estado propio "aprobada" cuenta en la meta y "espera de pago" no | 18 |
 | `ronda1851.js` | Detalle del pedido en media pantalla: ancho 960/800 px, dos columnas (pedido / clienta), total en el encabezado, barra de estado en una fila, check verde y guardar, 390 px en una columna sin desborde | 11 |
-| `ronda1852.js` | Número de pedidos de la clienta junto al nombre: "1" gris para clienta nueva, azul si repite, igual al conteo de "Pedidos de esta clienta", pequeño y en la misma línea | 5 |
+| `ronda1852.js` | Número de pedidos DESPACHADOS de la clienta junto al nombre (check Despachado o Completado; cancelado no cuenta; sin despachados no sale; "1" gris, 2+ azul; pequeño y en la misma línea) | 6 |
 | `seguridad2.js` | Sin sesión: reseñas con nombre corto y sin Gravatar, comentarios sin nombre/enlace/avatar, páginas/fotos/productos sin número de usuario; con sesión del equipo todo completo | 9 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).
