@@ -456,7 +456,13 @@
 		<small class="bk-g-hint">PDF, JPG, PNG o WebP · máx. ${esc(o.files.max)}. Se guarda en el mismo campo de ACF (se ve igual en WooCommerce).</small></section>`;
 
 	// Historial: cuándo se creó, pagó, cambió de estado, se imprimió, despachó, envió la guía…
-	const historyHtml = (o) => o.history?.length ? `<section><h3>Historial del pedido</h3><ol class="bk-g-hist">${[...o.history].reverse().map((h) => `<li class="is-${esc(h.type)}"><b>${esc(h.label)}</b><small>${esc(h.date)}${h.by ? ` · ${esc(h.by)}` : ''}</small></li>`).join('')}</ol></section>` : '';
+	const histLi = (h) => `<li class="is-${esc(h.type)}"><b>${esc(h.label)}</b><small>${esc(h.date)}${h.by ? ` · ${esc(h.by)}` : ''}</small></li>`;
+	// Historial: los 5 últimos a la vista y el resto plegado (menos scroll).
+	const historyHtml = (o) => {
+		if (!o.history?.length) return '';
+		const all = [...o.history].reverse();
+		return `<section class="bk-g-card"><h3>Historial del pedido</h3><ol class="bk-g-hist">${all.slice(0, 5).map(histLi).join('')}</ol>${all.length > 5 ? `<details class="bk-g-hist__more"><summary>Ver todo (${all.length})</summary><ol class="bk-g-hist">${all.slice(5).map(histLi).join('')}</ol></details>` : ''}</section>`;
+	};
 
 	// Editar los datos de la clienta en este pedido (facturación y envío + cédula).
 	const custField = (g, k, label, v, extra = '') => `<label><span>${esc(label)}</span><input name="${g}.${k}" value="${esc(v || '')}" ${extra}></label>`;
@@ -562,40 +568,57 @@
 			<div class="bk-g-acc__body">${a ? accBody(a, o.id) : '<p class="bk-g-hint">Revisando si tiene cuenta…</p>'}</div></section>`;
 	};
 
+	// Detalle del pedido (0.18.51): panel de media pantalla con encabezado (estado + total), barra de checks y dos
+	// columnas: el pedido (productos, guía, notas, archivos) | la clienta (datos, cuenta, otros pedidos, historial).
+	// Color del estado: pagado/en proceso verde, sin pagar ámbar, cancelado/fallido rojo, en espera azul.
+	const stateTone = (st) => /pend|fail|fall|rechaz|declin/.test(st) ? (/fail|fall|rechaz|declin/.test(st) ? 'is-bad' : 'is-warn') : (/cancel|refund|reemb/.test(st) ? 'is-bad' : (st === 'on-hold' ? 'is-info' : ''));
+	const qtyTxt = (o) => { const n = (o.items || []).reduce((a, i) => a + (+i.qty || 0), 0); return n ? `${n} prenda${n === 1 ? '' : 's'}` : ''; };
+	const waLink = (ph) => `https://wa.me/57${esc(String(ph).replace(/\D/g, '').replace(/^57/, ''))}`;
 	const orderHtml = (o) => `
-		<header class="bk-g-dhead"><div><h2 id="bk-g-dtitle">Pedido #${esc(o.number)}</h2><small>${esc(o.date)}${o.consecutivo ? ` · Consecutivo ${esc(o.consecutivo)}` : ''}</small></div>
+		<header class="bk-g-dhead"><div class="bk-g-dhead__t"><h2 id="bk-g-dtitle">Pedido #${esc(o.number)} <span class="bk-g-ostate ${stateTone(o.status)}">${esc(C.statuses[o.status] || o.status)}</span></h2><small>${esc(o.date)}${o.consecutivo ? ` · Consecutivo ${esc(o.consecutivo)}` : ''}</small></div>
+			<div class="bk-g-dhead__tot"><b>${esc(o.total)}</b><small>${[o.payment, qtyTxt(o)].filter(Boolean).map(esc).join(' · ')}</small></div>
+			<button type="button" class="bk-g-btn is-ghost bk-g-dhead__print" data-print="${o.id}">${C.icons.print} <span>Imprimir</span></button>
 			<button type="button" class="bk-g-icon" data-close aria-label="Cerrar">${C.icons.x}</button></header>
-		<div class="bk-g-dbody">
-			<div class="bk-g-row2">
-				<label><span>Estado</span><select id="bk-g-ostatus">${Object.entries(C.statuses).map(([k, v]) => `<option value="${k}" ${o.status === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></label>
-				<label class="bk-g-switch"><input type="checkbox" id="bk-g-opaid" ${o.paid_ok ? 'checked' : ''}><span>Pago confirmado</span></label>
-				<label class="bk-g-switch"><input type="checkbox" id="bk-g-oprinted" ${o.printed ? 'checked' : ''}><span>Impreso</span></label>
-				${o.dispatched !== null && o.dispatched !== undefined ? `<label class="bk-g-switch"><input type="checkbox" id="bk-g-odispatched" ${o.dispatched ? 'checked' : ''}><span>Despachado</span></label>` : ''}
+		<div class="bk-g-obar">
+			<label class="bk-g-obar__st"><span class="bk-g-sr">Estado</span><select id="bk-g-ostatus" aria-label="Estado del pedido">${Object.entries(C.statuses).map(([k, v]) => `<option value="${k}" ${o.status === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></label>
+			<label class="bk-g-ocheck"><input type="checkbox" id="bk-g-opaid" ${o.paid_ok ? 'checked' : ''}><span>Pago confirmado</span></label>
+			<label class="bk-g-ocheck"><input type="checkbox" id="bk-g-oprinted" ${o.printed ? 'checked' : ''}><span>Impreso</span></label>
+			${o.dispatched !== null && o.dispatched !== undefined ? `<label class="bk-g-ocheck"><input type="checkbox" id="bk-g-odispatched" ${o.dispatched ? 'checked' : ''}><span>Despachado</span></label>` : ''}
+			<button type="button" class="bk-g-btn" id="bk-g-osave" data-id="${o.id}">Guardar estado</button>
+		</div>
+		<div class="bk-g-dbody bk-g-ogrid">
+			<div class="bk-g-ocol">
+				<section class="bk-g-card"><div class="bk-g-cust__head"><h3>Productos</h3>${o.items_edit ? `<a class="bk-g-btn is-ghost is-small" href="#pedidos/prendas/${o.id}" data-items-edit>${C.icons.edit} Cambiar prendas</a>` : ''}</div><ul class="bk-g-items">${o.items.map((i) => `<li>${i.image ? `<img src="${esc(i.image)}" alt="" width="52" height="64">` : '<span></span>'}
+					<div><b>${esc(i.name)}</b><small>${esc(i.meta)}${i.sku ? ` · REF ${esc(i.sku)}` : ''}</small></div><span>×${i.qty}</span><b>${esc(i.total)}</b></li>`).join('')}</ul>
+					<dl class="bk-g-totals"><div><dt>Subtotal</dt><dd>${esc(o.subtotal)}</dd></div>${o.discount ? `<div><dt>Descuento</dt><dd>${esc(o.discount)}</dd></div>` : ''}<div><dt>Envío</dt><dd>${esc(o.shipping)}</dd></div><div class="is-total"><dt>Total</dt><dd>${esc(o.total)}</dd></div></dl>
+					${o.payment ? `<p class="bk-g-opay"><small>Pago: ${esc(o.payment)}</small></p>` : ''}</section>
+				${payremHtml(o)}${o.payrem?.unpaid ? '' : shipHtml(o)}
+				<section class="bk-g-card"><h3>Notas</h3>
+					<form id="bk-g-onote" data-id="${o.id}"><label for="bk-g-notetext" class="bk-g-sr">Nueva nota</label>
+						<textarea id="bk-g-notetext" rows="2" placeholder="Escribe una nota del pedido"></textarea>
+						<div class="bk-g-onote__row"><label class="bk-g-switch"><input type="checkbox" id="bk-g-notecust"><span>Enviar a la clienta</span></label>
+						<button class="bk-g-btn is-ghost is-small" type="submit">Añadir nota</button></div></form>
+					<ul class="bk-g-notes">${o.notes.map((n) => `<li class="${n.customer ? 'is-customer' : ''}"><p>${esc(n.content)}</p><small>${esc(n.date)}${n.by ? ` · ${esc(n.by)}` : ''}${n.customer ? ' · enviada a la clienta' : ''}</small></li>`).join('')}</ul></section>
+				${filesHtml(o)}
+				<a class="bk-g-link" href="${esc(o.edit_url)}" target="_blank" rel="noopener">Abrir en WooCommerce ${C.icons.ext}</a>
 			</div>
-			<div class="bk-g-dactions"><button type="button" class="bk-g-btn" id="bk-g-osave" data-id="${o.id}">Guardar estado</button>
-				<button type="button" class="bk-g-btn is-ghost" data-print="${o.id}">${C.icons.print} Imprimir pedido</button></div>
-			${payremHtml(o)}${o.payrem?.unpaid ? '' : shipHtml(o)}
-			<section class="bk-g-cust"><div class="bk-g-cust__head"><h3>Clienta</h3>${o.edit ? `<button type="button" class="bk-g-btn is-ghost is-small" data-cust-edit aria-expanded="false" aria-controls="bk-g-custform">${C.icons.edit} Editar datos</button>` : ''}</div>
-				${custFormHtml(o)}<p class="bk-g-cust__view"><b>${esc(o.customer)}</b>${o.fields?.cedula || o.cedula ? `<br>Cédula: ${esc(o.cedula || '—')}` : ''}${o.fields?.consecutivo ? `<br>Consecutivo: ${esc(o.consecutivo || '—')}` : ''}${o.source ? `<br><span class="bk-g-srcline">Origen de la venta: ${srcChip(o.source, true)}</span>` : (o.origin ? `<br><small>Origen de la venta: ${esc(o.origin)}</small>` : '')}<br>
-				${o.phone ? `<a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> · <a href="https://wa.me/57${esc(String(o.phone).replace(/\D/g, '').replace(/^57/, ''))}" target="_blank" rel="noopener">WhatsApp</a><br>` : ''}
-				<a href="mailto:${esc(o.email)}">${esc(o.email)}</a><br>${esc(o.address)}</p>
-				${o.note ? `<p class="bk-g-note"><b>Nota de la clienta:</b> ${esc(o.note)}</p>` : ''}</section>
-			${accountHtml(o)}
-			${relatedHtml(o)}
-			<section><div class="bk-g-cust__head"><h3>Productos</h3>${o.items_edit ? `<a class="bk-g-btn is-ghost is-small" href="#pedidos/prendas/${o.id}" data-items-edit>${C.icons.edit} Cambiar prendas</a>` : ''}</div><ul class="bk-g-items">${o.items.map((i) => `<li>${i.image ? `<img src="${esc(i.image)}" alt="" width="48" height="48">` : '<span></span>'}
-				<div><b>${esc(i.name)}</b><small>${esc(i.meta)}${i.sku ? ` · REF ${esc(i.sku)}` : ''}</small></div><span>×${i.qty}</span><b>${esc(i.total)}</b></li>`).join('')}</ul>
-				<dl class="bk-g-totals"><div><dt>Subtotal</dt><dd>${esc(o.subtotal)}</dd></div>${o.discount ? `<div><dt>Descuento</dt><dd>${esc(o.discount)}</dd></div>` : ''}<div><dt>Envío</dt><dd>${esc(o.shipping)}</dd></div><div class="is-total"><dt>Total</dt><dd>${esc(o.total)}</dd></div></dl>
-				<p><small>Pago: ${esc(o.payment)}</small></p></section>
-			${filesHtml(o)}
-			${historyHtml(o)}
-			${o.extra?.length ? `<details class="bk-g-extra"><summary>Otros datos del pedido (${o.extra.length})</summary><dl>${o.extra.map((x) => `<div><dt title="${esc(x.key)}">${esc(x.label)}</dt><dd>${esc(x.value)}</dd></div>`).join('')}</dl></details>` : ''}
-			<section><h3>Notas</h3>
-				<form id="bk-g-onote" data-id="${o.id}"><label for="bk-g-notetext" class="bk-g-sr">Nueva nota</label>
-					<textarea id="bk-g-notetext" rows="2" placeholder="Escribe una nota del pedido"></textarea>
-					<label class="bk-g-switch"><input type="checkbox" id="bk-g-notecust"><span>Enviar a la clienta</span></label>
-					<button class="bk-g-btn is-ghost" type="submit">Añadir nota</button></form>
-				<ul class="bk-g-notes">${o.notes.map((n) => `<li class="${n.customer ? 'is-customer' : ''}"><p>${esc(n.content)}</p><small>${esc(n.date)}${n.by ? ` · ${esc(n.by)}` : ''}${n.customer ? ' · enviada a la clienta' : ''}</small></li>`).join('')}</ul></section>
-			<a class="bk-g-link" href="${esc(o.edit_url)}" target="_blank" rel="noopener">Abrir en WooCommerce ${C.icons.ext}</a>
+			<div class="bk-g-ocol">
+				<section class="bk-g-cust bk-g-card"><div class="bk-g-cust__head"><h3>Clienta</h3>${o.edit ? `<button type="button" class="bk-g-btn is-ghost is-small" data-cust-edit aria-expanded="false" aria-controls="bk-g-custform">${C.icons.edit} Editar datos</button>` : ''}</div>
+					${custFormHtml(o)}<div class="bk-g-cust__view"><p class="bk-g-cust__name">${esc(o.customer)}</p>
+					<dl class="bk-g-kv">
+						${o.fields?.cedula || o.cedula ? `<div><dt>Cédula</dt><dd>${esc(o.cedula || '—')}</dd></div>` : ''}
+						${o.fields?.consecutivo ? `<div><dt>Consecutivo</dt><dd>${esc(o.consecutivo || '—')}</dd></div>` : ''}
+						${o.phone ? `<div><dt>Celular</dt><dd><a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> <a class="bk-g-wa" href="${waLink(o.phone)}" target="_blank" rel="noopener">WhatsApp</a></dd></div>` : ''}
+						${o.email ? `<div><dt>Correo</dt><dd><a href="mailto:${esc(o.email)}">${esc(o.email)}</a></dd></div>` : ''}
+						${o.address ? `<div><dt>Envío</dt><dd>${esc(o.address)}</dd></div>` : ''}
+						${o.source ? `<div><dt>Origen</dt><dd>${srcChip(o.source, true)}</dd></div>` : (o.origin ? `<div><dt>Origen</dt><dd>${esc(o.origin)}</dd></div>` : '')}
+					</dl>
+					${o.note ? `<p class="bk-g-note"><b>Nota de la clienta:</b> ${esc(o.note)}</p>` : ''}</div></section>
+				${accountHtml(o)}
+				${relatedHtml(o)}
+				${historyHtml(o)}
+				${o.extra?.length ? `<details class="bk-g-extra bk-g-card"><summary>Otros datos del pedido (${o.extra.length})</summary><dl>${o.extra.map((x) => `<div><dt title="${esc(x.key)}">${esc(x.label)}</dt><dd>${esc(x.value)}</dd></div>`).join('')}</dl></details>` : ''}
+			</div>
 		</div>`;
 
 	/* --- Guía de envío ------------------------------------------------------------ */
