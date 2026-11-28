@@ -158,3 +158,48 @@ function bk_gco_related( WP_REST_Request $r ) {
 		)
 	);
 }
+
+/**
+ * Cuántos pedidos tiene cada clienta en todo su historial (para el numerito de la lista de Pedidos, 0.18.52).
+ * Mismo criterio que "Pedidos de esta clienta": cédula, correo o celular iguales al del pedido, incluido él; sin
+ * papelera ni borradores del checkout. Clientas repetidas en la página se calculan una sola vez.
+ *
+ * @param WC_Order[] $orders Pedidos de la página.
+ * @return array<int,int> id del pedido => total de pedidos de esa clienta.
+ */
+function bk_gco_counts( $orders ) {
+	global $wpdb;
+	$sets = array();
+	$memo = array();
+	foreach ( $orders as $o ) {
+		$f   = bk_g_fields();
+		$ced = '';
+		foreach ( (array) $f['cedula'] as $key ) {
+			$ced = preg_replace( '/[\s.\-]+/', '', (string) $o->get_meta( $key ) );
+			if ( '' !== $ced ) {
+				break;
+			}
+		}
+		$who = md5( $ced . '|' . strtolower( trim( (string) $o->get_billing_email() ) ) . '|' . bk_gco_phone( $o->get_billing_phone() ) );
+		if ( ! isset( $memo[ $who ] ) ) {
+			$memo[ $who ] = array_keys( bk_gco_ids( $o ) );
+		}
+		$sets[ $o->get_id() ] = array_values( array_unique( array_merge( $memo[ $who ], array( $o->get_id() ) ) ) );
+	}
+	$all = array_values( array_unique( array_merge( array(), ...array_values( $sets ?: array( array() ) ) ) ) );
+	if ( ! $all ) {
+		return array();
+	}
+	// Solo pedidos reales (una consulta para toda la página).
+	$hpos = class_exists( \Automattic\WooCommerce\Utilities\OrderUtil::class ) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+	$ph   = implode( ',', array_fill( 0, count( $all ), '%d' ) );
+	$sql  = $hpos
+		? "SELECT id FROM {$wpdb->prefix}wc_orders WHERE id IN ({$ph}) AND type = 'shop_order' AND status NOT IN ('trash','wc-checkout-draft','checkout-draft','draft','auto-draft')"
+		: "SELECT ID FROM {$wpdb->posts} WHERE ID IN ({$ph}) AND post_type = 'shop_order' AND post_status NOT IN ('trash','wc-checkout-draft','checkout-draft','draft','auto-draft')";
+	$ok   = array_flip( array_map( 'intval', (array) $wpdb->get_col( $wpdb->prepare( $sql, $all ) ) ) ); // phpcs:ignore WordPress.DB
+	$out  = array();
+	foreach ( $sets as $id => $ids ) {
+		$out[ $id ] = max( 1, count( array_filter( $ids, static fn( $x ) => isset( $ok[ $x ] ) ) ) );
+	}
+	return $out;
+}

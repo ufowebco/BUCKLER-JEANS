@@ -409,7 +409,7 @@
 				<tbody>${d.orders.map((o) => `<tr data-row="${o.id}">
 					<td class="c-num"><button type="button" class="bk-g-link" data-order="${o.id}">#${esc(o.number)}</button></td>
 					<td class="c-date">${esc(o.date)}</td>
-					<td class="c-cust">${esc(o.customer)}<small>${esc(o.city)} · ${o.items} prenda${o.items === 1 ? '' : 's'}${o.nfiles ? ` · <span class="bk-g-nfiles" title="Archivos del pedido">📎 ${o.nfiles}</span>` : ''}</small></td>
+					<td class="c-cust"><span class="bk-g-cname">${esc(o.customer)}${o.ncust ? ` <span class="bk-g-ncust${o.ncust > 1 ? ' is-repeat' : ''}" title="${o.ncust === 1 ? 'Primer pedido en la tienda' : `${o.ncust} pedidos en su historial`}"><span aria-hidden="true">${o.ncust}</span><span class="bk-g-sr">${o.ncust === 1 ? 'primer pedido' : `${o.ncust} pedidos en su historial`}</span></span>` : ''}</span><small>${esc(o.city)} · ${o.items} prenda${o.items === 1 ? '' : 's'}${o.nfiles ? ` · <span class="bk-g-nfiles" title="Archivos del pedido">📎 ${o.nfiles}</span>` : ''}</small></td>
 					<td class="c-src">${srcChip(o.source) || '—'}</td>
 					<td class="c-total"><b>${esc(o.total)}</b><small>${esc(o.payment)}</small></td>
 					<td class="c-status"><span class="bk-g-pill is-${esc(o.status)}">${esc(statusLabel(o.status))}</span>${o.tracking ? `<small class="bk-g-trk">${C.icons.truck} ${esc(C.carriers[o.tracking.carrier] || '')}</small>` : ''}</td>

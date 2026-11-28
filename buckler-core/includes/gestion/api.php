@@ -467,10 +467,28 @@ function bk_g_orders( WP_REST_Request $r ) {
 
 	return rest_ensure_response(
 		array(
-			'orders' => array_map( 'bk_g_order_row', $res->orders ),
+			'orders' => bk_g_rows_with_counts( $res->orders ),
 			'total'  => (int) $res->total,
 			'pages'  => (int) $res->max_num_pages,
 		)
+	);
+}
+
+/**
+ * Filas de la lista con el número de pedidos de cada clienta en todo su historial (`ncust`).
+ *
+ * @param WC_Order[] $orders Pedidos.
+ * @return array[]
+ */
+function bk_g_rows_with_counts( $orders ) {
+	$counts = function_exists( 'bk_gco_counts' ) ? bk_gco_counts( $orders ) : array();
+	return array_map(
+		static function ( $o ) use ( $counts ) {
+			$row          = bk_g_order_row( $o );
+			$row['ncust'] = $counts[ $o->get_id() ] ?? null;
+			return $row;
+		},
+		$orders
 	);
 }
 
