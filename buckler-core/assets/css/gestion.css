@@ -1438,6 +1438,6 @@ code { padding: 1px 5px; border-radius: 4px; background: #eef1f4; font-size: .9e
 }
 
 /* Número de pedidos de la clienta en la lista (0.18.52) */
-.bk-g-ncust { display: inline-grid; place-items: center; min-width: 20px; height: 20px; margin-left: 4px; padding: 0 6px; border: 1.5px solid #cfd6de; border-radius: 999px; background: #fff; color: var(--g-mute); font-size: 11px; font-weight: 800; line-height: 1; vertical-align: 2px; cursor: help; }
+.bk-g-ncust { display: inline-grid; place-items: center; min-width: 15px; height: 15px; margin-left: 3px; padding: 0 4px; border: 1px solid #cfd6de; border-radius: 999px; background: #fff; color: var(--g-mute); font-size: 9.5px; font-weight: 800; line-height: 1; vertical-align: 3px; cursor: help; }
 .bk-g-ncust.is-repeat { border-color: var(--g-navy); background: var(--g-navy); color: #fff; }
 .bk-g-cname { white-space: nowrap; }
