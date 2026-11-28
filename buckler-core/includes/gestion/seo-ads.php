@@ -148,7 +148,7 @@ function bk_gs_orders_check() {
 		array(
 			'limit'        => 300,
 			'type'         => 'shop_order',
-			'status'       => array_map( static fn( $s ) => 'wc-' . $s, wc_get_is_paid_statuses() ),
+			'status'       => function_exists( 'bk_g_paid_statuses' ) ? bk_g_paid_statuses() : array_map( static fn( $s ) => 'wc-' . $s, wc_get_is_paid_statuses() ),
 			'date_created' => '>' . ( time() - 30 * DAY_IN_SECONDS ),
 		)
 	);

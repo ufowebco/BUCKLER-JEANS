@@ -1360,3 +1360,20 @@ code { padding: 1px 5px; border-radius: 4px; background: #eef1f4; font-size: .9e
 .bk-gs-opt input { margin-top: 3px; }
 .bk-gs-opt span { display: flex; flex-direction: column; }
 .bk-gs-opt small { color: var(--g-mute); }
+
+/* "Faltan por marcar" junto al título de Pedidos (0.18.50) */
+.bk-g-h1todo { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.bk-g-todo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.bk-g-todo:empty { display: none; }
+.bk-g-todo__t { font-size: 13px; font-weight: 600; color: var(--g-mute); }
+.bk-g-todo__pill { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 5px 14px 5px 6px; border: 1.5px solid #f1c2b8; border-radius: 999px; background: #fff4f1; color: #8a2a14; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.bk-g-todo__pill b { min-width: 26px; padding: 2px 8px; border-radius: 999px; background: #c2410c; color: #fff; font-size: 13px; text-align: center; }
+.bk-g-todo__pill:hover { border-color: #c2410c; }
+.bk-g-todo__pill.is-ok { border-color: #cfe3d4; background: #f1f8f3; color: #205c32; }
+.bk-g-todo__pill.is-ok b { background: #2f7d47; }
+.bk-g-todo__pill.is-on { border-color: var(--g-navy, #1a3955); background: var(--g-navy, #1a3955); color: #fff; }
+.bk-g-todo__pill.is-on b { background: #e4ec6a; color: #1a3955; }
+.bk-g-todo__pill:focus-visible { outline: 3px solid #e4ec6a; outline-offset: 2px; }
+.bk-g-todo__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 0 0 12px; padding: 10px 14px; border: 1px solid #dfe4ea; border-radius: 10px; background: #fff; font-size: 14px; }
+.bk-g-todo__bar .bk-g-link { margin-left: auto; font-weight: 700; }
+@media (max-width: 700px) { .bk-g-todo__t { width: 100%; } }

@@ -7,7 +7,7 @@ Rutas asumidas: `BK_LOCAL=/tmp/claude-0/bk-local` (ajustar en los scripts si cam
 php tools/local/tests/seed-cards.php     # galerías, destacado, oferta, talla agotada
 php tools/local/tests/seed-shop.php      # ~60 productos con nombres/precios/categorías reales
 php tools/local/tests/seed-orders.php    # pedidos de ejemplo, usuaria "gestora" (rol Gestor de tienda)
-cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180 ronda181 ronda182 ronda184 ronda185 ronda186 ronda187 ronda188 ronda189 ronda1812 ronda1814 ronda1815 ronda1817 ronda1822 ronda1824 ronda1825 ronda1826 ronda1827 ronda1830 ronda1831 ronda1832 ronda1833 ronda1834 seguridad2 ronda1840 ronda1841 ronda1842 ronda1846 ronda1847; do NODE_PATH=$(npm root -g) node $t.js; done
+cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda-paginas paginas adminmenu seguridad gestion16 seo ronda17 ronda171 ronda172 pedidos-nuevos ronda176 ronda177 ronda178 ronda179 ronda180 ronda181 ronda182 ronda184 ronda185 ronda186 ronda187 ronda188 ronda189 ronda1812 ronda1814 ronda1815 ronda1817 ronda1822 ronda1824 ronda1825 ronda1826 ronda1827 ronda1830 ronda1831 ronda1832 ronda1833 ronda1834 seguridad2 ronda1840 ronda1841 ronda1842 ronda1846 ronda1847 ronda1850; do NODE_PATH=$(npm root -g) node $t.js; done
 ```
 
 | Suite | Qué prueba | Comprobaciones |
@@ -60,6 +60,7 @@ cd tools/local/tests && for t in shop cards sc ac gestion envio productos tienda
 | `ronda1842.js` | Black Friday antes del banner del inicio, barra de anuncios centrada, una sola etiqueta sobre la foto ("-25 % · BLACK FRIDAY"), NUEVO junto a la línea, 390 px | 6 |
 | `ronda1846.js` | Cuentas: crear cuenta después de pagar (ventana, contraseña corta, pedidos anteriores, sesión), correo con cuenta, pestañas de Mi cuenta y registro, gestión (vista previa, copiar enlace, enviar, historial), página del enlace (anterior anulado, no coinciden, un solo uso, vencido), cuenta del equipo, envío masivo | 40 |
 | `ronda1847.js` | Modo Navidad: apagado el 27 nov, se prende el 1 dic y se apaga el 7 ene, franja roja, gorro (sin quedar bajo la franja), luces, bloque del inicio, nieve en tarjetas, regalo en la ficha, pie, reducir movimiento, 390 px, interruptor de la gestión (auto / encendido / apagado) | 21 |
+| `ronda1850.js` | "Faltan por marcar" junto a Pedidos (números = servidor, filtrar, marcar baja el número, "Ver todos", enlace directo, 390 px) + estado propio "aprobada" cuenta en la meta y "espera de pago" no | 18 |
 | `seguridad2.js` | Sin sesión: reseñas con nombre corto y sin Gravatar, comentarios sin nombre/enlace/avatar, páginas/fotos/productos sin número de usuario; con sesión del equipo todo completo | 9 |
 
 Capturas de la Ayuda: `NODE_PATH=$(npm root -g) node ../help-shots.js` (escribe `buckler-core/assets/img/ayuda/*.webp`).

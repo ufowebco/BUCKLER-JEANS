@@ -233,7 +233,7 @@ function bk_g_summary() {
 	$tz    = wp_timezone();
 	$today = ( new DateTimeImmutable( 'today', $tz ) )->getTimestamp();
 	$month = ( new DateTimeImmutable( 'first day of this month 00:00', $tz ) )->getTimestamp();
-	$paid  = array_map( static fn( $s ) => 'wc-' . $s, wc_get_is_paid_statuses() );
+	$paid  = bk_g_paid_statuses(); // Incluye estados propios de pasarelas ("Transacción Aprobada").
 
 	$sum = static function ( $from ) use ( $paid ) {
 		$fast = bk_g_sum_orders( $paid, $from );
@@ -405,6 +405,16 @@ function bk_g_orders( WP_REST_Request $r ) {
 			$args['post__in'] = $args['post__in'] ? array_values( $args['post__in'] ) : array( 0 );
 		} elseif ( $on ) {
 			$args['post__not_in'] = array_values( array_unique( array_merge( $args['post__not_in'] ?? array(), $on ) ) );
+		}
+	}
+
+	// "Faltan por marcar" (píldoras junto al título): pedidos activos del periodo sin ese check.
+	$todo = sanitize_key( (string) $r['todo'] );
+	if ( $todo && function_exists( 'bk_g_todo_ids' ) ) {
+		$tids = bk_g_todo_ids( $todo );
+		if ( null !== $tids ) {
+			$args['post__in'] = isset( $args['post__in'] ) ? array_values( array_intersect( $args['post__in'], $tids ) ) : $tids;
+			$args['post__in'] = $args['post__in'] ? $args['post__in'] : array( 0 );
 		}
 	}
 

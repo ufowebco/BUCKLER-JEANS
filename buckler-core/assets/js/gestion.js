@@ -293,7 +293,24 @@
 
 	/* --- Pedidos ------------------------------------------------------------------- */
 	const hashParams = () => new URLSearchParams(location.hash.split('?')[1] || '');
-	const oState = { q: '', status: 'all', paid_ok: '', printed: '', dispatched: '', source: '', from: '', to: '', page: 1 };
+	const oState = { q: '', status: 'all', paid_ok: '', printed: '', dispatched: '', source: '', from: '', to: '', todo: '', page: 1 };
+	// "Faltan por marcar": píldoras junto al título (pedidos activos de los últimos 30 días sin ese check).
+	const TODO = { paid_ok: ['Pago confirmado', 'sin pago confirmado'], printed: ['Impreso', 'sin imprimir'], dispatched: ['Despachado', 'sin despachar'] };
+	let todoData = null;
+	const todoHtml = () => {
+		const c = todoData?.counts;
+		if (!c) return '';
+		const pills = Object.entries(TODO).filter(([k]) => c[k] !== null && c[k] !== undefined).map(([k, [label]]) => {
+			const n = c[k];
+			const on = oState.todo === k;
+			return `<button type="button" class="bk-g-todo__pill${n ? '' : ' is-ok'}${on ? ' is-on' : ''}" data-todo="${k}" aria-pressed="${on}" title="${n ? `${n} pedido${n === 1 ? '' : 's'} ${TODO[k][1]} (últimos ${todoData.days} días)` : `Todos los pedidos de los últimos ${todoData.days} días están marcados`}"><b>${n ? n : '✓'}</b>${label}</button>`;
+		}).join('');
+		return pills ? `<small class="bk-g-todo__t">Faltan por marcar:</small>${pills}` : '';
+	};
+	const paintTodo = () => { const el = $('#bk-g-todo'); if (el) el.innerHTML = todoHtml(); };
+	const loadTodo = async () => {
+		try { todoData = await api('orders/todo', { cache: 'no-store' }); paintTodo(); } catch (e) { /* las píldoras son opcionales */ }
+	};
 	// Origen de la venta: etiqueta con ícono (Meta Ads, Google orgánico, WhatsApp…).
 	const srcChip = (s, withDetail) => s && C.sources?.[s.key] ? `<span class="bk-g-src is-${esc(s.key)}" title="${esc(s.detail || s.label)}">${C.sources[s.key].icon}${esc(s.label)}</span>${withDetail && s.detail ? ` <small class="bk-g-src__d">${esc(s.detail)}</small>` : ''}` : '';
 
@@ -301,7 +318,8 @@
 		const hp = hashParams();
 		if (hp.get('status')) oState.status = hp.get('status');
 		if (hp.has('source')) { oState.source = hp.get('source'); oState.page = 1; }
-		main.innerHTML = `<div class="bk-g-h1row"><h1 class="bk-g-h1">Pedidos</h1>
+		if (hp.has('todo')) { oState.todo = TODO[hp.get('todo')] ? hp.get('todo') : ''; oState.page = 1; }
+		main.innerHTML = `<div class="bk-g-h1row"><div class="bk-g-h1todo"><h1 class="bk-g-h1">Pedidos</h1><div class="bk-g-todo" id="bk-g-todo" role="group" aria-label="Pedidos por marcar">${todoHtml()}</div></div>
 				<div class="bk-g-refresh"><small id="bk-g-oupd" aria-live="polite"></small><button type="button" class="bk-g-btn" data-orders-refresh>${C.icons.refresh || ''} Buscar pedidos nuevos</button><a class="bk-g-btn" href="#pedidos/nuevo">${C.icons.plus} Nuevo pedido</a></div></div>
 			<form class="bk-g-filters" id="bk-g-of" role="search">
 				<label class="bk-g-search"><span class="bk-g-sr">Buscar pedidos</span>${C.icons.search}
@@ -322,6 +340,7 @@
 		form.addEventListener('change', (e) => { if (e.target.name !== 'q') { readForm(form); loadOrders(); } });
 		form.q.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { readForm(form); loadOrders(); }, 450); });
 		loadOrders();
+		loadTodo();
 	}
 	const readForm = (form) => {
 		Object.assign(oState, Object.fromEntries(new FormData(form).entries()), { page: 1 });
@@ -356,6 +375,7 @@
 		lastRefresh = Date.now();
 		forget('orders?');
 		forget('summary');
+		if ($('#bk-g-todo')) loadTodo();
 		if (!$('#bk-g-olist')) {
 			if (/^#?(resumen)?$/.test(location.hash.split('?')[0])) viewSummary(); // En otras secciones solo se vacía la caché.
 			return;
@@ -381,7 +401,8 @@
 	const paintOrders = (box, d) => {
 		if (!seenIds.size) rememberIds(d);
 		const showDisp = d.orders.some((o) => o.dispatched !== null);
-		box.innerHTML = d.orders.length ? `
+		const todoBar = oState.todo ? `<div class="bk-g-todo__bar">Mostrando solo los <b>${d.total} pedido${d.total === 1 ? '' : 's'} ${TODO[oState.todo][1]}</b> de los últimos ${todoData?.days || 30} días<button type="button" class="bk-g-link" data-todo-clear>✕ Ver todos</button></div>` : '';
+		box.innerHTML = d.orders.length ? `${todoBar}
 			<p class="bk-g-count">${d.total} pedido${d.total === 1 ? '' : 's'}</p>
 			<div class="bk-g-table-wrap"><table class="bk-g-table bk-g-orders">
 				<thead><tr><th>Pedido</th><th>Fecha</th><th>Clienta</th><th>Origen</th><th>Total</th><th>Estado</th><th>Pago confirmado</th><th>Impreso</th>${showDisp ? '<th>Despachado</th>' : ''}<th><span class="bk-g-sr">Imprimir</span></th></tr></thead>
@@ -398,7 +419,7 @@
 					<td class="c-act"><button type="button" class="bk-g-btn is-ghost is-small" data-print="${o.id}">${C.icons.print}<span>Imprimir</span><span class="bk-g-sr"> pedido ${esc(o.number)}</span></button></td>
 				</tr>`).join('')}</tbody>
 			</table></div>
-			${pager(d.pages, oState.page, 'o')}` : '<p class="bk-g-empty">No hay pedidos con esos filtros.</p>';
+			${pager(d.pages, oState.page, 'o')}` : (oState.todo ? `<p class="bk-g-empty">¡Listo! No hay pedidos ${TODO[oState.todo][1]} con esos filtros. <button type="button" class="bk-g-link" data-todo-clear>Ver todos</button></p>` : '<p class="bk-g-empty">No hay pedidos con esos filtros.</p>');
 	};
 
 	const pager = (pages, page, kind) => pages > 1 ? `<nav class="bk-g-pager" aria-label="Páginas">
@@ -643,7 +664,9 @@
 		forget('orders?');
 		forget('summary');
 		if (!drawer.hidden && openId === String(o.id)) panel.innerHTML = orderHtml(o);
+		if ($('#bk-g-todo')) { clearTimeout(todoT); todoT = setTimeout(loadTodo, 600); } // Píldoras "Faltan por marcar".
 	};
+	let todoT = 0;
 
 	// Imprimir: hoja con todo el detalle. En computador se imprime sin salir del panel; en celular abre una pestaña.
 	const printOrder = (id) => {
@@ -752,6 +775,15 @@
 
 	/* --- Eventos delegados -------------------------------------------------------------- */
 	document.addEventListener('click', async (e) => {
+		const tp = e.target.closest('[data-todo], [data-todo-clear]');
+		if (tp) { // "Faltan por marcar": tocar una píldora filtra; tocarla otra vez (o "Ver todos") quita el filtro.
+			oState.todo = tp.dataset.todo && oState.todo !== tp.dataset.todo ? tp.dataset.todo : '';
+			oState.page = 1;
+			if (/[?&]todo=/.test(location.hash)) history.replaceState(null, '', '#pedidos');
+			paintTodo();
+			loadOrders();
+			return;
+		}
 		const ref = e.target.closest?.('[data-orders-refresh]');
 		if (ref) { await busy(ref, () => refreshOrders(true)); return; }
 		const t = e.target;
@@ -990,6 +1022,10 @@
 			const o = await api(`orders/${cb.dataset.id}`, { method: 'POST', body: { [kind]: cb.checked } });
 			setOrder(o);
 			toast(flagMsg[kind][cb.checked ? 0 : 1]);
+			if (todoData?.counts && typeof todoData.counts[kind] === 'number') { // El número baja (o sube) al instante.
+				todoData.counts[kind] = Math.max(0, todoData.counts[kind] + (cb.checked ? -1 : 1));
+				paintTodo(); // setOrder() lo confirma con el servidor (el pedido podría estar fuera del periodo).
+			}
 		} catch (err) { cb.checked = !cb.checked; toast(err.message, 'err'); } finally { cb.disabled = false; }
 	});
 

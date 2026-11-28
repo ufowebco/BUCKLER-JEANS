@@ -191,7 +191,7 @@ function bk_g_source_filter( $key ) {
  * @return array<int,array{key:string,label:string,count:int,total:string,raw:float,pct:int}>
  */
 function bk_g_source_summary( $from ) {
-	$paid   = array_map( static fn( $s ) => 'wc-' . $s, wc_get_is_paid_statuses() );
+	$paid   = bk_g_paid_statuses(); // Incluye estados propios de pasarelas ("Transacción Aprobada").
 	$ids    = wc_get_orders( array( 'status' => $paid, 'date_created' => '>=' . $from, 'limit' => 2000, 'return' => 'ids', 'type' => 'shop_order' ) );
 	if ( ! $ids ) {
 		return array();

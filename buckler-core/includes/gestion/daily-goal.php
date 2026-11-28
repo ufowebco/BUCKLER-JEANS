@@ -37,7 +37,7 @@ function bk_g_daily_sales( $days = 10 ) {
 	$tz    = wp_timezone();
 	$days  = max( 1, (int) $days );
 	$start = ( new DateTimeImmutable( 'today', $tz ) )->modify( '-' . ( $days - 1 ) . ' days' );
-	$paid  = array_map( static fn( $s ) => 'wc-' . $s, wc_get_is_paid_statuses() );
+	$paid  = bk_g_paid_statuses(); // Incluye estados propios de pasarelas ("Transacción Aprobada").
 
 	$out = array();
 	for ( $i = 0; $i < $days; $i++ ) {
